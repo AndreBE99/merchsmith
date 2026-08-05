@@ -1,0 +1,51 @@
+/* ============================================================
+   MERCHSMITH — design tokens (single source of truth)
+   Link this FIRST on every page:  <link rel="stylesheet" href="tokens.css">
+   Change a brand colour here and every page updates.
+   ============================================================ */
+:root{
+  /* ---- brand palette ---- */
+  --periwinkle:#7B85C5; --periwinkle-deep:#5860A6; --periwinkle-ink:#3C4279;
+  --spearmint:#36C0A0; --flare:#FF2E17; --sky:#0097D8; --blossom:#FFA2A5; --zest:#FFEB3D; --sprout:#9FD792;
+
+  /* ---- neutrals ---- */
+  --ink:#222222; --white:#fff; --paper:#F4F5F8; --paper-2:#E9EBF3;
+  --track:#E4E6EF; --line:rgba(34,34,34,.12); --line-soft:rgba(34,34,34,.07);
+  --muted:#9A9AA6;
+
+  /* ---- extended (was hardcoded; now tokenised) ---- */
+  --ink-2:#44444c;          /* primary body text on cards */
+  --ink-3:#55555c;          /* secondary body text */
+  --slate:#6f7390;          /* unbranded / neutral fill */
+  --text-soft:#6b6b73;      /* captions, meta */
+  --muted-2:#8a8a92;        /* lighter muted text */
+  --hair:#d7d9e3;           /* light outline / borders */
+  --green-deep:#1f8a5b;     /* approved text on tint */
+  --tint-green:#e3f5ee;     /* approved badge bg */
+  --tint-peri:#eceef8;      /* awaiting badge bg */
+  --tint-red:#ffe7e3;       /* feedback badge bg */
+  --brand-black:#1a1a1a;    /* co-brand logos */
+  --shadow-rgb:20,22,45;    /* base for box-shadows: rgba(var(--shadow-rgb),a) */
+
+  /* ---- type ---- */
+  --serif:"EB Garamond", Georgia, serif;
+  --sans:"Mulish", system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================================
+   COLOURWAY: Woodland  (set <html data-theme="woodland">)
+   Brand accent -> Woodland Green; action -> Dusty Pink;
+   success stays green, error stays red (semantics preserved).
+   ============================================================ */
+:root[data-theme="woodland"]{
+  --periwinkle:#32706B; --periwinkle-deep:#295A56; --periwinkle-ink:#1E423F;
+  --spearmint:#5BA77E; --flare:#E5533D; --sky:#51768C; --blossom:#EAA59B; --zest:#EBCB5B; --sprout:#AED9A3;
+
+  --ink:#222222; --white:#fff; --paper:#F2EDE8; --paper-2:#E7E0D7;
+  --track:#E2DACF; --line:rgba(34,34,34,.12); --line-soft:rgba(34,34,34,.07);
+  --muted:#9C9488;
+
+  --ink-2:#44443e; --ink-3:#57544c; --slate:#51768C; --text-soft:#6d685f; --muted-2:#8d877c;
+  --hair:#ddd5c9; --green-deep:#2E7A57; --tint-green:#E4EFE1; --tint-peri:#E4EEEC; --tint-red:#F7E2DB;
+  --brand-black:#1a1a1a; --shadow-rgb:40,36,30;
+}

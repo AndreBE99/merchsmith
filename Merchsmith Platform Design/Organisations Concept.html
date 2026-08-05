@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept — Organisations &amp; users</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--sans);background:#eceaf3;color:var(--ink);line-height:1.5;}
+.icn{width:18px;height:18px;display:inline-block;vertical-align:middle;}
+.wrap{max-width:1100px;margin:0 auto;padding:46px 30px 90px;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:18px;box-shadow:0 1px 4px rgba(20,22,45,.06);}
+h1{font-family:var(--serif);font-weight:500;font-size:40px;letter-spacing:-.015em;margin:0 0 12px;}
+.lede{font-size:17px;color:var(--ink-2);max-width:74ch;margin:0 0 8px;}
+.note-concept{font-size:13px;color:var(--periwinkle-deep);font-weight:600;background:#fff;border-left:3px solid var(--periwinkle);border-radius:8px;padding:11px 15px;margin:18px 0 0;max-width:74ch;}
+h2{font-family:var(--serif);font-weight:500;font-size:25px;margin:52px 0 6px;}
+h2 .num{color:var(--periwinkle-deep);font-size:18px;font-weight:700;font-family:var(--sans);margin-right:10px;vertical-align:2px;}
+.sub{font-size:15px;color:var(--ink-2);max-width:78ch;margin:0 0 22px;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:18px;padding:24px 26px;box-shadow:0 1px 3px rgba(20,22,45,.04);}
+
+/* hierarchy tree */
+.tree{display:flex;flex-direction:column;gap:0;}
+.node{border-radius:14px;padding:15px 18px;border:1.5px solid var(--line-soft);background:#fff;}
+.node .nh{display:flex;align-items:center;gap:11px;}
+.node .ni{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:none;color:#fff;}
+.node .ni .icn{width:18px;height:18px;}
+.node b{font-size:16px;color:var(--ink);}
+.node .role{font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);}
+.node p{margin:8px 0 0;font-size:13px;color:var(--ink-2);line-height:1.5;}
+.platform .ni{background:#1a1a1e;}
+.dist .ni{background:var(--periwinkle-deep,#4a4ac2);}
+.cust .ni{background:var(--sky,#51768c);}
+.sup .ni{background:#8246af;}
+.kids{margin-left:30px;padding-left:24px;border-left:2px dashed var(--line);display:flex;flex-direction:column;gap:12px;margin-top:12px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:780px){.row2{grid-template-columns:1fr;}}
+.users{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-2);background:var(--paper);border:1px solid var(--line-soft);border-radius:999px;padding:4px 11px;}
+.chip .av{width:18px;height:18px;border-radius:50%;background:var(--periwinkle);color:#fff;font-size:9px;font-weight:800;display:grid;place-items:center;}
+
+/* roles table */
+.rt{width:100%;border-collapse:collapse;font-size:13.5px;}
+.rt th{text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:0 14px 9px 0;border-bottom:1.5px solid var(--line-soft);}
+.rt td{padding:11px 14px 11px 0;border-bottom:1px solid var(--paper-2);vertical-align:top;color:var(--ink-2);}
+.rt td b{color:var(--ink);}
+.rt .who{white-space:nowrap;font-weight:700;color:var(--ink);}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+.d-dist{background:var(--periwinkle-deep);}
+.d-cust{background:var(--sky,#51768c);}
+.d-sup{background:#8246af;}
+.d-plat{background:#1a1a1e;}
+
+ul.clean{margin:6px 0 0;padding-left:20px;}
+ul.clean li{font-size:14px;color:var(--ink-2);margin-bottom:8px;}
+ul.clean b{color:var(--ink);}
+.perm{width:100%;border-collapse:collapse;font-size:13px;}
+.perm th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:700;padding:0 10px 9px;border-bottom:1.5px solid var(--line-soft);text-align:center;}
+.perm th:first-child{text-align:left;padding-left:0;}
+.perm td{padding:9px 10px;border-bottom:1px solid var(--paper-2);text-align:center;color:var(--ink-2);}
+.perm td:first-child{text-align:left;padding-left:0;font-weight:600;color:var(--ink);}
+.perm .y{color:var(--green-deep);font-weight:800;}
+.perm .n{color:var(--hair);}
+.perm .part{color:#9a6b1f;font-weight:700;font-size:11px;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-plat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></symbol>
+<symbol id="i-dist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-3"/></symbol>
+<symbol id="i-cust" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0M16 7a3 3 0 0 1 0 6M18 20a5 5 0 0 0-3-4.6"/></symbol>
+<symbol id="i-sup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13v10H3zM16 10h3l2 3v4h-5"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></symbol>
+</defs></svg>
+
+<div class="wrap">
+  <span class="tag">Concept · for discussion</span>
+  <h1>Organisations &amp; users</h1>
+  <p class="lede">How accounts, organisations and people fit together on the platform — who owns what, who can see whom, and the roles each person can hold.</p>
+  <p class="note-concept">Mock-up only — nothing live has changed. For you to react to before we build the Organisations area.</p>
+
+  <h2><span class="num">1</span>The hierarchy</h2>
+  <p class="sub">Four organisation types. The <b>Distributor</b> is the hub: it owns its <b>Customer organisations</b> (who place orders) and connects to <b>Suppliers</b> (who make &amp; decorate the goods). Each organisation holds its own users.</p>
+  <div class="card">
+    <div class="tree">
+      <div class="node platform"><div class="nh"><span class="ni"><svg class="icn"><use href="#i-plat"/></svg></span><div><b>Merchsmith</b> <span class="role">Platform (white-label)</span></div></div>
+        <p>Operates the platform; provisions distributor accounts. Each distributor runs under <b>their own domain &amp; branding</b> — customers never see “merchsmith.com”.</p>
+      </div>
+      <div class="kids">
+        <div class="node dist"><div class="nh"><span class="ni"><svg class="icn"><use href="#i-dist"/></svg></span><div><b>Acme Merch Co</b> <span class="role">Distributor</span></div></div>
+          <p>The hub account. Runs projects, sets pricing/markup, manages customers &amp; supplier relationships.</p>
+          <div class="users"><span class="chip"><span class="av">JD</span>Jess Doyle · Account Manager</span><span class="chip"><span class="av">RP</span>Raf Price · Studio</span><span class="chip"><span class="av">+</span>Add user</span></div>
+          <div class="kids">
+            <div class="row2">
+              <div class="node cust"><div class="nh"><span class="ni"><svg class="icn"><use href="#i-cust"/></svg></span><div><b>Northwind Ltd</b> <span class="role">Customer org</span></div></div>
+                <p>A client of the distributor. Places orders, approves visuals/proofs/prices.</p>
+                <div class="users"><span class="chip"><span class="av">SK</span>Sara Kemp · Admin</span><span class="chip"><span class="av">LT</span>Leo Tran · Buyer</span></div>
+                <div class="users"><span class="chip" style="background:var(--paper-2);border-style:dashed">Team · Marketing</span><span class="chip" style="background:var(--paper-2);border-style:dashed">Team · HR</span></div>
+              </div>
+              <div class="node cust"><div class="nh"><span class="ni"><svg class="icn"><use href="#i-cust"/></svg></span><div><b>Volt Studios</b> <span class="role">Customer org</span></div></div>
+                <p>Another customer org — fully separate; can't see Northwind's projects.</p>
+                <div class="users"><span class="chip"><span class="av">MB</span>Mia Bell · Admin</span></div>
+              </div>
+            </div>
+            <div class="row2">
+              <div class="node sup"><div class="nh"><span class="ni"><svg class="icn"><use href="#i-sup"/></svg></span><div><b>BagWorks UK</b> <span class="role">Supplier · product</span></div></div>
+                <p>Supplies blank stock; replies to stock/delivery/quote enquiries.</p>
+                <div class="users"><span class="chip"><span class="av">TR</span>Tom Reed · Production</span></div>
+              </div>
+              <div class="node sup"><div class="nh"><span class="ni"><svg class="icn"><use href="#i-sup"/></svg></span><div><b>PrintHouse Studio</b> <span class="role">Supplier · branding</span></div></div>
+                <p>Decorates goods; provides proofs &amp; branding quotes.</p>
+                <div class="users"><span class="chip"><span class="av">SH</span>Sarah Hill · Account Mgr</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2><span class="num">2</span>Organisation types</h2>
+  <div class="card">
+    <table class="rt">
+      <thead><tr><th>Type</th><th>Who they are</th><th>Owns / holds</th></tr></thead>
+      <tbody>
+        <tr><td class="who"><span class="dot d-plat"></span>Platform</td><td>Merchsmith — operates the platform.</td><td>Distributor accounts; global settings.</td></tr>
+        <tr><td class="who"><span class="dot d-dist"></span>Distributor</td><td>Runs the merch service (e.g. Acme Merch Co).</td><td>Projects, pricing/markup, customer orgs, supplier links, its own staff.</td></tr>
+        <tr><td class="who"><span class="dot d-cust"></span>Customer org</td><td>A client buying merch through the distributor.</td><td>Its projects, its users; sees only its own data.</td></tr>
+        <tr><td class="who"><span class="dot d-sup"></span>Supplier</td><td>Product and/or branding producer.</td><td>Its contacts; responds to enquiries. A line can use one supplier or two (product + branding).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2><span class="num">3</span>Roles &amp; permissions</h2>
+  <p class="sub">Users hold a <b>role</b> within their organisation. Roles set what they can do; the org type sets what they can see.</p>
+  <div class="card">
+    <table class="perm">
+      <thead><tr><th>Capability</th><th>Distributor<br>Admin</th><th>Distributor<br>Account Mgr</th><th>Studio</th><th>Customer<br>Admin</th><th>Customer<br>Buyer</th><th>Supplier<br>Contact</th></tr></thead>
+      <tbody>
+        <tr><td>Create / manage projects</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Set pricing, markup &amp; locked prices</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Build branding / upload visuals &amp; proofs</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Approve visual / proof / price</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">●</td><td class="y">●</td><td class="n">—</td></tr>
+        <tr><td>Place / confirm orders</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="y">●</td><td class="part">approve</td><td class="n">—</td></tr>
+        <tr><td>Respond to stock / delivery / quote enquiries</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">●</td></tr>
+        <tr><td>Manage product feed &amp; manual products</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">●</td></tr>
+        <tr><td>Receive orders &amp; upload proofs for distributor</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">●</td></tr>
+        <tr><td>Manage users in own org</td><td class="y">●</td><td class="part">invite</td><td class="n">—</td><td class="y">●</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Manage customer &amp; supplier orgs</td><td class="y">●</td><td class="y">●</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2><span class="num">4</span>User fields</h2>
+  <p class="sub">The fields captured per user (same shape across org types; not all are required).</p>
+  <div class="card">
+    <table class="rt">
+      <thead><tr><th>Field</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="who">Full name</td><td>First &amp; last. <b>Required.</b></td></tr>
+        <tr><td class="who">Email</td><td>Login identity &amp; notifications. <b>Required · unique.</b></td></tr>
+        <tr><td class="who">Role</td><td>Admin / Account Manager / Studio / Buyer / Contact. <b>Required.</b></td></tr>
+        <tr><td class="who">Job title</td><td>Free text (e.g. "Marketing Coordinator").</td></tr>
+        <tr><td class="who">Telephone</td><td>Direct line / mobile, with country code.</td></tr>
+        <tr><td class="who">Profile photo / avatar</td><td>Optional; falls back to initials.</td></tr>
+        <tr><td class="who">Status</td><td>Active / invited / disabled.</td></tr>
+        <tr><td class="who">Notification preferences</td><td>Which events email them (approvals due, enquiries, status changes).</td></tr>
+        <tr><td class="who">Last active</td><td>Read-only; shown to org admins.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2><span class="num">5</span>Key rules</h2>
+  <div class="card">
+    <ul class="clean">
+      <li><b>Distributor is the hub.</b> Customer orgs and suppliers exist <em>under</em> a distributor; they don't see each other.</li>
+      <li><b>Customer isolation.</b> A customer org only ever sees its own projects, prices (sell only) and approvals — never cost, markup or other customers.</li>
+      <li><b>Suppliers are added by the distributor</b> and can have contacts added inline (as in the delivery/quote flows). A product line may pair a <b>product supplier</b> + a <b>branding supplier</b>. <span style="color:var(--flare);font-weight:700">TODO: revisit supplier “add contact / user” permissions for the customer side.</span></li>
+      <li><b>One user = one organisation.</b> A person belongs to a single org; the same email can't span orgs.</li>
+      <li><b>No cross-distributor switching.</b> If a customer works with multiple Merchsmith distributors, each is a separate login — no shared data; they log out of one and into another.</li>
+      <li><b>The Customer / Distributor view toggle</b> already in the app maps to whether the signed-in user belongs to a customer org or the distributor.</li>
+      <li><b>Customer sub-teams.</b> A customer org can have <b>teams / departments</b> (e.g. Marketing, HR) that order separately; users belong to a team, and projects/orders can be scoped per team.</li>
+      <li><b>Suppliers</b> manage their own <b>product feed</b> (API or manual upload / edit of products), <b>receive orders</b>, and <b>upload proofs</b> for the distributor to check — in addition to replying to stock / delivery / quote enquiries.</li>
+      <li><b>Settings live per org:</b> distributor (markup bands, days-in-lieu, lead times), supplier (lead times, contacts, product feed), customer (standing discount, addresses, teams).</li>
+    </ul>
+  </div>
+
+  <h2><span class="num">6</span>Still to revisit</h2>
+  <div class="card">
+    <ul class="clean">
+      <li><span style="color:var(--flare);font-weight:700">Supplier permissions for the customer side</span> — whether/how a customer can add a supplier contact, and what a supplier may see.</li>
+      <li>Whether suppliers get a <b>read-only view of the proof</b> beyond the enquiry/upload forms.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

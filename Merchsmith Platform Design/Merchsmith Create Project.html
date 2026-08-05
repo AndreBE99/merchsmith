@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Create a Project</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script><style>
+*{box-sizing:border-box;}
+html,body{margin:0;height:100%;}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;overflow:hidden;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+button{font-family:inherit;cursor:pointer;}
+
+/* ---------- shell (full-screen standalone) ---------- */
+.cp{position:fixed;inset:0;display:flex;flex-direction:column;}
+.cp-top{display:flex;align-items:center;gap:18px;padding:15px 34px;flex:none;background:var(--periwinkle-deep);}
+.cp-top .brand{display:inline-flex;align-items:center;gap:11px;}
+.cp-exit{margin-left:auto;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:rgba(255,255,255,.82);text-decoration:none;border:0;background:none;}
+.cp-exit:hover{color:#fff;}
+.cp-draft{margin-left:auto;font-size:12px;font-weight:700;color:#fff;opacity:0;transform:translateY(-2px);transition:opacity .25s,transform .25s;}
+.cp-draft.show{opacity:.9;transform:none;}
+.cp-draft.show + .cp-exit{margin-left:14px;}
+
+/* progress stepper */
+.cp-steps{display:flex;align-items:center;gap:0;padding:18px 34px 8px;flex:none;max-width:880px;width:100%;margin:0 auto;}
+.cp-step{display:flex;align-items:center;gap:11px;flex:1;min-width:0;cursor:pointer;}
+.cp-step:last-child{flex:none;}
+.cp-step:hover .cp-dot{box-shadow:inset 0 0 0 1.5px var(--periwinkle-deep);}
+.cp-step.active:hover .cp-dot{box-shadow:0 0 0 5px var(--tint-peri);}
+.cp-dot{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:800;background:#fff;color:var(--muted);box-shadow:inset 0 0 0 1.5px var(--hair);transition:all .4s cubic-bezier(.22,.61,.36,1);}
+.cp-step.done .cp-dot{background:var(--periwinkle-deep);color:#fff;box-shadow:none;}
+.cp-step.active .cp-dot{background:var(--periwinkle-deep);color:#fff;box-shadow:0 0 0 5px var(--tint-peri);}
+.cp-slabel{font-size:12.5px;font-weight:700;color:var(--muted);white-space:nowrap;transition:color .3s;}
+.cp-step.active .cp-slabel,.cp-step.done .cp-slabel{color:var(--ink);}
+.cp-line{flex:1;height:2px;background:var(--hair);margin:0 12px;border-radius:2px;position:relative;overflow:hidden;min-width:16px;}
+.cp-line::after{content:"";position:absolute;inset:0;background:var(--periwinkle-deep);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.22,.61,.36,1);}
+.cp-step.done .cp-line::after{transform:scaleX(1);}
+@media(max-width:760px){.cp-slabel{display:none;}}
+
+/* stage holds the sliding panels */
+.cp-stage{flex:1;position:relative;overflow:hidden;}
+.cp-scroll{position:absolute;inset:0;overflow-y:auto;}
+.cp-panel{max-width:760px;margin:0 auto;padding:18px 34px 120px;}
+.cp-panel[hidden]{display:none;}
+.cp-eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--periwinkle-deep);margin:6px 0 10px;}
+.cp-h{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1.06;letter-spacing:-.015em;margin:0 0 10px;color:var(--ink);}
+.cp-sub{font-size:15.5px;line-height:1.6;color:var(--ink-3);margin:0 0 30px;max-width:54ch;}
+
+/* entrance animation per field */
+/* entrance animation per field — visible by DEFAULT, animate FROM hidden so content
+   never gets stuck invisible if the animation is throttled/skipped */
+.cp-panel.in .rise{animation:rise .55s cubic-bezier(.22,.61,.36,1) both;}
+.cp-panel.in .rise:nth-child(1){animation-delay:.04s;}
+.cp-panel.in .rise:nth-child(2){animation-delay:.10s;}
+.cp-panel.in .rise:nth-child(3){animation-delay:.16s;}
+.cp-panel.in .rise:nth-child(4){animation-delay:.22s;}
+.cp-panel.in .rise:nth-child(5){animation-delay:.28s;}
+.cp-panel.in .rise:nth-child(6){animation-delay:.34s;}
+.cp-panel.in .rise:nth-child(7){animation-delay:.40s;}
+@keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+@media(prefers-reduced-motion:reduce){.cp-panel.in .rise{animation:none;}}
+/* safety net: once shown, force-visible regardless of whether the animation ran */
+.cp-panel.shown .rise{opacity:1!important;transform:none!important;}
+.cp-panel.shown .item{opacity:1!important;}
+
+/* fields */
+.fld{margin-bottom:22px;}
+.lbl{display:block;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
+.lbl .opt{font-weight:600;text-transform:none;letter-spacing:0;color:var(--muted-2);margin-left:6px;}
+.in{width:100%;font-family:var(--sans);font-size:16px;font-weight:500;color:var(--ink);border:1.5px solid var(--hair);border-radius:12px;padding:13px 15px;background:#fff;transition:border-color .15s,box-shadow .15s;}
+.in:focus{outline:none;border-color:var(--periwinkle-deep);box-shadow:0 0 0 4px var(--tint-peri);}
+textarea.in{resize:vertical;min-height:96px;line-height:1.55;}
+.in-xl{font-family:var(--serif);font-size:30px;font-weight:500;padding:14px 18px;}
+.in-money{display:flex;align-items:center;gap:2px;border:1.5px solid var(--hair);border-radius:12px;padding:0 15px;background:#fff;max-width:240px;}
+.in-money:focus-within{border-color:var(--periwinkle-deep);box-shadow:0 0 0 4px var(--tint-peri);}
+.in-money span{font-family:var(--serif);font-size:24px;color:var(--ink-3);}
+.in-money input{border:0;outline:0;font-family:var(--serif);font-size:24px;font-weight:500;width:100%;padding:13px 4px;background:none;color:var(--ink);}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.row2 .fld{margin-bottom:0;}
+@media(max-width:620px){.row2{grid-template-columns:1fr;gap:22px;}}
+
+/* segmented */
+.seg{display:inline-flex;background:#fff;border:1.5px solid var(--hair);border-radius:12px;padding:3px;gap:3px;}
+.seg button{border:0;background:none;border-radius:9px;padding:9px 16px;font-size:13.5px;font-weight:700;color:var(--muted);transition:all .18s;white-space:nowrap;}
+.seg button.on{background:var(--periwinkle-deep);color:#fff;}
+.seg.dim{opacity:.45;pointer-events:none;}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:9px;}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--hair);background:#fff;border-radius:999px;padding:8px 14px 8px 9px;font-size:13.5px;font-weight:600;color:var(--ink-2);transition:all .15s;}
+.chip i{width:15px;height:15px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);}
+.chip:hover{border-color:var(--periwinkle);}
+.chip.on{border-color:var(--periwinkle-deep);box-shadow:0 0 0 1.5px var(--periwinkle-deep);color:var(--ink);}
+.chip.lite{padding:8px 14px;}
+
+/* logos */
+.logos{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;}
+@media(max-width:620px){.logos{grid-template-columns:1fr;}}
+.logo{display:flex;align-items:center;gap:11px;border:1.5px solid var(--hair);background:#fff;border-radius:13px;padding:10px 12px;transition:all .15s;text-align:left;width:100%;}
+.logo.on{border-color:var(--periwinkle-deep);box-shadow:0 0 0 1.5px var(--periwinkle-deep);}
+.logo .sw{width:44px;height:34px;border-radius:7px;display:grid;place-items:center;font-family:var(--serif);font-weight:600;font-size:14px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);flex:none;}
+.logo .logo-meta{min-width:0;}
+.logo b{display:block;font-size:13.5px;color:var(--ink);line-height:1.25;}
+.logo small{display:block;font-size:11.5px;color:var(--muted);line-height:1.3;margin-top:1px;}
+/* recoloured customer wordmark thumbnail */
+.lgthumb{width:54px;height:36px;border-radius:7px;display:grid;place-items:center;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);overflow:hidden;}
+.lgwm{font-family:var(--serif);font-weight:600;font-size:14px;letter-spacing:-.01em;font-style:italic;}
+/* field note + pantone chips */
+.fld-note{margin:10px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted);}
+.fld-note b{color:var(--ink-2);font-weight:700;}
+.chip-nm{display:inline-flex;flex-direction:column;line-height:1.15;align-items:flex-start;}
+.chip-pant{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.02em;}
+.chip.xs .chip-pant{font-size:9px;}
+/* mono / full / none info row */
+.mono-row{display:flex;align-items:center;gap:12px;}
+.mono-sw{width:34px;height:34px;border-radius:8px;background:#1a1a1e;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2);}
+.mono-meta b{display:block;font-size:14px;color:var(--ink);}
+.mono-meta small{display:block;font-size:12px;color:var(--muted);}
+/* bigger logo thumbnails + tick + no-logo card */
+.logo{position:relative;}
+.lgthumb{width:64px;height:44px;}
+.logo .lgwm{font-size:16px;}
+.logo-tick{position:absolute;top:9px;right:9px;width:22px;height:22px;border-radius:50%;background:var(--periwinkle-deep);color:#fff;display:grid;place-items:center;}
+.logo-none .logo-nonethumb{width:64px;height:44px;border-radius:7px;display:grid;place-items:center;flex:none;border:1.5px dashed var(--hair);color:var(--muted);}
+.logo-none.on{border-color:var(--periwinkle-deep);box-shadow:0 0 0 1.5px var(--periwinkle-deep);}
+/* sample read-only (customer) */
+.samp-read{display:flex;align-items:center;gap:10px;background:var(--paper-2);border:1px solid var(--line-soft);border-radius:10px;padding:9px 13px;}
+.samp-read svg{stroke:var(--periwinkle-deep);stroke-width:1.7;fill:none;flex:none;}
+.samp-read b{font-size:14px;color:var(--ink);}
+.samp-read span{font-size:12px;color:var(--muted);}
+.samp-read.sm{padding:7px 11px;}
+.samp-read.sm b{font-size:13px;}
+/* per-item product artwork */
+.ic-deflbl{font-size:11px;font-weight:700;color:var(--periwinkle-deep);text-transform:none;letter-spacing:0;margin-left:6px;}
+.ic-art{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+@media(max-width:620px){.ic-art{grid-template-columns:1fr;}}
+.artcard{position:relative;display:flex;align-items:center;gap:10px;border:1.5px solid var(--hair);background:#fff;border-radius:11px;padding:8px 10px;text-align:left;}
+.artcard.on{border-color:var(--periwinkle-deep);box-shadow:0 0 0 1.5px var(--periwinkle-deep);}
+.artthumb{width:46px;height:38px;border-radius:7px;overflow:hidden;background:var(--paper-2);border:1px solid var(--line-soft);flex:none;}
+.artthumb image-slot{display:block;width:100%;height:100%;}
+.artthumb img{display:block;width:100%;height:100%;object-fit:contain;}
+.artmeta{min-width:0;}
+.artmeta b{display:block;font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.artmeta small{display:block;font-size:11px;color:var(--muted);}
+.art-tick{position:absolute;top:7px;right:7px;width:18px;height:18px;border-radius:50%;background:var(--periwinkle-deep);color:#fff;display:grid;place-items:center;}
+
+/* date pill */
+.in-date{font-family:var(--sans);font-size:15px;font-weight:600;}
+
+/* requested items */
+.items{display:flex;flex-direction:column;gap:11px;}
+.item{display:grid;grid-template-columns:1fr 122px 88px 104px 36px 36px;gap:11px;align-items:center;background:#fff;border:1.5px solid var(--hair);border-radius:13px;padding:11px 12px;animation:itemin .4s cubic-bezier(.22,.61,.36,1);}
+@keyframes itemin{from{transform:translateY(8px);}to{transform:none;}}
+.item .iin{border:1px solid transparent;border-radius:9px;padding:8px 9px;font-family:var(--sans);font-size:14px;font-weight:600;background:var(--paper);color:var(--ink);width:100%;}
+.item .iin:focus{outline:none;border-color:var(--periwinkle-deep);background:#fff;}
+.item .iname{font-family:var(--serif);font-size:17px;font-weight:500;background:none;}
+.item .iname:focus{background:var(--paper);}
+.item .unitwrap{display:flex;align-items:center;gap:3px;background:var(--paper);border-radius:9px;padding:0 8px;}
+.item .unitwrap span{font-size:13px;color:var(--muted);}
+.item .unitwrap input{border:0;background:none;width:100%;padding:8px 2px;font-size:14px;font-weight:600;color:var(--ink);outline:none;}
+.item .idel{border:0;background:var(--paper);color:var(--muted);width:32px;height:32px;border-radius:8px;font-size:18px;line-height:1;}
+.item .idel:hover{background:var(--tint-red);color:var(--flare);}
+@media(max-width:620px){.item{grid-template-columns:1fr 1fr;}.item .iname{grid-column:1 / -1;}}
+.additem{margin-top:13px;display:inline-flex;align-items:center;gap:8px;border:1.5px dashed var(--hair);background:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:700;color:var(--ink-2);}
+/* per-product customise panel */
+.itemwrap{background:#fff;border:1.5px solid var(--hair);border-radius:13px;overflow:hidden;animation:itemin .4s cubic-bezier(.22,.61,.36,1);}
+.itemwrap .item{border:0;border-radius:0;background:none;animation:none;}
+.icust{border:1.5px solid var(--hair);background:var(--paper);color:var(--muted);width:36px;height:36px;border-radius:9px;display:grid;place-items:center;}
+.icust:hover{border-color:var(--periwinkle-deep);color:var(--periwinkle-deep);}
+.icust.on{background:var(--tint-peri);border-color:var(--periwinkle-deep);color:var(--periwinkle-deep);}
+.itemstatus{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:0 12px 11px;font-size:12px;}
+.ic-inherit{color:var(--muted);}
+.ic-tags{display:inline-flex;flex-wrap:wrap;gap:6px;}
+.ic-tag{background:var(--tint-peri);color:var(--periwinkle-ink);font-weight:700;border-radius:6px;padding:2px 8px;}
+.itemcustom{border-top:1px dashed var(--hair);background:var(--paper);padding:16px 14px;}
+.itemcustom[hidden]{display:none;}
+.ic-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;}
+@media(max-width:620px){.ic-grid{grid-template-columns:1fr;}}
+.ic-f{margin-bottom:14px;}
+.ic-f:last-child{margin-bottom:0;}
+.ic-f>label{display:block;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.ic-def{display:block;font-size:11px;color:var(--muted-2);font-style:italic;margin-top:6px;}
+.ic-in{font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--ink);border:1.5px solid var(--hair);border-radius:9px;padding:8px 10px;background:#fff;}
+.ic-in.wide{width:100%;}
+.ic-in:focus{outline:none;border-color:var(--periwinkle-deep);}
+textarea.ic-in{resize:vertical;line-height:1.5;}
+.ic-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip.xs{padding:5px 10px 5px 6px;font-size:12px;gap:6px;}
+.chip.xs i{width:12px;height:12px;}
+.chip.inh{border-style:dashed;border-color:var(--periwinkle);background:var(--paper-2);}
+.ic-chips.dim{opacity:.4;pointer-events:none;}
+.seg.sm{padding:2px;}
+.seg.sm button{padding:6px 11px;font-size:12px;}
+.ic-logos{display:flex;gap:9px;flex-wrap:wrap;}
+.lgpick{border:1.5px solid var(--hair);border-radius:9px;padding:4px;background:#fff;line-height:0;}
+.lgpick.on{border-color:var(--periwinkle-deep);box-shadow:0 0 0 1.5px var(--periwinkle-deep);}
+.lgpick.inh{border-style:dashed;border-color:var(--periwinkle);}
+.ic-reset{margin-top:12px;border:0;background:none;font-size:12.5px;font-weight:700;color:var(--flare);text-decoration:underline;text-underline-offset:2px;}
+.additem:hover{border-color:var(--periwinkle-deep);color:var(--periwinkle-deep);}
+.runbar{margin-top:18px;background:#fff;border:1.5px solid var(--hair);border-radius:13px;padding:14px 16px;}
+.runbar-top{display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-3);margin-bottom:9px;}
+.runbar-top b{color:var(--ink);}
+.runtrack{height:8px;border-radius:999px;background:var(--track);overflow:hidden;}
+.runfill{height:100%;border-radius:999px;background:var(--periwinkle-deep);width:0;transition:width .4s ease;}
+.runbar.over .runfill{background:var(--flare);}
+.over-txt{color:var(--flare);font-weight:800;}
+
+/* review */
+.rev-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+@media(max-width:900px){.rev-grid{grid-template-columns:1fr;}}
+.rev-card{background:#fff;border:1.5px solid var(--hair);border-radius:15px;padding:18px;}
+.rev-card h4{margin:0 0 12px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.rev-i{width:15px;height:15px;stroke:var(--periwinkle-deep);stroke-width:1.8;fill:none;}
+.rev-desc{margin:0 0 10px;font-size:13px;line-height:1.5;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.rev-kv{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:14px;}
+.rev-kv:last-child{border-bottom:0;}
+.rev-kv span{color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+.rev-kv b{color:var(--ink);font-weight:700;text-align:left;white-space:normal;}
+.rev-logos{display:flex;gap:5px;flex-wrap:wrap;}
+.rev-lg{width:38px;height:24px;border-radius:5px;display:grid;place-items:center;font-family:var(--serif);font-style:italic;font-weight:600;font-size:11px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);}
+.rev-items{margin-top:6px;}
+.rev-item{padding:11px 0;border-bottom:1px solid var(--line-soft);font-size:14px;}
+.rev-item:last-child{border-bottom:0;}
+.rev-item-top{display:flex;justify-content:space-between;gap:14px;align-items:baseline;}
+.rev-item-nm{font-weight:600;}
+.rev-item-cat{color:var(--muted);font-size:12px;font-weight:700;margin-left:4px;}
+.rev-item-sub{margin-top:6px;font-size:12px;}
+.rev-swatches{display:flex;gap:5px;flex-wrap:wrap;}
+.rev-sw{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);}
+/* review budget bar */
+.rev-budget{background:#fff;border:1.5px solid var(--hair);border-radius:13px;padding:14px 16px;margin-bottom:14px;}
+.rev-budget-top{display:flex;justify-content:space-between;gap:16px;font-size:13.5px;color:var(--ink-2);margin-bottom:9px;flex-wrap:wrap;}
+.rev-budget-top b{color:var(--ink);}
+.rev-budget-track{height:8px;border-radius:999px;background:var(--paper-2);overflow:hidden;}
+.rev-budget-fill{height:100%;border-radius:999px;background:var(--periwinkle-deep);transition:width .4s;}
+.rev-budget.over .rev-budget-fill{background:var(--flare,#d6537d);}
+.over-txt{color:var(--flare,#d6537d);font-weight:800;}
+/* review next-steps */
+.rev-next{background:var(--tint-peri);border-radius:15px;padding:18px 22px;margin-top:14px;}
+.rev-next h4{margin:0 0 10px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--periwinkle-ink);}
+.rev-steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px;}
+.rev-steps li{font-size:13.5px;line-height:1.5;color:var(--ink-2);}
+.rev-steps li b{color:var(--ink);}
+
+/* footer nav */
+.cp-foot{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:14px;padding:18px 34px;background:linear-gradient(to top,var(--paper) 60%,transparent);}
+.cp-foot-inner{max-width:760px;width:100%;margin:0 auto;display:flex;align-items:center;gap:14px;}
+.btn{display:inline-flex;align-items:center;gap:9px;border:0;border-radius:12px;padding:14px 26px;font-size:15px;font-weight:700;transition:transform .12s,box-shadow .2s,background .2s;}
+.btn:active{transform:translateY(1px);}
+.btn-primary{background:var(--periwinkle-deep);color:#fff;box-shadow:0 8px 24px -8px rgba(var(--shadow-rgb),.5);}
+.btn-primary:hover{background:var(--periwinkle-ink);}
+.btn-ghost{background:none;color:var(--ink-2);}
+.btn-ghost:hover{color:var(--ink);}
+.btn[disabled]{opacity:.4;pointer-events:none;}
+.cp-spacer{flex:1;}
+.cp-hint{font-size:12.5px;color:var(--muted);}
+
+/* finale */
+.finale{text-align:center;padding-top:30px;}
+.fin-check{width:88px;height:88px;border-radius:50%;background:var(--tint-green);display:grid;place-items:center;margin:0 auto 24px;}
+.fin-check svg{width:44px;height:44px;stroke:var(--green-deep);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;}
+.cp-panel.in .fin-check svg{animation:draw .6s .25s cubic-bezier(.22,.61,.36,1) forwards;}
+@keyframes draw{to{stroke-dashoffset:0;}}
+.cp-cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px;}
+.cta-big{display:inline-flex;align-items:center;gap:11px;border:0;border-radius:14px;padding:18px 30px;font-size:16px;font-weight:800;}
+.cta-find{background:var(--periwinkle-deep);color:#fff;box-shadow:0 12px 30px -10px rgba(var(--shadow-rgb),.55);}
+.cta-find:hover{background:var(--periwinkle-ink);transform:translateY(-2px);}
+.cta-open{background:#fff;color:var(--periwinkle-deep);box-shadow:inset 0 0 0 1.5px var(--periwinkle-deep);}
+.cta-open:hover{background:var(--tint-peri);}
+</style>
+</head>
+<body>
+<div class="cp">
+  <div class="cp-top">
+    <div class="brand" data-identity-lockup></div>
+    <span class="cp-draft" id="cpDraft">Draft saved</span>
+    <a class="cp-exit" href="Merchsmith Projects.html"><svg class="icn" style="width:16px;height:16px"><path d="M6 6l12 12M18 6L6 18"/></svg>Save &amp; exit</a>
+  </div>
+
+  <div class="cp-steps" id="cpSteps"></div>
+
+  <div class="cp-stage">
+    <div class="cp-scroll" id="cpScroll">
+      <!-- STEP 1 -->
+      <section class="cp-panel" data-step="0">
+        <div class="cp-eyebrow rise">New project</div>
+        <h1 class="cp-h rise">Let's start your project.</h1>
+        <p class="cp-sub rise">Give it a name and tell us what it's for. This becomes the brief your account manager and production team work from.</p>
+        <div class="fld rise">
+          <label class="lbl">Project name</label>
+          <input class="in in-xl" id="fName" placeholder="e.g. Autumn Giveaways" autocomplete="off">
+        </div>
+        <div class="fld rise">
+          <label class="lbl">What's it for?</label>
+          <input class="in" id="fUse" placeholder="e.g. Exhibition · NEC" autocomplete="off">
+        </div>
+        <div class="fld rise">
+          <label class="lbl">Describe the campaign <span class="opt">— the story, the vibe, the goal</span></label>
+          <textarea class="in" id="fDesc" placeholder="What are you trying to achieve? Who's it for? Any themes, materials or must-haves…"></textarea>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="cp-panel" data-step="1" hidden>
+        <div class="cp-eyebrow rise">Budget &amp; timing</div>
+        <h1 class="cp-h rise">The shape of the order.</h1>
+        <p class="cp-sub rise">Set your overall budget and when you need it. You can fine-tune any of this per product later.</p>
+        <div class="row2 rise" style="margin-bottom:22px">
+          <div class="fld">
+            <label class="lbl">Total budget</label>
+            <div class="in-money"><span>£</span><input id="fBudget" type="number" min="0" step="50" value="5000"></div>
+          </div>
+          <div class="fld">
+            <label class="lbl">Expected quantity <span class="opt">per item</span></label>
+            <input class="in" id="fQty" type="number" min="1" step="50" value="1000" style="max-width:200px">
+          </div>
+        </div>
+        <div class="fld rise">
+          <label class="lbl">Delivery date</label>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+            <input class="in in-date" id="fDate" type="date" value="2025-10-23" style="max-width:220px">
+            <div class="seg" id="fMode">
+              <button data-v="nofail" class="on">No-fail date</button>
+              <button data-v="approx">Approximate</button>
+            </div>
+          </div>
+        </div>
+        <div class="fld rise">
+          <label class="lbl">Ships to</label>
+          <div class="seg" id="fCountry">
+            <button data-v="0" class="on">United Kingdom</button>
+            <button data-v="1">Ireland (ROI)</button>
+            <button data-v="2">France</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="cp-panel" data-step="2" hidden>
+        <div class="cp-eyebrow rise">Brand &amp; finish</div>
+        <h1 class="cp-h rise">How it should look.</h1>
+        <p class="cp-sub rise">Your brand defaults — applied to every product, overridable per item later.</p>
+        <div class="fld rise">
+          <label class="lbl">Preferred product colours</label>
+          <div class="chips" id="fPcol"></div>
+          <p class="fld-note">Choose the general product colours you have in mind — this will be refined by your Account Manager during the product sourcing phase.</p>
+        </div>
+        <div class="fld rise">
+          <label class="lbl">Branding</label>
+          <div class="seg" id="fBmode" style="margin-bottom:12px">
+            <button data-v="spot" class="on">Spot colours</button>
+            <button data-v="mono">Mono</button>
+            <button data-v="full">Full colour</button>
+            <button data-v="none">Unbranded</button>
+          </div>
+          <div class="chips" id="fBcol"></div>
+        </div>
+        <div class="fld rise">
+          <label class="lbl">Logotypes</label>
+          <div class="logos" id="fLogos"></div>
+        </div>
+        <div class="row2 rise">
+          <div class="fld">
+            <label class="lbl">Sample <span class="opt" id="fSampWho"></span></label>
+            <div id="fSampCtl" style="display:flex;gap:10px;flex-wrap:wrap">
+              <div class="seg" id="fSampReq"><button data-v="1" class="on">Required</button><button data-v="0">Not needed</button></div>
+              <div class="seg" id="fSampType"><button data-v="branded">Branded</button><button data-v="unbranded" class="on">Unbranded</button></div>
+            </div>
+            <div id="fSampRead" hidden></div>
+          </div>
+          <div class="fld">
+            <label class="lbl">Branding positions <span class="opt">free text</span></label>
+            <input class="in" id="fPos" value="Front; back where space allows">
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 -->
+      <section class="cp-panel" data-step="3" hidden>
+        <div class="cp-eyebrow rise">The shopping list</div>
+        <h1 class="cp-h rise">What do you need?</h1>
+        <p class="cp-sub rise">List the products you're after — a type, a rough quantity and a target price. You'll source real products for each next.</p>
+        <div class="rise">
+          <div class="items" id="fItems"></div>
+          <button class="additem" id="fAddItem"><svg class="icn" style="width:17px;height:17px"><path d="M12 5v14M5 12h14"/></svg>Add an item</button>
+          <div class="runbar" id="fRunbar">
+            <div class="runbar-top"><span id="fRunL">£0 across 0 items</span><span id="fRunR"></span></div>
+            <div class="runtrack"><div class="runfill" id="fRunFill"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 5 -->
+      <section class="cp-panel" data-step="4" hidden>
+        <div class="finale">
+          <div class="fin-check rise"><svg viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5"/></svg></div>
+          <h1 class="cp-h rise" style="font-size:36px" id="revTitle">Your project is ready.</h1>
+          <p class="cp-sub rise" style="margin:0 auto 26px" id="revSub">Here's your brief. Next, find real products in the store for each item you listed.</p>
+        </div>
+
+        <div class="rev-budget rise" id="rvBudgetBar">
+          <div class="rev-budget-top"><span id="rvAlloc">—</span><span id="rvAllocR">—</span></div>
+          <div class="rev-budget-track"><div class="rev-budget-fill" id="rvAllocFill"></div></div>
+        </div>
+
+        <div class="rev-grid rise">
+          <div class="rev-card">
+            <h4><svg class="icn rev-i"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Campaign</h4>
+            <p class="rev-desc" id="rvDesc">—</p>
+            <div class="rev-kv"><span>For</span><b id="rvUse">—</b></div>
+            <div class="rev-kv"><span>Total budget</span><b id="rvBudget">—</b></div>
+          </div>
+          <div class="rev-card">
+            <h4><svg class="icn rev-i"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/></svg>Delivery &amp; sourcing</h4>
+            <div class="rev-kv"><span>Delivery</span><b id="rvDate">—</b></div>
+            <div class="rev-kv"><span>Ships to</span><b id="rvCountry">—</b></div>
+            <div class="rev-kv"><span>Expected qty</span><b id="rvQty">—</b></div>
+            <div class="rev-kv"><span>Sample</span><b id="rvSample">—</b></div>
+          </div>
+          <div class="rev-card">
+            <h4><svg class="icn rev-i"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18"/></svg>Brand defaults</h4>
+            <div class="rev-kv"><span>Product colours</span><b><span class="rev-swatches" id="rvPcol"></span></b></div>
+            <div class="rev-kv"><span>Branding</span><b id="rvBrand">—</b></div>
+            <div class="rev-kv top"><span>Brand colours</span><b><span class="rev-swatches" id="rvBcol"></span></b></div>
+            <div class="rev-kv"><span>Positions</span><b id="rvPos">—</b></div>
+            <div class="rev-kv top"><span>Logotypes</span><b><span class="rev-logos" id="rvLogos"></span></b></div>
+          </div>
+        </div>
+
+        <div class="rev-card rise" style="margin-top:14px">
+          <h4 id="rvItemsH">Requested items</h4>
+          <div class="rev-items" id="rvItems"></div>
+        </div>
+
+        <div class="rev-next rise">
+          <h4>What happens next</h4>
+          <ol class="rev-steps">
+            <li><b>Source products</b> — find a real store product for each item (compare a few against one line).</li>
+            <li><b>Refine with your Account Manager</b> — colours, branding and samples get finalised together.</li>
+            <li><b>Approve &amp; order</b> — designs, pricing and samples are signed off, then the order is placed.</li>
+          </ol>
+        </div>
+
+        <div class="cp-cta-row rise">
+          <button class="cta-big cta-find" id="ctaFind">Find products in the store<svg class="icn"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <button class="cta-big cta-open" id="ctaOpen">Open project settings</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="cp-foot" id="cpFoot">
+    <div class="cp-foot-inner">
+      <button class="btn btn-ghost" id="btnBack" style="visibility:hidden"><svg class="icn" style="width:16px;height:16px"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Back</button>
+      <span class="cp-spacer"></span>
+      <span class="cp-hint" id="cpHint"></span>
+      <button class="btn btn-primary" id="btnNext">Continue<svg class="icn" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script src="create-project.js"></script>
+</body>
+</html>

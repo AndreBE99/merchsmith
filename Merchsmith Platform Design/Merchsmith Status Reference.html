@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Project Table View</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script>
+<style>
+:root{ /* palette now in tokens.css */ }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);font-weight:400;-webkit-font-smoothing:antialiased;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+a{color:inherit;}
+
+/* ---------- Notification bar ---------- */
+.alertbar{background:var(--periwinkle-deep);color:#fff;font-size:13px;font-weight:500;text-align:center;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:10px;}
+.alertbar b{color:var(--zest);font-weight:700;}
+.alertbar .x{opacity:.7;cursor:pointer;font-size:18px;line-height:1;}
+
+/* ---------- Header ---------- */
+.header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;box-shadow:0 4px 10px -2px rgba(20,22,45,.28);}
+.brand{display:flex;align-items:center;gap:16px;}
+.crt{display:flex;align-items:center;gap:10px;}
+.crt-mark{width:36px;height:36px;color:var(--brand-black);flex:none;}
+.crt-txt{font-family:var(--sans);font-weight:800;font-size:12px;line-height:1.04;color:var(--brand-black);letter-spacing:.005em;}
+.xsep-lg{color:#222;font-size:15px;font-weight:400;margin:0 2px;}
+.mojo{font-family:"Fredoka",var(--sans);font-weight:600;font-size:28px;line-height:1;color:var(--brand-black);letter-spacing:.004em;}
+.brand .client{font-weight:700;font-size:13px;line-height:1.1;color:var(--ink);letter-spacing:.01em;}
+.brand .xsep{color:var(--muted);font-weight:400;font-size:13px;}
+.brand .mark{width:26px;height:26px;color:var(--periwinkle);}
+.brand .ms-wm{height:19px;}
+.topnav{display:flex;gap:6px;align-items:center;}
+.topnav a{display:flex;align-items:center;gap:8px;text-decoration:none;font-size:14.5px;color:var(--ink);font-weight:600;white-space:nowrap;padding:8px 13px;border-radius:999px;transition:background .15s,color .15s;}
+.topnav a.active{background:rgba(123,133,197,.14);color:var(--periwinkle-deep);font-weight:700;}
+.topnav a:not(.active):hover{background:var(--paper);color:var(--periwinkle-deep);}
+.topnav a .icn{width:19px;height:19px;color:var(--periwinkle-deep);}
+.headtools{display:flex;align-items:center;gap:9px;color:var(--ink);}
+.headtools .it{position:relative;display:inline-flex;cursor:pointer;width:36px;height:36px;border-radius:50%;align-items:center;justify-content:center;color:var(--ink-3);transition:background .15s,color .15s;}
+.headtools .it:hover{background:var(--paper-2);color:var(--periwinkle-deep);}
+.hsearch{display:flex;align-items:center;gap:9px;background:var(--paper-2);border:1px solid transparent;border-radius:999px;padding:8px 14px;width:194px;transition:border-color .15s,background .15s;}
+.hsearch:focus-within{background:#fff;border-color:var(--periwinkle);}
+.hsearch .icn{width:17px;height:17px;color:var(--muted);flex:none;}
+.hsearch input{border:0;background:none;outline:none;font-family:var(--sans);font-size:14px;font-weight:500;color:var(--ink);width:100%;}
+.hsearch input::placeholder{color:var(--muted);}
+.hsep{width:1px;height:26px;background:var(--line-soft);}
+.account{display:flex;align-items:center;gap:8px;background:none;border:0;cursor:pointer;border-radius:999px;padding:4px 8px 4px 4px;transition:background .15s;font-family:var(--sans);}
+.account:hover{background:var(--paper-2);}
+.account .av{width:32px;height:32px;border-radius:50%;overflow:hidden;flex:none;background:var(--paper-2);}
+.account .av img{width:100%;height:100%;object-fit:cover;}
+.account .acc-nm{font-weight:700;font-size:14px;color:var(--ink);white-space:nowrap;}
+.account .chev{width:15px;height:15px;color:var(--muted);}
+@media(max-width:1120px){.hsearch{width:44px;padding:9px;}.hsearch input{display:none;}.account .acc-nm{display:none;}}
+.headtools .badge{position:absolute;top:-7px;right:-8px;background:var(--flare);color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:16px;height:16px;display:grid;place-items:center;padding:0 4px;}
+
+/* ---------- Breadcrumb band ---------- */
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px 36px;}
+.crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;white-space:nowrap;}
+.crumb .sep{opacity:.6;}
+.crumb .here{opacity:.85;font-weight:500;}
+
+/* ---------- Main ---------- */
+.main{max-width:1320px;margin:0 auto;padding:30px 36px 60px;}
+.titlerow{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.titleleft{display:flex;align-items:center;gap:18px;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1;letter-spacing:-.01em;margin:0;white-space:nowrap;flex:none;}
+.titleleft{flex:none;}
+.avatars{display:flex;align-items:center;}
+.avatars .av{width:30px;height:30px;border-radius:50%;border:2px solid #fff;margin-left:-9px;background:var(--paper-2);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--periwinkle-deep);overflow:hidden;}
+.avatars .av:first-child{margin-left:0;}
+.avatars .add{width:26px;height:26px;border-radius:50%;border:1.5px dashed var(--periwinkle);color:var(--periwinkle-deep);margin-left:6px;display:grid;place-items:center;cursor:pointer;}
+.titletools{display:flex;align-items:center;gap:18px;color:var(--ink);}
+.addbtn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--ink);background:none;border:0;cursor:pointer;}
+.addbtn .icn{width:18px;height:18px;color:var(--periwinkle-deep);stroke-width:2;}
+.titletools .it{position:relative;display:inline-flex;cursor:pointer;color:#555;}
+.titletools .it.flag{color:var(--flare);}
+.titletools .it .badge{position:absolute;top:-6px;right:-7px;background:var(--flare);color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:15px;height:15px;display:grid;place-items:center;}
+.tdiv{height:1px;background:var(--line);margin:18px 0 0;}
+.created{font-size:13px;color:var(--text-soft);margin-top:14px;display:flex;align-items:center;justify-content:space-between;}
+.created .lines{display:inline-flex;color:var(--muted);}
+
+/* ---------- Toolbar ---------- */
+.toolbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin:22px 0 14px;gap:16px;}
+.showing{font-size:14px;color:var(--ink-3);}
+.showing b{color:var(--ink);font-weight:700;}
+.count{font-size:14px;font-weight:600;text-align:center;color:var(--ink-2);}
+/* totals summary */
+.totalsbar{display:flex;justify-content:flex-end;align-items:center;gap:18px;margin:26px 0 0;}
+.tb-note{font-size:12.5px;color:var(--text-soft);max-width:230px;text-align:right;line-height:1.35;}
+.tb-card{display:inline-flex;align-items:center;gap:20px;background:var(--periwinkle);color:#fff;border-radius:12px;padding:13px 24px;box-shadow:0 6px 18px rgba(88,96,166,.28);}
+.tb-lbl{font-size:13px;font-weight:600;opacity:.92;line-height:1.3;text-align:right;white-space:nowrap;}
+.tb-lbl b{font-weight:700;display:block;white-space:nowrap;}
+.tb-val{font-family:var(--serif);font-weight:500;font-size:27px;line-height:1;letter-spacing:-.01em;white-space:nowrap;}
+.viewtools{display:flex;align-items:center;gap:8px;justify-self:end;color:var(--ink-3);}
+.viewtools .it{display:inline-flex;cursor:pointer;padding:7px;border-radius:8px;}
+.seg{display:inline-flex;background:var(--paper-2);border-radius:10px;padding:3px;}
+.seg .it{padding:6px 9px;border-radius:8px;}
+.seg .it.on{background:#fff;color:var(--periwinkle-deep);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+.filterbtn{display:inline-flex;align-items:center;gap:8px;background:var(--paper-2);border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;}
+
+/* ---------- Table ---------- */
+.thead{display:grid;grid-template-columns:var(--cols);background:var(--paper-2);border-radius:12px;padding:14px 8px;margin-bottom:14px;}
+.thead .th{font-size:13px;font-weight:700;letter-spacing:.03em;color:var(--ink-3);text-align:center;border-right:1px solid var(--line-soft);}
+.thead .th:last-child{border-right:0;}
+:root{--cols:1.95fr 2.45fr 1.15fr 1.0fr 1.3fr 0.6fr 0.7fr;}
+
+.rows{display:flex;flex-direction:column;gap:16px;}
+.row{display:grid;grid-template-columns:var(--cols);background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:22px 8px;align-items:center;position:relative;transition:box-shadow .15s,border-color .15s;}
+.row:hover{box-shadow:0 6px 22px rgba(60,66,121,.08);}
+.row.sel{border-color:var(--periwinkle);box-shadow:0 0 0 1px var(--periwinkle);position:relative;}
+.row.paused{opacity:.55;}
+.row.archived{opacity:.5;}
+.cell{padding:0 18px;border-right:1px solid var(--line-soft);height:100%;display:flex;flex-direction:column;justify-content:center;}
+.cell:last-child{border-right:0;}
+
+/* product cell */
+.prod{display:flex;align-items:center;gap:12px;border-right:1px solid var(--line-soft);padding:0 12px 0 6px;}
+.grip{color:#c4c4cc;cursor:grab;flex:none;}
+.chk{width:18px;height:18px;border:1.6px solid #c4c4cc;border-radius:5px;flex:none;display:grid;place-items:center;cursor:pointer;}
+.chk.on{background:var(--periwinkle);border-color:var(--periwinkle);color:#fff;}
+.chk .icn{width:12px;height:12px;stroke-width:2.4;}
+.pimg{width:74px;height:74px;border-radius:11px;background:#fff;border:1px solid var(--line-soft);display:grid;place-items:center;flex:none;overflow:hidden;color:var(--periwinkle);}
+.pimg img{width:100%;height:100%;object-fit:contain;padding:6px;}
+.pimg .icn{width:30px;height:30px;opacity:.5;}
+.pname{font-size:14px;font-weight:600;line-height:1.3;}
+.pname.link{color:var(--periwinkle-deep);text-decoration:underline;text-underline-offset:2px;}
+
+/* actions cell */
+.acts{display:flex;flex-direction:column;gap:11px;}
+.actrow{display:grid;grid-template-columns:22px 58px 1fr auto;align-items:center;gap:10px;}
+.actrow .ai{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;position:relative;flex:none;}
+.ai.done{background:var(--spearmint);color:#fff;}
+.ai.urgent{background:var(--flare);color:#fff;}
+.ai.pend{border:1.6px solid var(--periwinkle);color:var(--periwinkle-deep);}
+.ai.lock{color:var(--muted);}
+.ai.pause{color:var(--muted);}
+.ai.sampleorder{background:var(--periwinkle);color:#fff;}
+.ai.withacm{border:1.6px solid var(--ink);color:var(--ink);}
+.ai.feedback{border:1.6px solid var(--ink);color:var(--ink);}
+.ai.awaiting{border:1.6px solid var(--periwinkle);color:var(--periwinkle-deep);}
+.ai.approved,.ai.instock{background:var(--spearmint);color:#fff;}
+.ai.notapproved,.ai.notinstock{background:var(--flare);color:#fff;}
+.ai.ordered{border:1.6px solid var(--ink);color:var(--ink);}
+.ai.unbranded{color:var(--muted);}
+.statreorder{font-size:11px;color:var(--periwinkle-deep);text-decoration:underline;text-underline-offset:2px;font-weight:700;cursor:pointer;margin-top:2px;}
+.instat{color:var(--periwinkle-deep);position:relative;}
+.statcircle{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;position:relative;}
+.statcircle .icn{width:20px;height:20px;}
+.statcircle.peri{border:1.8px solid var(--periwinkle);color:var(--periwinkle-deep);}
+.statcircle.ink{border:1.8px solid var(--ink);color:var(--ink);}
+.statcircle.muted{border:1.8px solid var(--hair);color:var(--muted);}
+.statcircle .b{position:absolute;top:-4px;right:-6px;background:var(--flare);color:#fff;font-size:9px;font-weight:700;border-radius:999px;width:16px;height:16px;display:grid;place-items:center;border:2px solid #fff;}
+.ai .icn{width:13px;height:13px;stroke-width:2;}
+.ai .b{position:absolute;top:-5px;right:-5px;background:var(--flare);color:#fff;font-size:9px;font-weight:700;border-radius:999px;width:14px;height:14px;display:grid;place-items:center;border:1.5px solid #fff;}
+.alabel{font-size:13px;color:var(--ink-2);font-weight:500;}
+.adash{color:var(--muted);font-weight:600;text-align:center;}
+.bar{display:flex;gap:5px;}
+.seg3{height:9px;border-radius:5px;background:var(--track);flex:1;overflow:hidden;}
+.seg3 i{display:block;height:100%;background:var(--periwinkle);border-radius:5px;}
+.asub{font-size:12px;font-weight:600;color:var(--ink-2);text-align:right;white-space:nowrap;}
+.asub.link{color:var(--periwinkle-deep);text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
+.asub.muted{color:var(--muted);font-weight:500;}
+
+/* price cell */
+.kv .k{font-size:13px;font-weight:700;}
+.qtybox{display:inline-block;margin-top:6px;border:1px solid var(--line);border-radius:7px;padding:4px 12px;font-size:13px;font-weight:600;min-width:52px;text-align:center;}
+.priceblock{margin-top:16px;}
+.priceblock .unit{font-size:17px;font-weight:700;line-height:1.1;}
+.priceblock .unit small{font-size:12px;font-weight:600;color:var(--muted-2);}
+.priceblock .total{font-size:12px;font-weight:600;color:var(--muted-2);margin-top:3px;display:flex;align-items:center;gap:7px;}
+.esttag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--paper-2);border-radius:4px;padding:1px 5px;}
+
+/* lead time cell */
+.lead .k{font-size:13px;font-weight:700;}
+/* delivery/order-by distributor cell examples */
+.dcells{margin-top:20px;}
+.dcells-h{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.dcells-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
+.dcell-cap{font-size:11.5px;color:var(--ink-2);margin-bottom:6px;}
+.dc{border:1px solid var(--line-soft);border-radius:12px;padding:12px 14px;background:#fff;display:flex;flex-direction:column;gap:5px;}
+.dc.crit{border-left:2.5px solid var(--flare);}
+.dc-l{display:flex;align-items:center;gap:7px;font-size:13px;}
+.dc-k{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);width:24px;flex:none;}
+.dc-v{font-weight:700;color:var(--ink);}
+.dc-stat{width:16px;height:16px;border-radius:50%;display:inline-grid;place-items:center;flex:none;margin-left:auto;}
+.dc-stat .icn{width:11px;height:11px;}
+.dc-stat.ok{background:var(--tint-green);color:var(--green-deep);}
+.dc-stat.wait{background:#fdeecb;color:#b06f00;}
+.dc-stat.bad{background:rgba(255,46,23,.14);color:#d33a22;}
+.dc-foot{margin-top:2px;}
+.dc-tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;border-radius:5px;padding:2px 8px;border:1px solid currentColor;}
+.dc-tag.std{color:var(--ink-3);}
+.dc-tag.cr{color:var(--flare);}
+.dc-tag.urg{color:var(--flare);background:var(--flare);color:#fff;border-color:var(--flare);}
+.dc-tag.miss{color:#d33a22;border-color:#d33a22;}
+.dc-v.miss{color:var(--ink);text-decoration:line-through;}
+.dc-legend{font-size:10.5px;color:var(--muted);margin-top:5px;}
+.dc-note{font-size:10.5px;color:var(--text-soft);}
+.leadval{font-size:13px;font-weight:600;margin-top:3px;display:flex;align-items:center;gap:7px;}
+.leadval .icn{width:16px;height:16px;color:var(--periwinkle-deep);}
+.lead .dl{margin-top:16px;}
+.urgent-t{color:var(--flare);font-weight:700;}
+.choosechip{display:inline-flex;align-items:center;gap:6px;color:var(--periwinkle-deep);font-weight:700;position:relative;}
+.choosechip .b{position:absolute;top:-7px;left:8px;background:var(--flare);color:#fff;font-size:9px;font-weight:700;border-radius:999px;width:14px;height:14px;display:grid;place-items:center;}
+
+/* status cell */
+.status{display:flex;justify-content:center;align-items:center;height:100%;}
+.statinner{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;}
+.toggle{width:42px;height:22px;border-radius:999px;background:var(--periwinkle);position:relative;display:inline-block;}
+.toggle.warm{background:var(--blossom);}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;}
+.toggle.on::after{left:22px;}
+.stat-lbl{font-size:12px;font-weight:600;color:var(--ink-2);}
+.deadchip{font-size:11px;font-weight:600;color:var(--text-soft);margin-top:6px;line-height:1.3;text-align:center;max-width:130px;}
+.deadchip span{display:block;font-size:10px;font-weight:600;}
+.deadchip.urgent{color:var(--flare);font-weight:700;}
+.orderbtn{display:inline-flex;align-items:center;gap:8px;background:var(--spearmint);color:#fff;font-weight:700;font-size:14px;border-radius:999px;padding:9px 20px;border:0;cursor:pointer;}
+.orderbtn .icn{width:16px;height:16px;stroke-width:2;}
+.statactions{display:flex;justify-content:center;align-items:center;height:100%;}
+.statactions .it{cursor:pointer;position:relative;display:inline-flex;color:#c7c7d0;}
+.statactions .it .icn{width:20px;height:20px;}
+.statactions .it.flag-on{color:var(--flare);}
+.statactions .it.flag-on .icn{fill:var(--flare);}
+.statactions .it.chat-has{color:var(--ink);}
+.statactions .cb{position:absolute;top:-8px;right:-9px;min-width:15px;height:15px;border-radius:999px;font-size:9px;font-weight:700;display:grid;place-items:center;padding:0 3px;border:1.5px solid #fff;color:#fff;}
+.statactions .cb.unread{background:var(--flare);}
+.statactions .cb.read{background:var(--periwinkle);}
+.row .expand{position:absolute;top:-1px;right:-1px;background:var(--periwinkle);color:#fff;width:30px;height:30px;border-radius:0 14px 0 12px;display:grid;place-items:center;}
+.row .expand .icn{width:15px;height:15px;}
+
+/* ---------- Footer ---------- */
+.foot{background:var(--periwinkle-deep,#4a4ac2);color:#fff;margin-top:60px;padding:48px 36px 56px;display:flex;flex-direction:column;position:relative;min-height:440px;}
+.foot .foot-powered{margin-top:auto;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;opacity:.62;letter-spacing:.02em;}
+.foot .foot-powered .pwlogo{height:18px;width:auto;}
+.foot .foot-grid{margin-top:28px;display:flex;justify-content:flex-end;align-items:center;gap:8px 22px;flex-wrap:wrap;}
+.foot .foot-grid>div{display:contents;}
+.foot .foot-grid a{color:#fff;opacity:.82;text-decoration:none;font-size:12.5px;}
+.foot .foot-grid a:hover{opacity:1;text-decoration:underline;}
+.foot-co{display:flex;align-items:center;justify-content:center;gap:30px;margin-bottom:60px;}
+.foot-co .crt-mark{color:#fff;width:46px;height:46px;}
+.foot-co .crt-txt{color:#fff;font-size:16px;}
+.foot-co .xsep-lg{color:rgba(255,255,255,.65);font-size:20px;}
+.foot-co .mojo{color:#fff;font-size:42px;}
+.foot-co .client{font-weight:700;font-size:17px;color:#fff;}
+.foot-co .xsep{color:rgba(255,255,255,.5);}
+.foot-co .ms-wm{height:30px;filter:brightness(0) invert(1);}
+.foot-grid{max-width:1320px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;font-size:13px;}
+.foot-grid a{display:block;color:rgba(255,255,255,.7);text-decoration:none;margin-bottom:7px;}
+.foot-grid a:hover{color:#fff;}
+.foot-mid{color:rgba(255,255,255,.5);font-weight:600;}
+.foot-mid b{color:#fff;font-weight:700;}
+.foot-right{text-align:right;}
+
+/* ===== Status reference additions ===== */
+.refbadge{display:inline-flex;align-items:center;gap:7px;background:var(--periwinkle);color:#fff;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border-radius:999px;padding:7px 14px;}
+.doc-lead{max-width:78ch;color:var(--ink-3);font-weight:300;font-size:16px;line-height:1.6;margin:16px 0 0;}
+.labeltoggle{display:inline-flex;align-items:center;gap:9px;background:var(--paper-2);border:0;border-radius:999px;padding:9px 16px;font-family:var(--sans);font-weight:700;font-size:13px;color:var(--ink-2);cursor:pointer;}
+.labeltoggle .icn{width:16px;height:16px;color:var(--periwinkle-deep);}
+
+.lib{margin-top:14px;}
+.libsec{margin-top:38px;}
+.libsec-h{font-family:var(--serif);font-weight:500;font-size:25px;margin:0;}
+.libsec-sub{color:var(--text-soft);font-size:13.5px;line-height:1.5;margin:6px 0 18px;max-width:80ch;}
+.tokrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:14px;}
+.tokbar{width:100%;max-width:116px;}
+.b-slate{background:var(--slate);color:#fff;}
+.toksub{grid-column:1/-1;font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--periwinkle-deep);margin:12px 2px -3px;display:flex;align-items:center;gap:9px;}
+.toksub::after{content:"";flex:1;height:1px;background:var(--line-soft);}
+.revtag{position:absolute;top:10px;left:10px;font-size:9px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--paper-2);border-radius:5px;padding:2px 6px;}
+.tokdead{font-size:11px;font-weight:600;color:var(--text-soft);margin-top:8px;line-height:1.3;}
+.tokdead.urgent{color:var(--flare);font-weight:700;}
+.libnote{display:flex;gap:11px;align-items:flex-start;background:#fff;border:1px solid var(--line-soft);border-left:3px solid var(--periwinkle);border-radius:10px;padding:14px 17px;margin-top:18px;font-size:13.5px;line-height:1.55;color:var(--ink-2);max-width:82ch;}
+.libnote .icn{width:16px;height:16px;color:var(--periwinkle-deep);flex:none;margin-top:2px;}
+.libnote b{font-weight:700;color:var(--ink);}
+.dflow{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;}
+.dflow-col{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:18px 20px;}
+.dflow-role{display:flex;align-items:center;gap:9px;font-weight:800;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);margin-bottom:14px;}
+.dflow-dot{width:10px;height:10px;border-radius:50%;flex:none;}
+.dflow-dot.cust{background:var(--periwinkle);}
+.dflow-dot.dist{background:var(--spearmint);}
+.dflow-steps{margin:0;padding-left:0;list-style:none;counter-reset:step;display:flex;flex-direction:column;gap:11px;}
+.dflow-steps li{position:relative;padding-left:34px;font-size:13.5px;line-height:1.5;color:var(--ink-2);counter-increment:step;}
+.dflow-steps li::before{content:counter(step);position:absolute;left:0;top:-1px;width:23px;height:23px;border-radius:50%;background:var(--paper-2);color:var(--periwinkle-deep);font-size:11.5px;font-weight:800;display:grid;place-items:center;}
+.dflow-steps li b{color:var(--ink);font-weight:700;}
+.dflow-steps li i{font-style:normal;color:var(--periwinkle-deep);font-weight:700;}
+.dsummary{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:20px 24px;margin-top:16px;}
+.dsummary h4{font-family:var(--serif);font-weight:500;font-size:18px;margin:0 0 8px;}
+.dsummary p{font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:0 0 12px;max-width:92ch;}
+.dsummary ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;}
+.dsummary li{position:relative;padding-left:18px;font-size:13.5px;line-height:1.55;color:var(--ink-2);}
+.dsummary li::before{content:"";position:absolute;left:1px;top:8px;width:6px;height:6px;border-radius:50%;background:var(--periwinkle);}
+.dsummary b{color:var(--ink);font-weight:700;}
+.dl-miss{color:var(--flare);font-weight:700;}
+@media(max-width:760px){.dflow{grid-template-columns:1fr;}}
+.tok{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:22px 14px 16px;display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center;min-height:118px;justify-content:flex-start;position:relative;}
+.badge2{position:relative;width:42px;height:42px;display:grid;place-items:center;border-radius:50%;flex:none;}
+.statchip{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;background:var(--paper);border:1px solid var(--line-soft);border-radius:999px;padding:5px 14px 5px 6px;font-size:13px;font-weight:700;color:var(--ink);}
+.statchip .statcircle{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;}
+.statchip .statcircle .icn{width:14px;height:14px;}
+.statcircle.peri{border:1.8px solid var(--periwinkle);color:var(--periwinkle-deep);}
+.statcircle.ink{border:1.8px solid var(--ink);color:var(--ink);}
+.statcircle.muted{border:1.8px solid var(--hair);color:var(--muted);}
+.statcircle.green{background:var(--spearmint);color:#fff;}
+.statcircle.red{background:var(--flare);color:#fff;}
+.tok-chip{justify-content:flex-start;gap:10px;min-height:96px;}
+.badge2 .icn{width:21px;height:21px;}
+.b-ink{background:var(--ink);color:#fff;}
+.b-green{background:var(--spearmint);color:#fff;}
+.b-red{background:var(--flare);color:#fff;}
+.b-inkred{background:var(--blossom);color:#fff;}
+.statcircle.cf{border:0!important;background:none!important;}
+.statcircle.cf .icn{width:100%;height:100%;}
+.badge2.cf{border:0!important;background:none!important;}
+.badge2.cf .icn{width:100%;height:100%;}
+.b-peri{background:var(--periwinkle);color:#fff;}
+.b-periline{border:1.8px solid var(--periwinkle);color:var(--periwinkle-deep);}
+.b-line{border:1.8px solid var(--ink);color:var(--ink);}
+.b-muted{border:1.8px solid var(--hair);color:var(--muted);}
+.b-wait{border:0;background:none;color:var(--muted);}
+.badge2.b-wait .icn{width:26px;height:26px;}
+.b-dash{border:1.8px dashed #c4c4cc;color:var(--muted);font-weight:700;font-size:18px;}
+.cbadge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:999px;background:var(--flare);color:#fff;font-size:10px;font-weight:800;line-height:1;display:grid;place-items:center;padding:0 4px;border:2px solid #fff;}
+.cbadge.peri{background:var(--periwinkle);}
+.tok .pill{display:inline-flex;align-items:center;gap:7px;background:var(--spearmint);color:#fff;font-weight:700;font-size:13px;border-radius:999px;padding:9px 18px;}
+.tok .pill .icn{width:18px;height:18px;}
+.tok .txt{font-size:15px;font-weight:700;height:42px;display:flex;align-items:center;gap:6px;}
+.tok .txt.urgent{color:var(--flare);}
+.tok .txt .icn{width:15px;height:15px;color:var(--spearmint);}
+.tlbl{font-size:13px;font-weight:700;line-height:1.25;}
+.tdesc{font-size:11.5px;color:var(--muted-2);line-height:1.32;font-weight:500;margin-top:3px;}
+.reorder-l{font-size:11.5px;color:var(--periwinkle-deep);text-decoration:underline;font-weight:700;margin-top:3px;}
+body.labels-off .tlbl,body.labels-off .tdesc,body.labels-off .reorder-l{display:none;}
+body.labels-off .tok{min-height:74px;}
+
+/* notes */
+.notes{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:30px 34px;margin-top:50px;}
+.notes h3{font-family:var(--serif);font-weight:500;font-size:23px;margin:0 0 6px;}
+.notes ul{margin:0;padding:0;list-style:none;}
+.notes li{position:relative;padding:13px 0 13px 22px;border-top:1px solid var(--line-soft);font-size:14px;line-height:1.55;color:var(--ink-2);}
+.notes li:first-of-type{border-top:0;}
+.notes li::before{content:"";position:absolute;left:1px;top:19px;width:7px;height:7px;border-radius:50%;background:var(--periwinkle);}
+.notes li b{color:var(--ink);font-weight:700;}
+</style>
+</head>
+<body>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-mark" viewBox="143.4 251.4 89.1 91.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" stroke="none" d="M194.66 336.80 C191.83 336.80 189.16 335.66 187.15 333.59 C185.15 331.54 184.04 328.79 184.03 325.87 L184.03 308.30 L190.95 308.30 L190.95 325.86 C190.95 326.88 191.34 327.84 192.04 328.56 C193.45 330.00 195.88 329.99 197.28 328.56 L217.53 307.71 C218.98 306.22 218.98 303.80 217.53 302.31 C216.83 301.59 215.90 301.19 214.91 301.19 L160.07 301.19 C157.23 301.18 154.56 300.04 152.56 297.98 C150.55 295.91 149.44 293.17 149.44 290.24 C149.44 287.33 150.55 284.58 152.56 282.51 L172.81 261.66 C176.95 257.39 183.69 257.40 187.83 261.66 C189.84 263.73 190.94 266.47 190.95 269.38 L190.95 286.95 L184.03 286.95 L184.03 269.39 C184.03 268.38 183.64 267.42 182.94 266.69 C181.54 265.26 179.10 265.25 177.70 266.70 L157.45 287.55 C156.75 288.27 156.36 289.23 156.36 290.24 C156.36 291.26 156.75 292.22 157.45 292.94 C158.15 293.66 159.09 294.07 160.08 294.07 L214.92 294.07 C217.76 294.07 220.42 295.22 222.43 297.28 C226.57 301.54 226.57 308.48 222.42 312.74 L202.17 333.59 C200.17 335.66 197.50 336.80 194.66 336.80"></path></symbol>
+  <symbol id="ic-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 20v-6M12 20V9M17 20v-10"/></symbol>
+  <symbol id="i-crt" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><g fill="currentColor" stroke="none"><path d="M4 32 A28 28 0 0 1 60 32 L46 32 A14 14 0 0 0 18 32 Z"/><rect x="6" y="35.5" width="52" height="2.6" rx="1.3"/><rect x="9.5" y="40.7" width="45" height="2.4" rx="1.2" opacity="0.82"/><rect x="13" y="45.6" width="38" height="2.2" rx="1.1" opacity="0.62"/><rect x="17" y="50.2" width="30" height="2" rx="1" opacity="0.46"/><rect x="21" y="54.5" width="22" height="1.8" rx="0.9" opacity="0.34"/></g></symbol>
+  <symbol id="ic-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
+  <symbol id="ic-van" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7.5h11v9h-11z"/><path d="M13.5 10.5h3.4l2.6 3v3h-6z"/><circle cx="6.5" cy="17.5" r="1.7"/><circle cx="16.5" cy="17.5" r="1.7"/><path d="M8.4 17.5h6.1"/></symbol>
+  <symbol id="ic-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5 5.5 5h13L20 9.5M4 9.5h16M4 9.5v10.5h16V9.5M4 9.5a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0M9 20v-5h4v5"/></symbol>
+  <symbol id="ic-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.1 11.4a1.3 1.3 0 0 1-1.3 1.1H7.4a1.3 1.3 0 0 1-1.3-1.1z"/><path d="M8.5 8V6.6a3.5 3.5 0 0 1 7 0V8"/></symbol>
+  <symbol id="ic-bagplus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8.5h11l-.9 11.5H7.4zM9.3 8.5a2.7 2.7 0 0 1 5.4 0"/><path d="M12 11.4v4.2M9.9 13.5h4.2"/></symbol>
+  <symbol id="ic-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.6 11.4 5.2a2 2 0 0 1 1.4-.6h5.2a1.8 1.8 0 0 1 1.8 1.8v5.2a2 2 0 0 1-.6 1.4l-7.4 7.4a1.6 1.6 0 0 1-2.3 0L4 14.9a1.6 1.6 0 0 1 0-2.3z"/><circle cx="15.8" cy="8.2" r="1.15"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></symbol>
+  <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c0-3.5 3.1-5.5 7-5.5s7 2 7 5.5"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17h12l-1.6-2.6V11a4.4 4.4 0 0 0-8.8 0v3.4L6 17zM10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.6M12 18.8v2.6M21.4 12h-2.6M5.2 12H2.6M18.6 5.4l-1.8 1.8M7.2 16.8l-1.8 1.8M18.6 18.6l-1.8-1.8M7.2 7.2 5.4 5.4"/></symbol>
+  <symbol id="ic-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 16.5h6"/></symbol>
+  <symbol id="ic-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4M6 4h11l-2 3.5L17 11H6"/></symbol>
+  <symbol id="ic-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="ic-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5v14M15 5v14"/></symbol>
+  <symbol id="ic-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v3H4zM5 10v10h14V10M10 14h4"/></symbol>
+  <symbol id="ic-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+  <symbol id="ic-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10M8 10.5l4 3.8 4-3.8M5 19.5h14"/></symbol>
+  <symbol id="ic-grip" viewBox="0 0 24 24" stroke="none" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+  <symbol id="ic-cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.3l3.3 2"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+  <symbol id="ic-bang" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v6"/><circle cx="12" cy="16.5" r=".4"/></symbol>
+  <symbol id="ic-bangdot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#F5872B"/><path d="M12 7.2v6" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.6" r="1.25" fill="#fff"/></symbol>
+  <symbol id="ic-bulb" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M8 14a5 5 0 1 1 8 0c-.8 1-1.5 1.6-1.5 3h-5C9.5 15.6 8.8 15 8 14z"/></symbol>
+  <symbol id="ic-bulbon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M8 14a5 5 0 1 1 8 0c-.8 1-1.5 1.6-1.5 3h-5C9.5 15.6 8.8 15 8 14z"/><path d="M9.7 11.7l1.5 1.5 2.9-3.1"/></symbol>
+  <symbol id="ic-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 9.6h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+  <symbol id="ic-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ic-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></symbol>
+  <symbol id="ic-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/></symbol>
+  <symbol id="ic-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="ic-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H5v4M19 9V5h-4M15 19h4v-4M5 15v4h4"/></symbol>
+  <symbol id="ic-sort" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5v14M7 19l-3-3M7 5l3 3M17 19V5M17 5l3 3M17 19l-3-3"/></symbol>
+  <symbol id="ic-thumbup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10.5v9.5H4.2a.7.7 0 0 1-.7-.7v-8.1a.7.7 0 0 1 .7-.7zM7 10.5l3.7-6.7a.6.6 0 0 1 .55-.3 2.2 2.2 0 0 1 2.2 2.2v3.1h4.9a1.9 1.9 0 0 1 1.87 2.27l-1.2 6A1.9 1.9 0 0 1 17.2 20H7"/></symbol>
+  <symbol id="ic-thumbdown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 13.5V4H19.8a.7.7 0 0 1 .7.7v8.1a.7.7 0 0 1-.7.7zM17 13.5l-3.7 6.7a.6.6 0 0 1-.55.3 2.2 2.2 0 0 1-2.2-2.2v-3.1H5.65a1.9 1.9 0 0 1-1.87-2.27l1.2-6A1.9 1.9 0 0 1 6.8 4H17"/></symbol>
+  <symbol id="ic-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.2 9.3a2.9 2.9 0 1 1 4 2.7c-.85.37-1.3 1-1.3 1.95v.5"/><path d="M11.9 18h.01" stroke-width="2.2"/></symbol>
+  <symbol id="ic-hourglass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5h12M6 19.5h12M7.5 4.5 12 12 16.5 4.5M7.5 19.5 12 12 16.5 19.5"/></symbol>
+  <symbol id="ic-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><path d="M6.3 6.3 17.7 17.7"/></symbol>
+  <symbol id="ic-stockdown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v9.5M8 11l4 4 4-4M5 19.5h14"/></symbol>
+  <symbol id="ic-reorder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 0 1 12.8-5.3l1.7 1.7M19.5 12a7.5 7.5 0 0 1-12.8 5.3l-1.7-1.7M19 4v4.4h-4.4M5 20v-4.4h4.4"/></symbol>
+</svg>
+
+<!-- alert removed -->
+
+<!-- header -->
+<header class="header">
+  <div class="brand">
+    <span class="crt"><svg class="crt-mark"><use href="#i-crt"/></svg><span class="crt-txt">Canal &amp;<br>River Trust</span></span>
+    <span class="xsep-lg">&times;</span>
+    <span class="mojo">mojo</span>
+  </div>
+  <nav class="topnav">
+    <a href="#"><svg class="icn"><use href="#ic-dash"/></svg>Dashboard</a>
+    <a href="#" class="active"><svg class="icn"><use href="#ic-box"/></svg>Your Merch</a>
+    <a href="#"><svg class="icn"><use href="#ic-store"/></svg>Store</a>
+  </nav>
+  <div class="headtools">
+    <div class="hsearch"><svg class="icn"><use href="#ic-search"/></svg><input type="text" placeholder="Search products, projects…" aria-label="Search"></div>
+    <span class="it" title="Cart"><svg class="icn"><use href="#ic-bag"/></svg><span class="badge">3</span></span>
+    <span class="it" title="Notifications"><svg class="icn"><use href="#ic-bell"/></svg><span class="badge">1</span></span>
+    <span class="hsep"></span>
+    <button class="account" title="Account"><span class="av"><img src="assets/avatars/av1.jpg" alt="Jess Doyle"></span><span class="acc-nm">Jess Doyle</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+  </div>
+</header>
+
+<!-- breadcrumb -->
+<div class="crumbband">
+  <div class="crumb"><span>Your Merch</span><span class="sep">›</span><span>Documentation</span><span class="sep">›</span><span class="here">All Status Types</span></div>
+</div>
+
+<!-- main -->
+<main class="main">
+  <div class="titlerow">
+    <div class="titleleft">
+      <h1 class="ptitle">All Status Types</h1>
+      <span class="refbadge">Developer reference</span>
+    </div>
+    <div class="titletools">
+      <button class="labeltoggle" id="labelToggle"><svg class="icn"><use href="#ic-eye"/></svg>Hide labels</button>
+    </div>
+  </div>
+  <div class="tdiv"></div>
+  <p class="doc-lead">An exhaustive map of every state each field in the product table can take, for hand-off to development. The <b>status library</b> below catalogues each field&rsquo;s possible states using the Merchsmith icon system. Labels can be shown under each icon, hidden, or surfaced on hover.</p>
+
+  <!-- status library -->
+  <div class="lib" id="lib"></div>
+
+  <!-- notes -->
+  <div class="notes">
+    <h3>Notes for development</h3>
+    <ul>
+      <li>When a Product is added to a Project the default status is <b>Idea</b>. At this stage, samples can be ordered. Once work begins the status moves to <b>In Progress</b> and the other fields advance through their statuses.</li>ve to the next statuses shown.</li>
+      <li>When the Design or Price move to <b>Awaiting Approval</b>, the main product status moves to <b>In Progress</b>. It stays there until all statuses are Approved and the Delivery Date is confirmed by the ACM.</li>
+      <li>The <b>red action icon</b> swaps depending on whether the user is the Buyer, Distributor or Supplier.</li>
+      <li><b>Delivery Date</b> is chosen by the customer and the deadline is generated automatically. Customers cannot choose a date sooner than the lead time, or while stock is unconfirmed. ACMs can override the lead-time and deadlines that are usually automated. There is also a <b>no delivery date</b> option.</li>
+      <li>Field labels can be shown beneath the icons, hidden, or revealed on hover — toggle above.</li>
+      <li><b>Re-order</b> option is available once a product has been Ordered.</li>
+      <li>The customer assigns a delivery date; <b>Design</b> and <b>Sample</b> will always show as Approved at that point.</li>
+      <li>If a product <b>Price has expired</b>, the Price status reverts to <b>Being Checked</b>.</li>
+      <li>If a product is <b>not in stock</b>, the Stock status reverts to <b>Being Checked</b>.</li>
+      <li>If the Price is valid and the product is in stock, Price and Stock show as <b>Approved</b> and <b>In Stock</b>. In all such cases the Delivery Date shows as <b>Being Checked</b>.</li>
+      <li><b>Unbranded</b> lead-time differs from the branded lead-time.</li>
+    </ul>
+  </div>
+</main>
+
+<!-- footer -->
+<footer class="foot">
+  <div class="foot-powered">Powered by <img class="pwlogo" src="assets/merchsmith-wordmark.svg" alt="Merchsmith"></div>
+  <div class="foot-grid">
+    <div><a href="#">Contact Us</a><a href="#">FAQs</a></div>
+    <div class="foot-right"><a href="#">Privacy Policy</a><a href="#">Terms &amp; Conditions</a><a href="#">Cookie Policy</a><a href="#">Accessibility Statement</a><a href="#">ESG Policy</a></div>
+  </div>
+</footer>
+
+<script>
+const ACT = ['Design','Price','Sample','Stock'];
+// state: done | urgent | pend | sampleorder | dash | pause ; bars: [0..1]x3 ; sub: optional label
+const products = [
+  {
+    name:'Eco Wheat-Straw Charging Cable', img:'cable',
+    actions:[
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'awaiting', badge:1, bars:[1,1,0], sub:'Approve Price', subLink:true},
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'withacm', bars:[1,1,0], sub:'Being Checked', subMuted:true}
+    ],
+    qty:100, each:8.45, delivery:'Fri. 10th Oct', deadline:'Mon. 6th Oct',
+    status:{type:'clock', label:'In Progress'}
+  },
+  {
+    name:'Xoopar Pokket Wireless Mouse', img:'mouse',
+    actions:[
+      {st:'approved',bars:[1,1,1],sub:'Approved'},
+      {st:'approved',bars:[1,1,1],sub:'Approved'},
+      {st:'approved',bars:[1,1,1],sub:'Approved'},
+      {st:'instock',bars:[1,1,1],sub:'In Stock'}
+    ],
+    qty:50, each:12.95, delivery:'Fri. 10th Oct', deadline:'Today, 17:00', deadlineSub:'(2 hours, 10 mins)', urgent:true,
+    status:{type:'order'}
+  },
+  {
+    name:'Tech Travel Bag', img:'bag', link:true, sel:true,
+    actions:[
+      {st:'feedback', badge:1, bars:[1,1,0], sub:'Give Feedback', subLink:true},
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'awaiting', badge:1, bars:[1,1,0], sub:'Approve Proof', subLink:true},
+      {st:'withacm', bars:[1,1,0], sub:'Being Checked', subMuted:true}
+    ],
+    qty:250, each:16.40, delivery:'Fri. 10th Oct', deadline:'Today, 15:00', deadlineSub:'(10 mins)', urgent:true,
+    status:{type:'clock', label:'In Progress'}
+  },
+  {
+    name:'RPET Document Pouch', img:'bag',
+    actions:[
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'notapproved', bars:[1,1,1], sub:'Being Checked', subMuted:true},
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'notinstock', bars:[1,1,1], sub:'Being Checked', subMuted:true}
+    ],
+    qty:150, each:9.20, delivery:'acm', deadline:'-',
+    status:{type:'clock', label:'In Progress'}
+  },
+  {
+    name:'Recycled Cotton Tote', img:'bag',
+    actions:[
+      {st:'unbranded', bars:[0,0,0], sub:'Unbranded', subMuted:true},
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'instock', bars:[1,1,1], sub:'In Stock'}
+    ],
+    qty:300, each:3.40, delivery:'Fri. 17th Oct', deadline:'Wed. 8th Oct',
+    status:{type:'clock', label:'In Progress'}
+  },
+  {
+    name:'Prodir Ds8 True Biotic Pen', img:'pen',
+    actions:[
+      {st:'withacm', bars:[1,0,0], sub:'With Studio', subMuted:true},
+      {st:'withacm', bars:[1,0,0], sub:'Being Checked', subMuted:true},
+      {st:'sampleorder', badge:1, bars:[0,0,0], sub:'Order Sample', subLink:true},
+      {st:'withacm', bars:[1,0,0], sub:'Being Checked', subMuted:true}
+    ],
+    qty:250, each:1.85, delivery:'choose', deadline:'-',
+    status:{type:'clock', label:'In Progress'}
+  },
+  {
+    name:'Seed Pencil Set', img:'pen',
+    actions:[
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'ordered', bars:[1,1,1], sub:'Ordered'},
+      {st:'instock', bars:[1,1,1], sub:'In Stock'}
+    ],
+    qty:500, each:0.95, delivery:'Fri. 26th Sep', delivered:true, deadline:'-',
+    status:{type:'ordered'}
+  },
+  {
+    name:'Hoton A5 Kraft Paper Notebook', img:'book',
+    actions:[
+      {st:'dash',bars:[0,0,0]},
+      {st:'dash',bars:[0,0,0]},
+      {st:'sampleorder', badge:1, bars:[0,0,0], sub:'Order Sample', subLink:true},
+      {st:'dash',bars:[0,0,0]}
+    ],
+    qty:250, each:4.25, delivery:'-', deadline:'-',
+    status:{type:'bulb', icon:'ic-bulb', label:'Idea'}
+  },
+  {
+    name:'Desktop Garden', img:'garden', paused:true,
+    actions:[ {st:'pause',bars:[.5,.5,0]},{st:'pause',bars:[.5,.5,0]},{st:'pause',bars:[.5,.5,0],pink:true},{st:'pause',bars:[.5,.5,0]} ],
+    qty:250, each:9.75, delivery:'-', deadline:'-',
+    status:{type:'pause', label:'Paused'}
+  },
+  {
+    name:'Cork Cover Notebook (2024)', img:'book', archived:true,
+    actions:[
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'approved', bars:[1,1,1], sub:'Approved'},
+      {st:'ordered', bars:[1,1,1], sub:'Ordered'},
+      {st:'instock', bars:[1,1,1], sub:'In Stock'}
+    ],
+    qty:200, each:5.10, delivery:'Tue. 12th Aug', delivered:true, deadline:'-',
+    status:{type:'archived'}
+  }
+];
+
+const gbp = n => '£' + n.toLocaleString('en-GB', {minimumFractionDigits:2, maximumFractionDigits:2});
+const lineTotal = p => p.qty * p.each;
+// per-product comment + flag states (source order) to demo the icons in different states
+const rowMeta = [
+  {flag:true,  comments:{unread:2}},
+  {flag:true,  comments:{read:5}},
+  {flag:true,  comments:{unread:3}},
+  {flag:false, comments:{read:1}},
+  {flag:false, comments:null},
+  {flag:true,  comments:{read:4}},
+  {flag:false, comments:{read:2}},
+  {flag:false, comments:null},
+  {flag:false, comments:null},
+  {flag:false, comments:{read:2}}
+];
+products.forEach((p,i)=>{ const m=rowMeta[i]||{}; p.flag=m.flag; p.comments=m.comments; });
+
+function flagCellHTML(p){
+  const flagCls = p.flag ? 'flag-on' : 'flag-off';
+  return `<div class="statactions"><span class="it ${flagCls}"><svg class="icn"><use href="#ic-flag"/></svg></span></div>`;
+}
+function commentCellHTML(p){
+  const c = p.comments;
+  let chat;
+  if(!c) chat = `<span class="it"><svg class="icn"><use href="#ic-chat"/></svg></span>`;
+  else if(c.unread) chat = `<span class="it chat-has"><svg class="icn"><use href="#ic-chat"/></svg><span class="cb unread">${c.unread}</span></span>`;
+  else chat = `<span class="it chat-has"><svg class="icn"><use href="#ic-chat"/></svg><span class="cb read">${c.read}</span></span>`;
+  return `<div class="statactions">${chat}</div>`;
+}
+const priceApproved = p => p.actions[1] && p.actions[1].st === 'approved';
+const ideaSubmitted = p => p.status.label === 'Idea';
+const dash = '<span style="color:var(--muted);font-weight:600">-</span>';
+
+const icnFor = st => ({done:'ic-check',urgent:'ic-bang',pend:'ic-clock',sampleorder:'ic-bagplus',pause:'ic-pause'})[st];
+
+function actionsHTML(p){
+  return p.actions.map((a,i)=>{
+    let ai;
+    if(a.st==='dash'){ ai = `<span class="adash">-</span>`; }
+    else { ai = `<span class="ai ${a.st}"><svg class="icn"><use href="#${icnFor(a.st)}"/></svg>${a.badge?`<span class="b">${a.badge}</span>`:''}</span>`; }
+    const bars = `<span class="bar">${a.bars.map(v=>{const w = a.st==='pause' ? v : (v>=0.5?1:0); return `<span class="seg3"><i style="width:${Math.round(w*100)}%;${a.pink?'background:var(--blossom)':''}${a.st==='pause'?'background:#cfd2e0':''}"></i></span>`;}).join('')}</span>`;
+    let sub='';
+    if(a.sub) sub = `<span class="asub ${a.subLink?'link':''} ${a.subMuted?'muted':''}">${a.sub}</span>`;
+    return `<div class="actrow">${ai}<span class="alabel">${ACT[i]}</span>${bars}${sub||'<span></span>'}</div>`;
+  }).join('');
+}
+
+function deadchip(p){
+  if(!p.deadline || p.deadline==='-') return '';
+  return `<div class="deadchip ${p.urgent?'urgent':''}">Order by ${p.deadline}${p.deadlineSub?`<span>${p.deadlineSub}</span>`:''}</div>`;
+}
+function statusHTML(p){
+  const s=p.status, dc=deadchip(p);
+  if(s.type==='order') return `<div class="statinner"><button class="orderbtn"><svg class="icn"><use href="#ic-bag"/></svg>Order</button>${dc}</div>`;
+  if(s.type==='clock') return `<div class="statinner"><span class="statcircle peri"><svg class="icn"><use href="#ic-clock"/></svg></span><span class="stat-lbl">${s.label}</span>${dc}</div>`;
+  if(s.type==='bulb') return `<div class="statinner"><span class="statcircle peri"><svg class="icn"><use href="#${s.icon||'ic-bulb'}"/></svg></span><span class="stat-lbl">${s.label}</span></div>`;
+  if(s.type==='ordered') return `<div class="statinner"><span class="statcircle ink"><svg class="icn"><use href="#ic-box"/></svg></span><span class="stat-lbl">Ordered</span><span class="statreorder">Re-order</span></div>`;
+  if(s.type==='archived') return `<div class="statinner"><span class="statcircle muted"><svg class="icn"><use href="#ic-archive"/></svg></span><span class="stat-lbl">Archived</span></div>`;
+  if(s.type==='pause') return `<div class="statinner"><span class="statcircle muted"><svg class="icn"><use href="#ic-pause"/></svg></span><span class="stat-lbl">${s.label}</span></div>`;
+  return '';
+}
+
+function leadHTML(p){
+  let del;
+  if(p.delivery==='choose') del = `<span class="choosechip"><svg class="icn"><use href="#ic-cal"/></svg>Choose<span class="b">1</span></span>`;
+  else if(p.delivery==='acm') del = `Being Checked <svg class="icn"><use href="#ic-clock"/></svg>`;
+  else if(p.delivery==='-') del = `<span style="color:var(--muted);font-weight:600">-</span>`;
+  else del = `${p.delivery} ${p.delivered ? '<svg class="icn" style="width:15px;height:15px;color:var(--spearmint)"><use href="#ic-check"/></svg>' : '<svg class="icn" style="width:16px;height:16px;color:var(--periwinkle-deep)"><use href="#ic-cal"/></svg>'}`;
+  return `<div class="lead"><div class="k">Delivery Date</div><div class="leadval">${del}</div></div>`;
+}
+
+// order: active products first, then Idea Submitted, then Paused, then Archived at the bottom
+const sortRank = p => p.status.type === 'archived' ? 3 : (p.status.type === 'pause' ? 2 : (ideaSubmitted(p) ? 1 : 0));
+const ordered = products
+  .map((p, i) => ({p, i}))
+  .sort((a, b) => sortRank(a.p) - sortRank(b.p) || a.i - b.i)
+  .map(o => o.p);
+
+const rows = ordered.map(p=>`
+  <div class="row ${p.sel?'sel':''} ${p.paused?'paused':''} ${p.archived?'archived':''}">
+    ${p.sel?'<span class="expand"><svg class="icn"><use href="#ic-expand"/></svg></span>':''}
+    <div class="prod">
+      <span class="grip"><svg class="icn" style="width:18px;height:18px"><use href="#ic-grip"/></svg></span>
+      <span class="chk ${p.sel?'on':''}">${p.sel?'<svg class="icn"><use href="#ic-check"/></svg>':''}</span>
+      <span class="pimg"><img src="assets/products/${p.img}.png" alt="${p.name}" loading="lazy"></span>
+      <span class="pname ${p.link?'link':''}">${p.name}</span>
+    </div>
+    <div class="cell"><div class="acts">${actionsHTML(p)}</div></div>
+    <div class="cell">
+      <div class="kv"><div class="k">Quantity</div><span class="qtybox">${ideaSubmitted(p) ? '-' : p.qty}</span></div>
+      <div class="priceblock">${ideaSubmitted(p) ? dash : `<div class="unit">${gbp(p.each)} <small>each</small></div><div class="total">${gbp(lineTotal(p))}${priceApproved(p) ? '' : ' <span class="esttag">Est.</span>'}</div>`}</div>
+    </div>
+    <div class="cell">${leadHTML(p)}</div>
+    <div class="cell">
+      <div class="status">
+        ${statusHTML(p)}
+      </div>
+    </div>
+    <div class="cell metacell">${flagCellHTML(p)}</div>
+    <div class="cell metacell" style="border-right:0">${commentCellHTML(p)}</div>
+  </div>`).join('');
+
+// ===== Status library =====
+const lib = [
+  {
+    h:'Design',
+    sub:'Design is two stages — the Visual (indicative look, signed off first) and the Proof (exact technical artefact). Both run the same status cycle and version independently; the line can only be ordered once BOTH are approved.',
+    toks:[
+      {subhead:'Visual stage — statuses'},
+      {dash:true, lbl:'Not started', desc:'No visual yet', bars:[0,0,0]},
+      {icon:'ic-clock', cls:'b-wait', lbl:'With studio', desc:'Studio creating the visual', bars:[1,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Information needed', desc:'Cust: "Give feedback" — studio blocked, needs info', bars:[1,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Awaiting approval', desc:'Cust: "Approve visual"', bars:[1,1,0]},
+      {icon:'ic-cross', cls:'b-red', lbl:'Changes requested', desc:'Back to studio (new visual ver.)', bars:[1,1,0]},
+      {icon:'ic-check', cls:'b-green', lbl:'Visual approved', desc:'Look signed off', bars:[1,1,1]},
+      {subhead:'Proof stage — statuses (may start before the visual is approved)'},
+      {dash:true, lbl:'Not started', desc:'Proof not begun', bars:[0,0,0]},
+      {icon:'ic-clock', cls:'b-wait', lbl:'With studio', desc:'Technical proof being drawn', bars:[1,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Information needed', desc:'Cust: "Give feedback" — studio blocked', bars:[1,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Awaiting approval', desc:'Cust: "Approve proof"', bars:[1,1,0]},
+      {icon:'ic-cross', cls:'b-red', lbl:'Changes requested', desc:'Dist: "Revise & resubmit" (ver.2, ver.3…)', bars:[1,1,0]},
+      {icon:'ic-check', cls:'b-green', lbl:'Proof approved', desc:'Binding sign-off — paired with a visual ver.', bars:[1,1,1]},
+      {icon:'ic-ban', cls:'b-wait', lbl:'Unbranded', desc:'No print — proof n/a', bars:[0,0,0]},
+      {subhead:'Rolled-up Design (dashboard row)'},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Approve visual', desc:'Active stage = visual', bars:[1,0,0], rev:'Visual v1'},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Approve proof', desc:'Visual done, proof live', bars:[1,1,0], rev:'Proof v2'},
+      {icon:'ic-check', cls:'b-green', lbl:'Approved', desc:'Both stages signed off', bars:[1,1,1]}
+    ],
+    note:'<b>Give feedback</b> ≠ <b>Approve</b>: "Information needed / Give feedback" means the studio is <b>blocked</b> and needs artwork or detail from the customer <em>before</em> it can produce that stage — it is never shown at the approval step. The dashboard row shows the <b>active stage</b> ("Approve visual" then "Approve proof") with a per-artefact <b>ver.</b> tag; each <b>Changes requested</b> releases a new version. <b>Order</b> only appears once <b>both</b> Visual and Proof are approved (or the line is unbranded).'
+  },
+  {
+    h:'Price',
+    sub:'The quote for the line. A price that expires reverts to Being Checked.',
+    toks:[
+      {subhead:'Customer view'},
+      {dash:true, lbl:'Not started', desc:'Shown as —', bars:[0,0,0]},
+      {icon:'ic-clock', cls:'b-wait', lbl:'Being checked', desc:'Quote being prepared', bars:[1,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Approve price', desc:'Accept the quote', bars:[1,1,0]},
+      {icon:'ic-check', cls:'b-green', lbl:'Approved', desc:'Quote accepted', bars:[1,1,1]},
+      {icon:'ic-cross', cls:'b-red', lbl:'Not approved', desc:'Being re-quoted', bars:[1,1,0]},
+      {subhead:'Distributor view'},
+      {dash:true, lbl:'Not started', desc:'Shown as —', bars:[0,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Submit for approval', desc:'Send quote to customer', bars:[1,0,0]},
+      {icon:'ic-clock', cls:'b-wait', lbl:'Awaiting approval', desc:'With the customer', bars:[1,1,0]},
+      {icon:'ic-check', cls:'b-green', lbl:'Approved', desc:'Quote accepted', bars:[1,1,1]},
+      {icon:'ic-cross', cls:'b-red', lbl:'Re-quote & resubmit', desc:'Rejected — re-quote', badge:'!', bars:[1,1,0]}
+    ],
+    note:'When the quote matches the approved design it moves to <b>Awaiting Approval</b>. A rejected or expired price reverts to <b>Being Checked</b>.'
+  },
+  {
+    h:'Sample',
+    sub:'A physical proof. Either the customer or the distributor can order a sample — into their own basket.',
+    toks:[
+      {subhead:'Customer view'},
+      {dash:true, lbl:'Not started', desc:'Shown as —', bars:[0,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Order sample', desc:'Order into your basket', bars:[1,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Approve sample', desc:'Sample received — review', bars:[1,1,0]},
+      {icon:'ic-check', cls:'b-green', lbl:'Approved', desc:'Sample signed off', bars:[1,1,1]},
+      {icon:'ic-cross', cls:'b-red', lbl:'Not approved', desc:'Being re-ordered', bars:[1,1,0]},
+      {subhead:'Distributor view'},
+      {dash:true, lbl:'Not started', desc:'Shown as —', bars:[0,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Order sample', desc:'Order into your basket', bars:[1,0,0]},
+      {icon:'ic-clock', cls:'b-wait', lbl:'Sample ordered', desc:'With the customer to approve', bars:[1,1,0]},
+      {icon:'ic-check', cls:'b-green', lbl:'Approved', desc:'Sample signed off', bars:[1,1,1]},
+      {icon:'ic-cross', cls:'b-red', lbl:'Re-order sample', desc:'Rejected — re-order', badge:'!', bars:[1,1,0]},
+      {subhead:'Unbranded vs branded'},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Order unbranded', desc:'Can be ordered any time', bars:[1,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Order branded', desc:'Needs Design approved + In stock', bars:[1,0,0]},
+      {subhead:'Distributor-only override'},
+      {icon:'ic-ban', cls:'b-wait', lbl:'Not required', desc:'Sample skipped — pills disabled', bars:[0,0,0]}
+    ],
+    note:'<b>Dispatch:</b> when a sample is marked as <b>dispatched</b> on its order, the Sample status advances to <b>Awaiting approval</b> — the customer’s <b>Approve sample</b> action.<br><b>Branded vs unbranded:</b> unbranded samples can be ordered any time; a branded sample first needs the <b>Design approved</b> and <b>Stock in stock</b>.<br><b>Not required:</b> the distributor can mark the sample <b>Not required</b> — the progress pills are disabled and a sample is not needed to order the product. Applies to a single <b>Customer Organisation</b>, a single <b>Customer User</b>, or <b>across all Customer Organisations</b>.'
+  },
+  {
+    h:'Stock',
+    sub:'Availability with production, handled by the distributor: Being checked → Awaiting supplier → In stock (reserved). Mirrors the critical delivery flow.',
+    toks:[
+      {subhead:'Customer view'},
+      {icon:'ic-clock', cls:'b-wait', lbl:'Being checked', desc:'Distributor checking', bars:[1,0,0]},
+      {icon:'ic-clock', cls:'b-wait', lbl:'Awaiting supplier', desc:'Stock request sent', bars:[1,1,0]},
+      {icon:'ic-check', cls:'b-green', lbl:'In stock', desc:'Confirmed & reserved', bars:[1,1,1]},
+      {icon:'ic-cross', cls:'b-red', lbl:'Not in stock', desc:'Being re-checked', bars:[1,1,0]},
+      {subhead:'Distributor view'},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'Request stock check', desc:'Send variant to production', bars:[1,0,0]},
+      {icon:'ic-bang', cls:'b-inkred', lbl:'View supplier reply', desc:'Review the response', bars:[1,1,0]},
+      {icon:'ic-check', cls:'b-green', lbl:'In stock', desc:'Reserved until [date]', bars:[1,1,1]},
+      {icon:'ic-cross', cls:'b-red', lbl:'Re-request stock', desc:'Out of stock — re-ask', badge:'!', bars:[1,1,0]}
+    ],
+    note:'<b>Supplier confirmation:</b> the stock check is sent to production with the chosen <b>colour &amp; size</b> variant. Production replies whether it is in stock and <b>how long they will reserve it</b> — a <b>reserved-until</b> date shown to the <b>distributor only</b> (in the product modal) and carried to the order stage.<br><b>Expiry:</b> if the reservation lapses before the order is placed, Stock reverts to <b>Being checked</b>.'
+  },
+  {
+    h:'Delivery Date',
+    sub:'The customer sets when they need delivery. In the distributor view this splits into a <b>Supplier</b> and a <b>Customer</b> date. A Standard date is auto-deadlined from the lead time; a Critical (guaranteed) date is checked with the supplier before it is confirmed.',
+    toks:[],
+    extra:`<div class="dcells">
+      <div class="dcells-h">Distributor cells — Delivery date &amp; Order by</div>
+      <div class="dcells-grid">
+        <div class="dcell"><div class="dcell-cap">Standard · supplier date auto-estimated</div>
+          <div class="dc"><div class="dc-l"><span class="dc-k">Cus</span><span class="dc-v">Fri. 17th Oct</span></div><div class="dc-l"><span class="dc-k">Sup</span><span class="dc-v">Tue. 14th Oct</span></div><div class="dc-foot"><span class="dc-tag std">Standard</span></div></div></div>
+        <div class="dcell"><div class="dcell-cap">Critical · confirmed by supplier</div>
+          <div class="dc crit"><div class="dc-l"><span class="dc-k">Cus</span><span class="dc-v">Fri. 17th Oct</span></div><div class="dc-l"><span class="dc-k">Sup</span><span class="dc-v">Tue. 14th Oct</span><span class="dc-stat ok"><svg class="icn"><use href="#ic-check"/></svg></span></div><div class="dc-foot"><span class="dc-tag cr">Critical</span></div></div></div>
+        <div class="dcell"><div class="dcell-cap">Critical · awaiting supplier</div>
+          <div class="dc crit"><div class="dc-l"><span class="dc-k">Cus</span><span class="dc-v">Fri. 17th Oct</span></div><div class="dc-l"><span class="dc-k">Sup</span><span class="dc-v">Tue. 14th Oct</span><span class="dc-stat wait"><svg class="icn"><use href="#ic-clock"/></svg></span></div><div class="dc-foot"><span class="dc-tag cr">Critical</span></div></div></div>
+        <div class="dcell"><div class="dcell-cap">Critical · supplier can’t meet</div>
+          <div class="dc crit"><div class="dc-l"><span class="dc-k">Cus</span><span class="dc-v">Fri. 17th Oct</span></div><div class="dc-l"><span class="dc-k">Sup</span><span class="dc-v">Tue. 14th Oct</span><span class="dc-stat bad"><svg class="icn"><use href="#ic-cross"/></svg></span></div><div class="dc-foot"><span class="dc-tag cr">Critical</span></div></div></div>
+        <div class="dcell"><div class="dcell-cap">Order by — supplier &amp; customer</div>
+          <div class="dc"><div class="dc-l"><span class="dc-k">Cus</span><span class="dc-v">Mon. 6th Oct</span></div><div class="dc-l"><span class="dc-k">Sup</span><span class="dc-v">Mon. 6th Oct, 13:00</span></div><div class="dc-foot"><span class="dc-tag urg">Urgent</span></div></div><div class="dc-legend">Within the final 6 working hours</div></div>
+        <div class="dcell"><div class="dcell-cap">Order by — deadline elapsed</div>
+          <div class="dc"><div class="dc-l"><span class="dc-k">Cus</span><span class="dc-v miss">Fri. 3rd Oct</span></div><div class="dc-l"><span class="dc-k">Sup</span><span class="dc-v miss">Fri. 3rd Oct, 13:00</span></div><div class="dc-foot"><span class="dc-tag miss">Deadline missed</span></div></div><div class="dc-legend">Order-by passed — delivery re-picks</div></div>
+        <div class="dcell"><div class="dcell-cap">ASAP — no date</div>
+          <div class="dc"><div class="dc-l"><span class="dc-k">Cus</span><span class="dc-v" style="color:var(--periwinkle-deep);font-weight:800">ASAP</span></div><div class="dc-l"><span class="dc-k">Sup</span><span class="dc-v" style="color:var(--muted)">—</span></div><div class="dc-foot"><span class="dc-note">Lead time: 13 working days</span></div></div></div>
+      </div>
+    </div>
+    <div class="dflow">
+      <div class="dflow-col">
+        <div class="dflow-role"><span class="dflow-dot cust"></span>Customer</div>
+        <ol class="dflow-steps">
+          <li><b>Choose a date</b>, or leave it as <i>ASAP</i> (no deadline).</li>
+          <li><b>Standard:</b> the date must be on or after the lead-time date — the order deadline is generated automatically.</li>
+          <li><b>Critical:</b> any future date is allowed; a date sooner than the standard lead time is flagged on the calendar.</li>
+          <li>A critical date shows <i>Awaiting confirmation</i> until the supplier replies.</li>
+          <li>Can switch back to <i>ASAP</i>, or re-pick a date, at any time.</li>
+        </ol>
+      </div>
+      <div class="dflow-col">
+        <div class="dflow-role"><span class="dflow-dot dist"></span>Distributor (ACM)</div>
+        <ol class="dflow-steps">
+          <li>A critical date needs checking — hit <b>Request confirmation</b>.</li>
+          <li>Choose which <b>supplier contacts</b> to notify; the supplier delivery date defaults to days-in-lieu earlier (editable).</li>
+          <li>Send — the date shows <i>Awaiting supplier</i>; contacts are emailed and notified on their enquiries dashboard.</li>
+          <li>The supplier replies whether they can meet it, and when they need the <b>order</b> &amp; <b>proof sign-off</b> by.</li>
+          <li><b>Can meet</b> → <i>Confirmed</i> (order deadline comes from the supplier). <b>Can’t</b> → flagged for the distributor to handle.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="dsummary">
+      <h4>Distributor view — Supplier vs Customer dates</h4>
+      <p>For the distributor, both the <b>Delivery date</b> and the <b>Order by</b> cell split into two stacked lines — a <b>Supplier</b> figure and a <b>Customer</b> figure (Customer shown first). Dates render in plain black; only the <b>Standard / Critical</b> tag colours the row.</p>
+      <ul>
+        <li><b>Supplier delivery date</b> — on a <b>Standard</b> line this is <b>filled in automatically by default</b>: it is the customer delivery date minus that supplier’s days in lieu (i.e. driven by the product lead time), shown as an <i>estimate</i> with no “agreed” tick. On a <b>Critical</b> line it comes from the supplier’s confirmation, or can be entered manually (records who it was agreed with). The hover calendar overrides either.</li>
+        <li><b>Customer delivery date</b> = supplier delivery date + days in lieu — the date the customer is promised.</li>
+        <li><b>Order by (Supplier)</b> = the supplier’s deadline to receive the order. <b>Order by (Customer)</b> = supplier deadline − 4 working hours, so the customer commits before the supplier cut-off.</li>
+        <li>A confirmed supplier date (Critical) wins over the estimate; a manual entry wins over both.</li>
+      </ul>
+    </div>
+    <div class="dsummary">
+      <h4>How lead times &amp; days in lieu work</h4>
+      <p><b>Customer lead time = supplier lead time + days in lieu.</b> Every product carries a supplier lead time from the supplier’s data. “Days in lieu” is a buffer of working days (default <b>3</b>) added on top to leave room for issues. It can be changed globally, or per-supplier, in <b>Organisations → Suppliers</b>.</p>
+      <ul>
+        <li><b>Standard date</b> — the earliest selectable date is today + customer lead time. The order-by deadline is generated by counting the customer lead time back from the chosen date, and is shown to the distributor only.</li>
+        <li><b>Critical date</b> — can be any future date (not today or the past). Dates inside the standard lead time are selectable but flagged as rush. The order deadline comes from the supplier’s reply rather than auto-generation.</li>
+        <li><b>Working hours</b> run 09:00–17:00; deadlines count in working days and turn <span class="dl-miss">urgent</span> within the final 6 working hours.</li>
+        <li><b>Deadline missed</b> — if the order deadline elapses, the delivery reverts to step one (the missed date is struck through) and the status shows <span class="dl-miss">Deadline missed</span>.</li>
+      </ul>
+    </div>
+    <div class="dsummary">
+      <h4>Deadlines to order &amp; reminders</h4>
+      <p>Every environment runs on the working hours of its country — <b>09:00–17:00</b>. A deadline turns <b style="color:var(--flare)">urgent</b> once it falls within <b>6 working hours</b>. Two reminders are sent by default — at <b>6 working hours</b> and <b>1 working hour</b> before.</p>
+      <p style="margin-top:6px">Example, deadline 10:00am → Reminder 1 = 10:00 − 6 wkg hrs = <b>12:00 the day before</b>; Reminder 2 = 10:00 − 1 wkg hr = <b>09:00 on the day</b>.</p>
+    </div>`
+  },
+  {
+    h:'Product Status',
+    chips:true,
+    sub:'The single roll-up status for the whole product line.',
+    toks:[
+      {icon:'ic-bulb', cls:'b-periline', lbl:'Idea', desc:'Default on add'},
+      {icon:'ic-clock', cls:'b-periline', lbl:'In Progress', desc:'A field is awaiting approval'},
+      {pill:'Order', icon:'ic-bag', lbl:'Ready to Order', desc:'All approved &amp; confirmed'},
+      {icon:'ic-box', cls:'b-line', lbl:'Ordered', reorder:true},
+      {icon:'ic-pause', cls:'b-muted', lbl:'Paused'},
+      {icon:'ic-archive', cls:'b-muted', lbl:'Archived'}
+    ]
+  },
+  {
+    h:'Urgent',
+    sub:'Flags a product needing urgent attention.',
+    toks:[
+      {icon:'ic-flag', cls:'b-muted', lbl:'Not Urgent'},
+      {icon:'ic-flag', cls:'b-red', lbl:'Urgent'}
+    ]
+  },
+  {
+    h:'Comments',
+    sub:'Comment thread state per product.',
+    toks:[
+      {icon:'ic-chat', cls:'b-muted', lbl:'No comments'},
+      {icon:'ic-chat', cls:'b-line', lbl:'Comments', desc:'Total count', badge:'2', badgePeri:true},
+      {icon:'ic-chat', cls:'b-line', lbl:'Unread comments', desc:'Needs reading', badge:'1'}
+    ]
+  }
+];
+
+function tokHTML(t, chip){
+  if(t.subhead){ return `<div class="toksub">${t.subhead}</div>`; }
+  let v;
+  const chipCls={'b-periline':'peri','b-line':'ink','b-muted':'muted','b-green':'green','b-red':'red'}[t.cls]||'peri';
+  if(chip && !t.pill && !t.dash && !t.text){
+    v = `<span class="statchip"><span class="statcircle ${chipCls}"><svg class="icn"><use href="#${t.icon}"/></svg></span>${t.lbl}</span>`;
+    const under2 = t.under ? `<div class="tokdead ${t.underUrgent?'urgent':''}">${t.under}</div>` : '';
+    return `<div class="tok tok-chip">${v}<div>${t.desc?`<div class="tdesc">${t.desc}</div>`:''}${t.reorder?'<div class="reorder-l">Re-order</div>':''}${under2}</div></div>`;
+  }
+  if(t.pill){
+    v = `<span class="pill"><svg class="icn"><use href="#${t.icon}"/></svg>${t.pill}</span>`;
+  } else if(t.text){
+    v = `<span class="txt ${t.urgent?'urgent':''}">${t.text}${t.check?' <svg class="icn"><use href="#ic-check"/></svg>':''}</span>`;
+  } else if(t.dash){
+    v = `<span class="badge2 b-dash">—</span>`;
+  } else {
+    v = `<span class="badge2 ${t.cls} ${t.icon==='ic-clock'?'cf':''}"><svg class="icn"><use href="#${t.icon}"/></svg>${t.badge && !(t.cls&&t.cls.indexOf('b-inkred')>=0)?`<span class="cbadge ${t.badgePeri?'peri':''}">${t.badge}</span>`:''}</span>`;
+  }
+  const bars = t.bars ? `<span class="bar tokbar">${t.bars.map(x=>`<span class="seg3"><i style="width:${x>=0.5?100:0}%"></i></span>`).join('')}</span>` : '';
+  const rev = t.rev ? `<span class="revtag">${t.rev}</span>` : '';
+  const under = t.under ? `<div class="tokdead ${t.underUrgent?'urgent':''}">${t.under}</div>` : '';
+  return `<div class="tok">${rev}${v}${bars}<div><div class="tlbl">${t.lbl}</div>${t.desc?`<div class="tdesc">${t.desc}</div>`:''}${t.reorder?'<div class="reorder-l">Re-order</div>':''}${under}</div></div>`;
+}
+
+document.getElementById('lib').innerHTML = lib.map(s=>`
+  <section class="libsec">
+    <h2 class="libsec-h">${s.h}</h2>
+    <p class="libsec-sub">${s.sub}</p>
+    ${s.toks&&s.toks.length?`<div class="tokrow">${s.toks.map(t=>tokHTML(t, s.chips)).join('')}</div>`:''}
+    ${s.extra||''}
+    ${s.note?`<p class="libnote"><svg class="icn"><use href="#ic-bang"/></svg><span>${s.note}</span></p>`:''}
+  </section>`).join('');
+
+// label show/hide toggle
+const lt = document.getElementById('labelToggle');
+lt.addEventListener('click', () => {
+  const off = document.body.classList.toggle('labels-off');
+  lt.innerHTML = `<svg class="icn"><use href="#ic-eye"/></svg>${off ? 'Show labels' : 'Hide labels'}`;
+});
+</script>
+<script src="sidebar.js"></script>
+</body>
+</html>

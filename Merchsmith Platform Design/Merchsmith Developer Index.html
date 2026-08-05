@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Developer Index</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(18px,4vw,40px);}
+.top{background:#fff;border-bottom:1px solid var(--line-soft);padding:26px 0;}
+.top .wrap{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.top h1{font-family:var(--serif);font-weight:500;font-size:clamp(28px,4vw,40px);letter-spacing:-.01em;}
+.top p{color:var(--ink-2);font-size:14.5px;margin-top:6px;max-width:60ch;line-height:1.55;}
+.top .meta{font-size:12.5px;color:var(--muted);text-align:right;}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;}
+.legend span{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-2);}
+.legend i{width:11px;height:11px;border-radius:3px;}
+.legend.rkey{margin-top:8px;}
+.legend.rkey i{border-radius:99px;width:9px;height:9px;}
+.legend.rkey .two{display:inline-flex;gap:3px;}
+/* resolution rating */
+.meta-row{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.rate{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-soft);background:var(--paper);border-radius:999px;padding:5px 11px;font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.03em;color:var(--ink-2);cursor:pointer;}
+.rate:hover{border-color:var(--periwinkle);color:var(--periwinkle-deep);}
+.rate .dots{display:inline-flex;gap:3px;}
+.rate .dot{width:9px;height:9px;border-radius:99px;}
+.r-un{background:#d64545;} .r-sl{background:#e8912d;} .r-co{background:#1f8a5b;}
+.cmtbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-soft);background:var(--paper);border-radius:999px;padding:5px 11px;font-family:inherit;font-size:11px;font-weight:800;color:var(--ink-2);cursor:pointer;}
+.cmtbtn:hover{border-color:var(--periwinkle);color:var(--periwinkle-deep);}
+.cmtbtn svg{width:13px;height:13px;}
+.cmtbtn .n{color:var(--periwinkle-deep);}
+.cmt-prev{margin-top:8px;background:var(--tint-peri,#eef0fb);border-radius:9px;padding:8px 10px;font-size:11.5px;line-height:1.45;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cmt-prev b{color:var(--ink);}
+/* rating picker */
+.rpick{position:absolute;z-index:120;background:#fff;border:1px solid var(--line-soft);border-radius:12px;box-shadow:0 14px 38px rgba(20,22,45,.2);padding:6px;display:none;flex-direction:column;min-width:196px;}
+.rpick.open{display:flex;}
+.rpick button{display:flex;align-items:center;gap:9px;border:0;background:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--ink);text-align:left;padding:8px 10px;border-radius:8px;cursor:pointer;}
+.rpick button:hover{background:var(--paper);}
+.rpick button.cur{background:var(--tint-peri,#eef0fb);}
+.rpick .dots{display:inline-flex;gap:3px;}
+.rpick .dot{width:9px;height:9px;border-radius:99px;}
+/* comments drawer */
+.cwin{position:fixed;inset:0;z-index:200;display:none;}
+.cwin.open{display:block;}
+.cwin .scrim{position:absolute;inset:0;background:rgba(20,22,45,.35);}
+.cwin .panel{position:absolute;top:0;right:0;bottom:0;width:min(430px,92vw);background:#fff;border-left:1px solid var(--line-soft);box-shadow:-18px 0 50px rgba(20,22,45,.18);display:flex;flex-direction:column;}
+.cwin .ph{padding:18px 20px 14px;border-bottom:1px solid var(--line-soft);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.cwin .ph h3{font-family:var(--serif);font-weight:500;font-size:20px;letter-spacing:-.01em;}
+.cwin .ph .sub{font-size:11.5px;color:var(--muted);margin-top:3px;font-family:ui-monospace,monospace;}
+.cwin .x{border:0;background:none;font-size:20px;color:var(--muted);cursor:pointer;line-height:1;padding:4px;}
+.cwin .x:hover{color:var(--ink);}
+.cwin .list{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:12px;}
+.cwin .ci{background:var(--paper);border:1px solid var(--line-soft);border-radius:11px;padding:10px 13px;}
+.cwin .ci .who{display:flex;justify-content:space-between;font-size:11px;font-weight:800;color:var(--muted);margin-bottom:4px;}
+.cwin .ci p{font-size:13px;line-height:1.5;color:var(--ink);white-space:pre-wrap;}
+.cwin .ci .del{border:0;background:none;color:var(--muted);font-size:10.5px;font-weight:700;cursor:pointer;margin-top:6px;text-decoration:underline;text-underline-offset:2px;}
+.cwin .ci .del:hover{color:#d64545;}
+.cwin .none{font-size:13px;color:var(--muted);text-align:center;margin-top:26px;}
+.cwin .composer{border-top:1px solid var(--line-soft);padding:14px 20px 18px;}
+.cwin textarea{width:100%;font-family:inherit;font-size:13px;line-height:1.5;border:1.5px solid var(--line-soft);border-radius:10px;padding:10px 12px;resize:vertical;min-height:74px;background:var(--paper);}
+.cwin textarea:focus{outline:0;border-color:var(--periwinkle);}
+.cwin .send{margin-top:9px;font-family:inherit;font-size:12.5px;font-weight:800;color:#fff;background:var(--periwinkle-deep);border:0;border-radius:9px;padding:9px 20px;cursor:pointer;}
+.cwin .send:hover{filter:brightness(1.08);}
+.cat{margin:40px 0;}
+.cat-h{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--line-soft);}
+.cat-h h2{font-family:var(--serif);font-weight:500;font-size:24px;letter-spacing:-.01em;}
+.cat-h span{font-size:13px;color:var(--muted);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;align-items:start;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:14px;overflow:hidden;transition:transform .14s,box-shadow .14s;display:flex;flex-direction:column;}
+.card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(40,44,80,.1);}
+.thumb{height:172px;position:relative;overflow:hidden;border-bottom:1px solid var(--line-soft);display:flex;align-items:flex-end;}
+.thumb .prev{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;z-index:1;background:#fff;}
+.thumb .glyph{position:absolute;right:-8px;top:-20px;font-size:90px;font-weight:800;opacity:.18;font-family:var(--serif);line-height:1;color:#fff;}
+.thumb .badge{position:absolute;top:12px;right:12px;z-index:3;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#fff;background:rgba(20,20,40,.55);padding:3px 8px;border-radius:999px;backdrop-filter:blur(3px);}
+.thumb .strip{position:relative;z-index:2;width:100%;padding:8px 12px;color:#fff;font-family:var(--serif);font-weight:500;font-size:16px;letter-spacing:-.01em;background:linear-gradient(transparent,rgba(20,20,40,.74));}
+.body{padding:14px 15px 16px;flex:1;display:flex;flex-direction:column;}
+.body p{font-size:13px;color:var(--ink-2);line-height:1.5;}
+.body .open{margin-top:12px;font-size:12.5px;font-weight:700;color:var(--periwinkle-deep);display:inline-flex;align-items:center;gap:5px;}
+.body .fname{font-size:11px;color:var(--muted);margin-top:7px;font-family:ui-monospace,monospace;word-break:break-all;}
+.body .mod{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:10px;}
+/* history card */
+.hist{margin-top:10px;background:var(--paper);border:1px solid var(--line-soft);border-radius:10px;padding:10px 12px;}
+.hist-h{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;}
+.hist ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.hist li{font-size:11.5px;line-height:1.45;color:var(--ink-2);display:flex;gap:8px;}
+.hist li::before{content:"";width:5px;height:5px;border-radius:99px;background:var(--periwinkle);flex:none;margin-top:5px;}
+.hist li b{color:var(--ink);font-weight:800;white-space:nowrap;}
+.hist li span{flex:1;}
+/* category colours */
+.t-store{background:#5860A6;} .t-project{background:#1f8a5b;} .t-admin{background:#3C4279;}
+.t-settings{background:#51768c;} .t-ref{background:#9a6b1f;} .t-concept{background:#7a4f8f;} .t-mockup{background:#c0395f;}
+.note{background:#fff;border:1px solid var(--line-soft);border-left:4px solid var(--periwinkle-deep);border-radius:10px;padding:16px 18px;margin:30px 0;font-size:13.5px;color:var(--ink-2);line-height:1.6;}
+.note b{color:var(--ink);}
+.foot{padding:40px 0 60px;text-align:center;color:var(--muted);font-size:12.5px;}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <div><h1>Merchsmith — Developer Index</h1><p>Every page in the prototype, grouped and summarised, with a change history per page. Cards are ordered newest-modified first within each group. The go-to starting point for building the live site.</p>
+    <div class="legend">
+      <span><i class="t-store"></i>Storefront</span><span><i class="t-project"></i>Projects</span><span><i class="t-admin"></i>Platform Admin</span><span><i class="t-settings"></i>Settings</span><span><i class="t-ref"></i>Reference / specs</span><span><i class="t-concept"></i>Concepts</span><span><i class="t-mockup"></i>Mockups</span>
+    </div>
+    <div class="legend rkey">
+      <span style="color:var(--muted)">Design resolution:</span>
+      <span><i class="r-un"></i>Unconsidered</span>
+      <span><i class="r-sl"></i>Slightly considered</span>
+      <span><i class="r-co"></i>Considered</span>
+      <span><span class="two"><i class="r-co"></i><i class="r-co"></i></span>Finished</span>
+      <span style="color:var(--muted)">— click the tag on any card to set it</span>
+    </div>
+  </div>
+  <div class="meta">Prototype · localStorage data layer<br>No backend yet — see HANDOVER.md</div>
+</div></div>
+
+<div class="wrap" id="cats"></div>
+
+<div class="wrap"><div class="note"><b>For the developer:</b> this is a clickable, front-end prototype. All data persists in the browser's <b>localStorage</b> (keys prefixed <code>ms-</code>) — there is no server. Shared data layers worth knowing: <b>MSCAT</b> (product catalogue), <b>MSSTORE</b> (store taxonomy), <b>MSBRANDS</b> (brand tags), <b>MSBrief</b> (project briefs), <b>DPROJ</b> (master projects), plus the shared engines <code>product-modal.js</code> and <code>comments.js</code>. See the <b>Field Mapping Reference</b> for how supplier API/CSV data maps to the platform model. History dates before Jul 2026 are approximate (logged retrospectively); entries are exact from here on.</div></div>
+
+<div class="foot">Merchsmith Platform · Developer Index</div>
+
+<script>
+/* h: [[ISO date, change], …] newest first — first entry drives "Last modified" + card order */
+const CATS=[
+  {id:'store',name:'Storefront',cls:'t-store',sub:'Customer-facing shop',pages:[
+    {f:'Merchsmith Store.html',t:'Store',d:'The live store — merchery-style home page, departments, sub-category filters (price/colour/brand), product pages and the distributor price view. Reads the shared catalogue.',badge:'Live',h:[
+      ['2026-07-09','Category listings full width with a 5→4→3→2→1 responsive product grid; hover on a product crossfades to its second image (merchery-style). Colour filter now runs on the shared 19-base-colour mapping engine (colour-map.js) with overrides from the Field Mapping tool.'],
+      ['2026-07-02','Product page: USP story blocks with quotes, collapsed reviews with summary, image zoom + swatch-linked gallery, "You might also like".'],
+      ['2026-06-30','Homepage made distributor-editable (Store Settings): show/hide, inline edits, duplicate/delete sections, sustainability band colour.'],
+      ['2026-06-28','Best Sellers curated + capped at 2 rows; Recently Added 1 row; category-style product thumbnails; descriptions clamped to 2 lines.'],
+      ['2026-06-24','"All products" top-nav link → full listing with A–Z sub-category filters and show-more.'],
+    ]},
+    {f:'Merchsmith Home.html',t:'Home / Dashboard',d:'Logged-in landing dashboard for the customer/distributor.',h:[['2026-06-15','Initial build.']]},
+    {f:'Merchsmith Basket.html',t:'Basket',d:'Cart and checkout-style summary of selected products.',h:[['2026-06-15','Initial build.']]},
+    {f:'Merchsmith Orders.html',t:'Orders',d:'Order history and status tracking.',h:[['2026-06-15','Initial build.']]},
+    {f:'Merchsmith Brand Assets.html',t:'Brand Assets',d:'Customer brand library — logos, colours, fonts, images and product artwork (feeds the brief + builder).',h:[['2026-06-15','Initial build.']]},
+    {f:'Merchsmith Chats.html',t:'Chats',d:'Messaging between customer, account manager and production.',h:[['2026-06-15','Initial build.']]},
+  ]},
+  {id:'project',name:'Projects',cls:'t-project',sub:'Briefs, product modal, galleries',pages:[
+    {f:'Merchsmith Distributor Projects.html',t:'Projects (master table)',d:'Distributor-wide master table: every project for every customer, with expandable product rows that embed the full workspace engine. KPIs act as filters.',badge:'Key',h:[
+      ['2026-07-23','Delivery Date & Order by cells redesigned: compact Sup/Cus lines, supplier confirmation folded into one status marker, Critical shown as a left accent, calendars reveal on hover.'],
+      ['2026-07-09','Customer column gains a company-logo monogram tile; Client column gains a circular avatar.'],
+      ['2026-07-09','Filter bar decluttered: Projects row always visible; Products / Order by / Breakdown behind a "More filters" toggle with applied-filter tokens; quieter chip styling.'],
+      ['2026-07-08','Delivery + Order-by dual Supplier/Customer dates cascade in; supplier filter added and pushed into expanded projects.'],
+      ['2026-07-07','Filter system rebuilt: Projects (Live default/Paused/Archived/Urgent), Products, Order-by (Overdue/Today/Tomorrow/This week), Breakdown (Design/Price/Sample/Stock × My action/Customer action/Waiting/Setback/Done).'],
+      ['2026-07-06','Client + Collaborators columns; Compact/Comfortable density; comments drawer (shared comments.js); Deadline/Next-order-by columns retired in favour of filters.'],
+      ['2026-07-04','Row actions: flag, comments, brief, add product; select-project bulk bar (Pause/Archive/Duplicate/Download PDF); drag-to-reorder saved as default order.'],
+      ['2026-07-02','Page created — sortable/filterable master table, expandable product rows with full workspace parity via embedded engine.'],
+    ]},
+    {f:'Merchsmith Project - Autumn Giveaways.html',t:'Project (worked example)',d:'The flagship project workspace: product table, four-stage product modal (Design / Price / Sample / Stock), brief control panel and collaborator rail. Also powers the embedded tables on the master Projects page.',badge:'Key',h:[
+      ['2026-07-24','Customer-view Delivery date & Order by columns restyled to match the distributor tidy cells (compact date line, black dates, Standard/Critical tag, hover calendar, confirmation folded into a status marker).'],
+      ['2026-07-24','Delivery-date controls now work inside the product modal (rail cell wired to the same picker engine; calendar / Standard-Critical / supplier-request all live and sync back to the row). Fixed refresh targeting the wrong cell after the Order-by/Delivery column swap.'],
+      ['2026-07-23','Distributor Delivery Date & Order by cells redesigned into compact Sup/Cus lines with a single supplier-status marker, Critical as a left accent, hover-only calendars.'],
+      ['2026-07-09','Breakdown + Order by rows tucked behind a "More filters" toggle with applied-filter tokens (matches master Projects page).'],
+      ['2026-07-09','Product modal now full screen; Breakdown filters moved to their own row; supplier dropdown removed (lives on the master Projects page).'],
+      ['2026-07-08','Distributor view: Delivery Date and Order by split into stacked Supplier/Customer dates with pickers; manual supplier agreement (who/when); Standard↔Critical now toggleable; supplier tag under product names + supplier filter.'],
+      ['2026-07-07','Order-by + Breakdown filter pills; sort by Order-by date; margin tag replaced with £ profit; table full width; Comfortable density default.'],
+      ['2026-07-05','Status Reference vocabulary applied to all action pills; full modal data seeded for every embedded product; supplier confirmation summary popover (who agreed it).'],
+      ['2026-06-26','Sample costs flow: quote request or manual cost entry with source/reference and editable timestamp.'],
+      ['2026-06-20','Per-product data overrides (distributor-only view of original feed vs edited values).'],
+    ]},
+    {f:'Merchsmith Projects.html',t:'Projects (customer)',d:'Projects grid for a single customer organisation.',h:[['2026-06-18','Initial build.']]},
+    {f:'Merchsmith Gallery.html',t:'Gallery',d:'Card/gallery variant of the project product view (shares the modal).',h:[
+      ['2026-07-09','Full-width layout; consistent 4:3 image areas on tiles; filter parity with the row view (Order by + Breakdown rows); full-screen modal.'],
+      ['2026-06-18','Initial build.'],
+    ]},
+    {f:'Merchsmith Create Project.html',t:'Create Project wizard',d:'Animated 5-step project setup → writes the brief, defaults and requested items. Draft autosave; theme-aware.',badge:'Flow',h:[['2026-06-18','Initial build.']]},
+    {f:'Merchsmith Project Sheet.html',t:'Project Sheet',d:'Printable one-page project summary (used by the Download PDF actions).',h:[['2026-06-22','Initial build.']]},
+    {f:'Merchsmith Project Sheet (Detailed).html',t:'Project Sheet (Detailed)',d:'Extended printable project summary with per-product detail.',h:[['2026-06-22','Initial build.']]},
+  ]},
+  {id:'admin',name:'Platform Admin',cls:'t-admin',sub:'Merchsmith operator console',pages:[
+    {f:'Merchsmith Admin.html',t:'Admin console',d:'Operator hub: distributors, suppliers (add/invite + field mapping), the master product database, curated range + supplier invoicing, and store layout (sections/departments/sub-categories).',badge:'Key',h:[
+      ['2026-06-29','Curated Range page given real purpose: promoted products (Spotlight / Featured) driving store placement by range mode.'],
+      ['2026-06-27','Product database refined: pagination, working select-all, pinned headers, square thumbnails, bulk add/remove to Curated Range and Departments.'],
+      ['2026-06-25','Real supplier feeds imported; seed suppliers/products removed; images-only view.'],
+    ]},
+    {f:'Merchsmith Organisations.html',t:'Organisations',d:'Org records — distributors, customers, suppliers and their relationships.',h:[['2026-06-15','Initial build.']]},
+    {f:'Merchsmith Team.html',t:'Team',d:'Users within an organisation and their roles.',h:[['2026-06-15','Initial build.']]},
+  ]},
+  {id:'settings',name:'Settings',cls:'t-settings',sub:'Per-org configuration',pages:[
+    {f:'Merchsmith Distributor Settings.html',t:'Distributor Settings',d:'Lead times, markup/pricing, discounts, branding, and the Store range (curated / curated±edits / bespoke).',h:[
+      ['2026-06-29','Store range rule: any curated mode shows Merchsmith promoted products; fully bespoke opts out.'],
+      ['2026-06-16','Initial build.'],
+    ]},
+    {f:'Merchsmith Customer Settings.html',t:'Customer Settings',d:'Customer-side preferences and account configuration.',h:[['2026-06-16','Initial build.']]},
+  ]},
+  {id:'ref',name:'Reference / specs',cls:'t-ref',sub:'Living documentation',pages:[
+    {f:'Merchsmith Status Reference.html',t:'Status Reference',d:'Every status value used across products/projects and what it means — the source of truth now applied to both project tables.',h:[
+      ['2026-07-24','Delivery Date section: distributor cell visual gallery (Standard/Critical/awaiting/can’t-meet/Urgent/Missed states), Supplier/Customer split rules, Standard supplier-date auto-fill, order-by = supplier −4 wkg hrs. Removed the Order-deadline row from Product Status and folded its "deadlines & reminders" note into Delivery Date. Missed dates now black + struck (matches tables).'],
+      ['2026-07-05','Adopted as the vocabulary for all product action pills and derived statuses in the project tables.'],
+      ['2026-06-21','Initial build.'],
+    ]},
+    {f:'Merchsmith Field Mapping Reference.html',t:'Field Mapping Reference',d:'Master list of supplier API/CSV input field types and how each maps to the platform model — with gaps highlighted. Includes the colour → base-colour mapping tool.',h:[
+      ['2026-07-09','Colour mapping tool added: 19-colour master palette, ordered roll-up rules, live coverage of every raw feed colour with per-colour overrides (shared with the store filter).'],
+      ['2026-06-24','Initial build.'],
+    ]},
+    {f:'Merchsmith Product Feed Spec.html',t:'Product Feed Spec',d:'The normalised product feed shape the platform expects from suppliers.',h:[['2026-06-24','Initial build.']]},
+    {f:'Merchsmith Platform Brief.html',t:'Platform Brief',d:'The overall product vision and scope — updated to reflect the built platform.',h:[
+      ['2026-07-09','Rewritten against the latest design: Platform Admin actor, supply-side flow (feeds → curation → range → store), all built surfaces re-statused, dual delivery/order-by dates, commercial model, revised next steps.'],
+      ['2026-06-14','Initial build.'],
+    ]},
+    {f:'Merchsmith Org and User Model.html',t:'Org & User Model',d:'How organisations, roles and permissions fit together.',h:[
+      ['2026-07-09','File renamed (an old “&amp;amp;” encoding accident in the filename broke links to it).'],
+      ['2026-06-14','Initial build.'],
+    ]},
+    {f:'Merchsmith Site Map.html',t:'Site Map',d:'High-level map of the platform structure.',h:[['2026-06-14','Initial build.']]},
+    {f:'Merchsmith Brand Guide.html',t:'Brand Guide',d:'Merchsmith visual identity — colour, type, logo usage.',h:[['2026-06-14','Initial build.']]},
+    {f:'Merchsmith Logos.html',t:'Logos',d:'Logo lockups and exports.',h:[['2026-06-14','Initial build.']]},
+  ]},
+  {id:'concept',name:'Concepts',cls:'t-concept',sub:'Exploration & rationale',pages:[
+    {f:'Price Matrix Concept.html',t:'Price Matrix Concept',d:'The pricing model — quantity breaks, branding cost, markup and the distributor matrix. Now mirrored in full inside the product modal\'s distributor Price tab.',h:[['2026-06-17','Initial build.']]},
+    {f:'Supplier Connections Concept.html',t:'Supplier Connections Concept',d:'How suppliers connect (API / CSV / manual / branding-only) and match criteria.',h:[['2026-06-17','Initial build.']]},
+    {f:'Branding Builder Concept.html',t:'Branding Builder Concept',d:'Product decoration builder — methods, positions, colours.',h:[['2026-06-17','Initial build.']]},
+    {f:'Design Split Concept.html',t:'Design Split Concept',d:'Visual vs proof split within the Design stage.',h:[['2026-06-17','Initial build.']]},
+    {f:'Organisations Concept.html',t:'Organisations Concept',d:'Early thinking on the org/relationship model.',h:[['2026-06-17','Initial build.']]},
+  ]},
+  {id:'mockup',name:'Mockups',cls:'t-mockup',sub:'Standalone studies (not wired)',pages:[
+    {f:'Merchsmith Store Home (Merchery Style).html',t:'Store Home — Merchery style',d:'Standalone style study (platform fonts + Mojo colours). The basis for the live store home.',h:[['2026-06-16','Initial build.']]},
+    {f:'Merchsmith Store Home (Mockup).html',t:'Store Home — first mockup',d:'The original e-commerce home-page concept.',h:[['2026-06-16','Initial build.']]},
+  ]},
+];
+const fmtD=iso=>{ const d=new Date(iso+'T12:00'); return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'}).replace(/ /g,' '); };
+/* ---- reviewer meta: resolution rating + comments (localStorage, survives rebuilds of this page) ---- */
+const METAKEY='ms-devindex-meta';
+const meta=()=>{ try{ return JSON.parse(localStorage.getItem(METAKEY))||{}; }catch(e){ return {}; } };
+const saveMeta=m=>{ try{ localStorage.setItem(METAKEY,JSON.stringify(m)); }catch(e){} };
+const metaFor=f=>meta()[f]||{};
+const setMeta=(f,patch)=>{ const m=meta(); m[f]=Object.assign({},m[f],patch); saveMeta(m); };
+const RATES={ un:{l:'Unconsidered',d:['r-un']}, sl:{l:'Slightly considered',d:['r-sl']}, co:{l:'Considered',d:['r-co']}, fi:{l:'Finished',d:['r-co','r-co']} };
+const rateDots=r=>`<span class="dots">${(RATES[r]||RATES.un).d.map(c=>`<span class="dot ${c}"></span>`).join('')}</span>`;
+const esc2=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const host=document.getElementById('cats');
+function render(){
+host.innerHTML=CATS.map(c=>{
+  const pages=[...c.pages].sort((a,b)=>(b.h[0][0]).localeCompare(a.h[0][0]));
+  return `<section class="cat"><div class="cat-h"><h2>${c.name}</h2><span>${c.sub} · ${pages.length}</span></div>
+  <div class="grid">${pages.map(p=>{const slug=p.f.replace(/&amp;/g,'&').replace(/\.html$/,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');return `<a class="card" href="${p.f.replace(/&amp;/g,'&')}">
+    <div class="thumb ${c.cls}"><span class="glyph">${p.t.slice(0,1)}</span><img class="prev" loading="lazy" alt="" src="screenshots/idx/${slug}.png" onerror="this.remove()">${p.badge?`<span class="badge">${p.badge}</span>`:''}<span class="strip">${p.t}</span></div>
+    <div class="body"><p>${p.d}</p>
+      ${(()=>{ const mm=metaFor(p.f); const r=mm.r||'un'; const cs=mm.c||[]; const last=cs[cs.length-1];
+        return `<div class="meta-row">
+          <button class="rate" data-rate="${esc2(p.f)}" title="Set design resolution">${rateDots(r)}${RATES[r].l}</button>
+          <button class="cmtbtn" data-cmts="${esc2(p.f)}" data-t="${esc2(p.t)}" title="Comments for the developer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg>${cs.length?`<span class="n">${cs.length}</span>`:'Comment'}</button>
+        </div>${last?`<div class="cmt-prev"><b>${new Date(last.d).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}:</b> ${esc2(last.t)}</div>`:''}`; })()}
+      <div class="hist"><div class="hist-h">History<span>last modified ${fmtD(p.h[0][0])}</span></div>
+        <ul>${p.h.map(([d,txt])=>`<li><b>${fmtD(d)}</b><span>${txt}</span></li>`).join('')}</ul></div>
+      <span class="open">Open page →</span><span class="fname">${p.f}</span>
+    </div>
+  </a>`;}).join('')}</div></section>`;}).join('');
+}
+render();
+
+/* ---- rating picker ---- */
+const rpick=document.createElement('div'); rpick.className='rpick'; document.body.appendChild(rpick);
+let rpickFor=null;
+function openRpick(btn,f){ rpickFor=f; const cur=(metaFor(f).r)||'un';
+  rpick.innerHTML=Object.entries(RATES).map(([k,v])=>`<button data-r="${k}" class="${k===cur?'cur':''}">${rateDots(k)}${v.l}</button>`).join('');
+  rpick.classList.add('open');
+  const r=btn.getBoundingClientRect();
+  rpick.style.top=(scrollY+r.bottom+7)+'px';
+  rpick.style.left=(scrollX+Math.max(10,Math.min(r.left,innerWidth-216)))+'px';
+  rpick.querySelectorAll('[data-r]').forEach(b=>b.onclick=e=>{ e.preventDefault(); e.stopPropagation(); setMeta(rpickFor,{r:b.dataset.r}); rpick.classList.remove('open'); render(); });
+}
+
+/* ---- comments drawer ---- */
+const cwin=document.createElement('div'); cwin.className='cwin';
+cwin.innerHTML=`<div class="scrim"></div><div class="panel"><div class="ph"><div><h3></h3><div class="sub"></div></div><button class="x" title="Close">×</button></div><div class="list"></div><div class="composer"><textarea placeholder="Note for the developer…"></textarea><br><button class="send">Add comment</button></div></div>`;
+document.body.appendChild(cwin);
+let cwinFor=null;
+function renderCwin(){ const cs=(metaFor(cwinFor).c)||[];
+  cwin.querySelector('.list').innerHTML=cs.length?cs.map((c,i)=>`<div class="ci"><div class="who"><span>You</span><span>${new Date(c.d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})} · ${new Date(c.d).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span></div><p>${esc2(c.t)}</p><button class="del" data-di="${i}">Delete</button></div>`).join(''):'<div class="none">No comments yet — leave the first note for the developer.</div>';
+  cwin.querySelectorAll('.del').forEach(b=>b.onclick=()=>{ const m=meta(); (m[cwinFor].c||[]).splice(+b.dataset.di,1); saveMeta(m); renderCwin(); render(); });
+}
+function openCwin(f,title){ cwinFor=f; cwin.querySelector('h3').textContent=title; cwin.querySelector('.sub').textContent=f; cwin.classList.add('open'); renderCwin(); cwin.querySelector('textarea').focus(); }
+function closeCwin(){ cwin.classList.remove('open'); render(); }
+cwin.querySelector('.scrim').onclick=closeCwin;
+cwin.querySelector('.x').onclick=closeCwin;
+cwin.querySelector('.send').onclick=()=>{ const ta=cwin.querySelector('textarea'); const t=ta.value.trim(); if(!t) return;
+  const m=meta(); m[cwinFor]=m[cwinFor]||{}; (m[cwinFor].c=m[cwinFor].c||[]).push({t,d:Date.now()}); saveMeta(m); ta.value=''; renderCwin(); };
+cwin.querySelector('textarea').addEventListener('keydown',e=>{ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){ e.preventDefault(); cwin.querySelector('.send').click(); } });
+
+/* delegated clicks (cards are links — suppress navigation on the controls) */
+document.addEventListener('click',e=>{
+  const rb=e.target.closest('[data-rate]');
+  if(rb){ e.preventDefault(); e.stopPropagation(); const was=rpick.classList.contains('open')&&rpickFor===rb.dataset.rate; rpick.classList.remove('open'); if(!was) openRpick(rb,rb.dataset.rate); return; }
+  const cb=e.target.closest('[data-cmts]');
+  if(cb){ e.preventDefault(); e.stopPropagation(); rpick.classList.remove('open'); openCwin(cb.dataset.cmts,cb.dataset.t); return; }
+  if(!e.target.closest('.rpick')) rpick.classList.remove('open');
+});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ rpick.classList.remove('open'); if(cwin.classList.contains('open')) closeCwin(); } });
+</script>
+</body>
+</html>

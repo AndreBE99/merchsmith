@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Product Feed Spec (for developer)</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#eef0f6;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;}
+.wrap{max-width:1080px;margin:0 auto;padding:44px 30px 110px;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:16px;box-shadow:0 1px 4px rgba(20,22,45,.06);}
+h1{font-family:var(--serif);font-weight:500;font-size:38px;letter-spacing:-.015em;margin:0 0 10px;}
+.lede{font-size:16px;color:var(--ink-2);max-width:78ch;margin:0;}
+.note{font-size:13px;color:var(--periwinkle-deep);font-weight:600;background:#fff;border-left:3px solid var(--periwinkle);border-radius:8px;padding:11px 15px;margin-top:18px;max-width:80ch;}
+h2{font-family:var(--serif);font-weight:500;font-size:25px;margin:52px 0 6px;}
+h2 .num{color:var(--periwinkle-deep);font-size:18px;font-weight:700;font-family:var(--sans);margin-right:10px;}
+.sub{font-size:14.5px;color:var(--ink-2);max-width:82ch;margin:0 0 20px;}
+.card{background:#fff;border:1px solid rgba(20,22,45,.08);border-radius:16px;padding:22px 26px;box-shadow:0 2px 10px rgba(20,22,45,.04);}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;}
+code{background:var(--paper);border:1px solid var(--line-soft);border-radius:5px;padding:1px 6px;color:var(--periwinkle-ink);}
+pre{background:#1c1d2b;color:#e8e9f3;border-radius:13px;padding:18px 20px;overflow-x:auto;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.6;margin:0;}
+pre .k{color:#9db2ff;} pre .s{color:#c3e88d;} pre .c{color:#6b7089;font-style:italic;} pre .n{color:#f7c66b;}
+/* flow */
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;}
+.fstep{flex:1;min-width:150px;background:var(--paper);border:1px solid var(--line-soft);border-radius:13px;padding:15px 16px;}
+.fstep h4{margin:0 0 5px;font-size:13.5px;}
+.fstep p{margin:0;font-size:12px;color:var(--muted);line-height:1.5;}
+.farr{display:flex;align-items:center;color:var(--periwinkle);font-size:22px;padding:0 10px;}
+@media(max-width:820px){.farr{transform:rotate(90deg);padding:6px 0;}.flow{flex-direction:column;}}
+.fstep.hub{border-color:var(--periwinkle);box-shadow:0 0 0 3px var(--tint-peri);background:#fff;}
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:0 12px 9px 0;border-bottom:1.5px solid var(--line-soft);}
+td{padding:10px 12px 10px 0;border-bottom:1px solid var(--paper-2);color:var(--ink-2);vertical-align:top;}
+td b,td code{color:var(--ink);}
+ul.clean{margin:0;padding-left:20px;}
+ul.clean li{font-size:14px;color:var(--ink-2);margin-bottom:8px;}
+ul.clean b{color:var(--ink);}
+.q{font-size:14px;color:var(--ink-2);background:#fff;border:1px solid var(--line-soft);border-left:3px solid var(--periwinkle);border-radius:8px;padding:12px 15px;margin-bottom:10px;}
+.q b{color:var(--ink);}
+.pill{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;}
+.pill.api{background:rgba(58,157,107,.14);color:var(--green-deep);}
+.pill.csv{background:#e6e9fb;color:var(--periwinkle-ink);}
+.pill.manual{background:var(--paper-2);color:var(--ink-3);}
+.foot-note{font-size:12.5px;color:var(--muted);margin-top:50px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Developer spec · for discussion</span>
+  <h1>The normalised product feed</h1>
+  <p class="lede">How product data from many sources — supplier APIs (XD Connects et al.), CSV uploads, and manual entry — is mapped into <b>one canonical product model</b> that the whole platform reads. This is the contract between the data layer and everything the prototype shows (Store, branding builder, price matrix, stock).</p>
+  <div class="note">This page is for you (product owner) and the developer to agree the data contract before the integration is built. The prototype already reads a model shaped like this (<code>window.STORE</code>), so the UI is proven — this defines the real version behind it.</div>
+
+  <h2><span class="num">1</span>The principle: normalise once, read everywhere</h2>
+  <p class="sub">Every source has its own shape. Rather than teach the app about each one, each source gets a small <b>adapter</b> that maps it into the single canonical model. The app only ever knows the canonical model — so adding a new supplier later is just a new adapter, no UI changes.</p>
+  <div class="card">
+    <div class="flow">
+      <div class="fstep"><h4>Sources</h4><p>XD Connects API · PF Concept · Mid Ocean · CSV uploads · manual products</p></div>
+      <div class="farr">→</div>
+      <div class="fstep"><h4>Adapter / normaliser</h4><p>One per source. Maps native fields → canonical. Runs server-side on a schedule.</p></div>
+      <div class="farr">→</div>
+      <div class="fstep hub"><h4>Canonical product model</h4><p>One clean record per product, stored in our DB. The single source of truth.</p></div>
+      <div class="farr">→</div>
+      <div class="fstep"><h4>Platform &amp; app</h4><p>Store, branding builder, price matrix, stock — all read the canonical model.</p></div>
+    </div>
+  </div>
+
+  <h2><span class="num">2</span>The canonical product model</h2>
+  <p class="sub">One product = one record with nested variants, decoration options, price scales and stock. Illustrative JSON below — this is a <b>core sample, not the full field set</b>. Expect more fields as the product page is finished (e.g. extra specs, packaging, branding artwork refs, compliance docs). Each field also carries a <b>visibility</b> rule — some data (cost, margin, supplier refs, full stock) is <b>distributor-only</b> and never sent to the customer's view; the API/serialiser filters by role.</p>
+  <div class="card">
+<pre><span class="c">// canonical product — what the whole platform reads</span>
+{
+  <span class="k">"id"</span>: <span class="s">"xd-P705.991"</span>,            <span class="c">// our stable id (source-prefixed)</span>
+  <span class="k">"source"</span>: <span class="s">"xd-connects"</span>,         <span class="c">// xd-connects | pf | csv | manual</span>
+  <span class="k">"supplierId"</span>: <span class="s">"xd"</span>,
+  <span class="k">"sku"</span>: <span class="s">"P705.991"</span>,               <span class="c">// supplier's model/item code</span>
+  <span class="k">"name"</span>: <span class="s">"Eco Wheat-Straw Charging Cable"</span>,
+  <span class="k">"description"</span>: <span class="s">"3-in-1 cable…"</span>,
+  <span class="k">"category"</span>: <span class="s">"Tech"</span>, <span class="k">"subCategory"</span>: <span class="s">"Cables"</span>,
+  <span class="k">"material"</span>: <span class="s">"Wheat straw / ABS"</span>,
+  <span class="k">"dimensions"</span>: { <span class="k">"w"</span>:<span class="s">"50mm"</span>, <span class="k">"h"</span>:<span class="s">"100mm"</span>, <span class="k">"d"</span>:<span class="s">"20mm"</span> },
+  <span class="k">"images"</span>: [ <span class="s">"https://cdn.ours/…1.png"</span> ],   <span class="c">// cached to OUR cdn, not hotlinked</span>
+  <span class="k">"sustainability"</span>: { <span class="k">"score"</span>:<span class="n">72</span>, <span class="k">"certs"</span>:[<span class="s">"GRS"</span>] }, <span class="c">// phase 2</span>
+  <span class="k">"leadDays"</span>: <span class="n">8</span>,                     <span class="c">// supplier lead time (working days)</span>
+
+  <span class="k">"variants"</span>: [                       <span class="c">// colour × size</span>
+    { <span class="k">"colour"</span>:<span class="s">"Volcanic Black"</span>, <span class="k">"pms"</span>:<span class="s">"PMS Black 6 C"</span>,
+      <span class="k">"size"</span>:<span class="s">"One size"</span>, <span class="k">"variantSku"</span>:<span class="s">"P705.991.BLK"</span> }
+  ],
+
+  <span class="k">"priceBreaks"</span>: [                    <span class="c">// blank COST per unit by qty</span>
+    { <span class="k">"qty"</span>:<span class="n">100</span>, <span class="k">"unitCost"</span>:<span class="n">2.74</span> },
+    { <span class="k">"qty"</span>:<span class="n">250</span>, <span class="k">"unitCost"</span>:<span class="n">2.45</span> }
+  ],
+
+  <span class="k">"decoration"</span>: [                     <span class="c">// methods this product allows</span>
+    { <span class="k">"method"</span>:<span class="s">"screenprint"</span>, <span class="k">"maxColours"</span>:<span class="n">4</span>,
+      <span class="k">"positions"</span>:[ { <span class="k">"code"</span>:<span class="s">"front"</span>, <span class="k">"name"</span>:<span class="s">"Front"</span>, <span class="k">"w"</span>:<span class="n">30</span>, <span class="k">"h"</span>:<span class="n">8</span> } ],
+      <span class="k">"setup"</span>:<span class="n">25.00</span>, <span class="k">"setupBasis"</span>:<span class="s">"per-colour"</span>,
+      <span class="k">"runCost"</span>:[ { <span class="k">"qty"</span>:<span class="n">100</span>, <span class="k">"colours"</span>:<span class="n">1</span>, <span class="k">"unit"</span>:<span class="n">0.43</span> } ] }
+  ],
+
+  <span class="k">"stock"</span>: [
+    { <span class="k">"variantSku"</span>:<span class="s">"P705.991.BLK"</span>, <span class="k">"onHand"</span>:<span class="n">5200</span>,
+      <span class="k">"incoming"</span>:[ { <span class="k">"qty"</span>:<span class="n">5000</span>, <span class="k">"due"</span>:<span class="s">"2026-07-11"</span> } ] }
+  ],
+  <span class="k">"madeToOrder"</span>: <span class="k">false</span>,
+  <span class="k">"updatedAt"</span>: <span class="s">"2026-06-17T09:00:00Z"</span>,
+  <span class="c">// + more as the product page is finalised: packaging, extra specs,</span>
+  <span class="c">// compliance docs, related products, branding artwork refs…</span>
+  <span class="c">// visibility: cost / margin / supplierId / full stock = DISTRIBUTOR-ONLY</span>
+  <span class="c">// (the API filters fields by the viewer's role)</span>
+}</pre>
+  </div>
+
+  <h2><span class="num">3</span>Mapping XD Connects → canonical</h2>
+  <p class="sub">XD's feed (Xindao V7) is <b>five files</b> that join on the item/model code. Each maps onto part of the canonical model:</p>
+  <div class="card" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>XD feed file</th><th>Key native fields</th><th>→ Canonical target</th></tr></thead>
+      <tbody>
+        <tr><td><b>Products</b></td><td>itemCode, modelCode, name, description, category, colour, material, dimensions, image URLs</td><td><code>id, sku, name, description, category, material, dimensions, images, variants[]</code></td></tr>
+        <tr><td><b>ProductPrices</b></td><td>itemCode, qty-scale → unit price</td><td><code>priceBreaks[]</code> (blank unitCost)</td></tr>
+        <tr><td><b>PrintData</b></td><td>technique, position, max colours, print area dims</td><td><code>decoration[].method / positions[] / maxColours</code></td></tr>
+        <tr><td><b>PrintPrices</b></td><td>technique → setup + per-colour cost by qty</td><td><code>decoration[].setup / runCost[]</code></td></tr>
+        <tr><td><b>Stock</b></td><td>itemCode, stock level, incoming + dates</td><td><code>stock[].onHand / incoming[]</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">XD's feed is a tokenised file download for <b>server-side</b> use, rate-limited (~1 fetch / 15 min) and not CORS-enabled — so it can never be read by the browser. The sync job lives on the back end.</div>
+
+  <h2><span class="num">4</span>Other sources</h2>
+  <div class="card">
+    <ul class="clean">
+      <li><span class="pill api">API</span> &nbsp;<b>Other supplier feeds</b> (PF Concept, Mid Ocean…) — one adapter each, same target model. Most promo suppliers publish a similar 4–5 file structure.</li>
+      <li><span class="pill csv">CSV</span> &nbsp;<b>CSV upload</b> — for suppliers without an API, or the distributor's own lines. We agree a <b>CSV template</b> whose columns map 1:1 to the canonical fields (one row per variant/price-break, or a flat sheet the importer pivots). Distributor uploads → preview → commit.</li>
+      <li><span class="pill manual">MANUAL</span> &nbsp;<b>Manual products</b> — added in-app (we built this in the supplier profile). Writes straight to the canonical model.</li>
+    </ul>
+  </div>
+
+  <h2><span class="num">5</span>Sync, identity &amp; images</h2>
+  <div class="card">
+    <ul class="clean">
+      <li><b>IDs:</b> our canonical <code>id</code> is source-prefixed (<code>xd-P705.991</code>) so codes never collide across suppliers. The supplier's own code stays in <code>sku</code>.</li>
+      <li><b>Sync cadence:</b> scheduled job (e.g. nightly full + hourly stock) respecting each source's rate limit. <code>updatedAt</code> drives change detection.</li>
+      <li><b>Images:</b> synced to <b>our CDN</b> on import (never hotlinked from the supplier) — faster, stable, and survives the supplier changing URLs.</li>
+      <li><b>Pricing note:</b> the feed carries <b>cost</b> only. Markup, discounts, delivery and the customer <b>sell</b> price are applied by our pricing engine (see the Price Matrix spec) — never stored in the feed.</li>
+      <li><b>Soft-delete:</b> products that drop out of a feed are flagged inactive, not hard-deleted (preserves order history).</li>
+    </ul>
+  </div>
+
+  <h2><span class="num">6</span>Open questions for the developer</h2>
+  <div class="q"><b>Hosting / stack</b> — where does the sync job + DB live (e.g. a scheduled worker + Postgres)? Confirms how feeds are pulled.</div>
+  <div class="q"><b>Sample payloads</b> — can we get one real product object from each of XD's 5 files, so the adapter's field names match exactly from day one?</div>
+  <div class="q"><b>CSV template</b> — flat one-row-per-product (importer pivots variants/breaks), or multi-sheet? I can draft the template once you decide.</div>
+  <div class="q"><b>Variant model</b> — is colour×size enough for all suppliers, or do some have other axes (e.g. capacity, finish)? Affects the <code>variants[]</code> shape.</div>
+  <div class="q"><b>Decoration matching</b> — do we map every supplier technique to our shared method list (screenprint, DTF, pad, embroidery, laser), or keep supplier-native names too?</div>
+
+  <h2><span class="num">7</span>Fields captured vs surfaced</h2>
+  <p class="sub">Ingest <b>everything</b> XD provides into the canonical model now — even fields the UI doesn't show yet — so we never need a re-sync to surface them later. <b>Surfaced now</b> = where it appears in the platform today (incl. the new Store <b>distributor view</b> panel); <b>Future location</b> = the planned home once those screens/stages are built.</p>
+  <div class="card card2">
+    <table>
+      <thead><tr><th>XD field (Xindao V7)</th><th>Capture</th><th>Surfaced now</th><th>Future location</th></tr></thead>
+      <tbody>
+        <tr><td>name, description</td><td><b>✓</b></td><td>Store, modal, dist view</td><td>Customer product page</td></tr>
+        <tr><td>long description / feature bullets</td><td><b>✓</b></td><td>—</td><td>Customer product page</td></tr>
+        <tr><td>category / sub-category</td><td><b>✓</b></td><td>Store filters, dist view</td><td>—</td></tr>
+        <tr><td>brand / sub-brand <span class="mono">(Swiss Peak…)</span></td><td><b>✓</b></td><td>Dist view · Product data</td><td>Customer product page</td></tr>
+        <tr><td>colour + PMS, sizes → variants</td><td><b>✓</b></td><td>Branding builder, modal, dist view</td><td>—</td></tr>
+        <tr><td>material composition, capacity, battery</td><td><b>✓</b></td><td>Dist view · Product data</td><td>Customer product page</td></tr>
+        <tr><td>care / washing instructions</td><td><b>✓</b></td><td>—</td><td>Customer product page</td></tr>
+        <tr><td>product dimensions</td><td><b>✓</b></td><td>Proof spec, modal, dist view</td><td>Customer product page</td></tr>
+        <tr><td>images (gallery)</td><td><b>✓</b></td><td>Store + modal</td><td>Customer product page gallery</td></tr>
+        <tr><td>video / lifestyle imagery</td><td><b>✓</b></td><td>—</td><td>Customer product page</td></tr>
+        <tr><td>datasheets / certificates (REACH, battery)</td><td><b>✓</b></td><td>Dist view · Sustainability</td><td>Product page + compliance</td></tr>
+        <tr><td>ProductPrices → price breaks (cost)</td><td><b>✓</b></td><td>Dist view · Price matrix <b>· dist-only</b></td><td>Project modal price matrix</td></tr>
+        <tr><td>RRP / recommended retail</td><td><b>✓</b></td><td>—</td><td>Pricing reference <i>(optional)</i></td></tr>
+        <tr><td>price validity dates</td><td><b>✓</b></td><td>—</td><td>Price-expiry rule (30-day)</td></tr>
+        <tr><td>PrintData → methods / positions / max colours / area</td><td><b>✓</b></td><td>Branding builder, dist view · Decoration</td><td>—</td></tr>
+        <tr><td>PrintPrices → setup + per-colour run cost</td><td><b>✓</b></td><td>Dist view · Price matrix <b>· dist-only</b></td><td>Full per-method modal matrix</td></tr>
+        <tr><td>Stock → on-hand + incoming + dates</td><td><b>✓</b></td><td>Dist view · Stock <b>· dist-only</b></td><td>Stock tab / reservation flow</td></tr>
+        <tr><td>end-of-life / discontinued flag</td><td><b>✓</b></td><td>Soft-delete</td><td>Surface as product status</td></tr>
+        <tr><td>packaging: inner/outer carton qty, dims, weights</td><td><b>✓</b></td><td>Dist view · Packaging</td><td>Orders / delivery-cost calc</td></tr>
+        <tr><td>item weight</td><td><b>✓</b></td><td>Dist view · Packaging</td><td>Delivery-cost calc</td></tr>
+        <tr><td>EAN / barcode, HS code, country of origin</td><td><b>✓</b></td><td>Dist view <i>(placeholder)</i></td><td>Orders / Xero / customs</td></tr>
+        <tr><td>eco / sustainability + certifications</td><td><b>✓</b></td><td>Dist view · Sustainability; USP strip</td><td>Phase 2 sustainability panel</td></tr>
+        <tr><td>related / recommended products</td><td><b>✓</b></td><td>—</td><td>Phase 2 Finder / Inspiration</td></tr>
+      </tbody>
+    </table>
+    <div class="note" style="margin-top:16px">Rule of thumb: <b>capture all, surface progressively.</b> The distributor Store view now exposes most fields (cost, margin, stock, packaging stay <b>distributor-only</b>); the customer-facing product page and the orders/Xero stages are where the rest will land.</div>
+  </div>
+
+  <p class="foot-note">Working spec for discussion — pairs with the Price Matrix and Organisation/User model pages.</p>
+</div>
+</body>
+</html>

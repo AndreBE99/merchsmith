@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Field Mapping Reference</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{color:var(--periwinkle-deep);}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,40px);}
+.top{background:#fff;border-bottom:1px solid var(--line-soft);padding:26px 0;}
+.top h1{font-family:var(--serif);font-weight:500;font-size:clamp(28px,4vw,40px);letter-spacing:-.01em;}
+.top p{color:var(--ink-2);font-size:14.5px;margin-top:6px;max-width:74ch;line-height:1.55;}
+.crumbs{font-size:12.5px;color:var(--muted);margin-bottom:10px;}
+.crumbs a{font-weight:600;}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;font-size:12.5px;font-weight:600;}
+.legend span{display:inline-flex;align-items:center;gap:7px;color:var(--ink-2);}
+.legend i{width:12px;height:12px;border-radius:3px;}
+.ok-i{background:#1f8a5b;} .partial-i{background:#d3a64e;} .gap-i{background:#c0395f;}
+/* supplier filter */
+.filterbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;}
+.fbtn{font:inherit;font-size:13px;font-weight:700;background:#fff;border:1.5px solid var(--line-soft);border-radius:999px;padding:8px 16px;cursor:pointer;color:var(--ink-2);}
+.fbtn.on{background:var(--periwinkle-deep);border-color:var(--periwinkle-deep);color:#fff;}
+.fbtn:hover:not(.on){border-color:var(--periwinkle-deep);}
+section{margin:34px 0;}
+h2{font-family:var(--serif);font-weight:500;font-size:25px;letter-spacing:-.01em;margin-bottom:6px;}
+.sdesc{font-size:14px;color:var(--ink-2);line-height:1.55;margin-bottom:16px;max-width:78ch;}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line-soft);border-radius:12px;overflow:hidden;font-size:13.5px;}
+th{text-align:left;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:12px 14px;background:var(--paper-2);border-bottom:1px solid var(--line-soft);}
+td{padding:12px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.5;color:var(--ink-2);}
+tr:last-child td{border-bottom:0;}
+td b{color:var(--ink);}
+code{font-family:ui-monospace,monospace;font-size:12px;background:var(--paper-2);padding:1px 6px;border-radius:5px;color:var(--ink);}
+.req{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#c0395f;margin-left:6px;}
+.st{display:inline-block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;border-radius:999px;padding:3px 9px;white-space:nowrap;}
+.st.ok{background:#dcf0e4;color:#1f7a4d;} .st.partial{background:#fbeccd;color:#9a6b1f;} .st.gap{background:#fbe0e6;color:#b02a4f;}
+tr.gap td{background:#fdf4f6;} tr.partial td{background:#fdfaf2;}
+.note{background:#fff;border:1px solid var(--line-soft);border-left:4px solid var(--periwinkle-deep);border-radius:10px;padding:16px 18px;margin:22px 0;font-size:13.5px;color:var(--ink-2);line-height:1.6;}
+.note.amber{border-left-color:#d3a64e;}
+.note b{color:var(--ink);}
+/* supplier summary card */
+.summary{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin:22px 0;}
+.summary h3{font-family:var(--serif);font-weight:500;font-size:21px;margin-bottom:4px;}
+.summary .meta{display:flex;gap:22px;flex-wrap:wrap;margin:12px 0 14px;}
+.summary .meta div span{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);}
+.summary .meta div b{font-size:15px;color:var(--ink);}
+.summary p{font-size:14px;color:var(--ink-2);line-height:1.6;}
+.anom{margin-top:14px;}
+.anom h4{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#9a6b1f;margin-bottom:8px;}
+.anom ul{margin:0;padding-left:18px;}
+.anom li{font-size:13.5px;color:var(--ink-2);line-height:1.6;margin-bottom:5px;}
+.suplegend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin:16px 0 4px;align-items:center;}
+.suplegend b{color:var(--ink);font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
+.suplegend span{display:inline-flex;align-items:center;gap:5px;}
+.sup{font-style:normal;font-size:9px;font-weight:800;color:var(--periwinkle-deep);background:var(--paper-2);border:1px solid var(--line-soft);border-radius:4px;padding:1px 4px;margin-left:3px;letter-spacing:.02em;vertical-align:super;}
+.suplegend .sup{vertical-align:baseline;margin:0;}
+.mstat{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 6px;}
+.mstat>div{flex:1;min-width:104px;background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:11px 14px;}
+.mstat b{font-size:21px;display:block;color:var(--ink);} .mstat span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);}
+.fstore{margin-top:5px;} .fstore code{font-size:11px;}
+.gcount{font-family:var(--sans);font-size:11px;font-weight:800;color:var(--muted);background:var(--paper-2);border:1px solid var(--line-soft);border-radius:999px;padding:1px 9px;vertical-align:middle;margin-left:6px;}
+.sup.match{background:var(--periwinkle-deep);color:#fff;border-color:var(--periwinkle-deep);}
+.rawfields{margin-top:16px;border-top:1px solid var(--line-soft);padding-top:6px;}
+.rawfields>summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--periwinkle-deep);padding:8px 0;list-style:none;}
+.rawfields>summary::-webkit-details-marker{display:none;}
+.rawfields>summary::before{content:'\25B8 ';font-size:10px;}
+.rawfields[open]>summary::before{content:'\25BE ';}
+.rawfields>summary:hover{text-decoration:underline;}
+.rawfields table{margin-top:10px;}
+.filterlbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);align-self:center;margin-right:2px;}
+.fdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+.pvbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border:1px solid var(--line-soft);border-left:4px solid var(--periwinkle-deep);border-radius:12px;padding:12px 16px;margin:16px 0 4px;}
+.pvbar>span:first-child{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);}
+.btn-pv{font:inherit;font-size:13px;font-weight:700;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:9px;padding:9px 15px;cursor:pointer;}
+.btn-pv:hover{filter:brightness(1.06);}
+.pvbar-note{font-size:12px;color:var(--muted);}
+.dvadd{font:inherit;font-size:12px;font-weight:700;border:1.5px solid var(--line-soft);background:#fff;color:var(--periwinkle-deep);border-radius:7px;padding:5px 11px;cursor:pointer;white-space:nowrap;}
+.dvadd.on{background:var(--periwinkle-deep);border-color:var(--periwinkle-deep);color:#fff;}
+.pv-scrim{position:fixed;inset:0;z-index:400;background:rgba(22,24,28,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity .16s;}
+.pv-scrim.open{display:flex;opacity:1;}
+.pv-win{background:#fff;border-radius:16px;width:min(1120px,100%);height:min(88vh,960px);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(20,22,45,.4);}
+.pv-bar{display:flex;align-items:center;gap:12px;padding:11px 15px;border-bottom:1px solid var(--line-soft);flex:none;}
+.pv-bar>b{font-size:14px;} .pv-bar>span{font-size:12.5px;color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pv-shuffle{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;font-weight:700;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:8px;padding:7px 12px;cursor:pointer;}
+.pv-open{font-size:12.5px;font-weight:700;color:var(--periwinkle-deep);text-decoration:none;white-space:nowrap;}
+.pv-x{border:0;background:none;font-size:24px;line-height:1;color:var(--muted);cursor:pointer;}
+.pv-frame{flex:1;width:100%;border:0;}
+.pv-empty{padding:44px;text-align:center;color:var(--ink-2);} .pv-empty p{margin:0 0 10px;font-size:14px;line-height:1.6;}
+.foot{padding:40px 0 60px;text-align:center;color:var(--muted);font-size:12.5px;}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <div class="crumbs"><a href="Merchsmith Developer Index.html">← Developer Index</a></div>
+  <h1>Field Mapping Reference</h1>
+  <p>Master list of supplier feed field types and how each maps to the Merchsmith platform model. <b>Filter by supplier</b> to see each feed's shape, summary and anomalies. <b>Gaps are highlighted</b> for us to work through.</p>
+  <div class="legend"><span><i class="ok-i"></i>Mapped</span><span><i class="partial-i"></i>Partial / heuristic / new</span><span><i class="gap-i"></i>Gap — needs a home</span></div>
+  <div class="filterbar" id="filterbar"></div>
+  <div class="filterbar" id="statusbar" style="margin-top:9px"></div>
+</div></div>
+
+<div class="wrap" id="view"></div>
+<div class="wrap" id="colourmap"></div>
+<div class="foot">Merchsmith Platform · Field Mapping Reference · keep updated as suppliers are wired</div>
+<style>
+#colourmap{margin-top:26px;}
+.cm-card{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:20px 22px;margin-top:14px;}
+.cm-h2{font-family:var(--serif);font-weight:500;font-size:24px;letter-spacing:-.01em;margin:34px 0 6px;}
+.cm-sub{font-size:13.5px;color:var(--ink-2);max-width:86ch;line-height:1.6;margin:0 0 6px;}
+.cm-grp{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:12px 0 7px;}
+.cm-pal{display:flex;gap:9px;flex-wrap:wrap;}
+.cm-b{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--ink-2);background:var(--paper);border:1px solid var(--line-soft);border-radius:999px;padding:5px 12px 5px 6px;}
+.cm-b i{width:16px;height:16px;border-radius:99px;border:1px solid rgba(0,0,0,.15);}
+.cm-b i.multi{background:conic-gradient(#e0393e,#f0a02c,#efe12a,#39b45f,#3d6be0,#8930c9,#e0393e);}
+.cm-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px;}
+.cm-tbl th{text-align:left;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:800;padding:0 12px 8px 0;border-bottom:1px solid var(--line-soft);}
+.cm-tbl td{padding:8px 12px 8px 0;border-bottom:1px solid var(--paper-2);color:var(--ink-2);vertical-align:middle;}
+.cm-tbl td:first-child{color:var(--muted);font-weight:800;width:28px;}
+.cm-dot{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ink);white-space:nowrap;}
+.cm-dot i{width:12px;height:12px;border-radius:99px;border:1px solid rgba(0,0,0,.15);display:inline-block;}
+.cm-warn{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#9a2c2c;background:#fbdddd;border-radius:999px;padding:2px 9px;}
+.cm-ok{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--green-deep);background:var(--tint-green);border-radius:999px;padding:2px 9px;}
+.cm-ovr{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--tint-peri);border-radius:999px;padding:2px 9px;}
+.cm-sel{font:inherit;font-size:12px;font-weight:600;border:1.5px solid var(--line-soft);border-radius:8px;padding:5px 8px;background:#fff;color:var(--ink);}
+.cm-sel:focus{outline:0;border-color:var(--periwinkle);}
+.cm-count{font-family:var(--sans);font-size:11px;font-weight:800;color:var(--muted);}
+.cm-filter{display:flex;gap:10px;align-items:center;margin:10px 0 2px;flex-wrap:wrap;}
+.cm-filter input{font:inherit;font-size:12.5px;border:1.5px solid var(--line-soft);border-radius:9px;padding:7px 11px;min-width:220px;background:#fff;}
+.cm-filter input:focus{outline:0;border-color:var(--periwinkle);}
+</style>
+<script>
+(function(){
+  function initColourMap(){
+  if(!window.MSCOLOUR){ setTimeout(initColourMap,120); return; }
+  const host=document.getElementById('colourmap');
+  const swd=(base)=>{ const b=MSCOLOUR.BASE.find(x=>x.name===base); if(!b) return '<span class="cm-dot"><i style="background:#bbb"></i>'+esc(base||'—')+'</span>';
+    return '<span class="cm-dot"><i class="'+(b.multi?'multi':'')+'" style="'+(b.multi?'':'background:'+b.hex)+'"></i>'+esc(b.name)+'</span>'; };
+  // distinct raw colour names + counts from the live catalogue
+  function rawColours(){
+    const m=new Map();
+    (window.MSCAT?MSCAT.all():[]).forEach(p=>(p.colours||[]).forEach(c=>{
+      const n=(typeof c==='string'?c:(c&&(c.name||c.base)))||''; const t=String(n).trim(); if(!t) return;
+      m.set(t,(m.get(t)||0)+1);
+    }));
+    return [...m.entries()].sort((a,b)=>b[1]-a[1]);
+  }
+  let q='';
+  function render(){
+    const raws=rawColours();
+    const rows=raws.map(([raw,n])=>{ const v=MSCOLOUR.via(raw); return {raw,n,base:v&&v.base,via:v&&v.via}; });
+    const unmapped=rows.filter(r=>!r.base);
+    const shown=rows.filter(r=>!q||r.raw.toLowerCase().includes(q)).sort((a,b)=>(!a.base===!b.base)?(b.n-a.n):(a.base?1:-1));
+    host.innerHTML=`
+    <h2 class="cm-h2" id="cmtop">Colour → base colour mapping</h2>
+    <p class="cm-sub">Every raw supplier colour rolls up to ONE of the 19 master base colours below — so "Rose", "Fuchsia" and "Blush pink" all filter as <b>Pink</b> in the store. Resolution order: <b>manual override → ordered rules → unmapped</b> (unmapped colours don't appear in the store filter and are flagged here). Overrides persist and are shared with the live store.</p>
+
+    <div class="cm-card">
+      <div class="cm-grp" style="margin-top:0">The master palette (what the customer sees in the filter)</div>
+      ${['Neutrals','Brights','Earth','Finishes'].map(g=>`<div class="cm-grp">${g}</div><div class="cm-pal">${MSCOLOUR.BASE.filter(b=>b.grp===g).map(b=>`<span class="cm-b"><i class="${b.multi?'multi':''}" style="${b.multi?'':'background:'+b.hex}"></i>${b.name}</span>`).join('')}</div>`).join('')}
+    </div>
+
+    <div class="cm-card">
+      <div class="cm-grp" style="margin-top:0">The rules — first match wins (specific shades before generic words)</div>
+      <table class="cm-tbl"><thead><tr><th>#</th><th>Maps to</th><th>Catches (keywords)</th></tr></thead><tbody>
+        ${MSCOLOUR.RULES.map((r,i)=>`<tr><td>${i+1}</td><td>${swd(r[0])}</td><td>${esc(r[2])}</td></tr>`).join('')}
+      </tbody></table>
+      <p class="cm-sub" style="margin-top:10px">Why order matters: <b>Navy</b> sits before Blue so "Dark blue" doesn't land in Blue; <b>Gold/Silver</b> sit before Metallic and Pink so "Rose gold" lands in Gold; <b>Olive</b> sits before Green so "Khaki" doesn't read as generic green. Anything no rule catches is <b>unmapped</b> until a rule is extended or an override is set below.</p>
+    </div>
+
+    <div class="cm-card">
+      <div class="cm-grp" style="margin-top:0">Live coverage — every raw colour in the current catalogue (${rows.length} distinct · ${unmapped.length?('<span class="cm-warn">'+unmapped.length+' unmapped</span>'):'<span class="cm-ok">all mapped</span>'})</div>
+      <div class="cm-filter"><input type="search" placeholder="Search raw colours…" id="cmq" value="${esc(q)}"><span class="cm-count">Unmapped sort first · counts = products carrying that colour</span></div>
+      <table class="cm-tbl"><thead><tr><th></th><th>Raw feed colour</th><th>Products</th><th>Resolves to</th><th>Via</th><th>Override</th></tr></thead><tbody>
+        ${shown.slice(0,400).map((r,i)=>`<tr>
+          <td>${i+1}</td>
+          <td style="font-weight:700;color:var(--ink)">${esc(r.raw)}</td>
+          <td class="cm-count">${r.n}</td>
+          <td>${r.base?swd(r.base):'<span class="cm-warn">Unmapped</span>'}</td>
+          <td>${r.via==='override'?'<span class="cm-ovr">Override</span>':(r.via?'Rule':'—')}</td>
+          <td><select class="cm-sel" data-cmov="${esc(r.raw)}"><option value="">${r.base?'— use rule —':'— pick —'}</option>${MSCOLOUR.BASE.map(b=>`<option ${MSCOLOUR.overrides()[r.raw.toLowerCase()]===b.name?'selected':''}>${b.name}</option>`).join('')}</select></td>
+        </tr>`).join('')}
+      </tbody></table>
+      ${shown.length>400?'<p class="cm-sub" style="margin-top:8px">Showing the first 400 — use search to narrow.</p>':''}
+    </div>`;
+    host.querySelectorAll('[data-cmov]').forEach(s=>s.onchange=()=>{ MSCOLOUR.setOverride(s.dataset.cmov, s.value||null); render(); });
+    const inp=document.getElementById('cmq'); if(inp){ inp.oninput=()=>{ q=inp.value.toLowerCase(); render(); }; if(q){ inp.focus(); inp.setSelectionRange(q.length,q.length); } }
+  }
+  render();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initColourMap); else initColourMap();
+})();
+</script>
+
+<script src="store-feed.js"></script>
+<script src="catalogue-data.js?v=6"></script>
+<script src="colour-map.js?v=1"></script>
+<script>
+const esc=s=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const DVKEY='ms-dv-extra-fields';
+let _dvQueueItems=[];
+function dvGet(){ try{ return JSON.parse(localStorage.getItem(DVKEY)||'[]')||[]; }catch(e){ return []; } }
+function dvHas(l){ return dvGet().some(x=>x.label===l); }
+function dvToggle(l,store,grp){ let a=dvGet(); if(a.some(x=>x.label===l)) a=a.filter(x=>x.label!==l); else a.push({label:l,store:store||'',group:grp||''}); try{ localStorage.setItem(DVKEY,JSON.stringify(a)); }catch(e){} }
+function dvAddAll(items){ let a=dvGet(); (items||[]).forEach(it=>{ if(!a.some(x=>x.label===it.label)) a.push(it); }); try{ localStorage.setItem(DVKEY,JSON.stringify(a)); }catch(e){} }
+function dvClear(){ try{ localStorage.setItem(DVKEY,'[]'); }catch(e){} }
+function tbl(head,rows){return `<table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr class="${r.cls||''}">${r.cells.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;}
+const STt={ok:'<span class="st ok">Mapped</span>',part:'<span class="st partial">Partial</span>',heur:'<span class="st partial">Heuristic</span>',newf:'<span class="st partial">New — wire</span>',src:'<span class="st partial">Source found</span>',gap:'<span class="st gap">Gap</span>'};
+
+// ---- MASTER (canonical platform model) ----
+function master(curId,statusId){
+  const TAG={biolabs:'BL',neutral:'NE',xindao:'XD',pfconcept:'PF',xoopar:'XO'}[curId]||null;
+  const _match=f=>(!TAG||f.seen.some(a=>a[1]===TAG))&&(!statusId||statusId==='all'||f.status===statusId);
+  const SUPTAGS={BL:'Bio Labs',NE:'Neutral',XD:'Xindao',PF:'PF Concept',XO:'Xoopar'};
+  const MGROUPS=[
+    {name:'Identity &amp; codes',desc:'How a product and its variants are identified, grouped and joined across feeds.',fields:[
+      {f:'Product name',req:1,store:'product.name',seen:[['Title','BL'],['name','NE'],['ItemName','XD'],['description','PF'],['retail_name','XO']],xform:'Decode entities, trim, prefer EN locale.',surfaces:'PP title · cards · search',status:'ok'},
+      {f:'Model / range',store:'product.model',seen:[['modelcode','PF'],['ModelCode','XD'],['family_article_code','XO']],xform:'Groups colour/size variants into one product.',surfaces:'PP variant grouping · admin',status:'part'},
+      {f:'Item / SKU code',req:1,store:'product.code',seen:[['Sku','BL'],['parentSKU','NE'],['itemcode','PF'],['ItemCode','XD'],['uuid','XO']],xform:'Verbatim; parent/model code for variant feeds.',surfaces:'PP · orders · feed joins',status:'ok'},
+      {f:'Variant SKU',store:'variant.code',seen:[['skus[].sku','NE'],['itemcode','PF'],['ItemCode','XD']],xform:'Flatten nested / colour variants.',surfaces:'PP variant selector · stock join',status:'part'},
+      {f:'Barcode / EAN',store:'variant.ean',seen:[['ean','NE'],['EANCode','XD']],xform:'Per variant, verbatim.',surfaces:'Orders · fulfilment',status:'src'},
+      {f:'Brand',store:'product.brand',seen:[['brand','NE'],['Brand','XD'],['brand','XO']],xform:'Tag; default to supplier name.',surfaces:'PP · brand filter',status:'part'},
+      {f:'HS / commodity code',store:'product.meta.hs',seen:[['commodityCode','NE'],['CommodityCode','XD'],['hs_customs_code','XO']],xform:'Metadata, verbatim.',surfaces:'Export / customs docs',status:'src'},
+    ]},
+    {name:'Descriptive',desc:'Marketing and reference copy shown to the buyer.',fields:[
+      {f:'Long description',store:'product.description',seen:[['LongDescription','XD'],['description','NE'],['long_description','XO']],xform:'Decode HTML, prefer EN.',surfaces:'PP description tab',status:'src'},
+      {f:'Short description / strapline',store:'product.strapline',seen:[['name_Short','NE'],['short_description','XO'],['USP','XD']],xform:'Trim to one line.',surfaces:'PP subtitle · cards',status:'part'},
+      {f:'Care instructions',store:'product.care',seen:[['careInstruction','NE']],xform:'Prefer EN locale.',surfaces:'PP details tab',status:'part'},
+      {f:'Gender',store:'product.meta.gender',seen:[['productGender','NE']],xform:'Map to Unisex / M / F / Kids.',surfaces:'Apparel filter',status:'newf'},
+      {f:'Lifecycle / intro date',store:'product.meta.intro',seen:[['ProductLifeCycle','XD'],['IntroDate','XD'],['created','XO']],xform:'Recent intro → "New" flag.',surfaces:'PP / card "New" badge',status:'part'},
+    ]},
+    {name:'Categorisation',desc:'Where the product sits in the platform taxonomy.',fields:[
+      {f:'Category → Department',req:1,store:'product.dept',seen:[['pa_product','BL'],['mainCategory','NE'],['MainCategory','XD'],['groupDesc#','PF'],['type_of_product','XO'],['family','XO']],xform:'Keyword / numeric-code → 10 departments; FR-aware; else Lifestyle.',surfaces:'Nav · PP breadcrumb · filter',status:'heur'},
+      {f:'Sub-category',store:'product.subcat',seen:[['subCategory','NE'],['SubCategory','XD'],['categories[]','XO']],xform:'Auto-match on name/category; else manual filing.',surfaces:'Department page filter',status:'heur'},
+      {f:'Collection / series',store:'product.collection',seen:[['collection','XO']],xform:'Tag.',surfaces:'Merchandising',status:'part'},
+    ]},
+    {name:'Colour &amp; appearance',desc:'Variant colour and its accurate rendering.',fields:[
+      {f:'Colours',store:'colours[]',seen:[['pa_colour','BL'],['colorName','NE'],['Color','XD'],['product_colors','XO']],xform:'Split / per-variant; roll to 12 base colours.',surfaces:'PP swatches · colour filter',status:'ok'},
+      {f:'Colour value (hex / PMS / CMYK)',store:'colour.hex',seen:[['HexColor1','XD'],['PMSColor1','XD'],['cmyk','NE'],['hex','NE']],xform:'Prefer hex; derive from CMYK; hex often null.',surfaces:'PP accurate swatch',status:'part'},
+    ]},
+    {name:'Sizes (apparel)',desc:'The size dimension for apparel and bags.',fields:[
+      {f:'Sizes',store:'sizes[]',seen:[['size','NE'],['size_Id','NE']],xform:'New dimension — size × colour variant matrix.',surfaces:'PP size selector · variant matrix',status:'newf'},
+    ]},
+    {name:'Material &amp; physical',desc:'What it is made of and its physical spec.',fields:[
+      {f:'Material / composition',store:'product.material',seen:[['pa_material','BL'],['materialQuality','NE'],['Material','XD']],xform:'Dedupe repeated values.',surfaces:'PP details tab',status:'src'},
+      {f:'Material weight (GSM)',store:'product.gsm',seen:[['materialGsm','NE']],xform:'Integer g/m².',surfaces:'PP details (apparel)',status:'src'},
+      {f:'Product dimensions',store:'product.dims',seen:[['ItemDimensions','XD'],['length/width/height','NE'],['height_cm','XO'],['size','XO']],xform:'Parse amount + unit; some null / free-text.',surfaces:'PP details tab',status:'src'},
+      {f:'Product weight (net)',store:'product.weight',seen:[['netWeightKg_Pcs','NE'],['ItemWeightNetGr','XD'],['weight_g','XO']],xform:'Normalise to g/kg.',surfaces:'Delivery costing',status:'src'},
+      {f:'Capacity (volume)',store:'product.capacity',seen:[['backpack_capacity_l','XO']],xform:'Parse {amount,unit} (LITER).',surfaces:'PP details tab',status:'newf'},
+    ]},
+    {name:'Pricing',desc:'Cost ladder and currency — feeds the price engine.',fields:[
+      {f:'Price-break qty + unit cost',req:1,store:'breaks[] · priceFrom',seen:[['customtier_*','BL'],['scales[]','PF'],['price.gbp','NE'],['price','XO']],xform:'Split pipe arrays / join the separate price feed (PF, XD) into one ladder.',surfaces:'PP price matrix · price engine · quotes',status:'part'},
+      {f:'RRP / industry reference',store:'pricing.rrp',seen:[['industryCol','PF']],xform:'Reference sell price (decreases with volume).',surfaces:'Margin display (admin)',status:'part'},
+      {f:'Currency → GBP',store:'pricing.currency',seen:[['currency','PF'],['price.gbp','NE'],['price.currency','XO']],xform:'Read GBP; EUR (Xoopar) needs FX conversion.',surfaces:'All pricing',status:'part'},
+      {f:'Clearance / promotion',store:'pricing.promo',seen:[['clearance','PF'],['promotion.standardPrice','PF']],xform:'was/now overlay on base cost.',surfaces:'PP sale badge',status:'newf'},
+      {f:'MOQ',store:'product.moq',seen:[['customtier','BL'],['minDecoQty','PF'],['box_Qty','NE'],['minimum_printing_quantity','XO']],xform:'First break / pack qty.',surfaces:'PP · price engine',status:'src'},
+    ]},
+    {name:'Decoration &amp; branding',desc:'How the product is decorated and what that costs — feeds the price engine and the branding step.',fields:[
+      {f:'Print methods',store:'methods[]',seen:[['pa_print-method','BL'],['decoCharge','PF'],['AllPrintCodes','XD'],['type_of_printing','XO']],xform:'Keyword / code → 6 platform methods.',surfaces:'PP branding · price engine',status:'heur'},
+      {f:'Decoration setup (origination)',store:'deco.setup',seen:[['setupCharge','PF'],['SetupNet','XD'],['printing_technical_fees','XO']],xform:'One-off £ per method/colour.',surfaces:'Price engine',status:'newf'},
+      {f:'Decoration run cost (qty breaks)',store:'deco.run',seen:[['decoPrice[]','PF'],['PrintPriceNet_*','XD'],['digital_print_price_position','XO']],xform:'Per-unit cost by qty break.',surfaces:'Price engine',status:'newf'},
+      {f:'Print area / positions',store:'deco.area',seen:[['pa_print-area','BL'],['MaxPrintWidthDefaultMM','XD'],['PrintPositionDefault','XD'],['printing_zone_size','XO'],['logoSizeCm2','PF']],xform:'Per position; size bands.',surfaces:'PP branding',status:'newf'},
+      {f:'Max colours',store:'deco.maxColours',seen:[['MaxColorsDefault','XD'],['amountColorsId','PF']],xform:'Integer / Full colour.',surfaces:'PP branding · price engine',status:'newf'},
+      {f:'Print template / line art',store:'deco.template',seen:[['LineDrawingDefault','XD'],['template','XO']],xform:'Image URL (Xoopar = Drive link).',surfaces:'PP branding studio',status:'part'},
+      {f:'Decoration options',store:'deco.options',seen:[['VariableDataPrinting','XD'],['CustomSleevePossible','XD'],['GiftWrappingPossible','XD'],['front_and_back_printing','XO']],xform:'Booleans → option toggles.',surfaces:'PP branding options',status:'newf'},
+      {f:'Min print qty',store:'deco.moq',seen:[['MOQPrintOrder','XD'],['minimum_printing_quantity','XO'],['minDecoQty','PF']],xform:'Integer.',surfaces:'Price engine',status:'src'},
+    ]},
+    {name:'Stock &amp; availability',desc:'Live availability and restock — drives the stock indicator and lead time.',fields:[
+      {f:'Stock on hand',store:'stock.onHand',seen:[['stockDirect','PF'],['CurrentStock','XD'],['stock','XO']],xform:'Integer available now.',surfaces:'PP availability',status:'src'},
+      {f:'Incoming restock + date',store:'stock.incoming',seen:[['stockNextPo','PF'],['stockDateNextPo','PF'],['FutureIncomingStockDate1','XD'],['TotalQty','XD']],xform:'Qty + ISO date (null = none).',surfaces:'PP "back in stock" · lead',status:'src'},
+      {f:'Warehouse location',store:'stock.location',seen:[['stockLocation','PF']],xform:'UK / PL → lead time.',surfaces:'Lead-time calc',status:'src'},
+    ]},
+    {name:'Logistics &amp; delivery',desc:'Packing and origin — drives delivery costing and customs.',fields:[
+      {f:'Lead time',store:'product.lead',seen:[['pa_lead-time','BL'],['stockLocation','PF']],xform:'"N days" → integer; or derived from warehouse.',surfaces:'PP · checkout ETA',status:'heur'},
+      {f:'Carton / outer qty',store:'logistics.cartonQty',seen:[['box_Qty','NE'],['OuterCartonQty','XD'],['packaging_gift','XO']],xform:'Integer (Xoopar buried in free text).',surfaces:'Delivery packing',status:'src'},
+      {f:'Inner box qty',store:'logistics.innerQty',seen:[['InnerboxQty','XD']],xform:'Integer.',surfaces:'Delivery',status:'src'},
+      {f:'Carton dimensions',store:'logistics.cartonDims',seen:[['box_Length/Width/Height','NE'],['carton dims','XD']],xform:'Parse cm.',surfaces:'Delivery costing',status:'src'},
+      {f:'Carton weight',store:'logistics.cartonWeight',seen:[['weightKg_Box','NE'],['ItemWeightGrossGr','XD']],xform:'Normalise to kg.',surfaces:'Delivery',status:'src'},
+      {f:'Packaging type',store:'logistics.packaging',seen:[['PackagingTypeItem','XD'],['packaging_gift','XO']],xform:'Label.',surfaces:'PP details',status:'part'},
+      {f:'Country of origin',store:'product.origin',seen:[['countyOfOrigin','NE'],['CountryOfOrigin','XD'],['manufacturing_country','XO']],xform:'ISO / name (Neutral key misspelled).',surfaces:'PP details · customs · eco',status:'src'},
+    ]},
+    {name:'Sustainability &amp; compliance',desc:'Eco credentials, carbon data and regulatory info.',fields:[
+      {f:'Eco / sustainability score',store:'sustainability',seen:[['pa_eco-credentials','BL'],['certifications','NE'],['Eco','XD'],['mainCategory','NE']],xform:'Keyword / cert / flag → 0–10 score.',surfaces:'PP eco badge · eco filter',status:'heur'},
+      {f:'Certifications',store:'eco.certs',seen:[['certifications[]','NE'],['Certifications','XD']],xform:'List / PDF → badges.',surfaces:'PP eco badges',status:'newf'},
+      {f:'Carbon / LCA CO₂',store:'eco.co2',seen:[['Total CO2 emissions','XD']],xform:'Parse 10+ field LCA block.',surfaces:'PP carbon panel (new)',status:'newf'},
+      {f:'Impact (passport / traceability / charity)',store:'eco.impact',seen:[['Digital passport','XD'],['Traceability','XD'],['Charity','XD']],xform:'Links / flags.',surfaces:'PP impact panel (new)',status:'newf'},
+      {f:'Compliance / GPSR',store:'product.compliance',seen:[['Compliance','XD'],['GPSRContact','XD'],['GPSRWebsite','XD']],xform:'EU GPSR responsible-person info.',surfaces:'PP compliance · docs',status:'gap'},
+      {f:'Feature flags',store:'product.features',seen:[['nfc','XO'],['rfid_protection','XO'],['magnetic','XO'],['PVC free','XD']],xform:'Booleans → feature chips.',surfaces:'PP features',status:'newf'},
+    ]},
+    {name:'Media',desc:'Imagery and 3D — the visual on the product page.',fields:[
+      {f:'Primary image',store:'image',seen:[['Image URL','BL'],['imageDefault','NE'],['MainImage','XD'],['main_photo','XO']],xform:'First / typed-main URL.',surfaces:'PP hero · cards',status:'ok'},
+      {f:'Gallery',store:'gallery[]',seen:[['imageOther[]','NE'],['AllImages','XD'],['ExtraImage1-3','XD'],['image_1..6','XO']],xform:'Split CSV / typed keys.',surfaces:'PP gallery',status:'src'},
+      {f:'Mood / lifestyle images',store:'gallery.mood',seen:[['ImageMood1-3','XD']],xform:'Typed keys.',surfaces:'PP lifestyle strip',status:'part'},
+      {f:'Print / line image',store:'deco.lineArt',seen:[['ImagePrint','XD'],['LineDrawingDefault','XD']],xform:'Typed keys.',surfaces:'PP branding',status:'part'},
+      {f:'3D model',store:'media.glb',seen:[['Imagefile3D','XD']],xform:'.glb URL.',surfaces:'PP 3D viewer (new)',status:'newf'},
+      {f:'Drive-hosted links',store:'media.driveLinks',seen:[['link_image1..6','XO'],['hd_image_link','XO']],xform:'Google Drive shares — not directly embeddable; fetch + re-host.',surfaces:'Needs hosting step',status:'gap'},
+    ]},
+  ];
+  const tagLegend=`<div class="suplegend"><b>Feeds:</b> ${Object.entries(SUPTAGS).map(([k,v])=>`<span><i class="sup">${k}</i>${v}</span>`).join('')}</div>`;
+  let _n=0,_ok=0,_new=0,_gap=0;
+  MGROUPS.forEach(g=>g.fields.forEach(f=>{ if(!_match(f))return; _n++; if(f.status==='ok')_ok++; if(f.status==='newf')_new++; if(f.status==='gap')_gap++;}));
+  const summary=`<div class="mstat"><div><b>${_n}</b><span>Canonical fields</span></div><div><b>${MGROUPS.length}</b><span>Groups</span></div><div><b>${_ok}</b><span>Fully mapped</span></div><div><b>${_new}</b><span>New to wire</span></div><div><b>${_gap}</b><span>Open gaps</span></div></div>`;
+  const groupsHtml=MGROUPS.map(g=>{
+    const ff=g.fields.filter(_match); if(!ff.length) return '';
+    const rows=ff.map(f=>({cls:f.status==='gap'?'gap':'',cells:[
+      `<b>${f.f}</b>${f.req?'<span class="req">req</span>':''}${f.store?`<div class="fstore"><code>${f.store}</code></div>`:''}`,
+      f.seen.map(a=>`<code>${a[0]}</code><i class="sup${TAG&&a[1]===TAG?' match':''}">${a[1]}</i>`).join(' '),
+      f.xform, f.surfaces, STt[f.status]
+    ]}));
+    return `<section><h2>${g.name}<span class="gcount">${ff.length}</span></h2><p class="sdesc">${g.desc}</p>${tbl(['Platform field','Seen across feeds','Transform → platform','Surfaces on / feeds into','Status'],rows)}</section>`;
+  }).join('');
+  const value=tbl(['Mapping','Rule (today)','Target','Status'],[
+    {cells:['<b>Category → Department</b>','Keyword match across 8 dept rules; else Lifestyle.','10 departments',STt.heur]},
+    {cells:['<b>Source → Sub-category</b>','Import auto-match on name/category; else manual filing.','<code>ms-product-subcats</code>',STt.heur]},
+    {cells:['<b>Eco → Score</b>','biodegradable→9 · recycled→8 · recyclable/natural→7 · certifications boost · none→5.','0–10',STt.heur]},
+    {cells:['<b>Print method → Method</b>','engrave→laser · digital→dtf · 1-colour→pad · transfer · embroider.','6 methods',STt.heur]},
+    {cells:['<b>Colour → Base colour</b>','Shades rolled to the 19-colour master palette for the store filter — rules + live coverage in the <a href="#colourmap" style="color:var(--periwinkle-deep)">Colour mapping tool</a> below.','19 base',STt.ok]},
+    {cells:['<b>Currency → GBP</b>','Bio Labs assumed GBP; PF Concept has multi-currency — read <code>price.gbp</code>. No FX.','—',STt.part]},
+  ]);
+  const _queue=[]; MGROUPS.forEach(g=>g.fields.forEach(f=>{ if(_match(f)&&(f.status==='gap'||f.status==='newf')) _queue.push({grp:g.name,f}); }));
+  _dvQueueItems=_queue.map(q=>({label:q.f.f,store:q.f.store||'',group:q.grp}));
+  const queueTbl=tbl(['Field','Group','Destination','Status','In Distributor view'],_queue.map(q=>{ const added=dvHas(q.f.f); return {cls:q.f.status==='gap'?'gap':'partial',cells:[`<b>${q.f.f}</b>`,q.grp,q.f.store?`<code>${q.f.store}</code>`:'<i>needs a decision</i>',STt[q.f.status],`<button class="dvadd${added?' on':''}" data-dvadd="${esc(q.f.f)}" data-dvstore="${esc(q.f.store||'')}" data-dvgrp="${esc(q.grp)}">${added?'\u2713 In view':'+ Add'}</button>`]}; }));
+  const s=curId!=='all'?SUPPLIERS[curId]:null;
+  const ctx=s?`<div class="summary"><h3>${esc(s.name)}</h3>
+    <div class="meta"><div><span>Format</span><b>${s.format}</b></div><div><span>Scale</span><b>${s.rows}</b></div><div><span>Shape</span><b>${s.shape}</b></div></div>
+    <p>${s.summary}</p>
+    <div class="anom"><h4>Anomalies &amp; gotchas</h4><ul>${s.anomalies.map(a=>`<li>${a}</li>`).join('')}</ul></div>
+    <details class="rawfields"><summary>Raw feed fields (as supplied)</summary>${s.fields}</details>
+  </div>`:'';
+  const intro=curId==='all'
+    ? `<div class="note"><b>Canonical product model.</b> Every field any supplier feed supplies — grouped, and mapped to where it's stored and where it surfaces. The primary destination is the <b>Store Product Page</b> (<b>PP</b>); from there each field feeds the systems that need it — price engine, delivery costing, filters, fulfilment. <b>Filter by supplier above</b> to see only the fields that feed supplies.</div>`
+    : `<div class="note"><b>${esc(s.name)} — supplied fields.</b> The ${_n} field${_n===1?'':'s'} below are the ones this feed populates, shown in the canonical model with the matching feed key highlighted. Switch to <b>All suppliers</b> for the full model.</div>`;
+  return `${intro}
+    <div class="pvbar"><span>See it live</span><button class="btn-pv" data-storepreview="${curId}">▶ Preview ${curId==='all'?'a random product':esc((SUPPLIERS[curId]||{}).name||'product')+' data'} on the store page</button><span class="pvbar-note">A real product rendered on the Store Product Page · shuffle to try another.</span></div>
+    ${tagLegend}${summary}
+    ${ctx}
+    ${groupsHtml||'<p class="sdesc" style="margin-top:14px">No fields match this filter.</p>'}
+    <section><h2>Value transforms (lookups)</h2><p class="sdesc">Free-text source values normalised to platform enums — the most fragile mappings, to grow into explicit lookup tables.</p>${value}</section>
+    ${_queue.length?`<section><h2>Build queue</h2><p class="sdesc">New dimensions to add to the model and genuine gaps awaiting a decision — derived live from the field statuses above${TAG?' for this supplier':''}.</p>${queueTbl}
+    <div class="pvbar" style="margin-top:14px"><span>Distributor view</span><button class="btn-pv" data-storepreview="${curId}">\u2295 Build fields into Product Page</button><button class="fbtn" data-dvaddall>+ Add all queued fields to view</button><button class="fbtn" data-dvclear>Clear added</button><span class="pvbar-note">Click <b>+ Add</b> on any row to surface that field permanently in the <b>Distributor view</b> on the product page (shows \u201cNot supplied\u201d until data arrives).</span></div>
+    <div class="note amber"><b>As new sample data arrives</b>, add each field to its group above — anything still without a home drops into this queue automatically.</div></section>`:''}`;
+}
+
+// ---- per-supplier ----
+const SUPPLIERS={
+  biolabs:{name:'Bio Labs', format:'CSV — WooCommerce product export', rows:'411 products · 35 columns', shape:'Flat — one row per product',
+    summary:'A wellbeing/toiletries/travel range. Standard WooCommerce export: every attribute appears as a paired "Attribute Name" / "Attribute Value" column, and price tiers are pipe-delimited parallel arrays in two columns. Fully ingested and auto-filed to sub-categories.',
+    anomalies:['Each attribute is a <b>Name/Value column pair</b> — map the <i>Value</i> column, not the Name (caused an early mis-map).','Price tiers are <b>pipe-delimited</b> (<code>50|100|250</code> × <code>7.21|5.78|…</code>) — must split and align by index; some tiers blank → row flagged needs-attention.','Image lives in <code>Image URL</code>, not the (empty) <code>External Product URL</code>.','One product (SPF25 Sun Lotion) has <b>no usable price</b> → imported as needs-attention.','Has true <b>quantity breaks</b> (unlike Neutral).'],
+    fields:tbl(['Bio Labs column','→ Platform','Status'],[
+      {cells:['<code>Title</code>','name',STt.ok]},{cells:['<code>Sku</code>','code',STt.ok]},
+      {cells:['<code>…customtier_quantity / _price</code>','price breaks',STt.ok]},
+      {cells:['<code>Attribute Value (pa_product/pa_theme)</code>','dept + sub-cat',STt.heur]},
+      {cells:['<code>Attribute Value (pa_colour)</code>','colours',STt.ok]},
+      {cells:['<code>Attribute Value (pa_eco-credentials)</code>','sustainability',STt.heur]},
+      {cells:['<code>Attribute Value (pa_lead-time)</code>','lead',STt.heur]},
+      {cells:['<code>Attribute Value (pa_print-method)</code>','methods',STt.heur]},
+      {cells:['<code>Image URL</code>','image',STt.ok]},
+      {cells:['<code>pa_material / pa_print-area</code>','<i>unmapped</i>',STt.gap]},
+    ])},
+  neutral:{name:'Neutral (via PF Concept)', format:'JSON — API datafeed (product feed)', rows:'Nested variants · split across 3 feeds', shape:'Parent product → nested variant SKUs',
+    summary:'An organic/recycled apparel brand supplied through PF Concept. Product-only feed (no quantity breaks). Deeply nested: a parent product carries an array of variant SKUs (size × colour), each with its own SKU, EAN, price, stock, weight and images. PF Concept splits data across three feeds (price / print-price / stock) keyed on SKU.',
+    anomalies:['<b>Nested variants</b> — needs a "flatten" importer: parent → one product, colours/sizes from <code>skus[]</code>.','<b>Split feeds</b> — product, price, print-price and stock are separate JSON files joined on SKU/<code>article_no</code>.','<b>No quantity breaks</b> in this feed — single <code>price.gbp</code> per variant (breaks come from the price feed).','<b>Multi-currency</b> price object (eur/nok/sek/dkk/gbp) — read GBP; non-GBP often null.','<code>countyOfOrigin</code> is misspelled in the feed — map defensively.','Heavy <b>i18n</b>: name/description/colour have Da/Se/No translation arrays — ignore non-EN.','New model dimensions: <b>apparel sizes</b> (XS–2XL) and <b>certifications[]</b>.','<code>hex</code> usually null; colour given as <code>colorName</code> + <code>cmyk</code> array.'],
+    fields:tbl(['Neutral field','→ Platform','Status'],[
+      {cells:['<code>parentSKU</code>','product code',STt.ok]},
+      {cells:['<code>skus[]</code>','flatten → variants',STt.part]},
+      {cells:['<code>name</code> / <code>name_Short</code> / <code>name_2</code>','name',STt.ok]},
+      {cells:['<code>nameTranslations[]</code> (Da/Se/No)','i18n — ignore non-EN',STt.gap]},
+      {cells:['<code>description</code> / <code>descriptionTranslations[]</code>','description',STt.src]},
+      {cells:['<code>careInstruction</code> / <code>careInstructionTranslations[]</code>','metadata',STt.part]},
+      {cells:['<code>brand</code>','brand tag',STt.part]},
+      {cells:['<code>productGender</code>','metadata (Unisex)',STt.newf]},
+      {cells:['<code>unitCode</code>','unit (Pcs)',STt.part]},
+      {cells:['<code>mainCategory</code> / <code>subCategory</code>','dept + sub-cat',STt.heur]},
+      {cells:['<code>certifications[]</code>','sustainability + badges',STt.newf]},
+      {cells:['<code>materialQuality</code>','material (new)',STt.src]},
+      {cells:['<code>materialGsm</code>','material weight (new)',STt.src]},
+      {cells:['<code>countyOfOrigin</code> [sic]','origin (new)',STt.src]},
+      {cells:['<code>commodityCode</code>','HS code (metadata)',STt.src]},
+      {cells:['<code>partnerArticles[]</code>','related SKUs',STt.gap]},
+      {cells:['<code>model_ImageDefault</code> / <code>model_ImageOther</code>','product gallery',STt.src]},
+      {cells:['<b>per variant →</b> <code>sku</code>','variant code',STt.ok]},
+      {cells:['<code>size</code> / <code>size_Id</code>','sizes (new)',STt.newf]},
+      {cells:['<code>colorName</code> / <code>colorId</code> / <code>colorTranslations[]</code>','colours',STt.ok]},
+      {cells:['<code>cmyk</code> / <code>hex</code> (often null)','colour value',STt.part]},
+      {cells:['<code>ean</code>','barcode (new)',STt.src]},
+      {cells:['<code>price</code> {eur,nok,sek,dkk,<b>gbp</b>}','priceFrom (GBP)',STt.part]},
+      {cells:['<code>stock</code> {article_no, stock}','availability',STt.src]},
+      {cells:['<code>netWeightKg_Pcs</code> / <code>weightKg_Box</code>','weight (delivery)',STt.src]},
+      {cells:['<code>piecesPerPack_Qty</code> / <code>box_Qty</code>','MOQ / carton',STt.src]},
+      {cells:['<code>box_Length/Width/Height</code>','carton dims',STt.src]},
+      {cells:['<code>length</code> / <code>width</code> / <code>height</code> (often null)','product dims',STt.gap]},
+      {cells:['<code>imageDefault</code> / <code>imageOther[]</code>','variant gallery',STt.src]},
+    ])},
+  xindao:{name:'Xindao', format:'JSON — 5 separate feeds (en-gb)', rows:'Flat item rows · joined across 5 feeds', shape:'One row per ItemCode (model + colour); joined to price/print/stock feeds',
+    summary:'XD Connects / XD Collection range. The richest, cleanest feed seen: <b>flat one-row-per-item</b> (ModelCode = product, ItemCode = colour variant) with named camelCase keys. Split across <b>five feeds</b> — Product data, Product prices, Print data, Print prices, Stock — joined on ItemCode/ModelCode. This sample is the <b>Product data</b> feed (no prices here; those are in Product prices = the real qty-break feed). Exceptionally deep sustainability data (full LCA CO2 breakdown, AWARE digital passport, certifications PDF, charity).',
+    anomalies:['<b>Five joined feeds</b> — product / product-prices / print-data / print-prices / stock, keyed on <code>ItemCode</code> (+ <code>ModelCode</code> for the product group). Prices and print costs are NOT in this feed.','<b>ModelCode vs ItemCode</b> — group colour variants under ModelCode into one product (like the Neutral parent/variant model, but flat).','HTML entities in text (<code>&amp;amp;</code>, ™) — decode.','<code>Material</code> doubles ("rPET,rPET"); <code>Color</code> + <code>PMSColor1</code> + <code>HexColor1</code> per row.','Images are a <b>comma-joined string</b> in <code>AllImages</code> plus typed singles (Main/Extra/Print/Mood/Neutral) — split or use the typed keys.','Rich extras with no model home yet: full <b>LCA CO2</b> block, <code>Digital passport</code>, <code>Charity</code>, <code>Traceability</code>, <code>Compliance</code>, 3D <code>Imagefile3D</code> (.glb), GPSR contact.','Default-print fields embedded here (<code>PrintCodeDefault</code>, <code>MaxColorsDefault</code>, area) — full method matrix is in the Print data feed.'],
+    fields:tbl(['Xindao field','→ Platform','Status'],[
+      {cells:['<code>ModelCode</code>','product group',STt.ok]},
+      {cells:['<code>ItemCode</code>','variant code + join key',STt.ok]},
+      {cells:['<code>ItemName</code>','name',STt.ok]},
+      {cells:['<code>LongDescription</code>','description (decode HTML)',STt.src]},
+      {cells:['<code>Brand</code>','brand tag',STt.part]},
+      {cells:['<code>MainCategory</code> / <code>SubCategory</code>','dept + sub-cat',STt.heur]},
+      {cells:['<code>Material</code>','material (new, dedupe)',STt.src]},
+      {cells:['<code>Color</code> / <code>PMSColor1</code> / <code>HexColor1</code>','colours (+ PMS/hex)',STt.ok]},
+      {cells:['<code>Item{Length/Width/Height}CM</code> / <code>ItemDimensions</code>','product dims (new)',STt.src]},
+      {cells:['<code>ItemWeightNetGr</code> / <code>...GrossGr</code>','weight (delivery)',STt.src]},
+      {cells:['<code>CountryOfOrigin</code> (ISO)','origin (new)',STt.src]},
+      {cells:['<code>CommodityCode</code>','HS code (metadata)',STt.src]},
+      {cells:['<code>EANCode</code>','barcode (new)',STt.src]},
+      {cells:['<code>OuterCartonQty</code> / <code>InnerboxQty</code> / carton dims+wt','MOQ / carton (delivery)',STt.src]},
+      {cells:['<code>PackagingTypeItem</code>','packaging',STt.part]},
+      {cells:['<code>Eco</code> (bool) / <code>Certifications</code> (PDF) / <code>PVC free</code>','sustainability + cert',STt.newf]},
+      {cells:['LCA CO2 block (10+ fields) / <code>Total CO2 emissions</code>','carbon data (new)',STt.newf]},
+      {cells:['<code>Traceability</code> / <code>Digital passport</code> / <code>Charity</code>','impact metadata (new)',STt.newf]},
+      {cells:['<code>AllImages</code> (CSV string)','gallery — split on comma',STt.src]},
+      {cells:['<code>MainImage</code> / <code>ExtraImage1-3</code> / <code>ImagePrint</code> / <code>ImageMood1-3</code>','typed images',STt.src]},
+      {cells:['<code>Imagefile3D</code> (.glb)','3D model (new)',STt.gap]},
+      {cells:['<code>AllPrintCodes</code> / <code>PrintCodeDefault</code> / <code>PrintTechniqueDefault</code>','methods (full matrix in Print feed)',STt.heur]},
+      {cells:['<code>PrintPositionDefault</code> / <code>MaxPrint{Width/Height}DefaultMM</code> / <code>MaxColorsDefault</code>','branding positions/area',STt.newf]},
+      {cells:['<code>LineDrawingDefault</code>','print template image',STt.part]},
+      {cells:['<code>VariableDataPrinting</code> / <code>CustomSleevePossible</code> / <code>GiftWrappingPossible</code> (bool)','decoration options (new)',STt.newf]},
+      {cells:['<code>ProductLifeCycle</code> / <code>IntroDate</code>','lifecycle / new flag',STt.part]},
+      {cells:['<code>Compliance</code> / <code>USP</code> / <code>GPSRContact</code> / <code>GPSRWebsite</code>','compliance metadata',STt.gap]},
+      {cells:['<b>price + qty breaks</b>','<i>separate Product prices feed</i>',STt.gap]},
+      {cells:['<b>print method costs</b>','<i>Print data feed = method × position matrix (PrintCode, PrintPosition, MaxColors, MaxPrintArea, FullColor, VRP coords); Print prices feed = the costs</i>',STt.gap]},
+      {cells:['<b>stock</b>','<i>Stock feed: <code>CurrentStock</code> per ItemCode + <code>FutureIncomingStockDate1</code>/<code>Qty1</code>/<code>TotalQty</code> (incoming restock). Drives availability + lead.</i>',STt.gap]},
+      {cells:['<b>print prices</b>','<i>Print prices feed: per PrintCode — qty-break run cost (<code>PrintPriceNet_1..10000</code>), <code>SetupNet</code>, <code>PrintSampleNet</code>, <code>SmallOrderChargeNet</code>, VDP cost, <code>MOQPrintOrder</code>. The real decoration cost model.</i>',STt.gap]},
+    ])},
+  pfconcept:{name:'PF Concept', format:'JSON — 3 separate feeds (price / print-price / stock)', rows:'Nested model→item · joined across 3 feeds on itemcode', shape:'models[].model[] → items[].item[] (modelcode=product, itemcode=variant)',
+    summary:'PF Concept (Riviera, Sky, Thor, Stanley, Ocean Bottle, CamelBak ranges). Deeply <b>nested</b>: priceInfo→models→model→items→item. Product = <code>modelcode</code>+<code>description</code>; variant = <code>itemcode</code>. Three feeds joined on itemcode: <b>price</b> (cost breaks + decoration codes + category), <b>print-price</b> (decoration cost book keyed by printCode), <b>stock</b> (availability + restock). All GBP. The richest pricing+decoration+stock shape captured.',
+    anomalies:['<b>Three feeds, nested 4-deep</b> — flatten model→item, then join price+print-price+stock on <code>itemcode</code>.','Decoration is a <b>CSV of codes</b> in <code>decoCharge</code> (e.g. <code>MR04,DTF02,TRA04</code>) — resolve each against the print-price feed.','Print-price is deeply nested: printCode → logoSize → amountColor → setupCharge → decoPrice qty-breaks; with <code>priceDependence</code> = None or Size.','<code>nettPrice</code> is flat across qty-bars (the cost); <code>industryCol</code> is the RRP reference that decreases with volume.','<code>groupDesc</code> is a <b>numeric category code</b> (0803=bottles, 0801=tumblers, 0805=ceramic mugs, 0406=blankets…) — needs a code→department lookup.','<code>clearance</code>="C" + a <code>promotion[]</code> block (with <code>standardPrice</code> "was" price) layer over the base cost.','Stock split by <code>stockLocation</code> (UK/PL) — affects lead time; <code>stockNextPo</code>/<code>stockDateNextPo</code> = incoming restock (null date = none).','No colour/material/size names in these feeds — only itemcode; product attributes presumably in a separate product feed not provided.'],
+    fields:tbl(['PF Concept field','→ Platform','Status'],[
+      {cells:['<code>modelcode</code> / <code>description</code>','product + name',STt.ok]},
+      {cells:['<code>itemcode</code>','variant SKU',STt.ok]},
+      {cells:['<code>scales[].scale[]</code>: <code>priceBar</code> + <code>nettPrice</code>','cost price breaks',STt.ok]},
+      {cells:['<code>industryCol</code>','RRP/sell reference',STt.part]},
+      {cells:['<code>groupDesc</code> (numeric code)','dept (code lookup)',STt.heur]},
+      {cells:['<code>currency</code> (GBP)','currency',STt.ok]},
+      {cells:['<code>minDecoQty</code>','min decoration qty',STt.src]},
+      {cells:['<code>decoCharge</code> (CSV codes)','decoration options → print-price feed',STt.part]},
+      {cells:['<code>clearance</code> + <code>promotion[].standardPrice</code>','clearance/promo pricing',STt.newf]},
+      {cells:['<b>print-price</b> <code>printCode</code> / <code>impMethod</code>','decoration method',STt.heur]},
+      {cells:['<code>setupCharge</code> + <code>decoPrice[]</code> (qty breaks)','decoration setup + run cost',STt.newf]},
+      {cells:['<code>priceDependence</code> / <code>logoSizeCm2</code> / <code>amountColorsId</code>','print area + colour count',STt.newf]},
+      {cells:['<b>stock</b> <code>stockDirect</code>','available now',STt.src]},
+      {cells:['<code>stockNextPo</code> / <code>stockDateNextPo</code> / <code>StockFuture</code>','incoming restock + date',STt.src]},
+      {cells:['<code>stockLocation</code> (UK/PL)','warehouse → lead time',STt.src]},
+      {cells:['<b>colour / material / size / images</b>','<i>not in these 3 feeds — separate product feed needed</i>',STt.gap]},
+    ])},
+  xoopar:{name:'Xoopar', format:'JSON — Akeneo PIM export (Celaneo)', rows:'Flat products · attribute-bag shape', shape:'Akeneo values{} — every field is an array of {locale,scope,data}',
+    summary:'Tech/accessories brand exported from an Akeneo PIM. Radically different shape: each product has a generic <code>values{}</code> bag where <b>every attribute is an array of {locale, scope, data}</b> — so even single values are nested two levels deep and may repeat per language. Product-only (no qty breaks); prices in EUR; decoration priced via separate per-position + technical-fee fields. Images split between hosted URLs and Google Drive share links.',
+    anomalies:['<b>Akeneo envelope</b> — read <code>values.FIELD[0].data</code>, not the field directly; pick the <code>en_US</code> locale entry where arrays repeat per language.','<b>Currency is EUR</b> (<code>price[0].data[0].amount</code> + <code>currency</code>) — needs FX → GBP (the standing currency gap, now real).','<b>No quantity breaks</b> — single unit <code>price</code> + <code>digital_print_price_position</code> (per position) + <code>printing_technical_fees</code> (one-off setup). Closest thing yet to a print-price model.','Dimensions/weight are <b>{amount,unit} objects</b> (GRAM/CENTIMETER/LITER) — parse amount, respect unit.','Images come two ways: hosted <code>image_1..6</code>/<code>main_photo</code> URLs <b>and</b> <code>link_image*</code>/<code>hd_image_link</code> Google Drive links (not directly embeddable).','<code>minimum_printing_quantity</code> (e.g. 50) = a real MOQ for decoration.','<code>type_of_product</code> is often only <b>fr_FR</b> ("sac") — category detection must handle French + fall back.','Booleans for features: <code>nfc</code>, <code>rfid_protection</code>, <code>magnetic</code>, <code>front_and_back_printing</code>, <code>new</code>.','<code>packaging_gift</code> is free text ("400 pcs/ctn 56x33x25 cm 14,5Kg") — carton qty + dims buried in a string.','Numbers come as strings ("8383.0000", "58.0000") — coerce.'],
+    fields:tbl(['Xoopar field (under values)','→ Platform','Status'],[
+      {cells:['<b>top:</b> <code>uuid</code> / <code>identifier</code>','code',STt.ok]},
+      {cells:['<code>enabled</code>','active flag',STt.part]},
+      {cells:['<code>family</code> / <code>categories[]</code>','category source',STt.heur]},
+      {cells:['<code>parent</code> / <code>groups</code> / <code>associations</code>','variant/model links',STt.gap]},
+      {cells:['<code>created</code> / <code>updated</code>','timestamps',STt.part]},
+      {cells:['<b>values:</b> <code>retail_name</code> (en_US) / <code>designation</code>','name',STt.ok]},
+      {cells:['<code>short_description</code> / <code>long_description</code> (i18n)','description',STt.src]},
+      {cells:['<code>brand</code>','brand tag',STt.part]},
+      {cells:['<code>type_of_product</code> (often fr_FR) / <code>collection</code> / <code>family_article_code</code>','dept + sub-cat (FR-aware)',STt.heur]},
+      {cells:['<code>product_colors</code>','colours',STt.ok]},
+      {cells:['<code>type_of_printing[]</code>','methods (Digital→dtf)',STt.heur]},
+      {cells:['<code>price[0].data[0]</code> (EUR)','priceFrom — <b>needs FX</b>',STt.part]},
+      {cells:['<code>digital_print_price_position</code> (EUR)','decoration run / position',STt.newf]},
+      {cells:['<code>printing_technical_fees</code> (EUR)','decoration setup (one-off)',STt.newf]},
+      {cells:['<code>minimum_printing_quantity</code>','MOQ for decoration',STt.src]},
+      {cells:['<code>printing_zone_size</code> / <code>printing_zone_size_2</code>','branding area/positions',STt.newf]},
+      {cells:['<code>front_and_back_printing</code> (bool)','branding positions',STt.newf]},
+      {cells:['<code>template</code>','print template (Drive link)',STt.gap]},
+      {cells:['<code>manufacturing_country</code>','origin (new)',STt.src]},
+      {cells:['<code>weight_g</code> {amount,unit}','weight (delivery)',STt.src]},
+      {cells:['<code>height_cm</code> / <code>width_cm</code> / <code>length_cm</code> {amount,unit}','product dims (new)',STt.src]},
+      {cells:['<code>size</code> / <code>size_2</code> (free text)','dims (string)',STt.part]},
+      {cells:['<code>backpack_capacity_l</code> {amount,unit}','capacity (new)',STt.newf]},
+      {cells:['<code>hs_customs_code</code>','HS code (metadata)',STt.src]},
+      {cells:['<code>stock</code> (string)','availability',STt.src]},
+      {cells:['<code>packaging_gift</code> (free text)','carton qty+dims (buried)',STt.gap]},
+      {cells:['<code>image_1..6</code> / <code>main_photo</code>','gallery (hosted)',STt.src]},
+      {cells:['<code>link_image1..6</code> / <code>hd_image_link</code> / <code>main_photo_link</code>','Drive links — <i>not embeddable</i>',STt.gap]},
+      {cells:['<code>nfc</code> / <code>magnetic</code> / <code>rfid_protection</code> (bool)','feature flags (new)',STt.newf]},
+      {cells:['<code>new</code> (bool)','"new" badge',STt.newf]},
+    ])},
+};
+function supplierView(id){
+  const s=SUPPLIERS[id];
+  return `<section><div class="summary">
+    <h3>${esc(s.name)}</h3>
+    <div class="meta"><div><span>Format</span><b>${s.format}</b></div><div><span>Scale</span><b>${s.rows}</b></div><div><span>Shape</span><b>${s.shape}</b></div></div>
+    <p>${s.summary}</p>
+    <div class="anom"><h4>Anomalies &amp; gotchas</h4><ul>${s.anomalies.map(a=>`<li>${a}</li>`).join('')}</ul></div>
+  </div></section>
+  <section><h2>${esc(s.name)} → platform mapping</h2>${s.fields}</section>`;
+}
+
+const TABS=[['all','All suppliers'],['biolabs','Bio Labs'],['neutral','Neutral'],['xoopar','Xoopar'],['xindao','Xindao'],['pfconcept','PF Concept']];
+const STATUSES=[['all','All statuses',''],['ok','Mapped','#1f8a5b'],['part','Partial','#d3a64e'],['heur','Heuristic','#d3a64e'],['newf','New — wire','#d3a64e'],['src','Source found','#d3a64e'],['gap','Gap','#c0395f']];
+let cur='all', curStatus='all';
+function render(){
+  document.getElementById('filterbar').innerHTML='<span class="filterlbl">Supplier</span>'+TABS.map(t=>`<button class="fbtn ${t[0]===cur?'on':''}" data-t="${t[0]}">${t[1]}</button>`).join('');
+  document.getElementById('statusbar').innerHTML='<span class="filterlbl">Status</span>'+STATUSES.map(t=>`<button class="fbtn ${t[0]===curStatus?'on':''}" data-s="${t[0]}">${t[2]?`<i class="fdot" style="background:${t[2]}"></i>`:''}${t[1]}</button>`).join('');
+  document.querySelectorAll('#filterbar .fbtn').forEach(b=>b.onclick=()=>{cur=b.dataset.t;render();});
+  document.querySelectorAll('#statusbar .fbtn').forEach(b=>b.onclick=()=>{curStatus=b.dataset.s;render();});
+  document.getElementById('view').innerHTML = master(cur,curStatus);
+  window.scrollTo(0,0);
+}
+
+/* ---- store preview overlay: render a random supplier product on the Store Product Page ---- */
+function _pvPool(curId){
+  if(!window.MSCAT) return [];
+  const AL={biolabs:['bio labs'],neutral:['neutral'],xindao:['xd connects','xindao','xd collection'],pfconcept:['pf concept'],xoopar:['xoopar']};
+  let pool=MSCAT.all()||[];
+  if(curId&&curId!=='all'){ const a=AL[curId]||[curId]; pool=pool.filter(p=>a.some(x=>String(p.supplier||'').toLowerCase().includes(x))); }
+  const imp=pool.filter(p=>p.ingested); if(imp.length) return imp;
+  const real=pool.filter(p=>p.real); if(real.length) return real;
+  return pool;
+}
+let _pvArr=[], _pvIdx=0;
+function openStorePreview(curId){
+  _pvArr=_pvPool(curId); _pvIdx=_pvArr.length?Math.floor(Math.random()*_pvArr.length):0;
+  const label=curId==='all'?'All suppliers':((SUPPLIERS[curId]||{}).name||curId);
+  let ov=document.getElementById('pvOverlay');
+  if(!ov){ ov=document.createElement('div'); ov.id='pvOverlay'; ov.className='pv-scrim'; document.body.appendChild(ov); ov.addEventListener('click',e=>{ if(e.target===ov||e.target.closest('[data-pvx]')) closePv(); }); }
+  if(!_pvArr.length){
+    const _have=(window.MSCAT&&MSCAT.suppliers?MSCAT.suppliers():[]).map(s=>s.name);
+    const _haveTxt=_have.length?('Suppliers with data right now: '+_have.map(n=>'<b>'+esc(n)+'</b>').join(', ')+'.'):'No suppliers have products in the catalogue yet \u2014 import a feed first.';
+    ov.innerHTML=`<div class="pv-win"><div class="pv-bar"><b>Store preview</b><span>${esc(label)}</span><button class="pv-x" data-pvx>\u00d7</button></div><div class="pv-empty"><p><b>No ${esc(label)} products in the catalogue yet.</b></p><p>Import this supplier\u2019s feed first (Admin \u2192 Suppliers \u2192 Import products), then preview here. ${_haveTxt}</p></div></div>`;
+    ov.classList.add('open'); document.body.style.overflow='hidden'; return;
+  }
+  ov.innerHTML=`<div class="pv-win"><div class="pv-bar"><b>Store preview</b><span id="pvTitle"></span><button class="pv-shuffle" id="pvShuffle">\u21bb Another product</button><a class="pv-open" id="pvOpen" target="_blank" rel="noopener">Open \u2197</a><button class="pv-x" data-pvx>\u00d7</button></div><iframe class="pv-frame" id="pvFrame" title="Store preview"></iframe></div>`;
+  ov.classList.add('open'); document.body.style.overflow='hidden';
+  const frame=document.getElementById('pvFrame');
+  function load(full){ const p=_pvArr[_pvIdx]; try{ localStorage.setItem('ms-store-preview', JSON.stringify(p)); }catch(e){}
+    const hash='product='+encodeURIComponent(p.id)+'&preview=1'; const url='Merchsmith Store.html#'+hash;
+    const t=document.getElementById('pvTitle'); if(t)t.textContent=(p.name||'Product')+'  \u00b7  '+(p.supplier||'')+'  \u00b7  '+_pvArr.length+' in catalogue';
+    const o=document.getElementById('pvOpen'); if(o)o.href=url;
+    if(full||!frame.getAttribute('src')){ frame.src=url; } else { try{ frame.contentWindow.location.hash=hash; }catch(e){ frame.src=url; } }
+  }
+  load(true);
+  const sh=document.getElementById('pvShuffle'); if(sh)sh.onclick=()=>{ if(_pvArr.length>1){ let n; do{ n=Math.floor(Math.random()*_pvArr.length); }while(n===_pvIdx); _pvIdx=n; } load(false); };
+}
+function closePv(){ const ov=document.getElementById('pvOverlay'); if(ov){ ov.classList.remove('open'); document.body.style.overflow=''; setTimeout(()=>ov.remove(),180); } }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-storepreview]'); if(b){ e.preventDefault(); openStorePreview(b.dataset.storepreview); return; }
+  const a=e.target.closest('[data-dvadd]'); if(a){ dvToggle(a.dataset.dvadd,a.dataset.dvstore,a.dataset.dvgrp); render(); return; }
+  if(e.target.closest('[data-dvaddall]')){ dvAddAll(_dvQueueItems); render(); return; }
+  if(e.target.closest('[data-dvclear]')){ dvClear(); render(); return; }
+});
+
+render();
+</script>
+
+<template id="__bundler_thumbnail" data-bg-color="#9a6b1f">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#9a6b1f"/><text x="600" y="450" fill="#fff" font-size="150" font-family="Georgia" text-anchor="middle">⇄</text></svg>
+</template>
+</body>
+</html>

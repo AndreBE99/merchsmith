@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Customer Settings</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.header{min-height:62px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
+.headtools{display:flex;align-items:center;gap:14px;}
+.account .av{width:32px;height:32px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px 36px;}
+.crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
+.crumb .sep{opacity:.6;}
+.main{max-width:860px;margin:0 auto;padding:30px 36px 90px;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1;letter-spacing:-.01em;margin:0;}
+.psub{font-size:14.5px;color:var(--text-soft);margin-top:10px;max-width:640px;line-height:1.55;}
+.settabs{display:flex;gap:4px;margin-top:26px;border-bottom:1px solid var(--line-soft);}
+.settab{border:0;background:none;font:inherit;font-size:14.5px;font-weight:700;padding:11px 16px;border-bottom:2.5px solid transparent;margin-bottom:-1px;}
+.settab.active{color:var(--periwinkle-deep);border-bottom-color:var(--periwinkle-deep);}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:24px 26px;box-shadow:0 1px 3px rgba(20,22,45,.04);margin-top:22px;}
+.card-h{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.card-h h2{font-family:var(--serif);font-weight:500;font-size:23px;margin:0;}
+.tag{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--paper-2);border-radius:6px;padding:3px 9px;}
+.lede{font-size:14px;color:var(--text-soft);line-height:1.6;margin:0 0 20px;max-width:62ch;}
+.logoslot{display:flex;flex-direction:column;gap:7px;max-width:420px;}
+.logoslot-lbl{font-size:12px;font-weight:700;color:var(--ink-3);}
+.logoslot-drop{height:120px;border:1.5px dashed var(--line-soft);border-radius:12px;overflow:hidden;background:var(--paper);}
+.logoslot-drop image-slot{width:100%;height:100%;display:block;}
+.logoslot-hint{font-size:11.5px;color:var(--muted);}
+.logomono{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.logomono>span{font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin-right:2px;}
+.logomono-btn{font:inherit;font-size:11.5px;font-weight:700;border:1px solid var(--line-soft);background:#fff;color:var(--ink-2);border-radius:7px;padding:5px 10px;cursor:pointer;}
+.logomono-btn.on{background:var(--periwinkle-deep);border-color:var(--periwinkle-deep);color:#fff;}
+.logodel{font:inherit;font-size:11.5px;font-weight:700;border:0;background:none;cursor:pointer;text-decoration:underline;}
+.logodel[data-crop-logo]{margin-left:auto;color:var(--periwinkle-deep);}
+.logodel[data-del-logo]{color:var(--muted);}
+.btn{font:inherit;font-size:13.5px;font-weight:700;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;}
+.crop-scrim{position:fixed;inset:0;z-index:1300;background:rgba(22,24,28,.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:24px;}
+.crop-scrim.open{display:flex;}
+.crop-modal{background:#fff;width:min(520px,100%);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(20,22,45,.3);}
+.crop-hd{display:flex;align-items:center;justify-content:space-between;padding:15px 20px;border-bottom:1px solid var(--line-soft);}
+.crop-hd b{font-family:var(--serif);font-weight:500;font-size:19px;}
+.crop-x{border:0;background:none;font-size:22px;line-height:1;color:var(--muted);cursor:pointer;}
+.crop-stage{margin:18px 20px 0;border-radius:12px;overflow:hidden;background:var(--paper-2);background-image:linear-gradient(45deg,#e9e7e1 25%,transparent 25%),linear-gradient(-45deg,#e9e7e1 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e9e7e1 75%),linear-gradient(-45deg,transparent 75%,#e9e7e1 75%);background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0;}
+.crop-stage.dark{background:var(--ink);}
+.crop-stage image-slot{width:100%;height:100%;display:block;}
+.crop-hint{font-size:12px;color:var(--muted);text-align:center;margin:11px 20px 0;}
+.crop-foot{display:flex;justify-content:flex-end;padding:14px 20px 18px;}
+.saved-toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:11px;display:flex;gap:9px;align-items:center;opacity:0;transition:opacity .2s,transform .2s;z-index:1400;}
+.saved-toast.show{opacity:1;transform:translateX(-50%);}
+.saved-toast .icn{width:16px;height:16px;color:var(--spearmint,#5fb98a);}
+/* distributor discounts */
+.disc-table{width:100%;border-collapse:collapse;font-size:14px;margin:0 0 14px;}
+.disc-table th{text-align:left;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:0 14px 9px 0;border-bottom:1.5px solid var(--line-soft);}
+.disc-table th:last-child{text-align:right;}
+.disc-table td{padding:11px 14px 11px 0;border-bottom:1px solid var(--paper-2);color:var(--ink-2);vertical-align:middle;}
+.disc-table td:first-child{color:var(--ink);}
+.disc-table td:last-child{text-align:right;}
+.disc-table tr.disc-hl td{background:var(--tint-peri,#eceef9);}
+.disc-table tr.disc-info td{color:var(--muted);}
+.disc-in{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--line-soft);border-radius:9px;padding:5px 11px;background:#fff;}
+.disc-in input{width:54px;border:0;font:inherit;font-size:15px;font-weight:700;text-align:right;color:var(--ink);background:none;}
+.disc-in input:focus{outline:0;}
+.disc-in span{font-size:13px;font-weight:700;color:var(--muted);}
+.disc-readout{font-size:13px;font-weight:600;color:var(--muted);font-style:italic;}
+.disc-note{font-size:12.5px;color:var(--muted);margin:0;}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand" data-identity-lockup></div>
+  <div class="headtools">
+    <span class="it" title="Basket"><svg class="icn" viewBox="0 0 24 24"><path d="M6 7h12l1 13H5zM9 7a3 3 0 0 1 6 0"/></svg></span>
+    <button class="account it" title="Account"><span class="av">SK</span></button>
+  </div>
+</header>
+<div class="crumbband"><div class="crumb"><span>Citrix</span><span class="sep">›</span><span class="here">Settings</span></div></div>
+
+<main class="main">
+  <h1 class="ptitle">Settings</h1>
+  <p class="psub">Manage how your organisation appears on your branded portal.</p>
+
+  <div class="settabs" id="setTabs">
+    <button class="settab active" data-sec="branding">Branding</button>
+    <button class="settab" data-sec="discounts" id="tabDiscounts" hidden>Discounts</button>
+  </div>
+
+  <div class="card sec sec-branding">
+    <div class="card-h"><h2>Brand logo</h2><span class="tag">Platform header</span></div>
+    <p class="lede">Upload your organisation's logo. It appears in the header alongside your distributor's mark. Drop a logo, then crop &amp; reposition to frame it.</p>
+    <div class="logoslot">
+      <span class="logoslot-lbl">Header logo</span>
+      <div class="logoslot-drop"><image-slot id="cust-header-logo" shape="rect" fit="contain" data-crop placeholder="Drop your logo (SVG / PNG)"></image-slot></div>
+      <div class="logomono" data-for="cust-header-logo"><span>Tone</span><button type="button" class="logomono-btn on" data-mono="original">Original</button><button type="button" class="logomono-btn" data-mono="white">Mono white</button><button type="button" class="logomono-btn" data-mono="black">Mono black</button><button type="button" class="logodel" data-crop-logo="cust-header-logo">Crop</button><button type="button" class="logodel" data-del-logo="cust-header-logo">Remove logo</button></div>
+      <span class="logoslot-hint">Shown top-left next to your distributor. Transparent PNG or SVG recommended. <b>Recommended: 320 × 80 px</b> (4:1).</span>
+    </div>
+  </div>
+
+  <div class="card sec sec-discounts" hidden>
+    <div class="card-h"><h2>Distributor discounts</h2><span class="tag">Distributor only</span></div>
+    <p class="lede">Discounts reduce this customer's sell price (and your margin). They resolve by <b>specificity</b> — the most-specific active level wins: per-product → per-project → per-customer → category → site-wide. Set the standing levels here; per-project is set on the project and per-product is overridden in the Price modal.</p>
+    <table class="disc-table" id="discTable">
+      <thead><tr><th>Level</th><th>Set where</th><th>Example</th><th>Discount</th></tr></thead>
+      <tbody>
+        <tr data-k="sitewide"><td><b>Site-wide</b></td><td>Distributor settings</td><td>Everything (promo)</td><td><span class="disc-in"><input type="number" min="0" max="100" step="0.5" data-disc="sitewide" placeholder="—"><span>%</span></span></td></tr>
+        <tr data-k="category"><td><b>Category · Tech</b></td><td>Distributor settings</td><td>“Tech” products</td><td><span class="disc-in"><input type="number" min="0" max="100" step="0.5" data-disc="category.Tech" placeholder="—"><span>%</span></span></td></tr>
+        <tr data-k="customer" class="disc-hl"><td><b>This customer · Citrix</b></td><td><b>Here</b></td><td>Citrix standing rate</td><td><span class="disc-in"><input type="number" min="0" max="100" step="0.5" data-disc="customer.Citrix" placeholder="—"><span>%</span></span></td></tr>
+        <tr data-k="project" class="disc-info"><td>Per project</td><td>On the project</td><td>Autumn Giveaways</td><td><span class="disc-readout" data-readout="project.Autumn Giveaways">—</span></td></tr>
+        <tr data-k="product" class="disc-info"><td>Per product</td><td>On the product line</td><td>Override in Price modal</td><td><span class="disc-readout">set per line</span></td></tr>
+      </tbody>
+    </table>
+    <p class="disc-note">Changes save automatically and apply across this customer's projects and the Price modal.</p>
+  </div>
+</main>
+
+<div class="saved-toast" id="toast"><svg class="icn" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5"/></svg><span>Saved</span></div>
+
+<script src="image-slot.js"></script>
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script src="sidebar.js"></script>
+<script src="chrome.js"></script>
+<script>
+const toast=(()=>{ const el=document.getElementById('toast'); let t; return ()=>{ el.classList.add('show'); clearTimeout(t); t=setTimeout(()=>el.classList.remove('show'),1400); }; })();
+function relock(){ try{ if(window.MSID&&MSID.relock) MSID.relock(); }catch(e){} try{ if(window.MSTheme&&MSTheme.persist) MSTheme.persist(); }catch(e){} }
+const LOGO_KEY='ms-cust-logo', TONE_KEY='ms-cust-logo-tone';
+// persist uploaded logo
+document.querySelectorAll('.logoslot image-slot').forEach(slot=>{
+  slot.addEventListener('ms-slot-change',e=>{ try{ if(e.detail&&e.detail.url) localStorage.setItem(LOGO_KEY,e.detail.url); else localStorage.removeItem(LOGO_KEY); }catch(_){} relock(); toast(); });
+});
+// tone toggles
+document.querySelectorAll('.logomono').forEach(grp=>{
+  const drop=document.querySelector('.logoslot-drop image-slot#'+grp.dataset.for);
+  const dropWrap=drop?drop.closest('.logoslot-drop'):null;
+  grp.querySelectorAll('.logomono-btn').forEach(b=>b.onclick=()=>{
+    grp.querySelectorAll('.logomono-btn').forEach(x=>x.classList.toggle('on',x===b));
+    if(dropWrap){ dropWrap.classList.remove('mono-white','mono-black'); if(b.dataset.mono!=='original') dropWrap.classList.add('mono-'+b.dataset.mono); }
+    try{ localStorage.setItem('ms-logo-tone-'+grp.dataset.for, b.dataset.mono); localStorage.setItem(TONE_KEY, b.dataset.mono); }catch(e){}
+    relock(); toast();
+  });
+  try{ const saved=localStorage.getItem('ms-logo-tone-'+grp.dataset.for); if(saved){ const t=grp.querySelector('[data-mono="'+saved+'"]'); if(t) t.click(); } }catch(e){}
+});
+// remove
+document.querySelectorAll('[data-del-logo]').forEach(btn=>btn.onclick=()=>{
+  const id=btn.dataset.delLogo; const slot=document.getElementById(id);
+  if(slot){ const rm=slot.shadowRoot&&slot.shadowRoot.querySelector('[data-act="clear"]'); if(rm) rm.click(); }
+  try{ localStorage.setItem(LOGO_KEY,''); localStorage.setItem(TONE_KEY,'original'); localStorage.setItem('ms-logo-tone-'+id,'original'); }catch(e){}
+  const grp=document.querySelector('.logomono[data-for="'+id+'"]'); if(grp) grp.querySelectorAll('.logomono-btn').forEach(x=>x.classList.toggle('on',x.dataset.mono==='original'));
+  const dw=slot?slot.closest('.logoslot-drop'):null; if(dw) dw.classList.remove('mono-white','mono-black');
+  relock(); toast();
+});
+// crop pop-out
+let cropRoot=null, cropId=null;
+document.querySelectorAll('[data-crop-logo]').forEach(btn=>btn.onclick=()=>{
+  const id=btn.dataset.cropLogo, slot=document.getElementById(id);
+  if(!slot||!slot.hasAttribute('data-filled')){ toast(); return; }
+  cropId=id;
+  if(!cropRoot){ cropRoot=document.createElement('div'); cropRoot.className='crop-scrim'; cropRoot.innerHTML='<div class="crop-modal" role="dialog"></div>'; document.body.appendChild(cropRoot); cropRoot.addEventListener('click',e=>{ if(e.target===cropRoot) closeCrop(); }); }
+  const tone=localStorage.getItem('ms-logo-tone-'+id)||'original';
+  const filt=tone==='white'?'filter:brightness(0) invert(1);':tone==='black'?'filter:brightness(0);':'';
+  cropRoot.querySelector('.crop-modal').innerHTML=`
+    <div class="crop-hd"><b>Crop — header logo</b><button class="crop-x">×</button></div>
+    <div class="crop-stage ${tone==='white'?'dark':''}" style="aspect-ratio:4 / 1"><image-slot id="${id}" shape="rect" fit="contain" data-crop style="width:100%;height:100%;${filt}"></image-slot></div>
+    <p class="crop-hint">Drag to reposition · scroll or corner-drag to zoom. Applied to your logo everywhere it appears.</p>
+    <div class="crop-foot"><button class="btn" id="cropDone">Apply crop</button></div>`;
+  cropRoot.classList.add('open'); document.body.style.overflow='hidden';
+  const big=cropRoot.querySelector('image-slot');
+  cropRoot.querySelector('.crop-x').onclick=closeCrop;
+  cropRoot.querySelector('#cropDone').onclick=closeCrop;
+  setTimeout(()=>{ try{ big.dispatchEvent(new MouseEvent('dblclick',{bubbles:true})); }catch(e){} },120);
+});
+function rasteriseCrop(){ return new Promise(res=>{
+  const big=cropRoot&&cropRoot.querySelector('image-slot'); if(!big){ res(); return; }
+  let g=null; try{ g=big._geom&&big._geom(); }catch(e){}
+  const v=big._view||{s:1,x:0,y:0}; const url=big._userUrl||(big.getAttribute&&big.getAttribute('src'));
+  if(!g||!url){ res(); return; }
+  const img=new Image(); img.onload=()=>{ try{
+    const fw=g.fw,fh=g.fh,k=g.base*(v.s||1),dw=g.iw*k,dh=g.ih*k,cx=fw*(0.5+(v.x||0)/100),cy=fh*(0.5+(v.y||0)/100);
+    const cv=document.createElement('canvas'); cv.width=Math.round(fw); cv.height=Math.round(fh);
+    cv.getContext('2d').drawImage(img,cx-dw/2,cy-dh/2,dw,dh);
+    try{ localStorage.setItem(LOGO_KEY, cv.toDataURL('image/png')); }catch(e){}
+  }catch(e){} res(); }; img.onerror=()=>res(); img.src=url;
+}); }
+function closeCrop(){ if(!cropRoot) return; const s=cropRoot.querySelector('image-slot'); if(s){ try{ s.dispatchEvent(new MouseEvent('dblclick',{bubbles:true})); }catch(e){} } rasteriseCrop().then(()=>{ cropRoot.classList.remove('open'); document.body.style.overflow=''; relock(); }); }
+
+// ---- Distributor discounts (distributor-only) ----
+(function(){
+  const ROLE = ['cust','dist'].includes(localStorage.getItem('ms-role')) ? localStorage.getItem('ms-role') : 'dist';
+  const tabBtn=document.getElementById('tabDiscounts');
+  if(ROLE==='dist' && tabBtn) tabBtn.hidden=false;
+  document.querySelectorAll('#setTabs .settab').forEach(t=>t.onclick=()=>{
+    document.querySelectorAll('#setTabs .settab').forEach(x=>x.classList.toggle('active',x===t));
+    document.querySelectorAll('.card.sec').forEach(c=>{ c.hidden=!c.classList.contains('sec-'+t.dataset.sec); });
+  });
+  const KEY='ms-discounts';
+  function defaults(){ return { sitewide:5, category:{Tech:10}, customer:{Citrix:7.5}, project:{'Autumn Giveaways':10} }; }
+  function load(){ try{ const j=JSON.parse(localStorage.getItem(KEY)||'null'); if(j&&typeof j==='object') return Object.assign(defaults(), j); }catch(e){} return defaults(); }
+  function getPath(o,path){ return path.split('.').reduce((a,k)=>(a&&a[k]!=null)?a[k]:null, o); }
+  function setPath(o,path,val){ const ks=path.split('.'); let n=o; for(let i=0;i<ks.length-1;i++){ n[ks[i]]=n[ks[i]]||{}; n=n[ks[i]]; } if(val==null||val==='') delete n[ks[ks.length-1]]; else n[ks[ks.length-1]]=val; }
+  const cfg=load();
+  function renderReadouts(){ document.querySelectorAll('#discTable [data-readout]').forEach(el=>{ const v=getPath(cfg, el.dataset.readout); el.textContent = v!=null ? v+'%' : '—'; }); }
+  document.querySelectorAll('#discTable input[data-disc]').forEach(inp=>{
+    const v=getPath(cfg, inp.dataset.disc); if(v!=null) inp.value=v;
+    inp.addEventListener('change',()=>{ const n=parseFloat(inp.value); setPath(cfg, inp.dataset.disc, (!isNaN(n)&&n>0)?n:null); try{ localStorage.setItem(KEY, JSON.stringify(cfg)); }catch(e){} renderReadouts(); toast(); });
+  });
+  renderReadouts();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Orders</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+a{color:inherit;text-decoration:none;}
+.main{max-width:1080px;margin:0 auto;padding:30px 36px 90px;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px 36px;}
+.crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
+.crumb .sep{opacity:.6;} .crumb .here{font-weight:700;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1;letter-spacing:-.01em;margin:0;}
+.psub{font-size:14.5px;color:var(--text-soft);margin-top:8px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:11px;padding:12px 20px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;}
+.btn:hover{filter:brightness(1.05);}
+.btn.ghost{background:#fff;color:var(--periwinkle-deep);border:1.5px solid var(--line-soft);}
+.btn.sm{padding:8px 13px;font-size:13px;border-radius:9px;}
+.btn.block{width:100%;}
+.cols{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;}
+@media(max-width:880px){.cols{grid-template-columns:1fr;}}
+.panel{background:#fff;border:1px solid var(--line-soft);border-radius:16px;box-shadow:0 2px 10px rgba(40,44,80,.03);}
+.panel-h{padding:16px 20px;border-bottom:1px solid var(--line-soft);font-weight:800;font-size:13px;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;justify-content:space-between;}
+.sum-body{padding:16px 20px;}
+.sum .row{display:flex;justify-content:space-between;font-size:14px;padding:8px 0;color:var(--ink-2);}
+.sum .row b{color:var(--ink);}
+/* orders table */
+.otbl{width:100%;border-collapse:collapse;font-size:14px;}
+.otbl th{text-align:left;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:12px 20px;border-bottom:1px solid var(--line-soft);}
+.otbl td{padding:14px 20px;border-bottom:1px solid var(--paper-2);vertical-align:middle;}
+.otbl tr[data-o]{cursor:pointer;}
+.otbl tr[data-o]:hover td{background:var(--paper);}
+.otbl tbody tr:last-child td{border-bottom:0;}
+.otbl td small{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;}
+.otbl .go{text-align:right;color:var(--muted);}
+.opill{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:4px 11px;}
+.opill.peri{color:var(--periwinkle-deep);background:var(--tint-peri);}
+.opill.amber{color:#9a6b1f;background:#fbeccd;}
+.opill.green{color:var(--green-deep);background:var(--tint-green);}
+.opill.red{color:var(--flare);background:var(--tint-red);}
+/* timeline */
+.timeline{padding:16px 22px;}
+.tl{display:flex;gap:14px;padding:0 0 4px;position:relative;}
+.tl:not(:last-child)::before{content:"";position:absolute;left:6px;top:18px;bottom:-6px;width:2px;background:var(--line-soft);}
+.tl.done:not(:last-child)::before{background:var(--spearmint,#5fb98a);}
+.tldot{width:14px;height:14px;border-radius:50%;border:2px solid var(--line-soft);background:#fff;flex:none;margin-top:3px;z-index:1;}
+.tl.done .tldot{background:var(--spearmint,#5fb98a);border-color:var(--spearmint,#5fb98a);}
+.tl.cur .tldot{border-color:var(--periwinkle-deep);box-shadow:0 0 0 3px var(--tint-peri);}
+.tl>div{padding-bottom:18px;}
+.tl b{font-size:14px;font-weight:700;} .tl span{display:block;font-size:12px;color:var(--muted);margin-top:1px;}
+/* lines reused */
+.line{display:flex;gap:15px;padding:16px 20px;border-bottom:1px solid var(--paper-2);}
+.line:last-child{border-bottom:0;}
+.line .pic{width:64px;height:64px;border-radius:11px;background:var(--paper);flex:none;display:grid;place-items:center;overflow:hidden;}
+.line .pic img{width:100%;height:100%;object-fit:contain;}
+.line .info{flex:1;min-width:0;}
+.line .nm{font-weight:700;font-size:14.5px;}
+.line .meta{font-size:12.5px;color:var(--text-soft);margin-top:3px;line-height:1.5;}
+.line .tag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;border-radius:999px;padding:2px 8px;margin-bottom:5px;}
+.tag.prod{color:var(--periwinkle-deep);background:var(--tint-peri);} .tag.sample{color:#9a6b1f;background:#fbeccd;}
+.line .right{text-align:right;flex:none;} .line .lt{font-weight:800;font-size:15px;} .line .unit{font-size:11.5px;color:var(--muted);}
+.qbox{display:none;}
+.suprow{display:flex;align-items:center;gap:13px;padding:12px 0;border-top:1px solid var(--paper-2);}
+.suprow:first-child{border-top:0;} .suprow b{font-size:14px;} .suprow span{display:block;font-size:12px;color:var(--muted);} .suprow .opill{margin-left:auto;}
+</style>
+</head>
+<body data-page="orders">
+<header class="header"><div class="brand" data-identity-lockup></div></header>
+<div class="crumbband"><div class="crumb"><span class="crumb-org">Citrix</span><span class="sep">›</span><span class="here">Orders</span></div></div>
+<div class="main" id="orderRoot"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="o-bag" viewBox="0 0 24 24"><path d="M6 7h12l-1 13H7zM9 7V5a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="o-check" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+  <symbol id="o-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="o-truck" viewBox="0 0 24 24"><path d="M3 6h11v9H3zM14 9h4l3 3v3h-7M7 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></symbol>
+</svg>
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script>(function(){var o={distributor:'Mojo Promotions',customer:'Citrix',supplier:'BagWorks UK',admin:'Merchsmith'};var id=(window.MSID&&MSID.current&&MSID.current())||'distributor';document.querySelectorAll('.crumb-org').forEach(function(e){e.textContent=o[id]||o.distributor;});})();</script>
+<script src="sidebar.js"></script>
+<script src="chrome.js"></script>
+<script src="order-data.js"></script>
+<script src="order-page.js"></script>
+</body>
+</html>

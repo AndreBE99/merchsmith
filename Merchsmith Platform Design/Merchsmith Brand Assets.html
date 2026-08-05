@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Brand Assets</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="brand-assets.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#fff;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.main{padding:30px 36px 60px;max-width:1320px;}
+.header{min-height:62px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
+.headtools{display:flex;align-items:center;gap:14px;}
+.header .brand{display:flex;align-items:center;gap:10px;flex:0 0 auto;}
+.baband{display:flex;align-items:center;gap:10px;background:var(--tint-green,#cfe6d6);padding:14px 36px;font-size:13px;color:var(--ink-2);}
+.baband .crumb b{color:var(--ink);font-weight:700;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="s-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 7h12l1 13H5zM9 7a3 3 0 0 1 6 0"/></symbol>
+<symbol id="s-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+<symbol id="s-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+<symbol id="s-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="s-merch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
+<symbol id="ic-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></symbol>
+<symbol id="ic-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+<symbol id="ic-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H3v-6M15 3h6v6M3 15v6M21 9V3M14 10l7-7M10 14l-7 7"/></symbol>
+<symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="ic-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+<symbol id="ic-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 4h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+</defs></svg>
+
+<header class="header">
+  <div class="brand" data-identity-lockup></div>
+  <div class="headtools">
+    <span class="it" title="Basket"><svg class="icn"><use href="#s-bag"/></svg><span class="badge">3</span></span>
+    <span class="it" title="Search"><svg class="icn"><use href="#s-search"/></svg></span>
+    <button class="account it" title="Account"><span class="av">JD</span></button>
+  </div>
+</header>
+
+<div class="baband"><div class="crumb"><b>Brand Assets</b> · Citrix</div></div>
+
+<div class="main" id="view"></div>
+<div class="toast" id="toast" style="position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:12px 20px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:200;opacity:0;transition:opacity .25s,transform .25s;"></div>
+
+<script src="image-slot.js"></script>
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script src="sidebar.js"></script>
+<script src="chrome.js"></script>
+<script src="brand-assets.js"></script>
+<script>
+/* toast .on helper (matches store) */
+(function(){ const s=document.createElement('style'); s.textContent='.toast.on{opacity:1!important;transform:translateX(-50%)!important;}'; document.head.appendChild(s); })();
+</script>
+</body>
+</html>

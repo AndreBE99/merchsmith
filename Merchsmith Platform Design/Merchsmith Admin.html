@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Platform Admin</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ---------- login ---------- */
+.login-wrap{min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%, #2b2e4a, #16172a);}
+.login{width:min(400px,92vw);background:#fff;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.4);padding:38px 36px 30px;}
+.login .logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:6px;}
+.login .mojo{font-family:var(--serif);font-weight:600;font-size:30px;letter-spacing:-.01em;color:var(--periwinkle-deep);}
+.login .admintag{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--ink);border-radius:6px;padding:3px 8px;}
+.login h1{font-family:var(--serif);font-weight:500;font-size:22px;text-align:center;margin:14px 0 4px;}
+.login p.sub{font-size:13px;color:var(--text-soft);text-align:center;margin:0 0 24px;}
+.fld{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.fld label{font-size:12.5px;font-weight:700;color:var(--ink-2);}
+.fld input{font:inherit;font-size:14px;border:1.5px solid var(--line-soft);border-radius:11px;padding:12px 14px;}
+.fld input:focus{outline:0;border-color:var(--periwinkle-deep);box-shadow:0 0 0 3px var(--tint-peri);}
+.login .row{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;margin:4px 0 20px;}
+.login .row label{display:flex;align-items:center;gap:7px;color:var(--ink-2);}
+.login .row a{color:var(--periwinkle-deep);text-decoration:none;font-weight:600;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:11px;padding:12px 18px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;width:100%;}
+.btn:hover{filter:brightness(1.06);}
+.btn.ghost{background:#fff;color:var(--periwinkle-deep);border:1.5px solid var(--line-soft);width:auto;}
+.btn.sm{padding:8px 13px;font-size:13px;border-radius:9px;width:auto;}
+.sso{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px;}
+.sso::before,.sso::after{content:"";flex:1;height:1px;background:var(--line-soft);}
+.btn.sso-btn{background:#fff;color:var(--ink);border:1.5px solid var(--line-soft);}
+.login .hint{font-size:11.5px;color:var(--muted);text-align:center;margin-top:16px;}
+.twofa{display:flex;gap:8px;justify-content:center;margin:10px 0 18px;}
+.twofa input{width:46px;height:54px;text-align:center;font-size:22px;font-weight:700;border:1.5px solid var(--line-soft);border-radius:11px;}
+
+/* ---------- app ---------- */
+.app{display:none;}
+.app.on{display:block;}
+.header{background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:11px 24px;position:relative;z-index:25;}
+.header .mojo{font-family:var(--serif);font-weight:600;font-size:23px;letter-spacing:-.01em;color:#fff;}
+.header .admintag{font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;background:var(--periwinkle);border-radius:5px;padding:3px 8px;margin-left:9px;}
+.header .htools{display:flex;align-items:center;gap:16px;font-size:13px;}
+.header .htools .who{display:flex;align-items:center;gap:9px;}
+.header .av{width:30px;height:30px;border-radius:50%;background:var(--periwinkle);display:grid;place-items:center;font-weight:800;font-size:12px;}
+.header .logout{color:#fff;opacity:.7;text-decoration:none;font-weight:600;cursor:pointer;}
+.header .logout:hover{opacity:1;}
+
+/* ghost banner */
+.ghostbar{display:none;align-items:center;gap:12px;background:var(--flare);color:#fff;padding:9px 24px;font-size:13.5px;font-weight:600;}
+.ghostbar.on{display:flex;}
+.ghostbar .icn{width:17px;height:17px;}
+.ghostbar .exit{margin-left:auto;background:#fff;color:var(--flare);border:0;border-radius:8px;padding:6px 13px;font:inherit;font-weight:700;font-size:12.5px;cursor:pointer;}
+
+.main{max-width:1240px;margin:0 auto;padding:28px 36px 90px;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:34px;margin:0;}
+.psub{font-size:14px;color:var(--text-soft);margin-top:8px;}
+.statbar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:24px 0 6px;}
+@media(max-width:900px){.statbar{grid-template-columns:repeat(2,1fr);}}
+.sb{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:16px 18px;}
+.sb b{display:block;font-family:var(--serif);font-weight:500;font-size:26px;}
+.sb span{font-size:12px;color:var(--muted);font-weight:600;}
+
+.tabs{display:flex;gap:4px;margin-top:24px;border-bottom:1px solid var(--line-soft);}
+.tab{border:0;background:none;font:inherit;font-size:14.5px;font-weight:700;color:var(--ink-3);padding:11px 16px;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;}
+.tab .ct{font-size:11px;font-weight:800;background:var(--paper-2);border-radius:999px;padding:1px 8px;margin-left:6px;}
+.tab.active{color:var(--periwinkle-deep);border-bottom-color:var(--periwinkle-deep);}
+.tab.active .ct{background:var(--periwinkle);color:#fff;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+.toolbar{display:flex;gap:12px;align-items:center;margin:20px 0 14px;flex-wrap:wrap;}
+.search{flex:1;min-width:240px;display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:10px 13px;}
+.search input{border:0;outline:0;font:inherit;font-size:14px;width:100%;background:none;}
+.search .icn{width:17px;height:17px;color:var(--muted);}
+.fbtns{display:flex;gap:6px;flex-wrap:wrap;}
+.fbtn{font:inherit;font-size:12.5px;font-weight:700;color:var(--ink-3);background:#fff;border:1.5px solid var(--line-soft);border-radius:999px;padding:7px 13px;cursor:pointer;}
+.fbtn.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+/* directory table */
+.dirtable{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line-soft);border-radius:14px;overflow:hidden;}
+.dirtable thead th{text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:13px 16px;border-bottom:1px solid var(--line-soft);background:var(--paper-2);}
+.dirtable tbody td{padding:13px 16px;border-bottom:1px solid var(--paper-2);font-size:13.5px;vertical-align:middle;}
+.dirtable tbody tr:last-child td{border-bottom:0;}
+.dirtable tbody tr{cursor:pointer;}
+.dirtable tbody tr:hover{background:var(--paper);}
+.orgcell{display:flex;align-items:center;gap:12px;}
+.orglogo{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px;flex:none;background:var(--periwinkle-deep);}
+.orglogo.prod{background:#8246af;} .orglogo.brand{background:var(--periwinkle-deep);} .orglogo.both{background:var(--spearmint-deep,#2f8f5b);} .orglogo.dist{background:var(--slate,#51768c);}
+.orgcell b{font-size:14px;display:block;}
+.orgcell span{font-size:12px;color:var(--muted);}
+.scell{font-weight:700;}
+.plan{font-size:11px;font-weight:800;border-radius:999px;padding:3px 9px;background:var(--tint-peri);color:var(--periwinkle-ink);}
+.stbadge{font-size:10.5px;font-weight:800;border-radius:999px;padding:3px 9px;}
+.st-active{background:var(--tint-green);color:var(--green-deep);}
+.st-trial{background:#e6e9fb;color:var(--periwinkle-deep);}
+.st-past_due{background:#fbeccd;color:#9a6b1f;}
+.st-suspended{background:var(--tint-red);color:var(--flare);}
+.st-pending{background:#fbeccd;color:#9a6b1f;}
+.st-invited{background:#e6e9fb;color:var(--periwinkle-deep);}
+.st-needs_attention{background:#fbeccd;color:#9a6b1f;}
+.map-ok{color:var(--green-deep);font-weight:700;}
+.map-warn{color:#9a6b1f;font-weight:700;}
+.map-na{color:var(--muted);}
+.map-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.suplist{display:flex;flex-direction:column;gap:8px;}
+.suprow{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:9px 12px;}
+.supav{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--tint-peri);color:var(--periwinkle-deep);font-size:11px;font-weight:800;}
+.supmeta{flex:1;min-width:0;}
+.supmeta b{display:block;font-size:13.5px;}
+.supmeta span{display:block;font-size:12px;color:var(--muted);}
+.suprole{font-size:11px;font-weight:800;color:var(--ink-3);background:var(--paper-2);border-radius:999px;padding:3px 9px;}
+.supnote{margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-2);background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:12px 14px;white-space:pre-wrap;}
+.supdocs{display:flex;flex-wrap:wrap;gap:8px;}
+.supdoc{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line-soft);border-radius:9px;padding:7px 11px;font-size:12.5px;font-weight:600;color:var(--ink);}
+.supdoc svg{stroke:var(--periwinkle-deep);stroke-width:1.6;fill:none;}
+.imprec{background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:12px 14px;margin-bottom:9px;}
+.imprec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+.imprec-h b{font-size:14px;color:var(--ink);}
+.imprec-h span{font-size:12px;color:var(--muted);}
+.imprec-meta{font-size:12.5px;color:var(--ink-2);margin-top:3px;}
+.imprec-warn{color:#9a6b1f;font-weight:700;}
+.imprec-notes{margin:9px 0 0;padding-left:16px;}
+.imprec-notes li{font-size:12.5px;color:var(--ink-2);line-height:1.5;margin-bottom:3px;}
+.rowact{display:flex;gap:6px;justify-content:flex-end;}
+.iconbtn{border:1.5px solid var(--line-soft);background:#fff;border-radius:8px;padding:6px 10px;font:inherit;font-size:12px;font-weight:700;color:var(--periwinkle-deep);cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+.iconbtn:hover{border-color:var(--periwinkle-deep);}
+.iconbtn.ghost-act{color:var(--flare);}
+.iconbtn.ghost-act:hover{border-color:var(--flare);background:var(--tint-red);}
+.iconbtn .icn{width:13px;height:13px;}
+
+/* detail drawer */
+.scrim{position:fixed;inset:0;background:rgba(22,24,28,.5);backdrop-filter:blur(3px);display:none;z-index:80;}
+.scrim.open{display:block;}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(540px,100%);background:var(--paper);box-shadow:-20px 0 60px rgba(20,22,45,.3);transform:translateX(100%);transition:transform .28s cubic-bezier(.22,.61,.36,1);z-index:90;overflow-y:auto;}
+.drawer.open{transform:translateX(0);}
+.dwr-head{background:#fff;border-bottom:1px solid var(--line-soft);padding:22px 26px;display:flex;align-items:flex-start;gap:15px;position:sticky;top:0;z-index:2;}
+.dwr-x{margin-left:auto;border:0;background:none;font-size:24px;color:var(--muted);cursor:pointer;line-height:1;}
+.dwr-body{padding:22px 26px 60px;}
+.dwr-sec{margin-top:24px;}
+.dwr-sec:first-child{margin-top:0;}
+.dwr-sec h4{font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:9px 14px;font-size:13.5px;}
+.kv .k{color:var(--text-soft);}
+.kv .v{font-weight:600;}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.stat{background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:12px 14px;}
+.stat b{display:block;font-family:var(--serif);font-weight:500;font-size:20px;}
+.stat span{font-size:11.5px;color:var(--muted);font-weight:600;}
+.flagbar{display:flex;align-items:flex-start;gap:11px;border-radius:11px;padding:11px 14px;margin-bottom:14px;}
+.flagbar .icn{width:17px;height:17px;flex:none;margin-top:1px;}
+.flagbar b{display:block;font-size:13px;}.flagbar span{font-size:12.5px;}
+.fb-amber{background:#fbeccd;color:#8a5a12;}.fb-red{background:var(--tint-red);color:var(--flare);}.fb-grey{background:var(--paper-2);color:var(--ink-3);}
+.dwr-foot{display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line-soft);padding-top:18px;margin-top:24px;}
+.btn.danger{background:var(--flare);}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:12px 20px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:200;opacity:0;transition:opacity .25s,transform .25s;}
+.toast.on{opacity:1;transform:translateX(-50%);}
+
+/* ===== Admin home — sidebar + overview (Merchsmith brand) ===== */
+.app.on{display:flex;min-height:100vh;}
+.aside{width:248px;flex:none;background:linear-gradient(180deg,#16172a,#1f2140);color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+.aside-brand{display:flex;align-items:center;gap:11px;padding:22px 22px 18px;}
+.aside-mark{width:30px;height:30px;color:#fff;}
+.aside-wm{font-family:var(--serif);font-weight:600;font-size:23px;letter-spacing:-.01em;}
+.aside-nav{display:flex;flex-direction:column;gap:3px;padding:8px 12px;flex:1;}
+.anav{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;color:rgba(255,255,255,.66);font:inherit;font-size:14px;font-weight:600;padding:11px 13px;border-radius:11px;cursor:pointer;text-align:left;transition:background .15s,color .15s;position:relative;}
+.anav .icn{width:19px;height:19px;flex:none;}
+.anav:hover{background:rgba(255,255,255,.07);color:#fff;}
+.anav.active{background:rgba(255,255,255,.12);color:#fff;}
+.anav.active::before{content:"";position:absolute;left:-12px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--periwinkle);}
+.anav .navct{margin-left:auto;font-size:11px;font-weight:800;background:rgba(255,255,255,.16);border-radius:999px;padding:1px 8px;}
+.aside-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.1);}
+.aside-op{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.aside-op .av{width:34px;height:34px;border-radius:50%;background:var(--periwinkle);display:grid;place-items:center;font-weight:800;font-size:12px;flex:none;}
+.aside-op b{display:block;font-size:13.5px;}
+.aside-op span{font-size:11.5px;color:rgba(255,255,255,.55);}
+.aside-foot .logout{color:rgba(255,255,255,.6);font-size:12.5px;font-weight:600;cursor:pointer;}
+.aside-foot .logout:hover{color:#fff;}
+.appmain{flex:1;min-width:0;}
+
+.panel{display:none;padding:30px 40px 90px;max-width:1180px;animation:fadeUp .4s ease both;}
+#panel-products{max-width:none;}
+.panel.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.phead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+
+/* overview hero */
+.ovhero{position:relative;border-radius:22px;overflow:hidden;background:linear-gradient(120deg,var(--periwinkle-deep),#6b6bd6 60%,var(--periwinkle));color:#fff;padding:34px 36px;margin-bottom:8px;}
+.ovhero-bg{position:absolute;inset:0;opacity:.16;background-image:radial-gradient(circle at 1px 1px,#fff 1.4px,transparent 0);background-size:22px 22px;}
+.ovhero-in{position:relative;}
+.ovhello{font-size:14px;font-weight:700;opacity:.85;margin-bottom:6px;}
+.ovtitle{font-family:var(--serif);font-weight:500;font-size:38px;margin:0;letter-spacing:-.01em;}
+.ovsub{font-size:14.5px;opacity:.9;margin:8px 0 20px;max-width:60ch;line-height:1.5;}
+.ovquick{display:flex;gap:10px;flex-wrap:wrap;}
+.btn.ghost.light{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3);}
+.btn.ghost.light:hover{background:rgba(255,255,255,.22);}
+
+.statbar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:22px 0 6px;}
+@media(max-width:1000px){.statbar{grid-template-columns:repeat(2,1fr);}.aside{width:212px;}}
+.sb{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:17px 18px;animation:fadeUp .5s ease both;}
+.sb b{display:block;font-family:var(--serif);font-weight:500;font-size:28px;line-height:1;}
+.sb span{font-size:12px;color:var(--muted);font-weight:600;}
+.sb .delta{font-size:11.5px;font-weight:800;margin-top:6px;display:inline-block;}
+.sb .delta.up{color:var(--green-deep);}.sb .delta.flat{color:var(--muted);}
+
+.ovgrid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:22px;}
+.ovgrid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;}
+@media(max-width:900px){.ovgrid,.ovgrid2{grid-template-columns:1fr;}}
+.ovcard{background:#fff;border:1px solid var(--line-soft);border-radius:18px;padding:20px 22px;}
+.ovcard-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.ovcard-h h3{font-family:var(--serif);font-weight:500;font-size:18px;margin:0;}
+.ovlink,.ovtrend{font-size:12.5px;font-weight:700;color:var(--periwinkle-deep);cursor:pointer;}
+.ovtrend{color:var(--green-deep);}
+.spark{height:120px;}
+.spark svg{width:100%;height:100%;overflow:visible;}
+.spark .area{fill:url(#sparkgrad);}
+.spark .line{fill:none;stroke:var(--periwinkle-deep);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 1.3s ease forwards;}
+@keyframes draw{to{stroke-dashoffset:0;}}
+.spark .dot{fill:var(--periwinkle-deep);}
+.attn{display:flex;flex-direction:column;gap:9px;}
+.attn-row{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;background:var(--paper-2);cursor:pointer;}
+.attn-row:hover{background:var(--tint-peri);}
+.attn-ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:none;}
+.attn-ic .icn{width:15px;height:15px;color:#fff;}
+.ai-red{background:var(--flare);}.ai-amber{background:#d8943a;}.ai-grey{background:var(--muted);}
+.attn-row b{font-size:13.5px;display:block;}
+.attn-row span{font-size:12px;color:var(--text-soft);}
+.feed{display:flex;flex-direction:column;}
+.feed-row{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--paper-2);}
+.feed-row:first-child{border-top:0;}
+.feed-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none;}
+.fd-up{background:var(--green-deep);}.fd-trial{background:var(--periwinkle);}.fd-alert{background:var(--flare);}.fd-info{background:var(--muted);}
+.feed-row b{font-size:13.5px;}.feed-row .ft{font-size:13px;color:var(--ink-2);}
+.feed-row .fw{font-size:11.5px;color:var(--muted);margin-left:auto;white-space:nowrap;}
+.planmix{display:flex;flex-direction:column;gap:14px;}
+.pm-row .pm-top{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:5px;}
+.pm-bar{height:9px;border-radius:5px;background:var(--paper-2);overflow:hidden;}
+.pm-bar i{display:block;height:100%;border-radius:5px;animation:grow 1s ease both;}
+@keyframes grow{from{width:0 !important;}}
+
+/* plans */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;}
+@media(max-width:900px){.plans{grid-template-columns:1fr;}}
+.plan-card{background:#fff;border:1.5px solid var(--line-soft);border-radius:18px;padding:24px 22px;position:relative;transition:transform .15s,box-shadow .15s,border-color .15s;}
+.plan-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(40,44,80,.1);}
+.plan-card.pop{border-color:var(--periwinkle);}
+.plan-pop{position:absolute;top:-11px;left:22px;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--periwinkle);border-radius:999px;padding:4px 11px;}
+.plan-name{font-family:var(--serif);font-weight:500;font-size:22px;}
+.plan-tag{font-size:12.5px;color:var(--muted);margin:2px 0 14px;}
+.plan-price{font-family:var(--serif);font-weight:500;font-size:34px;}
+.plan-price span{font-size:14px;color:var(--muted);font-weight:400;font-family:var(--sans);}
+.plan-ct{font-size:12px;font-weight:700;color:var(--periwinkle-deep);background:var(--tint-peri);border-radius:999px;padding:3px 10px;display:inline-block;margin:12px 0;}
+.plan-feats{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:9px;}
+.plan-feats li{font-size:13px;color:var(--ink-2);padding-left:24px;position:relative;}
+.plan-feats li::before{content:"";position:absolute;left:2px;top:5px;width:11px;height:7px;border-left:2px solid var(--green-deep);border-bottom:2px solid var(--green-deep);transform:rotate(-45deg);}
+.dirtable.bare{border:0;border-radius:0;}
+.teamgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px;}
+@media(max-width:760px){.teamgrid{grid-template-columns:1fr;}}
+.tm-card{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:15px 17px;}
+.tm-card .av{width:42px;height:42px;border-radius:50%;background:var(--periwinkle-deep);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px;flex:none;}
+.tm-card b{font-size:14.5px;display:block;}
+.tm-card span{font-size:12.5px;color:var(--text-soft);}
+.tm-role{margin-left:auto;font-size:11px;font-weight:800;color:var(--periwinkle-deep);background:var(--tint-peri);border-radius:999px;padding:3px 10px;}
+.tm-card.inv{opacity:.7;}
+.setcard{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:16px 20px;margin-top:12px;max-width:640px;}
+.setcard b{font-size:14.5px;display:block;}.setcard span{font-size:12.5px;color:var(--muted);}
+.toggle{width:42px;height:24px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;flex:none;transition:background .18s;}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .18s;}
+.toggle.on{background:var(--periwinkle-deep);}.toggle.on::after{left:21px;}
+
+/* invite modal */
+.fm-scrim{position:fixed;inset:0;background:rgba(22,24,28,.5);backdrop-filter:blur(3px);display:grid;place-items:start center;z-index:120;opacity:0;transition:opacity .2s;overflow-y:auto;padding:6vh 16px;}
+.fm-scrim.open{opacity:1;}
+.fm-modal{background:var(--paper);width:min(440px,100%);border-radius:18px;box-shadow:0 30px 80px rgba(20,22,45,.4);transform:translateY(12px);transition:transform .2s;}
+.fm-scrim.open .fm-modal{transform:none;}
+.fm-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line-soft);}
+.fm-head h3{font-family:var(--serif);font-weight:500;font-size:21px;margin:0;flex:1;}
+.fm-body{padding:18px 22px;display:flex;flex-direction:column;gap:14px;}
+.fm-f{display:flex;flex-direction:column;gap:5px;}
+.fm-f>span{font-size:12.5px;font-weight:700;color:var(--ink-2);}
+.fm-f input,.fm-f select{font:inherit;font-size:14px;border:1.5px solid var(--line-soft);border-radius:10px;padding:10px 12px;background:#fff;}
+.fm-f input:focus,.fm-f select:focus{outline:0;border-color:var(--periwinkle-deep);box-shadow:0 0 0 2px var(--tint-peri);}
+.fm-seg{display:flex;background:var(--paper-2);border-radius:11px;padding:3px;}
+.fm-seg button{flex:1;border:0;background:none;font:inherit;font-size:13.5px;font-weight:700;color:var(--ink-3);padding:9px;border-radius:8px;cursor:pointer;}
+.fm-seg button.on{background:#fff;color:var(--periwinkle-deep);box-shadow:0 1px 4px rgba(20,22,45,.1);}
+.fm-foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 22px;border-top:1px solid var(--line-soft);}
+.ghost-note{display:flex;gap:11px;background:var(--tint-peri);border-radius:11px;padding:13px 15px;}
+.ghost-note p{margin:0;font-size:13px;line-height:1.5;color:var(--periwinkle-ink,#33356b);}
+.gchk{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--ink-2);cursor:pointer;line-height:1.4;}
+.gchk input{width:16px;height:16px;margin-top:1px;accent-color:var(--periwinkle-deep);flex:none;}
+.ghost-fine{font-size:11.5px;color:var(--muted);margin:0;}
+.dwr-x{margin-left:auto;border:0;background:none;font-size:24px;color:var(--muted);cursor:pointer;line-height:1;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="a-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+<symbol id="a-ghost" viewBox="0 0 24 24"><path d="M5 21V10a7 7 0 0 1 14 0v11l-2.3-1.6L14.4 21 12 19.4 9.6 21l-2.3-1.6z"/><circle cx="9.5" cy="11" r="1"/><circle cx="14.5" cy="11" r="1"/></symbol>
+<symbol id="a-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="a-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/></symbol>
+<symbol id="a-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="a-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h12l-2 4 2 4H5"/></symbol>
+<symbol id="a-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="a-bolt" viewBox="0 0 24 24"><path d="M13 3 4 14h7l-1 7 9-11h-7z"/></symbol>
+<symbol id="a-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.4"/><rect x="13" y="4" width="7" height="7" rx="1.4"/><rect x="4" y="13" width="7" height="7" rx="1.4"/><rect x="13" y="13" width="7" height="7" rx="1.4"/></symbol>
+<symbol id="a-store" viewBox="0 0 24 24"><path d="M4 9h16l-1-4H5zM4 9v10h16V9M9 19v-5h6v5"/></symbol>
+<symbol id="a-box" viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
+<symbol id="a-card" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
+<symbol id="a-people" viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5"/><path d="M16 6.5a3 3 0 0 1 0 5.8M21 20c0-3-1.8-4.6-4-4.9"/></symbol>
+<symbol id="a-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M21.5 12h-3M5.5 12h-3M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1M18.4 18.4l-2.1-2.1M7.7 7.7 5.6 5.6"/></symbol>
+<symbol id="a-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="a-up" viewBox="0 0 24 24"><path d="M5 17 11 9l4 4 5-7M14 6h6v6"/></symbol>
+</defs></svg>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <form class="login" id="loginForm">
+    <div class="logo"><span class="mojo">Merchsmith</span><span class="admintag">Platform Admin</span></div>
+    <h1 id="loginH">Sign in to Merchsmith</h1>
+    <p class="sub" id="loginSub">Operator console — manage distributors, suppliers &amp; the platform.</p>
+    <div id="step1">
+      <div class="fld"><label>Work email</label><input type="email" id="email" value="admin@merchsmith.com" autocomplete="username"></div>
+      <div class="fld"><label>Password</label><input type="password" id="pw" value="••••••••••" autocomplete="current-password"></div>
+      <div class="row"><label><input type="checkbox" checked> Keep me signed in</label><a href="#">Forgot password?</a></div>
+      <button class="btn" type="submit">Sign in</button>
+      <div class="sso">or</div>
+      <button class="btn sso-btn" type="button" id="ssoBtn">Continue with Google SSO</button>
+      <p class="hint">Protected by 2-factor authentication. Operator access only.</p>
+    </div>
+    <div id="step2" style="display:none">
+      <p class="sub" style="margin-bottom:4px">Enter the 6-digit code from your authenticator app.</p>
+      <div class="twofa">${[0,1,2,3,4,5].map(()=>'<input maxlength="1" inputmode="numeric">').join('')}</div>
+      <button class="btn" type="button" id="verify2fa">Verify &amp; sign in</button>
+      <p class="hint">Demo — any code works.</p>
+    </div>
+  </form>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <aside class="aside" id="aside">
+    <div class="aside-brand">
+      <svg class="aside-mark" viewBox="143.4 251.4 89.1 91.4"><path fill="currentColor" d="M194.66 336.80 C191.83 336.80 189.16 335.66 187.15 333.59 C185.15 331.54 184.04 328.79 184.03 325.87 L184.03 308.30 L190.95 308.30 L190.95 325.86 C190.95 326.88 191.34 327.84 192.04 328.56 C193.45 330.00 195.88 329.99 197.28 328.56 L217.53 307.71 C218.98 306.22 218.98 303.80 217.53 302.31 C216.83 301.59 215.90 301.19 214.91 301.19 L160.07 301.19 C157.23 301.18 154.56 300.04 152.56 297.98 C150.55 295.91 149.44 293.17 149.44 290.24 C149.44 287.33 150.55 284.58 152.56 282.51 L172.81 261.66 C176.95 257.39 183.69 257.40 187.83 261.66 C189.84 263.73 190.94 266.47 190.95 269.38 L190.95 286.95 L184.03 286.95 L184.03 269.39 C184.03 268.38 183.64 267.42 182.94 266.69 C181.54 265.26 179.10 265.25 177.70 266.70 L157.45 287.55 C156.75 288.27 156.36 289.23 156.36 290.24 C156.36 291.26 156.75 292.22 157.45 292.94 C158.15 293.66 159.09 294.07 160.08 294.07 L214.92 294.07 C217.76 294.07 220.42 295.22 222.43 297.28 C226.57 301.54 226.57 308.48 222.42 312.74 L202.17 333.59 C200.17 335.66 197.50 336.80 194.66 336.80"></path></svg>
+      <span class="aside-wm">merchsmith</span>
+    </div>
+    <nav class="aside-nav" id="asideNav">
+      <button class="anav active" data-nav="overview"><svg class="icn"><use href="#a-grid"/></svg><span>Overview</span></button>
+      <button class="anav" data-nav="distributors"><svg class="icn"><use href="#a-store"/></svg><span>Distributors</span><b class="navct" id="navDist"></b></button>
+      <button class="anav" data-nav="suppliers"><svg class="icn"><use href="#a-box"/></svg><span>Suppliers</span><b class="navct" id="navSup"></b></button>
+      <button class="anav" data-nav="products"><svg class="icn"><use href="#a-grid"/></svg><span>Products</span><b class="navct" id="navProd"></b></button>
+      <button class="anav" data-nav="curated"><svg class="icn"><use href="#a-card"/></svg><span>Curated range</span><b class="navct" id="navCur"></b></button>
+      <button class="anav" data-nav="storestructure"><svg class="icn"><use href="#a-grid"/></svg><span>Store layout</span></button>
+      <button class="anav" data-nav="subscriptions"><svg class="icn"><use href="#a-card"/></svg><span>Subscriptions</span></button>
+      <button class="anav" data-nav="team"><svg class="icn"><use href="#a-people"/></svg><span>Team</span></button>
+      <button class="anav" data-nav="settings"><svg class="icn"><use href="#a-gear"/></svg><span>Settings</span></button>
+    </nav>
+    <div class="aside-foot">
+      <div class="aside-op"><span class="av">MS</span><div><b>Morgan Slade</b><span>Operator</span></div></div>
+      <a class="logout" id="logout">Sign out</a>
+    </div>
+  </aside>
+
+  <div class="appmain">
+  <div class="ghostbar" id="ghostbar">
+    <svg class="icn"><use href="#a-ghost"/></svg>
+    <span id="ghostlbl"></span>
+    <button class="exit" id="ghostExit">Exit ghost mode</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="panel active" id="panel-overview">
+    <div class="ovhero">
+      <div class="ovhero-bg" data-pat></div>
+      <div class="ovhero-in">
+        <div class="ovhello">Good afternoon, Morgan 👋</div>
+        <h1 class="ovtitle">Platform overview</h1>
+        <p class="ovsub">Everything across Merchsmith — distributors, suppliers, revenue and what needs your attention today.</p>
+        <div class="ovquick">
+          <button class="btn" id="qInvite"><svg class="icn"><use href="#a-plus"/></svg>Invite organisation</button>
+          <button class="btn ghost light" data-nav="subscriptions"><svg class="icn"><use href="#a-card"/></svg>Manage plans</button>
+          <button class="btn ghost light" data-nav="team"><svg class="icn"><use href="#a-people"/></svg>Invite team</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="statbar" id="statbar"></div>
+
+    <div class="ovgrid">
+      <div class="ovcard ovchart">
+        <div class="ovcard-h"><h3>Monthly recurring revenue</h3><span class="ovtrend" id="mrrTrend"></span></div>
+        <div class="spark" id="mrrSpark"></div>
+      </div>
+      <div class="ovcard">
+        <div class="ovcard-h"><h3>Needs attention</h3></div>
+        <div class="attn" id="attnList"></div>
+      </div>
+    </div>
+
+    <div class="ovgrid2">
+      <div class="ovcard">
+        <div class="ovcard-h"><h3>Recent activity</h3></div>
+        <div class="feed" id="actFeed"></div>
+      </div>
+      <div class="ovcard">
+        <div class="ovcard-h"><h3>Plan mix</h3><a class="ovlink" data-nav="subscriptions">Manage ›</a></div>
+        <div class="planmix" id="planMix"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISTRIBUTORS -->
+  <div class="panel" id="panel-distributors">
+    <div class="phead"><h1 class="ptitle">Distributors</h1><button class="btn" id="qInvite2"><svg class="icn"><use href="#a-plus"/></svg>Invite distributor</button></div>
+    <p class="psub">Your direct customers — the merch businesses running on Merchsmith.</p>
+    <div class="toolbar">
+      <div class="search"><svg class="icn"><use href="#a-search"/></svg><input id="distSearch" placeholder="Search distributors by name, owner, domain…"></div>
+      <div class="fbtns" id="distFilters">
+        <button class="fbtn on" data-st="">All <span class="ct" id="ctDist"></span></button>
+        <button class="fbtn" data-st="active">Active</button>
+        <button class="fbtn" data-st="trial">Trial</button>
+        <button class="fbtn" data-st="past_due">Past due</button>
+        <button class="fbtn" data-st="suspended">Suspended</button>
+      </div>
+    </div>
+    <table class="dirtable"><thead><tr><th>Distributor</th><th>Plan</th><th>Customers</th><th>GMV</th><th>MRR</th><th>Status</th><th></th></tr></thead><tbody id="distRows"></tbody></table>
+  </div>
+
+  <!-- SUPPLIERS -->
+  <div class="panel" id="panel-suppliers">
+    <div class="phead"><h1 class="ptitle">Suppliers</h1><button class="btn" id="qInviteSup"><svg class="icn"><use href="#a-plus"/></svg>Add supplier</button></div>
+    <p class="psub">The shared supplier directory available to every distributor.</p>
+    <div class="toolbar">
+      <div class="search"><svg class="icn"><use href="#a-search"/></svg><input id="supSearch" placeholder="Search suppliers by name, domain, region…"></div>
+      <div class="fbtns" id="supFilters">
+        <button class="fbtn on" data-k="">All <span class="ct" id="ctSup"></span></button>
+        <button class="fbtn" data-k="both">Product + Branding</button>
+        <button class="fbtn" data-k="product">Product only</button>
+        <button class="fbtn" data-k="branding">Branding only</button>
+      </div>
+    </div>
+    <table class="dirtable"><thead><tr><th>Supplier</th><th>Type</th><th>Feed</th><th>Products</th><th>Used by</th><th>Status</th><th></th></tr></thead><tbody id="supRows"></tbody></table>
+  </div>
+
+  <!-- PRODUCTS (master database) -->
+  <div class="panel" id="panel-products"></div>
+
+  <!-- IMPORT (full-page feed importer) -->
+  <div class="panel" id="panel-import"></div>
+
+  <!-- CURATED RANGE -->
+  <div class="panel" id="panel-curated"></div>
+
+  <!-- STORE LAYOUT (sections + departments) -->
+  <div class="panel" id="panel-storestructure"></div>
+
+  <!-- SUBSCRIPTIONS -->
+  <div class="panel" id="panel-subscriptions">
+    <h1 class="ptitle">Subscriptions</h1>
+    <p class="psub">Plan tiers, pricing and what each distributor is on. Adjust a distributor's tier from their profile.</p>
+    <div class="plans" id="plansGrid"></div>
+    <div class="ovcard" style="margin-top:22px">
+      <div class="ovcard-h"><h3>Distributor plans</h3></div>
+      <table class="dirtable bare"><thead><tr><th>Distributor</th><th>Plan</th><th>MRR</th><th>Status</th><th></th></tr></thead><tbody id="subRows"></tbody></table>
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <div class="panel" id="panel-team">
+    <div class="phead"><h1 class="ptitle">Platform team</h1><button class="btn" id="qInviteTeam"><svg class="icn"><use href="#a-plus"/></svg>Invite team member</button></div>
+    <p class="psub">Merchsmith operators with access to this admin console.</p>
+    <div class="teamgrid" id="teamGrid"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="panel" id="panel-settings">
+    <h1 class="ptitle">Platform settings</h1>
+    <p class="psub">Operator-level configuration.</p>
+    <div class="setcard"><div><b>Two-factor authentication</b><span>Required for all operators</span></div><span class="toggle on"></span></div>
+    <div class="setcard"><div><b>New trial sign-ups</b><span>Allow self-serve 14-day trials</span></div><span class="toggle on"></span></div>
+    <div class="setcard"><div><b>Supplier feed auto-sync</b><span>Pull API feeds every 15 minutes</span></div><span class="toggle on"></span></div>
+    <div class="setcard"><div><b>Maintenance mode</b><span>Take the platform offline for updates</span></div><span class="toggle"></span></div>
+    <div class="setcard"><div><b>Sustainability filtering <span style="display:inline-block;background:#eceef9;color:#2b2e57;font-size:10px;font-weight:800;border-radius:5px;padding:2px 6px;margin-left:4px">Phase 2</span></b><span>Let projects set a minimum sustainability score in the brief and filter the store by it</span></div><span class="toggle" id="setSus" data-pset="sustainabilityFilter"></span></div>
+
+    <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Platform colourway</h2>
+    <p class="psub">Choose the colour set used across the platform. Built-in sets show first — add your own brand colours and switch between them. Changes apply live.</p>
+    <div class="cwsets" id="cwSets"></div>
+    <div style="margin-top:16px"><button class="btn ghost" id="cwAdd">+ Add colour set</button></div>
+    <div class="cwform" id="cwForm" hidden>
+      <div class="cwform-h">New colour set</div>
+      <div class="cwfrow"><label>Set name</label><input type="text" id="cwName" placeholder="e.g. Spring 2026"></div>
+      <div class="cwfields">
+        <label class="cwfield"><span>Primary</span><input type="color" id="cwPrimary" value="#7B85C5"></label>
+        <label class="cwfield"><span>Primary deep</span><input type="color" id="cwDeep" value="#5860A6"></label>
+        <label class="cwfield"><span>Primary ink</span><input type="color" id="cwInk" value="#3C4279"></label>
+        <label class="cwfield"><span>Tint</span><input type="color" id="cwTint" value="#ECEEF9"></label>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:10px"><button class="btn" id="cwSave">Save &amp; apply</button><button class="btn ghost" id="cwCancel">Cancel</button></div>
+    </div>
+
+    <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Logos</h2>
+    <p class="psub">Upload the logos used across the platform. The <b>header logo</b> appears top-left in the app; the <b>PDF logo</b> is used on downloadable documents (proofs, quotes).</p>
+    <div class="logogrid">
+      <div class="logoslot"><span class="logoslot-lbl">Platform header logo</span><div class="logoslot-drop"><image-slot id="ms-admin-header-logo" shape="rect" fit="contain" data-crop placeholder="Drop header logo (SVG / PNG)"></image-slot></div><div class="logomono" data-for="ms-admin-header-logo"><span>Tone</span><button type="button" class="logomono-btn on" data-mono="original">Original</button><button type="button" class="logomono-btn" data-mono="white">Mono white</button><button type="button" class="logomono-btn" data-mono="black">Mono black</button><button type="button" class="logodel" data-crop-logo="ms-admin-header-logo">Crop</button><button type="button" class="logodel" data-del-logo="ms-admin-header-logo">Remove logo</button></div><span class="logoslot-hint">Shown top-left. Transparent PNG or SVG recommended. <b>Recommended: 320 × 80 px</b> (4:1), max 512 px wide. Double-click to crop &amp; reposition.</span></div>
+      <div class="logoslot"><span class="logoslot-lbl">PDF / document logo</span><div class="logoslot-drop"><image-slot id="ms-admin-pdf-logo" shape="rect" fit="contain" data-crop placeholder="Drop PDF logo (PNG / SVG)"></image-slot></div><div class="logomono" data-for="ms-admin-pdf-logo"><span>Tone</span><button type="button" class="logomono-btn on" data-mono="original">Original</button><button type="button" class="logomono-btn" data-mono="white">Mono white</button><button type="button" class="logomono-btn" data-mono="black">Mono black</button><button type="button" class="logodel" data-crop-logo="ms-admin-pdf-logo">Crop</button><button type="button" class="logodel" data-del-logo="ms-admin-pdf-logo">Remove logo</button></div><span class="logoslot-hint">Used on proofs, quotes &amp; order docs. <b>Recommended: 600 × 200 px</b> (3:1) or vector SVG, transparent background. Double-click to crop &amp; reposition.</span></div>
+    </div>
+
+    <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Product fields</h2>
+    <p class="psub">The canonical fields every supplier feed maps into and the store displays. Review them all, or add a custom field the platform doesn't have yet.</p>
+    <div class="setcard"><div><b>Field registry</b><span id="fldCount">Manage the platform's product fields & add custom ones</span></div><button class="btn ghost" id="openFields">Manage fields</button></div>
+
+    <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Platform data — go live</h2>
+    <p class="psub">Switch the whole platform to a <b>blank slate</b> to build it up with real data from scratch, or restore the built-in demo data. Reversible — the sample data is suppressed, never deleted. <b>Download a backup first</b> if you've added real data.</p>
+    <div id="modeCard"></div>
+
+    <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Catalogue data</h2>
+    <p class="psub">Run the product database, store and curated range on <b>real imported feeds only</b>, or include the built-in sample data. Switching is reversible. <b>Back up before clearing imports.</b></p>
+    <div id="catDataCard"></div>
+
+    <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Data backup</h2>
+    <p class="psub">This prototype stores everything in your browser. Back it up to a file so a “clear site data” can be recovered — and to hand a fully-configured copy to someone else.</p>
+    <div class="setcard"><div><b>Download backup</b><span id="bkInfo">All store layout, products, curated range &amp; settings → one .json file</span></div><button class="btn sm" id="bkDownload">Download</button></div>
+    <div class="setcard"><div><b>Restore from backup</b><span>Load a .json backup — overwrites current data in this browser</span></div><button class="btn ghost sm" id="bkRestore">Choose file…</button></div>
+    <div class="setcard"><div><b>Copy data for sharing</b><span>Copies an embed snippet — paste into a shared/exported HTML so it opens with your current data</span></div><button class="btn ghost sm" id="bkEmbed">Copy embed</button></div>
+  </div>
+  </div>
+</div>
+
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="toast" id="toast"></div>
+
+<script>
+/* platform settings persistence (read by project-brief.js + store) */
+(function(){
+  function pset(){ try{ return JSON.parse(localStorage.getItem('ms-platform-settings')||'{}'); }catch(e){ return {}; } }
+  function init(){
+    document.querySelectorAll('.toggle[data-pset]').forEach(t=>{
+      const key=t.dataset.pset; if(pset()[key]) t.classList.add('on');
+      t.addEventListener('click',()=>{ const on=!t.classList.contains('on'); t.classList.toggle('on',on); const o=pset(); o[key]=on; try{ localStorage.setItem('ms-platform-settings', JSON.stringify(o)); }catch(e){} });
+    });
+    const toast=(m)=>{ const el=document.getElementById('toast'); if(!el)return; el.textContent=m; el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),2600); };
+    const dl=document.getElementById('bkDownload'); if(dl)dl.onclick=()=>{ if(window.MSDATA){ MSDATA.download(); toast('Backup downloaded'); } };
+    const rs=document.getElementById('bkRestore'); if(rs)rs.onclick=()=>{ if(window.MSDATA) MSDATA.pickFile((n,err)=>{ if(err){ toast('Could not read that file'); } else { toast(n+' data sets restored — reloading…'); setTimeout(()=>location.reload(),900); } }); };
+    const info=document.getElementById('bkInfo'); if(info&&window.MSDATA){ const n=MSDATA._allKeys().filter(k=>localStorage.getItem(k)).length; info.textContent=`${n} data set${n===1?'':'s'} stored in this browser → one .json file`; }
+    renderCatData();
+    renderModeCard();
+    const setNav=document.querySelector('.anav[data-nav="settings"]'); if(setNav) setNav.addEventListener('click',()=>setTimeout(()=>{ renderCatData(); renderModeCard(); },0));
+    const ofld=document.getElementById('openFields'); const updFldCount=()=>{ const c=document.getElementById('fldCount'); if(c&&window.MSFIELDS){ const n=MSFIELDS.all().length, cu=MSFIELDS.all().filter(f=>!f.builtin).length; c.textContent=`${n} fields${cu?` · ${cu} custom`:''} — review or add a custom field`; } };
+    updFldCount(); if(ofld&&window.MSFieldManager) ofld.onclick=()=>MSFieldManager.open(updFldCount);
+    const emb=document.getElementById('bkEmbed'); if(emb)emb.onclick=async()=>{ if(!window.MSDATA)return; const snippet='<script>window.__MS_SNAPSHOT__='+JSON.stringify(MSDATA.snapshot())+';</'+'script>'; try{ await navigator.clipboard.writeText(snippet); toast('Embed snippet copied — paste it into the shared HTML <head>'); }catch(e){ const ta=document.createElement('textarea'); ta.value=snippet; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast('Embed snippet copied'); } };
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+
+  /* ---- platform data mode: blank slate vs seeded demo ---- */
+  function renderModeCard(){
+    const host=document.getElementById('modeCard'); if(!host||!window.MSMODE) return;
+    const blank=MSMODE.isBlank();
+    const toast=(m)=>{ const el=document.getElementById('toast'); if(!el)return; el.textContent=m; el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),2800); };
+    host.innerHTML=`<div class="setcard" style="align-items:flex-start"><div><b>Current mode: ${blank?'⚪ Blank slate (real data)':'🟢 Seeded demo data'}</b>
+      <span>${blank?'Seed demo data is suppressed. Suppliers kept as empty shells: PF Concept, Xoopar, Bio Labs. One distributor org (Mojo Promotions) kept for the store views. Taxonomy kept. Import real feeds to populate.':'All built-in demo distributors, suppliers, products and team are showing.'}</span></div>
+      ${blank
+        ? `<button class="btn ghost sm" id="modeSeed">Restore demo data</button>`
+        : `<button class="btn sm" id="modeBlank">Reset platform to empty →</button>`}
+    </div>`;
+    const b=document.getElementById('modeBlank');
+    if(b) b.onclick=()=>{
+      if(!confirm('Switch to a BLANK platform?\n\nThis suppresses all built-in demo data (distributors, suppliers, products, team) so you can add real data from scratch. It is reversible — nothing is deleted.\n\nYour imported products, curated range and supplier teams WILL be cleared. Download a backup first if unsure.')) return;
+      if(window.MSDATA) MSDATA.download('merchsmith-backup-before-blank');
+      (MSMODE.RUNTIME_KEYS||[]).forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+      MSMODE.set('blank'); toast('Switched to blank slate — reloading…'); setTimeout(()=>location.reload(),900);
+    };
+    const s=document.getElementById('modeSeed');
+    if(s) s.onclick=()=>{ if(!confirm('Restore the built-in demo data? Your real imported data stays, but the demo distributors/suppliers/products will show alongside it.')) return; MSMODE.set('seeded'); toast('Restored demo data — reloading…'); setTimeout(()=>location.reload(),900); };
+  }
+
+  /* ---- catalogue data source control (real imports only vs include sample) ---- */
+  function renderCatData(){
+    const host=document.getElementById('catDataCard'); if(!host||!window.MSCAT||!MSCAT.breakdown) return;
+    const b=MSCAT.breakdown(); const real=b.mode==='real'; const sups=MSCAT.importedSuppliers?MSCAT.importedSuppliers():[];
+    const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    host.innerHTML=`
+      <div class="setcard" style="align-items:flex-start;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;width:100%;gap:14px;flex-wrap:wrap;align-items:center">
+          <div><b>Catalogue source</b><span>${real?'Showing live store products + your imports. Sample data hidden.':'Showing sample data + live products + imports.'}</span></div>
+          <div class="cd-seg">
+            <button class="cd-segb ${!real?'on':''}" data-src="all">Include sample</button>
+            <button class="cd-segb ${real?'on':''}" data-src="real">Real imports only</button>
+          </div>
+        </div>
+        <div class="cd-stats">
+          <div class="cd-stat"><b>${b.total.toLocaleString()}</b><span>In catalogue now</span></div>
+          <div class="cd-stat"><b>${b.real.toLocaleString()}</b><span>Live store-feed</span></div>
+          <div class="cd-stat"><b>${b.imported.toLocaleString()}</b><span>Imported (real)</span></div>
+          <div class="cd-stat ${b.sample?'':'cd-dim'}"><b>${b.sample.toLocaleString()}</b><span>Sample ${real?'(hidden)':''}</span></div>
+        </div>
+      </div>
+      <div class="setcard" style="align-items:flex-start;flex-direction:column;gap:10px">
+        <div><b>Imported feeds</b><span>Products ingested from real supplier feeds, per supplier.</span></div>
+        ${sups.length?`<div class="cd-sups">${sups.map(s=>`<div class="cd-suprow"><span>${esc(s.name)} · <b>${s.count.toLocaleString()}</b></span><button class="btn ghost sm" data-clearimp="${esc(s.name)}">Clear</button></div>`).join('')}</div>`:'<p style="font-size:12.5px;color:var(--muted);margin:0">No feeds imported yet. Import from a supplier drawer (Suppliers → open a supplier → Import products).</p>'}
+      </div>`;
+    const toast=(m)=>{ const el=document.getElementById('toast'); if(!el)return; el.textContent=m; el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),2600); };
+    host.querySelectorAll('[data-src]').forEach(btn=>btn.onclick=()=>{ const m=btn.dataset.src; MSCAT.setSource(m); renderCatData(); if(window.MSProducts)MSProducts.render(); toast(m==='real'?'Now showing real imports only — store & database updated':'Sample data re-enabled'); });
+    host.querySelectorAll('[data-clearimp]').forEach(btn=>btn.onclick=()=>{ const name=btn.dataset.clearimp; if(!confirm('Remove all imported products from “'+name+'”? Back up first if unsure.'))return; MSCAT.clearIngested(name); renderCatData(); if(window.MSProducts)MSProducts.render(); toast('Cleared imported products from '+name); });
+  }
+  (function(){ if(document.getElementById('cd-style'))return; const st=document.createElement('style'); st.id='cd-style'; st.textContent=`
+    .cd-seg{display:inline-flex;border:1.5px solid var(--line-soft);border-radius:10px;overflow:hidden;}
+    .cd-segb{font:inherit;font-size:12.5px;font-weight:700;border:0;background:#fff;color:var(--text-soft);padding:8px 14px;cursor:pointer;}
+    .cd-segb.on{background:var(--periwinkle-deep,#5b62c9);color:#fff;}
+    .cd-stats{display:flex;gap:9px;width:100%;flex-wrap:wrap;}
+    .cd-stat{flex:1;min-width:90px;background:var(--paper-2,#f6f6fb);border-radius:10px;padding:9px 12px;}
+    .cd-stat b{font-size:17px;display:block;} .cd-stat span{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);}
+    .cd-stat.cd-dim{opacity:.5;}
+    .cd-sups{display:flex;flex-direction:column;gap:7px;width:100%;}
+    .cd-suprow{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--paper-2,#f6f6fb);border-radius:9px;padding:8px 12px;font-size:13px;}
+  `; document.head.appendChild(st); })();
+})();
+</script>
+<script src="ms-mode.js?v=1"></script>
+<script src="store-feed.js?v=2"></script>
+<script src="ms-data.js"></script>
+<script src="catalogue-data.js?v=10"></script>
+<script src="field-registry.js?v=1"></script>
+<script src="store-structure.js?v=5"></script>
+<script src="admin-data.js?v=2"></script>
+<script src="admin-page.js?v=7"></script>
+<script src="admin-home.js"></script>
+<script src="admin-supplier.js?v=3"></script>
+<script src="admin-product.js"></script>
+<script src="admin-supplier-team.js?v=2"></script>
+<script src="ms-brands.js?v=2"></script>
+<script src="admin-products.js?v=28"></script>
+<script src="feed-adapters.js?v=9"></script>
+<script src="field-manager.js?v=1"></script>
+<script src="admin-import.js?v=14"></script>
+<script src="admin-curated.js?v=4"></script>
+<script src="admin-storelayout.js?v=4"></script>
+<script src="logos.js"></script>
+<script>window.MS_SCOPE='platform';</script>
+<script src="theme.js?v=2"></script>
+<script src="image-slot.js"></script>
+<script src="admin-logos.js?v=8"></script>
+<script src="avatars.js"></script>
+<script src="identity.js"></script>
+</body>
+</html>

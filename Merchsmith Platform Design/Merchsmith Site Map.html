@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Site Map &amp; Flow</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#eef0f6;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;}
+.icn{width:18px;height:18px;display:inline-block;vertical-align:middle;}
+.wrap{max-width:1180px;margin:0 auto;padding:44px 30px 100px;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:16px;box-shadow:0 1px 4px rgba(20,22,45,.06);}
+h1{font-family:var(--serif);font-weight:500;font-size:38px;letter-spacing:-.015em;margin:0 0 10px;}
+.lede{font-size:16px;color:var(--ink-2);max-width:76ch;margin:0;}
+.note{font-size:13px;color:var(--periwinkle-deep);font-weight:600;background:#fff;border-left:3px solid var(--periwinkle);border-radius:8px;padding:11px 15px;margin-top:18px;max-width:78ch;}
+h2{font-family:var(--serif);font-weight:500;font-size:25px;margin:54px 0 6px;}
+h2 .num{color:var(--periwinkle-deep);font-size:18px;font-weight:700;font-family:var(--sans);margin-right:10px;}
+.sub{font-size:14.5px;color:var(--ink-2);max-width:80ch;margin:0 0 22px;}
+.card{background:#fff;border:1px solid rgba(20,22,45,.08);border-radius:16px;padding:22px 24px;box-shadow:0 2px 10px rgba(20,22,45,.04);}
+
+/* login contexts */
+.ctxs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+@media(max-width:900px){.ctxs{grid-template-columns:repeat(2,1fr);}}
+.ctx{border-radius:14px;padding:16px 17px;color:#fff;}
+.ctx.admin{background:#23231f;}
+.ctx.dist{background:var(--periwinkle-deep);}
+.ctx.cust{background:var(--slate,#51768c);}
+.ctx.sup{background:#2f8f5b;}
+.ctx h3{font-size:15px;margin:0 0 3px;display:flex;align-items:center;gap:8px;}
+.ctx .lock{font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:rgba(255,255,255,.2);border-radius:5px;padding:2px 7px;}
+.ctx .role{font-size:12px;opacity:.85;margin-bottom:10px;}
+.ctx ul{margin:0;padding-left:16px;font-size:12.5px;opacity:.95;line-height:1.6;}
+.ctx .lands{font-size:11.5px;opacity:.8;margin-top:10px;border-top:1px solid rgba(255,255,255,.2);padding-top:8px;}
+
+/* identity bar explainer */
+.idbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--paper);border-radius:12px;padding:14px 18px;font-size:13.5px;}
+.idbar .lock{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line-soft);border-radius:999px;padding:7px 13px;font-weight:700;}
+.idbar .dot{width:22px;height:22px;border-radius:6px;display:inline-grid;place-items:center;color:#fff;font-size:10px;font-weight:800;}
+.idbar .arrow{color:var(--muted);}
+
+/* sitemap tree */
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:6px 0 20px;font-size:12.5px;color:var(--ink-2);}
+.legend span{display:flex;align-items:center;gap:6px;}
+.lg{width:13px;height:13px;border-radius:4px;}
+.area{margin-bottom:14px;}
+.areah{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:18px 0 12px;}
+.areah::after{content:"";flex:1;height:1px;background:rgba(20,22,45,.08);}
+.row{display:flex;gap:12px;flex-wrap:wrap;}
+.node{background:#fff;border:1.5px solid rgba(20,22,45,.1);border-radius:12px;padding:12px 15px;min-width:190px;flex:1;max-width:280px;}
+.node.hub{border-color:var(--periwinkle);box-shadow:0 0 0 3px var(--tint-peri);}
+.node .nt{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;}
+.node .nf{font-size:11px;color:var(--muted);font-family:ui-monospace,Menlo,monospace;margin-top:2px;}
+.node .nd{font-size:12.5px;color:var(--ink-2);margin-top:7px;line-height:1.5;}
+.node .roles{display:flex;gap:4px;margin-top:9px;}
+.rdot{width:18px;height:18px;border-radius:5px;display:grid;place-items:center;font-size:9px;font-weight:800;color:#fff;}
+.r-admin{background:#23231f;} .r-dist{background:var(--periwinkle-deep);} .r-cust{background:var(--slate,#51768c);} .r-sup{background:#2f8f5b;}
+.node .live{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;border-radius:5px;padding:2px 7px;margin-left:auto;}
+.live-built{background:var(--tint-green);color:var(--green-deep);}
+.live-partial{background:#fbeccd;color:#9a6b1f;}
+.live-todo{background:var(--paper-2);color:var(--muted);}
+
+/* matrix */
+.mx{width:100%;border-collapse:collapse;font-size:13px;}
+.mx th,.mx td{padding:10px 12px;border-bottom:1px solid rgba(20,22,45,.07);text-align:left;}
+.mx th{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+.mx td:first-child{font-weight:700;}
+.mx .y{color:var(--green-deep);font-weight:800;} .mx .n{color:var(--muted);} .mx .diff{color:var(--periwinkle-deep);font-weight:700;}
+
+ul.clean{margin:0;padding-left:20px;} ul.clean li{font-size:14px;color:var(--ink-2);margin-bottom:9px;}
+ul.clean b{color:var(--ink);}
+.flag{color:var(--flare);font-weight:700;}
+.foot-note{font-size:12.5px;color:var(--muted);margin-top:30px;font-style:italic;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Working reference · for review</span>
+  <h1>Merchsmith — site map &amp; flow</h1>
+  <p class="lede">Every live page, how they connect, and — most importantly — how the view changes depending on <b>who you're logged in as</b>. Use this to confirm the structure before we align styling and fill the gaps.</p>
+  <div class="note">⚑ You flagged two things: (1) pages feel <b>disconnected / multiple styles</b>, and (2) the <b>"logged in as" / org-type view</b> needs to be crisp. Both are addressed below — §1 the identity model, §5 the style-alignment plan.</div>
+
+  <h2><span class="num">1</span>Who you log in as — the four contexts</h2>
+  <p class="sub">Merchsmith is one platform seen through four lenses. Your <b>organisation type</b> decides which pages exist, what data you see, and what actions you can take. Customers &amp; suppliers live <i>under</i> a distributor and never see each other; the platform admin sits above everyone.</p>
+  <div class="ctxs">
+    <div class="ctx admin"><h3>Platform Admin <span class="lock">Merchsmith</span></h3><div class="role">Operator (e.g. Morgan Slade)</div><ul><li>All distributors &amp; suppliers</li><li>Billing, plans, health</li><li>Ghost into any distributor</li></ul><div class="lands">Lands on: Admin console</div></div>
+    <div class="ctx dist"><h3>Distributor</h3><div class="role">Owner / ACM / Studio (e.g. Jess Doyle)</div><ul><li>Their customers &amp; suppliers</li><li>Cost, margin, pricing engine</li><li>Promotes the workflow</li></ul><div class="lands">Lands on: Dashboard (distributor)</div></div>
+    <div class="ctx cust"><h3>Customer</h3><div class="role">Buyer / Admin (e.g. Sara Kemp)</div><ul><li>Their own projects only</li><li>Sell price, approvals</li><li>No cost/margin ever</li></ul><div class="lands">Lands on: Dashboard (customer)</div></div>
+    <div class="ctx sup"><h3>Supplier</h3><div class="role">Contact (e.g. Tom Reed)</div><ul><li>Their enquiries &amp; orders</li><li>Upload proofs, manage feed</li><li>No customer pricing</li></ul><div class="lands">Lands on: Dashboard (supplier)</div></div>
+  </div>
+  <div style="margin-top:16px" class="idbar">
+    <span style="font-weight:700">Identity bar (every page):</span>
+    <span class="lock"><span class="dot r-cust">CR</span>Customer logo</span>
+    <span class="arrow">×</span>
+    <span class="lock"><span class="dot r-dist">mo</span>Distributor (mojo)</span>
+    <span class="arrow">→</span>
+    <span style="color:var(--ink-2)">logo lockup swaps to show <b>who you are</b> × <b>your distributor</b>; admin shows the Merchsmith mark.</span>
+  </div>
+
+  <h2><span class="num">2</span>Page map &amp; flow</h2>
+  <div class="legend">
+    <span><span class="lg r-admin"></span>Admin</span><span><span class="lg r-dist"></span>Distributor</span><span><span class="lg r-cust"></span>Customer</span><span><span class="lg r-sup"></span>Supplier</span>
+    <span style="margin-left:12px"><span class="lg live-built" style="border-radius:5px"></span>Built</span><span><span class="lg live-partial"></span>Partial</span><span><span class="lg live-todo"></span>To build</span>
+  </div>
+
+  <div class="card">
+    <div class="areah">Platform operator (separate app)</div>
+    <div class="row">
+      <div class="node hub"><div class="nt">Admin Console <span class="live live-built">Built</span></div><div class="nf">Merchsmith Admin.html</div><div class="nd">Login + 2FA → distributor &amp; supplier directories, search, ghost mode.</div><div class="roles"><span class="rdot r-admin">A</span></div></div>
+      <div class="node"><div class="nt">Ghost session →</div><div class="nd">Opens the chosen distributor's Dashboard in their context (audit-logged).</div><div class="roles"><span class="rdot r-admin">A</span></div></div>
+    </div>
+
+    <div class="areah">Home &amp; projects</div>
+    <div class="row">
+      <div class="node hub"><div class="nt">Dashboard (home) <span class="live live-built">Built</span></div><div class="nf">Merchsmith Home.html</div><div class="nd">Role-aware home: KPIs, tasks, activity. Different per org type.</div><div class="roles"><span class="rdot r-admin">A</span><span class="rdot r-dist">D</span><span class="rdot r-cust">C</span><span class="rdot r-sup">S</span></div></div>
+      <div class="node"><div class="nt">Your Projects <span class="live live-built">Built</span></div><div class="nf">Merchsmith Projects.html</div><div class="nd">Project cards, status, team, create project.</div><div class="roles"><span class="rdot r-dist">D</span><span class="rdot r-cust">C</span></div></div>
+      <div class="node"><div class="nt">Project View — Table <span class="live live-built">Built</span></div><div class="nf">Merchsmith Dashboard.html</div><div class="nd">The workflow table + product modal. Core of the app.</div><div class="roles"><span class="rdot r-dist">D</span><span class="rdot r-cust">C</span></div></div>
+      <div class="node"><div class="nt">Project View — Gallery <span class="live live-built">Built</span></div><div class="nf">Merchsmith Gallery.html</div><div class="nd">Same project as cards.</div><div class="roles"><span class="rdot r-dist">D</span><span class="rdot r-cust">C</span></div></div>
+    </div>
+
+    <div class="areah">Store &amp; sourcing</div>
+    <div class="row">
+      <div class="node"><div class="nt">Store <span class="live live-built">Built</span></div><div class="nf">Merchsmith Store.html</div><div class="nd">Departments → listing (filters) → product page → Add to Project.</div><div class="roles"><span class="rdot r-dist">D</span><span class="rdot r-cust">C</span></div></div>
+      <div class="node"><div class="nt">Finder <span class="live live-todo">Phase 2</span></div><div class="nf">—</div><div class="nd">AI assistant to find products for briefs.</div><div class="roles"><span class="rdot r-dist">D</span><span class="rdot r-cust">C</span></div></div>
+    </div>
+
+    <div class="areah">Organisations &amp; settings (distributor)</div>
+    <div class="row">
+      <div class="node"><div class="nt">Organisations <span class="live live-built">Built</span></div><div class="nf">Merchsmith Organisations.html</div><div class="nd">Customers, suppliers, team — profiles, users, service data, comments.</div><div class="roles"><span class="rdot r-dist">D</span></div></div>
+      <div class="node"><div class="nt">Distributor Settings <span class="live live-partial">Partial</span></div><div class="nf">Merchsmith Distributor Settings.html</div><div class="nd">Lead times / days in lieu. Markup, discounts, colourway = to add.</div><div class="roles"><span class="rdot r-dist">D</span></div></div>
+      <div class="node"><div class="nt">Brand Assets <span class="live live-todo">Phase 2</span></div><div class="nf">—</div><div class="nd">DAM — logos/artwork feeding the branding builder.</div><div class="roles"><span class="rdot r-dist">D</span><span class="rdot r-cust">C</span></div></div>
+    </div>
+
+    <div class="areah">Reference (not user-facing)</div>
+    <div class="row">
+      <div class="node"><div class="nt">Status Reference <span class="live live-built">Dev</span></div><div class="nf">Merchsmith Status Reference.html</div><div class="nd">Developer status glossary.</div></div>
+      <div class="node"><div class="nt">Dev Notes / Concepts <span class="live live-built">Dev</span></div><div class="nf">*.html concepts</div><div class="nd">Pricing, branding builder, org concepts &amp; brief.</div></div>
+    </div>
+  </div>
+
+  <h2><span class="num">3</span>What differs by role — key pages</h2>
+  <div class="card" style="overflow-x:auto">
+    <table class="mx">
+      <thead><tr><th>Page / function</th><th>Distributor sees</th><th>Customer sees</th><th>Supplier sees</th></tr></thead>
+      <tbody>
+        <tr><td>Pricing</td><td class="diff">Cost, markup, margin, profit</td><td>Sell price only</td><td class="n">Their quote only</td></tr>
+        <tr><td>Delivery date</td><td class="diff">Confirms / requests supplier</td><td>Picks &amp; changes date</td><td class="diff">Confirms achievable date</td></tr>
+        <tr><td>Design / proof</td><td class="diff">Builds branding, submits</td><td>Approves visual &amp; proof</td><td class="diff">Uploads proofs</td></tr>
+        <tr><td>Status CTAs</td><td class="diff">Send-to-studio, quote, order</td><td>Approve actions</td><td class="diff">Respond to enquiries</td></tr>
+        <tr><td>Organisations</td><td class="y">Full (customers + suppliers)</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Store pricing</td><td class="diff">Cost + sell</td><td>Sell (guide) only</td><td class="n">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2><span class="num">4</span>Primary user journeys</h2>
+  <div class="card">
+    <ul class="clean">
+      <li><b>Customer order:</b> Dashboard → Projects → Store (add products) → Project View → approve visual → approve proof → approve price → confirm date → order.</li>
+      <li><b>Distributor fulfil:</b> Dashboard → Project View → build branding → request quote/stock/date from supplier → promote stages → Ready to Order → Order.</li>
+      <li><b>Supplier:</b> Dashboard → enquiry (stock/date/quote) → respond → receive order → upload proof → dispatch.</li>
+      <li><b>Platform admin:</b> Admin console → directory → view distributor → ghost → (their Dashboard).</li>
+    </ul>
+  </div>
+
+  <h2><span class="num">5</span>Style alignment — proposed fixes</h2>
+  <p class="sub">You're right that styles drift. Here's what I'd standardise so the whole platform feels like one product:</p>
+  <div class="card">
+    <ul class="clean">
+      <li><b class="flag">One shared chrome.</b> Header + sidebar + footer differ across Store / Projects / Dashboard / Admin. Consolidate into a single shared header &amp; sidebar component (like <code>sidebar.js</code>) used everywhere, with the identity lockup baked in.</li>
+      <li><b class="flag">One identity model.</b> The "logged in as" lockup (customer × distributor, or Merchsmith for admin) should render identically on every page, driven by one role/identity setting — not per-page hardcoding.</li>
+      <li><b>Consistent type &amp; colour.</b> All pages already pull <code>tokens.css</code> + the colourway theme — but a few pages hardcode logos/colours (mojo vs Merchsmith, slate footer vs teal). Route everything through tokens.</li>
+      <li><b>Consistent components.</b> Cards, drawers, status pills, buttons, toasts are restyled per page — pull these into a shared stylesheet so a button is a button everywhere.</li>
+      <li><b>One role switch (for the prototype).</b> Today the Project View uses Customer/Distributor; Home has a 5-way switch; Admin is separate. Unify into a single demo identity switcher that drives every page.</li>
+    </ul>
+  </div>
+
+  <p class="foot-note">Confirm the structure &amp; the four contexts, then tell me which to tackle first — I'd suggest the shared chrome + identity model, as that fixes the "disconnected / multiple styles" feeling fastest.</p>
+</div>
+</body>
+</html>

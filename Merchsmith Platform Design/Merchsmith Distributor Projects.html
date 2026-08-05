@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Projects</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;box-shadow:0 4px 10px -2px rgba(40,44,80,.04);}
+.brand{display:flex;align-items:center;gap:14px;}
+.headtools{display:flex;align-items:center;gap:12px;}
+.account{display:flex;align-items:center;gap:8px;background:none;border:0;cursor:pointer;border-radius:999px;padding:4px 8px 4px 4px;font-family:var(--sans);}
+.account .av{width:32px;height:32px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;}
+.account .acc-nm{font-weight:700;font-size:14px;color:var(--ink);}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px 36px;}
+.crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
+.crumb .sep{opacity:.6;}
+.crumb .here{font-weight:700;}
+.main{max-width:none;margin:0;padding:30px 26px 90px;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1;letter-spacing:-.01em;margin:0;}
+.psub{font-size:14.5px;color:var(--text-soft);margin-top:10px;max-width:680px;line-height:1.55;}
+a{color:var(--periwinkle-deep);}a:hover{color:var(--periwinkle-ink);}
+/* KPI stat row — clickable filters */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:26px 0 20px;}
+.kpi{border:1.5px solid var(--line-soft);background:#fff;border-radius:14px;padding:15px 18px;text-align:left;cursor:pointer;font-family:var(--sans);transition:border-color .14s;}
+.kpi:hover{border-color:var(--periwinkle);}
+.kpi.on{border-color:var(--periwinkle-deep);background:var(--tint-peri);box-shadow:0 0 0 1px var(--periwinkle-deep);}
+.kpi b{display:block;font-family:var(--serif);font-weight:500;font-size:30px;line-height:1.05;color:var(--ink);}
+.kpi span{display:block;margin-top:4px;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);}
+.kpi.warn b{color:#c0392b;}
+/* bulk bar for selected projects */
+.pbulk{display:flex;align-items:center;gap:14px;background:var(--periwinkle-deep);color:#fff;border-radius:12px;padding:10px 16px;margin:0 0 14px;}
+.pbulk[hidden]{display:none;}
+.pbulk .bk-count{font-size:14px;}
+.pbulk .bk-count b{font-size:15px;}
+.pbulk .bk-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.pbulk button{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:12.5px;font-weight:800;border-radius:8px;padding:7px 13px;cursor:pointer;border:1.5px solid rgba(255,255,255,.5);background:transparent;color:#fff;}
+.pbulk button:hover{background:rgba(255,255,255,.14);}
+.pbulk button svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+.pbulk .bk-clear{border:0;text-decoration:underline;opacity:.85;margin-left:auto;}
+.clogo{width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;font-size:9px;font-weight:800;letter-spacing:.03em;flex:none;overflow:hidden;}
+.cav{width:24px;height:24px;border-radius:99px;display:inline-grid;place-items:center;font-size:9px;font-weight:800;letter-spacing:.03em;flex:none;overflow:hidden;}
+.cav img{width:100%;height:100%;object-fit:cover;display:block;}
+.cust a{display:inline-flex;align-items:center;gap:8px;}
+.client .cwrap{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;}
+/* status filter chips (workspace-style) */
+.filterchips{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin:0 0 14px;}
+.frow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.frow>.fgrp:first-child{min-width:66px;margin:0;}
+.fchip{display:inline-flex;align-items:center;gap:7px;font:inherit;font-size:12.5px;font-weight:700;color:var(--ink-3);background:#fff;border:1px solid var(--line-soft);border-radius:999px;padding:6px 12px;cursor:pointer;transition:border-color .15s,color .15s;}
+.fchip .n{font-weight:700;font-size:11px;color:var(--muted);}
+.fchip:hover{border-color:var(--blossom,#f0569f);color:var(--ink);}
+.fchip.on{background:var(--blossom,#f0569f);border-color:var(--blossom,#f0569f);color:#fff;}
+.fchip.on .n{color:#fff;}
+.fchip .icn{width:14px;height:14px;}
+.fchip.urg.on{background:var(--flare,#e8552f);border-color:var(--flare,#e8552f);}
+.fsep{width:1px;align-self:stretch;background:var(--line-soft);margin:2px 4px;}
+.fgrp{align-self:center;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 2px 0 4px;}
+.ftog{border-style:dashed;color:var(--muted);}
+.ftog:hover{color:var(--ink);border-color:var(--ink-3);}
+.ftog .icn{width:13px;height:13px;}
+.fbadge{display:inline-grid;place-items:center;min-width:17px;height:17px;border-radius:99px;background:var(--blossom,#f0569f);color:#fff;font-size:10.5px;font-weight:800;padding:0 4px;}
+.ftokens .ftok{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12px;font-weight:700;background:var(--tint-peri,#eceefb);color:var(--periwinkle-ink,#3C4279);border:0;border-radius:999px;padding:6px 11px;cursor:pointer;}
+.ftok .x{font-size:13px;opacity:.65;}
+.ftok:hover .x{opacity:1;}
+.ftok-clear{border:0;background:none;font:inherit;font-size:11.5px;font-weight:700;color:var(--muted);text-decoration:underline;cursor:pointer;padding:4px;}
+.ftok-clear:hover{color:var(--ink);}
+/* filter bar */
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 14px;}
+.seg{display:inline-flex;background:var(--paper-2);border-radius:10px;padding:3px;}
+.densseg .it{padding:7px 13px;border:0;background:none;font-family:inherit;font-size:12px;font-weight:700;color:var(--ink-3);cursor:pointer;border-radius:8px;transition:background .15s,color .15s;}
+.densseg .it:not(.on):hover{color:var(--periwinkle-deep);}
+.densseg .it.on{background:#fff;color:var(--periwinkle-deep);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+body.dense td{padding:8px 12px;}
+body.dense .amav .av{width:24px;height:24px;}
+body.dense .amav .addav{width:24px;height:24px;}
+.search{flex:1;min-width:220px;display:flex;align-items:center;gap:9px;border:1.5px solid var(--line-soft);border-radius:11px;padding:9px 13px;background:#fff;}
+.search .icn{width:16px;height:16px;stroke:var(--muted);flex:none;}
+.search input{border:0;outline:0;font:inherit;font-size:13.5px;width:100%;background:none;color:var(--ink);}
+.fsel{font:inherit;font-size:13px;font-weight:600;border:1.5px solid var(--line-soft);border-radius:11px;padding:9px 12px;background:#fff;color:var(--ink);cursor:pointer;}
+.fsel:focus{outline:0;border-color:var(--periwinkle-deep);}
+.fclear{font:inherit;font-size:12.5px;font-weight:700;color:var(--muted);background:none;border:0;text-decoration:underline;cursor:pointer;}
+/* master table */
+.tblwrap{border:1px solid var(--line-soft);border-radius:14px;background:#fff;overflow-x:auto;}
+.tblwrap table{min-width:1480px;}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;}
+th{background:var(--paper);text-align:left;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);padding:11px 12px;box-shadow:0 1px 0 var(--line-soft);white-space:nowrap;}
+th.sortable{cursor:pointer;user-select:none;}
+th.sortable:hover{color:var(--periwinkle-deep);}
+th .dir{font-size:9px;margin-left:3px;}
+td{padding:12px;border-bottom:1px solid var(--paper-2);vertical-align:middle;}
+tbody tr.proj{cursor:pointer;}
+tbody tr.proj:hover td{background:var(--tint-peri);}
+td.num{font-variant-numeric:tabular-nums;text-align:right;}
+th.num{text-align:right;}
+.cust{font-weight:700;color:var(--ink);white-space:nowrap;}
+.pjname b{display:block;color:var(--ink);}
+.pjname .flags{font-size:11.5px;color:var(--muted);}
+.pjname .flags .fl{color:#c47f16;}
+.stbadge{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:4px 11px;white-space:nowrap;}
+.st-idea{background:var(--paper-2);color:var(--ink-3);}
+.st-quote,.st-proof{background:#fdf6e7;color:#9a6b1f;}
+.st-ordered{background:var(--tint-peri);color:var(--periwinkle-deep);}
+.st-prod{background:#f3ecfb;color:#7a4fb0;}
+.st-delivered{background:var(--tint-green);color:var(--green-deep);}
+.st-closed{background:var(--paper-2);color:var(--muted);}
+.due{white-space:nowrap;}
+.due.over{color:#c0392b;font-weight:700;}
+.due.soon{color:#c47f16;font-weight:700;}
+.am{display:flex;align-items:center;gap:8px;white-space:nowrap;}
+.am i{width:26px;height:26px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-style:normal;font-size:10.5px;font-weight:800;flex:none;}
+.last{color:var(--muted);white-space:nowrap;}
+.created{color:var(--ink-2);white-space:nowrap;}
+.dby{white-space:nowrap;font-weight:600;}
+.ob{white-space:nowrap;font-weight:700;}
+.ob.over{color:#c0392b;}
+.ob.soon{color:#b06f00;}
+.ob .ob-none{color:var(--muted);font-weight:600;}
+.client{white-space:nowrap;color:var(--ink-2);font-weight:600;}
+/* AM avatar cluster */
+.amav{display:flex;align-items:center;}
+.amav .av{width:28px;height:28px;border-radius:50%;border:2px solid #fff;overflow:hidden;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:800;flex:none;}
+.amav .av+.av{margin-left:-8px;}
+.amav .av img{width:100%;height:100%;object-fit:cover;display:block;}
+.amav .addav{width:28px;height:28px;border-radius:50%;border:1.5px dashed var(--periwinkle);color:var(--periwinkle-deep);background:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;margin-left:2px;cursor:pointer;flex:none;}
+.amav .addav:hover{background:var(--tint-peri);}
+/* row action buttons */
+.rowact{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border:0;background:none;border-radius:8px;cursor:pointer;color:var(--ink-3);position:relative;font-family:inherit;}
+.rowact:hover{background:var(--paper-2);color:var(--periwinkle-deep);}
+.rowact .icn{width:17px;height:17px;}
+.rowact.flag-on{color:var(--flare,#e8552f);}
+.rowact.flag-on .icn{fill:var(--flare,#e8552f);}
+.rowact .cb{position:absolute;top:-2px;right:-3px;min-width:14px;height:14px;border-radius:999px;background:var(--flare,#e8552f);color:#fff;font-size:8.5px;font-weight:800;display:grid;place-items:center;padding:0 3px;border:1.5px solid #fff;}
+.addprod{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border:0;background:none;border-radius:8px;color:var(--flare,#e0447c);font-size:19px;font-weight:600;line-height:1;cursor:pointer;font-family:inherit;}
+.addprod:hover{background:var(--tint-peri);}
+.briefbtn{font:inherit;font-size:12px;font-weight:800;color:var(--periwinkle-deep);background:var(--paper-2);border:0;border-radius:999px;padding:6px 13px;cursor:pointer;white-space:nowrap;}
+.briefbtn:hover{background:var(--tint-peri);}
+.briefbtn.on{background:var(--periwinkle-deep);color:#fff;}
+.morewrap{position:relative;display:inline-flex;}
+.moredrop2{position:absolute;top:calc(100% + 6px);right:0;z-index:40;background:#fff;border:1px solid var(--line-soft);border-radius:11px;box-shadow:0 12px 30px rgba(20,22,45,.18);padding:5px;min-width:190px;display:none;flex-direction:column;}
+.moredrop2.open{display:flex;}
+.moredrop2 button{border:0;background:none;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);text-align:left;padding:8px 10px;border-radius:7px;cursor:pointer;white-space:nowrap;}
+.moredrop2 button:hover{background:var(--tint-peri);color:var(--periwinkle-deep);}
+th.chev{width:58px;}
+.rowh{display:inline-flex;align-items:center;gap:5px;}
+.pgrip{color:#c4c4cc;cursor:grab;display:inline-flex;flex:none;}
+.pgrip:hover{color:var(--periwinkle);}
+.pgrip svg{width:17px;height:17px;fill:currentColor;}
+tr.proj.dragging td{opacity:.45;}
+tr.proj.drophint td{box-shadow:inset 0 2.5px 0 var(--periwinkle-deep);}
+th.selth{width:34px;}
+.selchk{width:17px;height:17px;border:1.6px solid #c4c4cc;border-radius:5px;display:inline-grid;place-items:center;cursor:pointer;transition:border-color .12s;background:#fff;}
+.selchk:hover{border-color:var(--periwinkle);}
+.selchk.on{background:var(--periwinkle);border-color:var(--periwinkle);color:#fff;}
+.selchk svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;display:none;}
+.selchk.on svg{display:block;}
+tr.proj.sel td{background:var(--tint-peri);}
+.cust a,.pjname a{color:inherit;text-decoration:none;}
+.cust a:hover,.pjname a:hover{color:var(--periwinkle-deep);text-decoration:underline;text-underline-offset:2px;}
+.chevbtn{width:26px;height:26px;border:1.5px solid var(--line-soft);background:#fff;border-radius:8px;font-size:14px;line-height:1;color:var(--muted);cursor:pointer;transition:transform .15s;}
+.chevbtn.open{transform:rotate(90deg);border-color:var(--periwinkle-deep);color:var(--periwinkle-deep);}
+tr.exp td{border-bottom-color:transparent;}
+.tfoot{font-size:12px;color:var(--muted);margin-top:10px;}
+.empty{text-align:center;color:var(--muted);padding:40px;}
+/* embedded project table — the real workspace engine in an iframe */
+.plcell{background:#fff!important;padding:0!important;cursor:default;}
+.plframe{width:100%;border:0;display:block;height:480px;background:#fff;}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-mark" viewBox="143.4 251.4 89.1 91.4"><path fill="currentColor" stroke="none" d="M194.66 336.80 C191.83 336.80 189.16 335.66 187.15 333.59 C185.15 331.54 184.04 328.79 184.03 325.87 L184.03 308.30 L190.95 308.30 L190.95 325.86 C190.95 326.88 191.34 327.84 192.04 328.56 C193.45 330.00 195.88 329.99 197.28 328.56 L217.53 307.71 C218.98 306.22 218.98 303.80 217.53 302.31 C216.83 301.59 215.90 301.19 214.91 301.19 L160.07 301.19 C157.23 301.18 154.56 300.04 152.56 297.98 C150.55 295.91 149.44 293.17 149.44 290.24 C149.44 287.33 150.55 284.58 152.56 282.51 L172.81 261.66 C176.95 257.39 183.69 257.40 187.83 261.66 C189.84 263.73 190.94 266.47 190.95 269.38 L190.95 286.95 L184.03 286.95 L184.03 269.39 C184.03 268.38 183.64 267.42 182.94 266.69 C181.54 265.26 179.10 265.25 177.70 266.70 L157.45 287.55 C156.75 288.27 156.36 289.23 156.36 290.24 C156.36 291.26 156.75 292.22 157.45 292.94 C158.15 293.66 159.09 294.07 160.08 294.07 L214.92 294.07 C217.76 294.07 220.42 295.22 222.43 297.28 C226.57 301.54 226.57 308.48 222.42 312.74 L202.17 333.59 C200.17 335.66 197.50 336.80 194.66 336.80"></path></symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="ic-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.3l3.3 2"/></symbol>
+  <symbol id="ic-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="ic-hourglass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5h12M6 19.5h12M7.5 4.5 12 12 16.5 4.5M7.5 19.5 12 12 16.5 19.5"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+  <symbol id="ic-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.1 11.4a1.3 1.3 0 0 1-1.3 1.1H7.4a1.3 1.3 0 0 1-1.3-1.1z"/><path d="M8.5 8V6.6a3.5 3.5 0 0 1 7 0V8"/></symbol>
+  <symbol id="ic-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5v14M15 5v14"/></symbol>
+  <symbol id="ic-archive" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v3H4zM5 10v10h14V10M10 14h4"/></symbol>
+  <symbol id="ic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="ic-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 9.6h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+</svg>
+<header class="header">
+  <div class="brand" data-identity-lockup></div>
+  <div class="headtools"><button class="account"><span class="av">JD</span><span class="acc-nm">Jess Doyle</span></button></div>
+</header>
+<div class="crumbband"><div class="crumb"><span>Mojo Promotions</span><span class="sep">›</span><span class="here">Projects</span></div></div>
+
+<main class="main">
+  <h1 class="ptitle">Projects</h1>
+  <p class="psub">Every project across all of your customers. Status is derived automatically from each project's items. Expand a project to work its products in the full project table — identical to the project workspace.</p>
+
+  <div class="kpis" id="kpis"></div>
+  <div class="filterchips" id="fchips"></div>
+  <div class="tools">
+    <div class="search"><svg class="icn" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Search projects, customers or clients…"></div>
+    <select class="fsel" id="fCust"><option value="">All customers</option></select>
+    <select class="fsel" id="fAm"><option value="">All collaborators</option></select>
+    <select class="fsel" id="fSup"><option value="">All suppliers</option></select>
+    <button class="fsel" id="tglAll" title="Expand or collapse every project's product rows">Show all products ▾</button>
+    <span class="seg densseg" id="densSeg" title="Row density"><button class="it" data-d="compact">Compact</button><button class="it on" data-d="comfort">Comfortable</button></span>
+    <button class="fclear" id="fClear" hidden>Clear filters</button>
+  </div>
+  <div class="pbulk" id="pbulk" hidden>
+    <span class="bk-count"><b id="pbn">0</b> selected</span>
+    <div class="bk-actions">
+      <button id="bkPause"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg>Pause</button>
+      <button id="bkArch"><svg viewBox="0 0 24 24"><path d="M4 7h16v3H4zM5 10v10h14V10M10 14h4"/></svg>Archive</button>
+      <button id="bkDup"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Duplicate</button>
+      <button id="bkPdf"><svg viewBox="0 0 24 24"><path d="M12 4v10M8 10.5l4 3.8 4-3.8M5 19.5h14"/></svg>Download PDF</button>
+    </div>
+    <button class="bk-clear" id="bkClear">Clear selection</button>
+  </div>
+  <div class="tblwrap"><table>
+    <thead><tr>
+      <th class="selth"><span class="selchk" id="selAll" title="Select all"><svg viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span></th>
+      <th class="chev"></th>
+      <th class="sortable" data-k="customer">Customer</th>
+      <th class="sortable" data-k="client">Client</th>
+      <th class="sortable" data-k="name">Project</th>
+      <th class="sortable num" data-k="items">Items</th>
+      <th class="sortable num" data-k="value">Value</th>
+      <th class="sortable num" data-k="profit">Profit</th>
+      <th class="sortable" data-k="delivBy">All delivered by</th>
+      <th class="sortable" data-k="am">Collaborators</th>
+      <th>Flag</th>
+      <th>Comments</th>
+      <th>Brief</th>
+      <th class="sortable" data-k="created">Created</th>
+      <th class="sortable" data-k="last">Last activity</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+  <div class="tfoot" id="tfoot"></div>
+</main>
+
+<script src="ms-data.js"></script>
+<script src="dist-projects-data.js?v=5"></script>
+<script src="seed-identity.js?v=2"></script>
+<script src="avatars.js?v=3"></script>
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script src="sidebar.js?v=2"></script>
+<script src="chrome.js"></script>
+<script>
+(function(){
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const gbp0=n=>'£'+Math.round(n).toLocaleString();
+  const NOW=Date.now();
+  const fmtD=ts=>new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const ago=ts=>{ const d=Math.round((NOW-ts)/86400000); return d<=0?'today':(d===1?'yesterday':d+'d ago'); };
+  // deterministic monogram tiles: company "logo" (rounded square) + client avatar (circle)
+  const iniOf=s=>String(s||'').split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  const hueOf=s=>{ let h=0; for(const ch of String(s)) h=(h*31+ch.charCodeAt(0))%360; return h; };
+  const clogo=n=>window.MSSEED?'<span class="clogo">'+MSSEED.logo(n)+'</span>':(()=>{ const h=hueOf(n); return '<span class="clogo" style="background:hsl('+h+',42%,88%);color:hsl('+h+',38%,30%)">'+iniOf(n)+'</span>'; })();
+  const cavat=n=>{
+    if(window.MSAvatar){
+      let u=MSAvatar.url(n);
+      if(!u){ // helper leaves ~20% as initials — force a sex-matched photo here so every client has one
+        const all=MSAvatar.photos, male=all.slice(0,3), fem=all.slice(3);
+        const pool=MSAvatar.sex(n)==='f'?fem:male; let h=0; for(const ch of String(n)) h=(h*31+ch.charCodeAt(0))>>>0;
+        u=pool[h%pool.length];
+      }
+      return '<span class="cav"><img src="'+u+'" alt="'+esc(n)+'"></span>';
+    }
+    return window.MSSEED?'<span class="cav">'+MSSEED.avatar(n)+'</span>':'';
+  };
+  const filt={q:'',cust:'',status:'',am:'',sup:'',kpi:''};
+  // workspace-style status chips — multi-select; a project matches if any bucket is active
+  const CHIPS=[['live','Live'],['paused','Paused'],['archived','Archived'],['urgent','Urgent']];
+  const activeF=new Set(['live']);
+  function bucketsOf(r){ const b=[];
+    const paused=r.p.items.length>0&&r.p.items.every(i=>i.paused);
+    if(r.status==='closed')b.push('archived'); else if(paused)b.push('paused'); else b.push('live');
+    if(r.p.flag)b.push('urgent'); return b; }
+  // order-by time-window chips
+  const OBCHIPS=[['ob-over','Overdue'],['ob-today','Today'],['ob-tom','Tomorrow'],['ob-week','This week']];
+  const activeOB=new Set();
+  // product-level buckets: a project matches if ANY of its still-to-order products falls in the window
+  function obBucketsOf(r){ const b=new Set();
+    const d0=new Date(NOW); d0.setHours(0,0,0,0);
+    const d1=d0.getTime()+86400000, d2=d0.getTime()+2*86400000, wk=d0.getTime()+7*86400000;
+    r.p.items.forEach(i=>{ if(['prod','delivered'].indexOf(i.st)>-1||i.paused||i.archived) return;
+      const dd=new Date(i.deliv||r.p.deadline); dd.setHours(12,0,0,0);
+      const t=dd.getTime()-leadDays(i.n)*86400000;
+      if(t<NOW){ b.add('ob-over'); return; }
+      if(t<d1) b.add('ob-today'); else if(t<d2) b.add('ob-tom');
+      if(t<wk) b.add('ob-week'); });
+    return [...b]; }
+  // breakdown (Design/Price/Sample/Stock × state) — mirrors the embed engine's deterministic mapping
+  const bdA=new Set(); const bdS=new Set();
+  const BD_OWN={ design:{withacm:'dist',awaiting:'cust',feedback:'cust',notapproved:'dist'},
+    price:{withacm:'dist',awaiting:'cust',notapproved:'dist'},
+    sample:{sampleorder:'both',awaiting:'cust',ordered:'cust',notapproved:'dist'},
+    stock:{withacm:'dist',awaiting:'dist',notinstock:'dist'} };
+  const BD_TABS=['design','price','sample','stock'];
+  function bdActs(stage,h,parked){
+    if(parked) return null;
+    const v=h%3, dz=(h%7===0&&(stage==='proof'||stage==='ordered'||stage==='prod'))?'unbranded':null;
+    if(stage==='idea') return ['dash','dash','sampleorder','dash'];
+    if(stage==='quote'){ if(v===0)return['withacm','withacm','sampleorder','withacm']; if(v===1)return['feedback','withacm','dash','withacm']; return ['awaiting','awaiting','dash','withacm']; }
+    if(stage==='proof'){ if(v===0)return[dz||'awaiting','approved','withacm','withacm']; if(v===1)return[dz||'approved','notapproved','approved','notinstock']; return [dz||'feedback','approved','awaiting','withacm']; }
+    if(stage==='ordered') return [dz||'approved','approved','approved','instock'];
+    if(stage==='prod') return [dz||'approved','approved','ordered','instock'];
+    return ['approved','approved','ordered','instock'];
+  }
+  function bdClassify(st,i){
+    if(st==='dash') return null;
+    if(st==='notapproved'||st==='notinstock') return 'setback';
+    if(st==='approved'||st==='instock'||st==='unbranded') return 'done';
+    const o=(BD_OWN[BD_TABS[i]]||{})[st];
+    if(o) return (o==='dist'||o==='both')?'mine':'theirs';
+    return 'wait';
+  }
+  function bdStatesOf(i){ const acts=bdActs(i.st,hashS(i.n),i.paused||i.archived); return acts?acts.map(bdClassify):null; }
+  function bdItemMatch(i){
+    if(bdA.size===0&&bdS.size===0) return true;
+    const sts=bdStatesOf(i); if(!sts) return false;
+    const idxs=bdA.size?[...bdA]:[0,1,2,3];
+    return idxs.some(x=>{ const s=sts[x]; if(s===null) return false;
+      if(bdS.size) return bdS.has(s); return s!=='done'; });
+  }
+  const bdActive=()=>bdA.size>0||bdS.size>0;
+  // product-level chips — match projects CONTAINING products in these states
+  const PCHIPS=[['p-idea','Idea'],['p-progress','In Progress'],['p-ready','Ready to order'],['p-ordered','Ordered'],['p-arch','Archived'],['p-urgent','Urgent']];
+  const activeP=new Set();
+  let FEXP=false; // advanced filter rows expanded?
+  function prodBucketsOf(r){ const b=new Set();
+    r.p.items.forEach(i=>{ if(i.archived)b.add('p-arch'); if(i.flag)b.add('p-urgent');
+      if(i.st==='idea')b.add('p-idea'); else if(i.st==='quote'||i.st==='proof')b.add('p-progress');
+      else if(i.st==='ordered')b.add('p-ready'); else if(i.st==='prod'||i.st==='delivered')b.add('p-ordered'); });
+    return [...b]; }
+
+  function renderChips(){
+    const all=rows(); const cnt=k=>all.filter(r=>bucketsOf(r).indexOf(k)>-1).length;
+    const flagIc='<svg class="icn" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M6 21V4M6 4h11l-2 3.5L17 11H6"/></svg>';
+    const pcnt=k=>all.filter(r=>prodBucketsOf(r).indexOf(k)>-1).length;
+    const extraN=activeP.size+activeOB.size+bdA.size+bdS.size;
+    const chev='<svg class="icn" viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="'+(FEXP?'m6 15 6-6 6 6':'m6 9 6 6 6-6')+'"/></svg>';
+    function ftokens(){
+      const t=[];
+      activeP.forEach(k=>{ const x=PCHIPS.find(y=>y[0]===k); if(x) t.push(['p',k,x[1]]); });
+      activeOB.forEach(k=>{ const x=OBCHIPS.find(y=>y[0]===k); if(x) t.push(['ob',k,'Order: '+x[1]]); });
+      bdA.forEach(k=>t.push(['bda',k,['Design','Price','Sample','Stock'][k]]));
+      bdS.forEach(k=>t.push(['bds',k,({mine:'My action',theirs:'Customer action',wait:'Waiting',setback:'Setback',done:'Done'})[k]]));
+      return '<div class="frow ftokens"><span class="fgrp">Applied</span>'+t.map(([g,k,l])=>'<button class="ftok" data-tg="'+g+'" data-tk="'+k+'">'+l+' <span class="x">&times;</span></button>').join('')+'<button class="ftok-clear" id="ftokClr">Clear all</button></div>';
+    }
+    let fhtml=
+      `<div class="frow"><span class="fgrp">Projects</span>`+
+      `<button class="fchip ${activeF.size===0?'on':''}" data-f="all">All <span class="n">${all.length}</span></button>`+
+      CHIPS.map(([k,l])=>`<button class="fchip ${activeF.has(k)?'on':''} ${k==='urgent'?'urg':''}" data-f="${k}">${k==='urgent'?flagIc:''}${l} <span class="n">${cnt(k)}</span></button>`).join('')+
+      '<button class="fchip ftog" id="ftog">'+(FEXP?'Hide filters':'More filters')+(extraN?' <span class="fbadge">'+extraN+'</span>':'')+chev+'</button></div>';
+    if(FEXP){ fhtml+=`<div class="frow"><span class="fgrp">Products</span>`+
+      `<button class="fchip ${activeP.size===0?'on':''}" data-p="all">All</button>`+
+      PCHIPS.map(([k,l])=>`<button class="fchip ${activeP.has(k)?'on':''} ${k==='p-urgent'?'urg':''}" data-p="${k}">${k==='p-urgent'?flagIc:''}${l} <span class="n">${pcnt(k)}</span></button>`).join('')+
+      `<span class="fsep"></span><span class="fgrp">Order by</span>`+
+      OBCHIPS.map(([k,l])=>`<button class="fchip ${activeOB.has(k)?'on':''} ${k==='ob-over'?'urg':''}" data-ob="${k}">${l} <span class="n">${all.filter(r=>obBucketsOf(r).indexOf(k)>-1).length}</span></button>`).join('')+
+      `</div><div class="frow"><span class="fgrp">Breakdown</span>`+
+      [['0','Design'],['1','Price'],['2','Sample'],['3','Stock']].map(([k,l])=>{
+        const n=all.filter(r=>r.p.items.some(it=>{ const s=bdStatesOf(it); return s&&s[+k]!==null&&s[+k]!=='done'; })).length;
+        return `<button class="fchip ${bdA.has(+k)?'on':''}" data-bda="${k}">${l} <span class="n">${n}</span></button>`; }).join('')+
+      `<span class="fsep"></span>`+
+      [['mine','My action'],['theirs','Customer action'],['wait','Waiting'],['setback','Setback'],['done','Done']].map(([k,l])=>{
+        const n=all.filter(r=>r.p.items.some(it=>{ const s=bdStatesOf(it); return s&&s.indexOf(k)>-1; })).length;
+        return `<button class="fchip ${bdS.has(k)?'on':''} ${k==='setback'?'urg':''}" data-bds="${k}">${l} <span class="n">${n}</span></button>`; }).join('')+
+      `</div>`; }
+    else if(extraN){ fhtml+=ftokens(); }
+    document.getElementById('fchips').innerHTML=fhtml;
+    document.querySelectorAll('#fchips .fchip[data-f]').forEach(c=>c.onclick=()=>{ const k=c.dataset.f;
+      if(k==='all') activeF.clear(); else { activeF.has(k)?activeF.delete(k):activeF.add(k); } render(); });
+    document.querySelectorAll('#fchips .fchip[data-p]').forEach(c=>c.onclick=()=>{ const k=c.dataset.p;
+      if(k==='all') activeP.clear(); else { activeP.has(k)?activeP.delete(k):activeP.add(k); } render(); });
+    document.querySelectorAll('#fchips .fchip[data-ob]').forEach(c=>c.onclick=()=>{ const k=c.dataset.ob; activeOB.has(k)?activeOB.delete(k):activeOB.add(k); render(); });
+    document.querySelectorAll('#fchips .fchip[data-bda]').forEach(c=>c.onclick=()=>{ const k=+c.dataset.bda; bdA.has(k)?bdA.delete(k):bdA.add(k); render(); });
+    document.querySelectorAll('#fchips .fchip[data-bds]').forEach(c=>c.onclick=()=>{ const k=c.dataset.bds; bdS.has(k)?bdS.delete(k):bdS.add(k); render(); });
+    const tg=document.getElementById('ftog'); if(tg) tg.onclick=()=>{ FEXP=!FEXP; renderChips(); };
+    document.querySelectorAll('#fchips .ftok').forEach(t=>t.onclick=()=>{ const g=t.dataset.tg,k=t.dataset.tk;
+      if(g==='p')activeP.delete(k); else if(g==='ob')activeOB.delete(k); else if(g==='bda')bdA.delete(+k); else bdS.delete(k); render(); });
+    const fclr=document.getElementById('ftokClr'); if(fclr) fclr.onclick=()=>{ activeP.clear();activeOB.clear();bdA.clear();bdS.clear(); render(); };
+  }
+  let sortK=null, sortDir=-1;
+  // custom row order — saved as the default; column sorts override until cleared
+  const ORDER_KEY='ms-dist-proj-order';
+  const loadOrder=()=>{ try{ return JSON.parse(localStorage.getItem(ORDER_KEY)||'[]')||[]; }catch(e){ return []; } };
+  let orderCache=loadOrder();
+  const idxOf=pid=>{ const i=orderCache.indexOf(pid); return i<0?9999:i; };
+  function saveOrder(list){ orderCache=list; try{ localStorage.setItem(ORDER_KEY, JSON.stringify(list)); }catch(e){} }
+  const expanded=new Set();
+  const sel=new Set();
+
+  // distributor team roster — lead (account manager) + supporting collaborators, deterministic per project
+  const TEAM={'Jess Doyle':'av1.jpg','Ben Shaw':'av2.jpg','Cara Lyon':'av3.jpg','Sara Malik':'a4.jpg','Ollie Grant':'a5.jpg','Nina Torres':'a6.jpg'};
+  const TNAMES=Object.keys(TEAM);
+  const hashS=s=>{ let x=0; for(const c of s) x=(x*31+c.charCodeAt(0))>>>0; return x; };
+  const collabOf=p=>{ const h=hashS(p.id); const rest=TNAMES.filter(n=>n!==p.am); const a=rest[h%rest.length], b=rest[(h+3)%rest.length]; return [p.am, a].concat(b!==a?[b]:[]); };
+  // order-by = delivery date minus supplier lead time (deterministic 10–24 days per product);
+  // only products not yet ordered (and not paused/archived) still need ordering
+  const leadDays=n=>10+(hashS(n)%15);
+  const orderByOf=p=>{ let ts=null;
+    p.items.forEach(i=>{ if(['prod','delivered'].indexOf(i.st)>-1||i.paused||i.archived) return;
+      const dd=new Date(i.deliv||p.deadline); dd.setHours(12,0,0,0);
+      const ob=dd.getTime()-leadDays(i.n)*86400000; if(ts===null||ob<ts) ts=ob; });
+    return ts; };
+  // same supplier mapping as the project workspace engine (seed map first, deterministic hash otherwise)
+  const SUPPLIERS=['Veloce Print','Lumen Goods','Fjord Textiles','Baltic Promo Works','Orchard & Co'];
+  const SUPPLIER_OF={'Eco Wheat-Straw Charging Cable':'Lumen Goods','Xoopar Pokket Wireless Mouse':'Lumen Goods','Tech Travel Bag':'Veloce Print','RPET Document Pouch':'Veloce Print','Recycled Cotton Tote':'GreenStock','Prodir Ds8 True Biotic Pen':'Lumen Goods','Seed Pencil Set':'GreenStock','Hoton A5 Kraft Paper Notebook':'GreenStock','Desktop Garden':'GreenStock','Cork Cover Notebook (2024)':'GreenStock'};
+  const supName=n=>SUPPLIER_OF[n]||SUPPLIERS[hashS(n)%SUPPLIERS.length];
+  const rows=()=>DPROJ.all().map(p=>({p, customer:p.customer, client:p.client||'—', collab:collabOf(p), orderBy:orderByOf(p), name:p.name, status:DPROJ.status(p),
+    items:DPROJ.itemCount(p), value:DPROJ.value(p), profit:p.profit, deadline:p.deadline, am:p.am, last:p.last,
+    delivBy:p.items.reduce((a,i)=>Math.max(a,i.deliv||p.deadline),0)||p.deadline,
+    created:p.deadline-90*86400000 }));
+
+  function overdue(r){ return DPROJ.open(r.p) && r.deadline<NOW; }
+  function match(r){
+    if(filt.q){ const q=filt.q.toLowerCase(); if(!(r.name.toLowerCase().includes(q)||r.customer.toLowerCase().includes(q)||r.client.toLowerCase().includes(q))) return false; }
+    if(filt.cust && r.customer!==filt.cust) return false;
+    if(activeF.size && !bucketsOf(r).some(b=>activeF.has(b))) return false;
+    if(activeP.size && ![...activeP].some(k=>prodBucketsOf(r).indexOf(k)>-1)) return false;
+    if(activeOB.size && ![...activeOB].some(k=>obBucketsOf(r).indexOf(k)>-1)) return false;
+    if(bdActive() && !r.p.items.some(bdItemMatch)) return false;
+    if(filt.am && r.collab.indexOf(filt.am)<0) return false;
+    if(filt.sup && !r.p.items.some(i=>supName(i.n)===filt.sup)) return false;
+    if(filt.kpi==='open' && !DPROJ.open(r.p)) return false;
+    if(filt.kpi==='proof' && r.status!=='proof') return false;
+    if(filt.kpi==='overdue' && !overdue(r)) return false;
+    if(filt.kpi==='ob' && !(r.orderBy!==null&&(r.orderBy-NOW)<7*86400000)) return false;
+    return true;
+  }
+  function kpis(){
+    const all=rows();
+    const open=all.filter(r=>DPROJ.open(r.p));
+    const proof=all.filter(r=>r.status==='proof');
+    const over=all.filter(overdue);
+    const obNow=all.filter(r=>r.orderBy!==null&&(r.orderBy-NOW)<7*86400000);
+    const pipe=open.reduce((a,r)=>a+r.value,0);
+    const el=document.getElementById('kpis');
+    el.innerHTML=`
+      <button class="kpi ${filt.kpi==='open'?'on':''}" data-kpi="open"><b>${open.length}</b><span>Open projects</span></button>
+      <button class="kpi ${filt.kpi==='proof'?'on':''}" data-kpi="proof"><b>${proof.length}</b><span>Awaiting approval</span></button>
+      <button class="kpi warn ${filt.kpi==='ob'?'on':''}" data-kpi="ob"><b>${obNow.length}</b><span>Order by this week</span></button>
+      <button class="kpi" data-kpi="open" data-pipe><b>${gbp0(pipe)}</b><span>Open pipeline value</span></button>
+      <button class="kpi warn ${filt.kpi==='overdue'?'on':''}" data-kpi="overdue"><b>${over.length}</b><span>Overdue</span></button>`;
+    el.querySelectorAll('[data-kpi]').forEach(b=>b.onclick=()=>{ filt.kpi=(filt.kpi===b.dataset.kpi&&!b.hasAttribute('data-pipe'))?'':b.dataset.kpi; render(); });
+  }
+  function options(){
+    const all=rows();
+    const fill=(id,vals)=>{ const s=document.getElementById(id); const cur=s.value; s.innerHTML=s.options[0].outerHTML+vals.map(v=>`<option value="${esc(v[0])}" ${cur===v[0]?'selected':''}>${esc(v[1])}</option>`).join(''); };
+    fill('fCust',[...new Set(all.map(r=>r.customer))].sort().map(c=>[c,c]));
+    fill('fAm',[...new Set(all.flatMap(r=>r.collab))].sort().map(a=>[a,a]));
+    fill('fSup',[...new Set(all.flatMap(r=>r.p.items.map(i=>supName(i.n))))].sort().map(s=>[s,s]));
+  }
+
+  const obCls=ts=>ts===null?'':(ts<NOW?'over':(ts-NOW<7*86400000?'soon':''));
+  function rowCells(r){
+    const od=overdue(r); const soon=!od&&DPROJ.open(r.p)&&(r.deadline-NOW)<14*86400000;
+    const ini=r.am.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const pid=esc(r.p.id);
+    return `
+      <td class="selc"><span class="selchk ${sel.has(r.p.id)?'on':''}" data-sel="${pid}" title="Select project"><svg viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5"/></svg></span></td>
+      <td class="chev"><span class="rowh"><span class="pgrip" data-grip title="Drag to re-order"><svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></span><button class="chevbtn ${expanded.has(r.p.id)?'open':''}" data-exp="${pid}" title="${expanded.has(r.p.id)?'Hide':'Show'} project table">›</button></span></td>
+      <td class="cust"><a href="Merchsmith Projects.html?customer=${encodeURIComponent(r.customer)}">${clogo(r.customer)}${esc(r.customer)}</a></td>
+      <td class="client"><span class="cwrap">${cavat(r.client)}${esc(r.client)}</span></td>
+      <td class="pjname"><b><a href="Merchsmith Project - Autumn Giveaways.html${r.p.id==='autumn'?'':'?pid='+encodeURIComponent(r.p.id)}">${esc(r.name)}</a></b></td>
+      <td class="num c-items">${r.items}</td>
+      <td class="num c-value"><b>${gbp0(r.value)}</b></td>
+      <td class="num" style="color:var(--green-deep);font-weight:700">${gbp0(r.profit)}</td>
+      <td class="dby c-dby">${fmtD(r.delivBy)}</td>
+      <td><span class="amav" title="${esc(r.collab.join(', '))} — ${esc(r.am)} leads">${r.collab.map(n=>`<span class="av" title="${esc(n)}"><img src="assets/avatars/${TEAM[n]||'av1.jpg'}" alt="${esc(n)}"></span>`).join('')}<button class="addav" data-stop title="Add collaborator">+</button></span></td>
+      <td><button class="rowact ${r.p.flag?'flag-on':''}" data-flag="${pid}" title="${r.p.flag?'Urgent — click to clear':'Mark project urgent'}"><svg class="icn" viewBox="0 0 24 24"><path d="M6 21V4M6 4h11l-2 3.5L17 11H6"/></svg></button></td>
+      <td><button class="rowact" data-cmt="${pid}" title="Project comments"><svg class="icn" viewBox="0 0 24 24"><path d="M20 14a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></svg>${r.p.comments?`<span class="cb">${r.p.comments}</span>`:''}</button></td>
+      <td><button class="briefbtn" data-brief="${pid}">View brief ▾</button></td>
+      <td class="created">${fmtD(r.created)}</td>
+      <td class="last c-last">${ago(r.last)}</td>`;
+  }
+
+  function render(){
+    kpis(); renderChips();
+    let list=rows().filter(match);
+    if(sortK){ list.sort((a,b)=>{ let va=a[sortK], vb=b[sortK]; if(sortK==='orderBy'){ va=(va===null?Infinity:va); vb=(vb===null?Infinity:vb); } if(sortK==='status'){ const O=['idea','quote','proof','ordered','prod','delivered','closed']; va=O.indexOf(va); vb=O.indexOf(vb); }
+      if(typeof va==='string'){ va=va.toLowerCase(); vb=String(vb).toLowerCase(); }
+      return (va<vb?-1:va>vb?1:0)*sortDir; }); }
+    else { list.sort((a,b)=>idxOf(a.p.id)-idxOf(b.p.id)); }
+    const tb=document.getElementById('rows');
+    tb.innerHTML=list.length?list.map(r=>{
+      const isOpen=expanded.has(r.p.id);
+      return `<tr data-pid="${esc(r.p.id)}" data-cust="${esc(r.customer)}" class="proj ${isOpen?'exp':''}">${rowCells(r)}</tr>
+      ${isOpen?`<tr class="plrow"><td colspan="15" class="plcell"><iframe class="plframe" data-pid="${esc(r.p.id)}" src="Merchsmith Project - Autumn Giveaways.html?embed=1&pid=${encodeURIComponent(r.p.id)}" title="${esc(r.name)} project table"></iframe></td></tr>`:''}`; }).join(''):`<tr><td colspan="15" class="empty">No projects match these filters.</td></tr>`;
+    tb.querySelectorAll('[data-exp]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); const id=b.dataset.exp; if(expanded.has(id))expanded.delete(id); else expanded.add(id); render(); });
+    tb.querySelectorAll('tr.proj').forEach(tr=>tr.onclick=e=>{ if(e.target.closest('.chevbtn,a,[data-sel],[data-addp],[data-flag],[data-more],[data-brief],[data-stop],.moredrop2,.rowact'))return; location.href='Merchsmith Projects.html?customer='+encodeURIComponent(tr.dataset.cust); });
+    tb.querySelectorAll('[data-sel]').forEach(c=>c.onclick=e=>{ e.stopPropagation(); const id=c.dataset.sel; if(sel.has(id))sel.delete(id); else sel.add(id); c.classList.toggle('on',sel.has(id)); c.closest('tr').classList.toggle('sel',sel.has(id)); syncSelAll(); footText(); });
+    // headline actions — expand the project (if needed) and command its embedded table
+    const sendCmd=(id,cmd)=>{ const go=()=>{ const f=[...document.querySelectorAll('iframe.plframe')].find(x=>x.dataset.pid===id); if(f&&f.contentWindow) f.contentWindow.postMessage({msCmd:cmd},'*'); };
+      if(!expanded.has(id)){ expanded.add(id); render(); const f=[...document.querySelectorAll('iframe.plframe')].find(x=>x.dataset.pid===id); if(f) f.addEventListener('load',()=>setTimeout(go,400),{once:true}); }
+      else go(); };
+    tb.querySelectorAll('[data-addp]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); sendCmd(b.dataset.addp,'addProduct'); });
+    tb.querySelectorAll('[data-brief]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); b.classList.toggle('on'); sendCmd(b.dataset.brief,'brief'); });
+    tb.querySelectorAll('[data-flag]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); const r=rows().find(x=>x.p.id===b.dataset.flag); DPROJ.setFlag(b.dataset.flag, !(r&&r.p.flag)); render(); });
+    // comments drawer (shared comments.js engine — same as the project workspace)
+    tb.querySelectorAll('[data-cmt]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); if(!window.__openComments) return;
+      let ent=(window.ordered||[]).find(x=>x.id===b.dataset.cmt);
+      if(!ent){ const r=rows().find(x=>x.p.id===b.dataset.cmt); if(!r) return;
+        ent={id:r.p.id, name:r.name, isProject:true, comments:null, status:{type:'clock'}, thread:[], history:[{who:1,type:'added',icon:'ic-plus',label:'created this project',time:'Today'}]};
+        (window.ordered=window.ordered||[]).push(ent); }
+      window.__openComments(ent); });
+    tb.querySelectorAll('[data-more]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); const d=tb.querySelector(`[data-moredrop="${CSS.escape(b.dataset.more)}"]`); document.querySelectorAll('.moredrop2.open').forEach(x=>{ if(x!==d)x.classList.remove('open'); }); d.classList.toggle('open'); });
+    tb.querySelectorAll('[data-dl]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); sendCmd(b.dataset.dl,'download'); b.closest('.moredrop2').classList.remove('open'); });
+    tb.querySelectorAll('[data-opencust]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); location.href='Merchsmith Projects.html?customer='+encodeURIComponent(b.dataset.opencust); });
+    tb.querySelectorAll('[data-reset]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); if(!confirm('Reset all edits on this project back to its source data?'))return; DPROJ.resetProject(b.dataset.reset); try{ localStorage.removeItem('ms-dash-state-v4::'+b.dataset.reset); }catch(x){} render(); });
+    // cascade the Order-by window into every expanded project's product rows (filter + soonest-first sort)
+    const obModes=[...activeOB];
+    tb.querySelectorAll('iframe.plframe').forEach(fr=>{
+      const send=()=>{ try{ fr.contentWindow.postMessage({msCmd:'obFilter',modes:obModes,bd:{areas:[...bdA],states:[...bdS]},dens:DENS||'comfort',sup:filt.sup||''},'*'); }catch(e){} };
+      fr.addEventListener('load',()=>setTimeout(send,600));
+      try{ if(fr.contentDocument&&fr.contentDocument.readyState==='complete') setTimeout(send,80); }catch(e){}
+    });
+    // drag-to-reorder project rows via the grip (custom order = default; blocked while a column sort is active)
+    let dragPid=null;
+    tb.querySelectorAll('.pgrip').forEach(g=>{ g.addEventListener('click',e=>e.stopPropagation());
+      g.addEventListener('mousedown',e=>{ if(sortK){ toast('Click the sorted column header until the arrow clears to re-order'); return; } g.closest('tr').draggable=true; }); });
+    tb.querySelectorAll('tr.proj').forEach(tr=>{
+      tr.addEventListener('dragstart',e=>{ if(sortK||!tr.draggable){ e.preventDefault(); return; } dragPid=tr.dataset.pid; tr.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
+      tr.addEventListener('dragend',()=>{ tr.classList.remove('dragging'); tr.draggable=false; tb.querySelectorAll('.drophint').forEach(x=>x.classList.remove('drophint')); });
+      tr.addEventListener('dragover',e=>{ if(!dragPid||tr.dataset.pid===dragPid) return; e.preventDefault(); tr.classList.add('drophint'); });
+      tr.addEventListener('dragleave',()=>tr.classList.remove('drophint'));
+      tr.addEventListener('drop',e=>{ e.preventDefault(); if(!dragPid||tr.dataset.pid===dragPid) return;
+        const all=rows().slice().sort((a,b)=>idxOf(a.p.id)-idxOf(b.p.id)).map(r=>r.p.id);
+        const fi=all.indexOf(dragPid), ti=all.indexOf(tr.dataset.pid);
+        all.splice(fi,1); all.splice(ti,0,dragPid); dragPid=null;
+        saveOrder(all); render(); toast('Order saved as your default'); });
+    });
+    const totV=list.reduce((a,r)=>a+r.value,0), totP=list.reduce((a,r)=>a+r.profit,0);
+    window.__footBase=`${list.length} project${list.length===1?'':'s'} · value ${gbp0(totV)} · profit ${gbp0(totP)}`;
+    footText(); syncSelAll();
+    const anyF=filt.q||filt.cust||!(activeF.size===1&&activeF.has('live'))||activeP.size||activeOB.size||bdActive()||filt.am||filt.sup||filt.kpi;
+    document.getElementById('fClear').hidden=!anyF;
+    document.querySelectorAll('th.sortable').forEach(th=>{ const d=th.querySelector('.dir'); if(d)d.remove(); if(th.dataset.k===sortK){ const s=document.createElement('span'); s.className='dir'; s.textContent=sortDir>0?'▲':'▼'; th.appendChild(s); } });
+  }
+
+  // live updates from embedded project tables — update master cells in place (never reload the iframes)
+  function refreshCells(){
+    kpis();
+    const list=rows();
+    document.querySelectorAll('tr.proj[data-pid]').forEach(tr=>{
+      const r=list.find(x=>x.p.id===tr.dataset.pid); if(!r) return;
+      const it=tr.querySelector('.c-items'); if(it) it.textContent=r.items;
+      const v=tr.querySelector('.c-value'); if(v) v.innerHTML=`<b>${gbp0(r.value)}</b>`;
+      const la=tr.querySelector('.c-last'); if(la) la.textContent=ago(r.last);
+    });
+  }
+  window.addEventListener('storage',e=>{ if(e.key&&(e.key.indexOf('ms-dash-state-v4')===0||e.key==='ms-dist-projects')) refreshCells(); });
+  // ---- full-window overlay for product modal / comments coming out of embedded project tables ----
+  function openWsOverlay(o){
+    closeWsOverlay(false);
+    const div=document.createElement('div'); div.id='wsOverlay'; div.dataset.pid=o.pid||'autumn';
+    div.style.cssText='position:fixed;inset:0;z-index:9000;background:rgba(22,24,28,.45);backdrop-filter:blur(3px);';
+    const src='Merchsmith Project - Autumn Giveaways.html?embed=1&pid='+encodeURIComponent(o.pid||'autumn')+'&overlay='+encodeURIComponent(o.kind+':'+(o.i===undefined?0:o.i)+(o.tab?(':'+o.tab):''));
+    div.innerHTML='<iframe style="position:absolute;inset:0;width:100%;height:100%;border:0;" src="'+src.replace(/"/g,'&quot;')+'"></iframe>';
+    document.body.appendChild(div); document.body.style.overflow='hidden';
+  }
+  function closeWsOverlay(refresh){
+    const d=document.getElementById('wsOverlay'); if(!d) return;
+    const pid=d.dataset.pid; d.remove(); document.body.style.overflow='';
+    if(refresh!==false){ const fr=document.querySelector('iframe.plframe[data-pid="'+pid+'"]'); if(fr) fr.src=fr.src; }
+  }
+  window.addEventListener('message',e=>{ const d=e.data||{};
+    if(d.msOverlay) openWsOverlay(d.msOverlay);
+    if(d.msOverlayClose) closeWsOverlay(true);
+  });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeWsOverlay(true); });
+  window.addEventListener('message',e=>{ const d=e.data||{}; if(d.msEmbedH){ document.querySelectorAll('iframe.plframe').forEach(f=>{ if(f.dataset.pid===String(d.pid)) f.style.height=Math.max(360,Math.min(d.msEmbedH,4000))+'px'; }); refreshCells(); } });
+
+  function footText(){ document.getElementById('tfoot').textContent=(window.__footBase||'')+(sel.size?` · ${sel.size} selected`:''); const pb=document.getElementById('pbulk'); pb.hidden=!sel.size; document.getElementById('pbn').textContent=sel.size; }
+  function syncSelAll(){ const a=document.getElementById('selAll'); if(!a) return; const vis=[...document.querySelectorAll('tr.proj[data-pid]')].map(t=>t.dataset.pid); a.classList.toggle('on', vis.length>0&&vis.every(id=>sel.has(id))); }
+  document.getElementById('selAll').onclick=()=>{ const vis=[...document.querySelectorAll('tr.proj[data-pid]')].map(t=>t.dataset.pid); const all=vis.length>0&&vis.every(id=>sel.has(id)); vis.forEach(id=>{ if(all) sel.delete(id); else sel.add(id); }); document.querySelectorAll('tr.proj[data-pid]').forEach(tr=>{ const on=sel.has(tr.dataset.pid); tr.classList.toggle('sel',on); const c=tr.querySelector('[data-sel]'); if(c)c.classList.toggle('on',on); }); syncSelAll(); footText(); };
+  // ---- bulk actions on selected projects ----
+  const toast=(()=>{ const el=document.createElement('div'); el.style.cssText='position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--ink,#23231f);color:#fff;font-size:13.5px;font-weight:600;padding:11px 20px;border-radius:11px;opacity:0;transition:.2s;z-index:300;pointer-events:none;'; document.body.appendChild(el); let t; return m=>{ el.textContent=m; el.style.opacity=1; el.style.transform='translateX(-50%)'; clearTimeout(t); t=setTimeout(()=>{ el.style.opacity=0; el.style.transform='translateX(-50%) translateY(16px)'; },2400); }; })();
+  const selProjects=()=>rows().filter(r=>sel.has(r.p.id));
+  document.getElementById('bkClear').onclick=()=>{ sel.clear(); render(); };
+  document.getElementById('bkPause').onclick=()=>{ const ps=selProjects(); if(!ps.length)return;
+    const allPaused=ps.every(r=>r.p.items.length&&r.p.items.every(i=>i.paused));
+    ps.forEach(r=>{ const items=r.p.items.map(i=>Object.assign({},i,{paused:!allPaused})); DPROJ.setItems(r.p.id,items); });
+    render(); toast(allPaused?`Resumed ${ps.length} project${ps.length===1?'':'s'}`:`Paused ${ps.length} project${ps.length===1?'':'s'}`); };
+  document.getElementById('bkArch').onclick=()=>{ const ps=selProjects(); if(!ps.length)return;
+    const allClosed=ps.every(r=>r.p.closed);
+    ps.forEach(r=>DPROJ.setClosed(r.p.id,!allClosed));
+    render(); toast(allClosed?`Unarchived ${ps.length} project${ps.length===1?'':'s'}`:`Archived ${ps.length} project${ps.length===1?'':'s'}`); };
+  document.getElementById('bkDup').onclick=()=>{ const ps=selProjects(); if(!ps.length)return;
+    ps.forEach(r=>DPROJ.duplicate(r.p.id)); sel.clear(); render(); toast(`Duplicated ${ps.length} project${ps.length===1?'':'s'}`); };
+  document.getElementById('bkPdf').onclick=()=>{ const ps=selProjects(); if(!ps.length)return;
+    const w=window.open('','_blank'); if(!w){ toast('Pop-up blocked — allow pop-ups to download'); return; }
+    const rowsHtml=ps.map(r=>`<h2>${esc(r.name)} <span class="meta">· ${esc(r.customer)}</span></h2>
+      <p class="meta">Status ${DPROJ.label(r.status)} · Account manager ${esc(r.am)} · Deadline ${fmtD(r.deadline)} · Value ${gbp0(r.value)} · Profit ${gbp0(r.profit)}</p>
+      <table><thead><tr><th>Product</th><th>Status</th><th style="text-align:right">Qty</th><th style="text-align:right">Value</th></tr></thead><tbody>
+      ${r.p.items.map(i=>`<tr><td>${esc(i.n)}</td><td>${i.paused?'Paused':DPROJ.label(i.st)}</td><td style="text-align:right">${(i.qty||0).toLocaleString()}</td><td style="text-align:right">${gbp0(i.val||0)}</td></tr>`).join('')}
+      </tbody></table>`).join('');
+    w.document.write(`<html><head><title>Projects summary — Mojo Promotions</title><style>
+      body{font-family:Mulish,system-ui,sans-serif;color:#23232a;padding:34px;} h1{font-size:22px;margin:0 0 2px;} .sub{color:#777;font-size:12.5px;margin:0 0 8px;}
+      h2{font-size:16px;margin:26px 0 2px;} .meta{color:#777;font-size:12px;font-weight:500;margin:0 0 6px;}
+      table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px;} th,td{text-align:left;padding:6px 8px;border-bottom:1px solid #e4e2da;} th{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#999;}
+      </style></head><body><h1>Projects summary</h1><p class="sub">Mojo Promotions · ${ps.length} project${ps.length===1?'':'s'} · ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</p>${rowsHtml}
+      <script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>`);
+    w.document.close(); };
+  document.addEventListener('click',()=>document.querySelectorAll('.moredrop2.open').forEach(d=>d.classList.remove('open')));
+  document.getElementById('q').oninput=e=>{ filt.q=e.target.value; render(); };
+  var DENS='comfort';
+  document.querySelectorAll('#densSeg .it').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#densSeg .it').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    DENS=(b.dataset.d==='comfort')?'comfort':'compact';
+    document.body.classList.toggle('dense', DENS==='compact');
+    render(); });
+  let allOpen=false;
+  document.getElementById('tglAll').onclick=()=>{ allOpen=!allOpen; expanded.clear(); if(allOpen) rows().filter(match).forEach(r=>expanded.add(r.p.id)); document.getElementById('tglAll').textContent=allOpen?'Hide all products ▴':'Show all products ▾'; render(); };
+  document.getElementById('fCust').onchange=e=>{ filt.cust=e.target.value; render(); };
+  document.getElementById('fAm').onchange=e=>{ filt.am=e.target.value; render(); };
+  document.getElementById('fSup').onchange=e=>{ filt.sup=e.target.value; render(); };
+  document.getElementById('fClear').onclick=()=>{ filt.q='';filt.cust='';filt.status='';filt.am='';filt.sup='';filt.kpi=''; activeF.clear(); activeF.add('live'); activeP.clear(); activeOB.clear(); bdA.clear(); bdS.clear(); document.getElementById('q').value=''; options(); render(); };
+  document.querySelectorAll('th.sortable').forEach(th=>th.onclick=()=>{ const k=th.dataset.k;
+    if(sortK===k){ if(sortDir===1){ sortDir=-1; } else { sortK=null; } }
+    else { sortK=k; sortDir=1; }
+    render(); });
+  options(); render();
+})();
+</script>
+<script>
+// stable project entities for the shared comments drawer (comments.js seeds threads/history on these once)
+window.ordered = DPROJ.all().map(p=>({ id:p.id, name:p.name, isProject:true,
+  comments:p.comments?{read:p.comments}:null, status:{type:'clock'}, img:'lifestyle' }));
+</script>
+<script src="comments.js"></script>
+</body>
+</html>

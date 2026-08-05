@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Chats</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+a{color:inherit;text-decoration:none;}
+.header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
+.main{max-width:1180px;margin:0 auto;padding:28px 32px 90px;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px 36px;}
+.crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
+.crumb .sep{opacity:.6;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:36px;line-height:1;margin:0;}
+.psub{font-size:14px;color:var(--text-soft);margin-top:9px;max-width:640px;line-height:1.55;}
+.tabs{display:flex;gap:4px;margin:26px 0 0;border-bottom:1px solid var(--line-soft);}
+.tab{border:0;background:none;font:inherit;font-size:14.5px;font-weight:700;color:var(--ink-3);padding:11px 16px;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;}
+.tab.on{color:var(--periwinkle-deep);border-bottom-color:var(--periwinkle-deep);}
+.panel{display:none;padding-top:24px;}
+.panel.on{display:block;}
+/* overview */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+@media(max-width:880px){.stats{grid-template-columns:repeat(2,1fr);}}
+.stat{background:#fff;border:1px solid var(--line-soft);border-radius:15px;padding:18px 20px;}
+.stat b{display:block;font-family:var(--serif);font-weight:500;font-size:30px;line-height:1;}
+.stat span{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:6px;display:block;}
+.cols{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;}
+@media(max-width:880px){.cols{grid-template-columns:1fr;}}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:6px 20px;}
+.card.pad{padding:20px 22px;}
+.card-h{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:16px 0 10px;}
+.crow{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--paper-2);cursor:pointer;}
+.crow:first-of-type{border-top:0;}
+.crow:hover{opacity:.85;}
+.cav{position:relative;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px;flex:none;}
+.cav .dot{position:absolute;bottom:0;right:0;width:11px;height:11px;border-radius:50%;border:2px solid #fff;background:var(--muted);}
+.cav .dot.on{background:#3a9d6b;}
+.cmeta{flex:1;min-width:0;}
+.cmeta b{font-size:14px;display:block;}
+.cmeta .last{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cmeta .role{font-size:12px;color:var(--text-soft);}
+.cside{text-align:right;flex:none;}
+.cside .when{font-size:11.5px;color:var(--muted);display:block;}
+.cside .unread{display:inline-grid;place-items:center;background:var(--periwinkle-deep);color:#fff;font-size:10.5px;font-weight:800;border-radius:999px;min-width:18px;height:18px;padding:0 5px;margin-top:4px;}
+.online-list{display:flex;flex-wrap:wrap;gap:9px;padding:4px 0 16px;}
+.chiprow{display:inline-flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line-soft);border-radius:999px;padding:5px 12px 5px 6px;font-size:13px;font-weight:600;cursor:pointer;}
+.chiprow .mini{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:9.5px;font-weight:800;}
+/* settings */
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-top:1px solid var(--paper-2);}
+.setrow:first-of-type{border-top:0;}
+.setrow .lab b{font-size:14px;}
+.setrow .lab span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;max-width:48ch;line-height:1.5;}
+.sw{width:46px;height:27px;border-radius:999px;background:var(--line);border:0;cursor:pointer;position:relative;flex:none;transition:background .18s;}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:transform .18s;box-shadow:0 1px 3px rgba(0,0,0,.25);}
+.sw.on{background:var(--periwinkle-deep);}
+.sw.on::after{transform:translateX(19px);}
+.sel{font:inherit;font-size:13.5px;border:1.5px solid var(--line-soft);border-radius:9px;padding:8px 12px;background:#fff;}
+.startbtn{display:inline-flex;align-items:center;gap:8px;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:11px;padding:11px 18px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;margin-top:4px;}
+.cmsub{display:flex;gap:7px;}
+.cmfilt{border:1px solid var(--line-soft);background:#fff;border-radius:999px;padding:8px 15px;font:inherit;font-size:13px;font-weight:700;color:var(--ink-3);cursor:pointer;}
+.cmfilt.on{background:var(--periwinkle);border-color:var(--periwinkle);color:#fff;}
+.cmrow{display:flex;gap:13px;padding:15px 4px;border-top:1px solid var(--paper-2);}
+.cmrow:first-of-type{border-top:0;}
+.cmav{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px;flex:none;}
+.cmbody{flex:1;min-width:0;}
+.cmhd{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;}
+.cmhd b{font-size:13.5px;}
+.cmhd .role{font-size:11.5px;color:var(--muted);}
+.cmhd .when{font-size:11.5px;color:var(--muted);margin-left:auto;}
+.cmtxt{font-size:13.5px;color:var(--ink-2);line-height:1.5;margin:4px 0 8px;}
+.cmctx{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.cmtag{font-size:11.5px;font-weight:600;color:var(--periwinkle-ink);background:var(--tint-peri);border-radius:7px;padding:4px 10px;}
+.cmgoto{font-size:12.5px;font-weight:700;color:var(--periwinkle-deep);text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+.cmgoto:hover{text-decoration:underline;}
+.cmment{font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--flare);background:var(--tint-red);border-radius:6px;padding:2px 7px;}
+.cmempty{font-size:13.5px;color:var(--muted);padding:30px;text-align:center;}
+</style>
+</head>
+<body>
+<header class="header"><div class="brand" data-identity-lockup></div><div class="headtools"></div></header>
+<div class="crumbband"><div class="crumb"><span class="crumb-org">Mojo Promotions</span><span class="sep">›</span><span class="here">Chats</span></div></div>
+
+<div class="main">
+  <h1 class="ptitle">Chats</h1>
+  <p class="psub">Message anyone connected to your organisation — your team, your customers and your suppliers — without leaving the platform. Conversations follow each order and project.</p>
+
+  <div class="tabs">
+    <button class="tab on" data-t="overview">Overview</button>
+    <button class="tab" data-t="history">History</button>
+    <button class="tab" data-t="comments">Comments &amp; mentions</button>
+    <button class="tab" data-t="settings">Settings</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="panel on" id="p-overview">
+    <div class="stats">
+      <div class="stat"><b id="sUnread">—</b><span>Unread messages</span></div>
+      <div class="stat"><b id="sActive">—</b><span>Active conversations</span></div>
+      <div class="stat"><b id="sOnline">—</b><span>People online now</span></div>
+      <div class="stat"><b id="sConn">—</b><span>Connected contacts</span></div>
+    </div>
+    <div class="cols">
+      <div class="card"><div class="card-h">Recent conversations</div><div id="recent"></div></div>
+      <div>
+        <div class="card pad"><div class="card-h" style="padding-top:0">Online now</div><div class="online-list" id="online"></div>
+          <button class="startbtn" id="startBtn"><svg class="icn" style="width:16px;height:16px"><use href="#i-chat"/></svg>New message</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="panel" id="p-history">
+    <div class="card"><div class="card-h">All conversations</div><div id="history"></div></div>
+  </div>
+
+  <!-- COMMENTS & MENTIONS -->
+  <div class="panel" id="p-comments">
+    <div class="cmsub"><button class="cmfilt on" data-f="all">All</button><button class="cmfilt" data-f="mentions">Mentions of me</button><button class="cmfilt" data-f="mine">My comments</button><select class="sel" id="cmPerson" style="margin-left:auto"><option value="">Everyone</option></select></div>
+    <div class="card" style="margin-top:16px"><div id="cmList"></div></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="panel" id="p-settings">
+    <div class="card pad">
+      <div class="setrow"><div class="lab"><b>Desktop notifications</b><span>Show a notification when a new message arrives.</span></div><button class="sw on" data-sw></button></div>
+      <div class="setrow"><div class="lab"><b>Sound on new message</b><span>Play a subtle chime for incoming messages.</span></div><button class="sw" data-sw></button></div>
+      <div class="setrow"><div class="lab"><b>Email me when offline</b><span>If you’re away, email a digest of unread chats.</span></div><button class="sw on" data-sw></button></div>
+      <div class="setrow"><div class="lab"><b>Show my online status</b><span>Let connected contacts see when you’re available.</span></div><button class="sw on" data-sw></button></div>
+      <div class="setrow"><div class="lab"><b>Who can message me</b><span>Limit who can start a new conversation with you.</span></div>
+        <select class="sel"><option>Everyone connected</option><option>My team only</option><option>Team + customers</option><option>Team + suppliers</option></select></div>
+      <div class="setrow"><div class="lab"><b>Auto-archive after</b><span>Move quiet conversations to History automatically.</span></div>
+        <select class="sel"><option>Never</option><option>30 days</option><option selected>90 days</option><option>1 year</option></select></div>
+    </div>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8 8 0 0 1-11.8 7L4 20l1.5-5.2A8 8 0 1 1 21 11.5z"/></symbol>
+</svg>
+
+<script src="logos.js"></script>
+<script src="avatars.js"></script>
+<script src="ms-comments.js"></script>
+<script src="identity.js"></script>
+<script>(function(){var o={distributor:'Mojo Promotions',customer:'Citrix',supplier:'BagWorks UK',admin:'Merchsmith'};var id=(window.MSID&&MSID.current&&MSID.current())||'distributor';document.querySelectorAll('.crumb-org').forEach(function(e){e.textContent=o[id]||o.distributor;});})();</script>
+<script src="sidebar.js"></script>
+<script src="chrome.js"></script>
+<script>
+(function(){
+  function start(){
+    const P=(window.MSChat&&MSChat.people)||[];
+    const av=n=>{ const u=window.MSAvatar&&MSAvatar.url(n); return u?`<img src="${u}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:n.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase(); };
+    const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    const unread=P.reduce((a,p)=>a+(p.unread||0),0);
+    const online=P.filter(p=>p.online).length;
+    document.getElementById('sUnread').textContent=unread;
+    document.getElementById('sActive').textContent=P.length;
+    document.getElementById('sOnline').textContent=online;
+    document.getElementById('sConn').textContent=P.length;
+    const row=p=>`<div class="crow" data-open="${p.id}"><span class="cav" style="background:${p.accent}">${av(p.name)}<span class="dot ${p.online?'on':''}"></span></span><span class="cmeta"><b>${esc(p.name)}</b><span class="last">${esc(p.last)}</span></span><span class="cside"><span class="when">${p.when}</span>${p.unread?`<span class="unread">${p.unread}</span>`:''}</span></div>`;
+    document.getElementById('recent').innerHTML=P.slice(0,4).map(row).join('');
+    document.getElementById('history').innerHTML=P.map(row).join('');
+    document.getElementById('online').innerHTML=P.filter(p=>p.online).map(p=>`<span class="chiprow" data-open="${p.id}"><span class="mini" style="background:${p.accent}">${av(p.name)}</span>${esc(p.name.split(' ')[0])}</span>`).join('')||'<span style="font-size:13px;color:var(--muted)">No one online.</span>';
+    document.querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>window.MSChat&&MSChat.openPerson(el.dataset.open));
+    document.getElementById('startBtn').onclick=()=>window.MSChat&&MSChat.open();
+  }
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t)); document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.t)); });
+  document.querySelectorAll('[data-sw]').forEach(s=>s.onclick=()=>s.classList.toggle('on'));
+  (function comments(){
+    const C=window.MSComments; if(!C) return;
+    const av=n=>{ const u=window.MSAvatar&&MSAvatar.url(n); return u?`<img src="${u}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:n.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase(); };
+    const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    const ACC=['#7b85c5','#51768c','#c66a4a','#3a9d6b','#8246af','#d2453a'];
+    const accOf=n=>ACC[n.length%ACC.length];
+    let filt='all', person='';
+    const sel=document.getElementById('cmPerson');
+    if(sel){ const names=[...new Set(C.all().map(c=>c.author))].sort(); sel.innerHTML='<option value="">Everyone</option>'+names.map(n=>`<option>${esc(n)}</option>`).join(''); sel.onchange=()=>{ person=sel.value; draw(); }; }
+    function draw(){
+      let list=filt==='mentions'?C.mentions():filt==='mine'?C.mine():C.all();
+      if(person) list=list.filter(c=>c.author===person);
+      const el=document.getElementById('cmList');
+      if(!list.length){ el.innerHTML='<div class="cmempty">Nothing here yet.</div>'; return; }
+      el.innerHTML=list.map(c=>`<div class="cmrow"><span class="cmav" style="background:${c.mine?'var(--periwinkle-deep)':accOf(c.author)}">${av(c.author)}</span><div class="cmbody"><div class="cmhd"><b>${esc(c.author)}</b><span class="role">${esc(c.role||'')}</span>${(c.mentions||[]).includes(C.me)&&!c.mine?'<span class="cmment">Mentioned you</span>':''}<span class="when">${C.relTime(c.ts)}</span></div><div class="cmtxt">${esc(c.text)}</div><div class="cmctx"><span class="cmtag">${esc(c.ctxLabel||c.ctxType)}</span><a class="cmgoto" href="${c.deepLink||'#'}">Go to ›</a></div></div></div>`).join('');
+    }
+    document.querySelectorAll('.cmfilt').forEach(b=>b.onclick=()=>{ filt=b.dataset.f; document.querySelectorAll('.cmfilt').forEach(x=>x.classList.toggle('on',x===b)); draw(); });
+    draw(); window.addEventListener('ms-comments-change',draw);
+  })();
+  // chat.js loads via chrome.js; wait for it
+  let n=0; const iv=setInterval(()=>{ if(window.MSChat||n++>40){ clearInterval(iv); start(); } },80);
+})();
+</script>
+</body>
+</html>

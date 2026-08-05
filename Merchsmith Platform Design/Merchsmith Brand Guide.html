@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Brand Guidelines</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Mulish:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===== SVG sprite ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-mark" viewBox="143.4 251.4 89.1 91.4">
+    <path fill="currentColor" d="M194.66 336.80 C191.83 336.80 189.16 335.66 187.15 333.59 C185.15 331.54 184.04 328.79 184.03 325.87 L184.03 308.30 L190.95 308.30 L190.95 325.86 C190.95 326.88 191.34 327.84 192.04 328.56 C193.45 330.00 195.88 329.99 197.28 328.56 L217.53 307.71 C218.98 306.22 218.98 303.80 217.53 302.31 C216.83 301.59 215.90 301.19 214.91 301.19 L160.07 301.19 C157.23 301.18 154.56 300.04 152.56 297.98 C150.55 295.91 149.44 293.17 149.44 290.24 C149.44 287.33 150.55 284.58 152.56 282.51 L172.81 261.66 C176.95 257.39 183.69 257.40 187.83 261.66 C189.84 263.73 190.94 266.47 190.95 269.38 L190.95 286.95 L184.03 286.95 L184.03 269.39 C184.03 268.38 183.64 267.42 182.94 266.69 C181.54 265.26 179.10 265.25 177.70 266.70 L157.45 287.55 C156.75 288.27 156.36 289.23 156.36 290.24 C156.36 291.26 156.75 292.22 157.45 292.94 C158.15 293.66 159.09 294.07 160.08 294.07 L214.92 294.07 C217.76 294.07 220.42 295.22 222.43 297.28 C226.57 301.54 226.57 308.48 222.42 312.74 L202.17 333.59 C200.17 335.66 197.50 336.80 194.66 336.80"></path>
+  </symbol>
+  <!-- line icons : 24-grid, round caps/joins, ~1.6 stroke -->
+  <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></symbol>
+  <symbol id="ic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+  <symbol id="ic-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c0-3.5 3.1-5.5 7-5.5s7 2 7 5.5"/></symbol>
+  <symbol id="ic-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A15 15 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="ic-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12H7zM9 8a3 3 0 0 1 6 0"/></symbol>
+  <symbol id="ic-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
+  <symbol id="ic-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20S4 15 4 9.5A4 4 0 0 1 12 8a4 4 0 0 1 8 1.5C20 15 12 20 12 20z"/></symbol>
+  <symbol id="ic-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.4 2.5 14.6 0 17M12 3.5c-2.5 2.4-2.5 14.6 0 17"/></symbol>
+  <symbol id="ic-mega" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4l3 .5 1.5 4.5h2L9 14.5l9 3.5V6L9 9.5 4 10zM18 9a3 3 0 0 1 0 6"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+  <symbol id="ic-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.6 2.6M15.4 15.4 18 18M18 6l-2.6 2.6M8.6 15.4 6 18"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.6M12 18.8v2.6M21.4 12h-2.6M5.2 12H2.6M18.6 5.4l-1.8 1.8M7.2 16.8l-1.8 1.8M18.6 18.6l-1.8-1.8M7.2 7.2 5.4 5.4"/></symbol>
+  <symbol id="ic-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5.5" width="16" height="15" rx="2"/><path d="M4 9.6h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+  <symbol id="ic-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10M8 10.5l4 3.8 4-3.8M5 19.5h14"/></symbol>
+  <symbol id="ic-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.4"/><circle cx="17.5" cy="6" r="2.4"/><circle cx="17.5" cy="18" r="2.4"/><path d="M8.1 10.9 15.4 7.1M8.1 13.1l7.3 3.8"/></symbol>
+  <symbol id="ic-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5h11v10H3z"/><path d="M14 9.5h3.6l2.4 3v4H14z"/><circle cx="6.8" cy="17.5" r="1.7"/><circle cx="16.6" cy="17.5" r="1.7"/></symbol>
+  <symbol id="ic-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4H20v7.5L11 20.5 3.5 13z"/><circle cx="16" cy="8" r="1.3"/></symbol>
+  <symbol id="ic-edit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 5.5 18.5 8.5M5 19l1-4 9.5-9.5 3 3L9 18z"/></symbol>
+  <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M10 7V5h4v2M6.5 7l1 12h9l1-12M10 10.5v5M14 10.5v5"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17h12l-1.6-2.6V11a4.4 4.4 0 0 0-8.8 0v3.4L6 17zM10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="ic-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16l-6 7v5l-4 2v-7z"/></symbol>
+  <symbol id="ic-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.9.9-4.25 4.15 1 5.85L12 17l-5.25 2.75 1-5.85L3.5 9.7l5.9-.9z"/></symbol>
+  <symbol id="ic-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s6.5-5.6 6.5-10.5a6.5 6.5 0 0 0-13 0C5.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.3" r="2.4"/></symbol>
+  <symbol id="ic-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M4.2 7.5 12 13l7.8-5.5"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.3l3.3 2"/></symbol>
+  <symbol id="ic-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7.5 20v-6M12 20V8.5M16.5 20v-9"/></symbol>
+  <symbol id="ic-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="6" width="17" height="12" rx="2"/><path d="M3.7 10h16.6M7 14.5h3.5"/></symbol>
+</svg>
+
+<!-- ===== Nav ===== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#top">
+      <svg class="mark" viewBox="143.4 251.4 89.1 91.4"><path fill="currentColor" d="M194.66 336.80 C191.83 336.80 189.16 335.66 187.15 333.59 C185.15 331.54 184.04 328.79 184.03 325.87 L184.03 308.30 L190.95 308.30 L190.95 325.86 C190.95 326.88 191.34 327.84 192.04 328.56 C193.45 330.00 195.88 329.99 197.28 328.56 L217.53 307.71 C218.98 306.22 218.98 303.80 217.53 302.31 C216.83 301.59 215.90 301.19 214.91 301.19 L160.07 301.19 C157.23 301.18 154.56 300.04 152.56 297.98 C150.55 295.91 149.44 293.17 149.44 290.24 C149.44 287.33 150.55 284.58 152.56 282.51 L172.81 261.66 C176.95 257.39 183.69 257.40 187.83 261.66 C189.84 263.73 190.94 266.47 190.95 269.38 L190.95 286.95 L184.03 286.95 L184.03 269.39 C184.03 268.38 183.64 267.42 182.94 266.69 C181.54 265.26 179.10 265.25 177.70 266.70 L157.45 287.55 C156.75 288.27 156.36 289.23 156.36 290.24 C156.36 291.26 156.75 292.22 157.45 292.94 C158.15 293.66 159.09 294.07 160.08 294.07 L214.92 294.07 C217.76 294.07 220.42 295.22 222.43 297.28 C226.57 301.54 226.57 308.48 222.42 312.74 L202.17 333.59 C200.17 335.66 197.50 336.80 194.66 336.80"></path></svg>
+      <img class="wm" src="assets/merchsmith-wordmark.svg" alt="merchsmith">
+    </a>
+    <ul class="nav-links">
+      <li><a href="#logo">Logo</a></li>
+      <li><a href="#colour">Colour</a></li>
+      <li><a href="#type">Typography</a></li>
+      <li><a href="#wordmark">Wordmark</a></li>
+      <li><a href="#pattern">Pattern</a></li>
+      <li><a href="#components">Components</a></li>
+      <li><a href="#icons">Icons</a></li>
+    </ul>
+    <span class="nav-badge">Brand Guide · v1.0</span>
+  </div>
+</nav>
+
+<!-- ===== Cover ===== -->
+<header class="cover" id="top">
+  <div class="cover-pattern" data-pattern="cover"></div>
+  <div class="cover-inner wrap">
+    <img class="cover-logo" src="assets/merchsmith-logo.svg" alt="merchsmith">
+    <div class="eyebrow">Brand Guidelines</div>
+    <h1 class="cover-title">The Merchandise
+Management Platform</h1>
+    <div class="cover-meta">
+      <div><span class="k">Document</span><span class="v">Identity &amp; Style Sheet</span></div>
+      <div><span class="k">Version</span><span class="v">1.0 — June 2026</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== 01 Logo ===== -->
+<section class="section section--paper" id="logo">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <div><div class="sec-title">Logo</div>
+        <p class="sec-lead">The Merchsmith mark is a single, unbroken loop — reading at once as an <em>M</em>, an <em>S</em>, an infinity symbol and a folded sheet of paper. It pairs with a soft, rounded geometric wordmark.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px;">
+      <div class="logo-stage stage-light" style="min-height:300px;">
+        <img src="assets/merchsmith-logo.svg" alt="merchsmith primary lockup" style="max-height:96px;">
+      </div>
+      <div class="card-label"><span class="nm">Primary lockup</span><span class="sub">Icon + wordmark — the default signature</span></div>
+    </div>
+
+    <div class="card" style="margin-bottom:24px;">
+      <div class="logo-stage stage-light" style="min-height:240px;">
+        <img src="assets/merchsmith-logo-r.svg" alt="merchsmith registered trademark lockup" style="max-height:74px;">
+      </div>
+      <div class="card-label"><span class="nm">Registered lockup</span><span class="sub">With ® — for legal &amp; formal first-use contexts</span></div>
+    </div>
+
+    <div class="grid g2" style="margin-bottom:24px;">
+      <div class="card">
+        <div class="logo-stage stage-peri"><svg style="height:90px;color:#fff" viewBox="143.4 251.4 89.1 91.4"><path fill="currentColor" d="M194.66 336.80 C191.83 336.80 189.16 335.66 187.15 333.59 C185.15 331.54 184.04 328.79 184.03 325.87 L184.03 308.30 L190.95 308.30 L190.95 325.86 C190.95 326.88 191.34 327.84 192.04 328.56 C193.45 330.00 195.88 329.99 197.28 328.56 L217.53 307.71 C218.98 306.22 218.98 303.80 217.53 302.31 C216.83 301.59 215.90 301.19 214.91 301.19 L160.07 301.19 C157.23 301.18 154.56 300.04 152.56 297.98 C150.55 295.91 149.44 293.17 149.44 290.24 C149.44 287.33 150.55 284.58 152.56 282.51 L172.81 261.66 C176.95 257.39 183.69 257.40 187.83 261.66 C189.84 263.73 190.94 266.47 190.95 269.38 L190.95 286.95 L184.03 286.95 L184.03 269.39 C184.03 268.38 183.64 267.42 182.94 266.69 C181.54 265.26 179.10 265.25 177.70 266.70 L157.45 287.55 C156.75 288.27 156.36 289.23 156.36 290.24 C156.36 291.26 156.75 292.22 157.45 292.94 C158.15 293.66 159.09 294.07 160.08 294.07 L214.92 294.07 C217.76 294.07 220.42 295.22 222.43 297.28 C226.57 301.54 226.57 308.48 222.42 312.74 L202.17 333.59 C200.17 335.66 197.50 336.80 194.66 336.80"></path></svg></div>
+        <div class="card-label"><span class="nm">The mark</span><span class="sub">Use solo at small sizes &amp; as an app icon</span></div>
+      </div>
+      <div class="card">
+        <div class="logo-stage stage-light"><img src="assets/merchsmith-wordmark.svg" alt="merchsmith wordmark" style="max-height:42px;"></div>
+        <div class="card-label"><span class="nm">Wordmark</span><span class="sub">Lowercase, set tight, never re-typed</span></div>
+      </div>
+    </div>
+
+    <!-- clear space + min size -->
+    <div class="grid g2" style="margin-bottom:24px;">
+      <div class="card">
+        <div class="clearspace" style="padding:40px;">
+          <div class="frame" style="--cs:42px;">
+            <img src="assets/merchsmith-logo.svg" alt="clear space">
+            <span class="cs-tag" style="top:-9px;left:50%;transform:translateX(-50%)">x</span>
+            <span class="cs-tag" style="left:-9px;top:50%;transform:translateY(-50%)">x</span>
+          </div>
+        </div>
+        <div class="card-label"><span class="nm">Clear space</span><span class="sub">Keep a margin of <b>x</b> (the mark height) on all sides</span></div>
+      </div>
+      <div class="card">
+        <div class="logo-stage stage-light" style="gap:48px;align-items:flex-end;">
+          <div style="text-align:center"><img src="assets/merchsmith-logo.svg" style="height:30px;margin:0 auto 12px;" alt="min digital"><div class="caption">Digital · 120px min width</div></div>
+          <div style="text-align:center"><svg style="height:34px;color:var(--ink);margin:0 auto 12px;display:block" viewBox="143.4 251.4 89.1 91.4"><path fill="currentColor" d="M194.66 336.80 C191.83 336.80 189.16 335.66 187.15 333.59 C185.15 331.54 184.04 328.79 184.03 325.87 L184.03 308.30 L190.95 308.30 L190.95 325.86 C190.95 326.88 191.34 327.84 192.04 328.56 C193.45 330.00 195.88 329.99 197.28 328.56 L217.53 307.71 C218.98 306.22 218.98 303.80 217.53 302.31 C216.83 301.59 215.90 301.19 214.91 301.19 L160.07 301.19 C157.23 301.18 154.56 300.04 152.56 297.98 C150.55 295.91 149.44 293.17 149.44 290.24 C149.44 287.33 150.55 284.58 152.56 282.51 L172.81 261.66 C176.95 257.39 183.69 257.40 187.83 261.66 C189.84 263.73 190.94 266.47 190.95 269.38 L190.95 286.95 L184.03 286.95 L184.03 269.39 C184.03 268.38 183.64 267.42 182.94 266.69 C181.54 265.26 179.10 265.25 177.70 266.70 L157.45 287.55 C156.75 288.27 156.36 289.23 156.36 290.24 C156.36 291.26 156.75 292.22 157.45 292.94 C158.15 293.66 159.09 294.07 160.08 294.07 L214.92 294.07 C217.76 294.07 220.42 295.22 222.43 297.28 C226.57 301.54 226.57 308.48 222.42 312.74 L202.17 333.59 C200.17 335.66 197.50 336.80 194.66 336.80"></path></svg><div class="caption">Mark · 24px min</div></div>
+        </div>
+        <div class="card-label"><span class="nm">Minimum size</span><span class="sub">Below this the loop loses legibility</span></div>
+      </div>
+    </div>
+
+    <!-- colour variants -->
+    <h3 class="h3" style="margin:46px 0 22px;">Colour variants</h3>
+    <div class="grid g4" style="margin-bottom:46px;">
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="logo-stage stage-white" style="border-radius:0;border:0;"><img src="assets/merchsmith-logo.svg" alt="" style="max-height:40px;"></div>
+        <div style="padding:16px 20px;"><span class="nm" style="font-weight:700;font-size:14px;">Ink on white</span></div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="logo-stage stage-peri" style="border-radius:0;"><img class="logo-white" src="assets/merchsmith-logo.svg" alt="" style="max-height:40px;"></div>
+        <div style="padding:16px 20px;"><span class="nm" style="font-weight:700;font-size:14px;">White on Periwinkle</span></div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="logo-stage stage-ink" style="border-radius:0;"><img class="logo-white" src="assets/merchsmith-logo.svg" alt="" style="max-height:40px;"></div>
+        <div style="padding:16px 20px;"><span class="nm" style="font-weight:700;font-size:14px;">White on Ink</span></div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="logo-stage stage-light" style="border-radius:0;"><img class="logo-ink" src="assets/merchsmith-logo.svg" alt="" style="max-height:40px;"></div>
+        <div style="padding:16px 20px;"><span class="nm" style="font-weight:700;font-size:14px;">Mono black</span></div>
+      </div>
+    </div>
+
+    <!-- misuse -->
+    <h3 class="h3" style="margin:0 0 22px;">Don't</h3>
+    <div class="grid g4">
+      <div class="card dont" style="padding:0;overflow:hidden;"><span class="badge">⊘</span>
+        <div class="logo-stage stage-light" style="border-radius:0;"><img src="assets/merchsmith-logo.svg" style="max-height:34px;filter:hue-rotate(120deg) saturate(3);" alt=""></div>
+        <div style="padding:14px 18px;"><span class="caption">Don't recolour the logo</span></div>
+      </div>
+      <div class="card dont" style="padding:0;overflow:hidden;"><span class="badge">⊘</span>
+        <div class="logo-stage stage-light" style="border-radius:0;"><img src="assets/merchsmith-logo.svg" style="max-height:34px;transform:rotate(-9deg);" alt=""></div>
+        <div style="padding:14px 18px;"><span class="caption">Don't rotate or tilt</span></div>
+      </div>
+      <div class="card dont" style="padding:0;overflow:hidden;"><span class="badge">⊘</span>
+        <div class="logo-stage stage-light" style="border-radius:0;"><img src="assets/merchsmith-logo.svg" style="height:34px;width:230px;max-height:none;" alt=""></div>
+        <div style="padding:14px 18px;"><span class="caption">Don't stretch or distort</span></div>
+      </div>
+      <div class="card dont" style="padding:0;overflow:hidden;"><span class="badge">⊘</span>
+        <div class="logo-stage stage-light" style="border-radius:0;"><img src="assets/merchsmith-logo.svg" style="max-height:34px;filter:drop-shadow(3px 4px 2px rgba(0,0,0,.5));" alt=""></div>
+        <div style="padding:14px 18px;"><span class="caption">Don't add shadows or effects</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 02 Colour ===== -->
+<section class="section section--white" id="colour">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <div><div class="sec-title">Colour</div>
+        <p class="sec-lead">A bright, optimistic system led by <strong>Periwinkle</strong>. Secondaries appear as energetic accents — in the pattern, in highlights, never competing with the primary.</p>
+      </div>
+    </div>
+
+    <!-- primary -->
+    <div class="primary-swatch" style="margin-bottom:34px;">
+      <div class="chip"><svg class="mark" viewBox="143.4 251.4 89.1 91.4"><path fill="currentColor" d="M194.66 336.80 C191.83 336.80 189.16 335.66 187.15 333.59 C185.15 331.54 184.04 328.79 184.03 325.87 L184.03 308.30 L190.95 308.30 L190.95 325.86 C190.95 326.88 191.34 327.84 192.04 328.56 C193.45 330.00 195.88 329.99 197.28 328.56 L217.53 307.71 C218.98 306.22 218.98 303.80 217.53 302.31 C216.83 301.59 215.90 301.19 214.91 301.19 L160.07 301.19 C157.23 301.18 154.56 300.04 152.56 297.98 C150.55 295.91 149.44 293.17 149.44 290.24 C149.44 287.33 150.55 284.58 152.56 282.51 L172.81 261.66 C176.95 257.39 183.69 257.40 187.83 261.66 C189.84 263.73 190.94 266.47 190.95 269.38 L190.95 286.95 L184.03 286.95 L184.03 269.39 C184.03 268.38 183.64 267.42 182.94 266.69 C181.54 265.26 179.10 265.25 177.70 266.70 L157.45 287.55 C156.75 288.27 156.36 289.23 156.36 290.24 C156.36 291.26 156.75 292.22 157.45 292.94 C158.15 293.66 159.09 294.07 160.08 294.07 L214.92 294.07 C217.76 294.07 220.42 295.22 222.43 297.28 C226.57 301.54 226.57 308.48 222.42 312.74 L202.17 333.59 C200.17 335.66 197.50 336.80 194.66 336.80"></path></svg></div>
+      <div class="meta">
+        <div class="role" style="color:var(--periwinkle-deep);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Primary</div>
+        <div style="font-family:var(--serif);font-size:34px;line-height:1.1;margin-bottom:10px;">Periwinkle</div>
+        <div class="hex" style="font-weight:700;">HEX #7B85C5</div>
+        <div class="rgb" style="color:#8a8a92;">RGB 123 · 133 · 197</div>
+        <p class="caption" style="margin-top:14px;">The brand's signature surface. Use for hero backgrounds, large fields and the default logo lockup.</p>
+      </div>
+    </div>
+
+    <!-- secondaries -->
+    <h3 class="mono-note" style="margin:0 0 18px;">Secondary accents</h3>
+    <div class="grid g3" style="margin-bottom:34px;" id="secondaries"></div>
+
+    <!-- neutrals -->
+    <h3 class="mono-note" style="margin:0 0 18px;">Neutrals</h3>
+    <div class="grid g4" style="margin-bottom:46px;" id="neutrals"></div>
+
+    <!-- ratio -->
+    <div class="card">
+      <div class="card-label" style="margin:0 0 14px;"><span class="nm">Usage balance</span><span class="sub">Keep accents to roughly a tenth of any composition</span></div>
+      <div class="ratio">
+        <span style="background:var(--periwinkle);width:46%"></span>
+        <span style="background:var(--paper);width:24%"></span>
+        <span style="background:var(--ink);width:12%"></span>
+        <span style="background:var(--spearmint);width:3%"></span>
+        <span style="background:var(--flare);width:3%"></span>
+        <span style="background:var(--sky);width:3%"></span>
+        <span style="background:var(--blossom);width:3%"></span>
+        <span style="background:var(--zest);width:3%"></span>
+        <span style="background:var(--sprout);width:3%"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 03 Typography ===== -->
+<section class="section section--paper" id="type">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <div><div class="sec-title">Typography</div>
+        <p class="sec-lead">A serif display voice for warmth and editorial confidence, paired with a clean geometric sans for interface and body. The scale below is carried straight from the style guide.</p>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-bottom:24px;">
+      <div class="card">
+        <div class="mono-note" style="margin-bottom:6px;">Display &amp; editorial</div>
+        <div class="face-card">
+          <div class="face-aa face-serif">Aa</div>
+          <div>
+            <div style="font-family:var(--serif);font-size:30px;font-weight:500;">EB&nbsp;Garamond</div>
+            <p class="caption" style="margin:6px 0 0;">Serif display family · headings H1–H4</p>
+            <div class="weights face-serif"><span style="font-weight:400">Regular</span><span style="font-weight:500">Medium</span><span style="font-weight:500;font-style:italic">Italic</span></div>
+            <div class="glyphs face-serif">A B C D E a b c d e &amp; 1 2 3 4 5 ? !</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="mono-note" style="margin-bottom:6px;">Interface &amp; body</div>
+        <div class="face-card">
+          <div class="face-aa face-sans">Aa</div>
+          <div>
+            <div style="font-family:var(--sans);font-size:30px;font-weight:800;">Mulish</div>
+            <p class="caption" style="margin:6px 0 0;">Geometric sans family · body, UI, labels</p>
+            <div class="weights face-sans"><span style="font-weight:300">Light</span><span style="font-weight:400">Regular</span><span style="font-weight:700">Bold</span></div>
+            <div class="glyphs face-sans">A B C D E a b c d e &amp; 1 2 3 4 5 ? !</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- scale -->
+    <div class="card">
+      <div class="mono-note" style="margin-bottom:6px;">Type scale</div>
+      <div class="scale-row">
+        <div style="font-family:var(--serif);font-weight:500;font-size:72px;line-height:1.0;letter-spacing:-.01em;">Merch, sorted.</div>
+        <div class="scale-spec"><span class="lvl">Display · Hero</span><br>EB Garamond Medium<br><b>Desktop</b> 96px / 100 lh<br><b>Mobile</b> 46px / 50 lh</div>
+      </div>
+      <div class="scale-row">
+        <div style="font-family:var(--serif);font-weight:500;font-size:64px;line-height:1.04;">Sustainable merch.</div>
+        <div class="scale-spec"><span class="lvl">H1 · Heading</span><br>EB Garamond Medium<br><b>Desktop</b> 81px / 101 lh<br><b>Mobile</b> 38px / 48 lh</div>
+      </div>
+      <div class="scale-row">
+        <div style="font-family:var(--serif);font-weight:500;font-size:44px;line-height:1.1;">Beautifully managed.</div>
+        <div class="scale-spec"><span class="lvl">H2 · Heading</span><br>EB Garamond Medium<br><b>Desktop</b> 61px / 71 lh<br><b>Mobile</b> 28px / 38 lh</div>
+      </div>
+      <div class="scale-row">
+        <div style="font-family:var(--serif);font-weight:500;font-size:32px;line-height:1.2;">From one continuous loop</div>
+        <div class="scale-spec"><span class="lvl">H3 · Heading</span><br>EB Garamond Medium<br><b>Desktop</b> 41px / 51 lh<br><b>Mobile</b> 21px / 31 lh</div>
+      </div>
+      <div class="scale-row">
+        <div style="font-family:var(--serif);font-weight:500;font-size:24px;line-height:1.3;">A flexible identity that moves</div>
+        <div class="scale-spec"><span class="lvl">H4 · Subhead</span><br>EB Garamond Medium<br><b>Desktop</b> 27px / 37 lh<br><b>Mobile</b> 18px / 26 lh</div>
+      </div>
+      <div class="scale-row">
+        <div style="font-family:var(--sans);font-weight:700;font-size:18px;line-height:1.55;">Built for teams who care about their merch.</div>
+        <div class="scale-spec"><span class="lvl">H5 · Label</span><br>Mulish Bold<br><b>Desktop</b> 18px / 28 lh<br><b>Mobile</b> 16px / 26 lh</div>
+      </div>
+      <div class="scale-row">
+        <div style="font-family:var(--sans);font-weight:300;font-size:18px;line-height:1.55;max-width:52ch;">Merchsmith helps brands design, source and manage merchandise sustainably — from a single, beautifully organised dashboard. Body copy is set in Mulish Light for an open, friendly read.</div>
+        <div class="scale-spec"><span class="lvl">Paragraph · Body</span><br>Mulish Light<br><b>Desktop</b> 18px / 28 lh<br><b>Mobile</b> 16px / 28 lh</div>
+      </div>
+      <div class="scale-row">
+        <div style="font-family:var(--serif);font-weight:500;font-style:italic;font-size:28px;line-height:1.35;max-width:30ch;color:var(--periwinkle-deep);">“Beautiful merch, beautifully managed — without the headache.”</div>
+        <div class="scale-spec"><span class="lvl">Blockquote · Pull-quote</span><br>EB Garamond Medium Italic<br><b>Desktop</b> 28px / 38 lh<br><b>Mobile</b> 22px / 30 lh</div>
+      </div>
+      <div class="scale-row">
+        <div style="font-family:var(--sans);font-weight:300;font-size:22px;line-height:1.5;max-width:48ch;color:#44444c;">A lead paragraph introduces a section with a touch more scale and air before the body copy settles in.</div>
+        <div class="scale-spec"><span class="lvl">Lead · Standfirst</span><br>Mulish Light<br><b>Desktop</b> 22px / 33 lh<br><b>Mobile</b> 18px / 28 lh</div>
+      </div>
+      <div class="scale-row" style="align-items:center;">
+        <div style="font-family:var(--sans);font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;">Brand Guidelines</div>
+        <div class="scale-spec"><span class="lvl">Eyebrow · Overline</span><br>Mulish Bold · tracked +.18em<br><b>All</b> 13px / 13 lh · uppercase</div>
+      </div>
+      <div class="scale-row" style="align-items:center;">
+        <div style="font-family:var(--sans);font-weight:700;font-size:16px;letter-spacing:.01em;">Request a demo</div>
+        <div class="scale-spec"><span class="lvl">Button · Action label</span><br>Mulish Bold<br><b>All</b> 16px / 16 lh</div>
+      </div>
+      <div class="scale-row" style="align-items:center;">
+        <div style="font-family:var(--sans);font-weight:400;font-size:13px;line-height:1.45;color:#6b6b73;max-width:46ch;">Caption &amp; helper text sits quietly beneath images, fields and figures.</div>
+        <div class="scale-spec"><span class="lvl">Caption · Helper</span><br>Mulish Regular<br><b>All</b> 13px / 19 lh</div>
+      </div>
+      <div class="scale-row" style="align-items:center;">
+        <div style="font-family:var(--sans);font-weight:300;font-size:12px;letter-spacing:.02em;color:#6b6b73;">Store&nbsp;&nbsp;/&nbsp;&nbsp;Brands&nbsp;&nbsp;/&nbsp;&nbsp;Product name</div>
+        <div class="scale-spec"><span class="lvl">Breadcrumbs &amp; sublinks</span><br>Mulish Light<br><b>All</b> 12px / 12 lh</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 04 Outlined wordmark ===== -->
+<section class="section section--peri" id="wordmark">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <div><div class="sec-title">Multi-colour outlined wordmark</div>
+        <p class="sec-lead">A special display treatment of the logotype: the wordmark redrawn as bold white outlines, with each letter echoed and offset in the secondary palette. It is the single source the background patterns are built from — every pattern in this guide is an extreme close-up cropped from this artwork.</p>
+      </div>
+    </div>
+
+    <div style="background:var(--periwinkle-deep);border-radius:22px;padding:clamp(28px,5vw,64px);display:flex;align-items:center;justify-content:center;margin-bottom:24px;">
+      <img src="assets/merchsmith-outline-art.svg" alt="merchsmith multi-colour outlined wordmark" style="width:100%;max-width:1000px;height:auto;display:block;">
+    </div>
+
+    <div class="grid g2" style="gap:24px;align-items:stretch;">
+      <div class="card" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff;">
+        <div class="mono-note" style="color:var(--zest);margin-bottom:8px;">How it works</div>
+        <p style="color:rgba(255,255,255,.9);margin:0;">Start from the full lockup’s wordmark, expand the letterforms into open outlines, then layer offset duplicates in Spearmint, Flare, Sky, Blossom and Zest. The overlaps create depth and movement.</p>
+      </div>
+      <div class="card" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff;">
+        <div class="mono-note" style="color:var(--zest);margin-bottom:8px;">Where it goes</div>
+        <p style="color:rgba(255,255,255,.9);margin:0 0 14px;">Used whole as a hero graphic, or cropped tight for the <a href="#pattern" style="color:#fff;text-decoration:underline;">background patterns</a> — never re-typed or recoloured outside the secondary palette.</p>
+        <a class="btn btn--ghost" href="#pattern" style="color:#fff;border-color:rgba(255,255,255,.6);">See it as pattern <svg class="ico"><use href="#ic-arrow"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 Pattern ===== -->
+<section class="section section--paper" id="pattern">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <div><div class="sec-title">Pattern</div>
+        <p class="sec-lead">The logotype, set loose. Extreme close-ups of the <a href="#wordmark" style="color:inherit;">multi-colour outlined wordmark</a> — letters overlapped and offset in the secondary palette — become a flowing graphic language for backgrounds, edges and packaging.</p>
+      </div>
+    </div>
+    <div class="pattern-hero" data-pattern="hero" style="margin-bottom:24px;"></div>
+    <div class="grid g3">
+      <div class="colorway" data-pattern="cw-warm"></div>
+      <div class="colorway" data-pattern="cw-cool"></div>
+      <div class="colorway" data-pattern="cw-mono"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 05 Components ===== -->
+<section class="section section--paper" id="components">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">06</span>
+      <div><div class="sec-title">Buttons &amp; UI</div>
+        <p class="sec-lead">Fully rounded "pill" buttons echo the soft geometry of the mark. Primary actions fill with Periwinkle and invert on hover.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ui-block" style="border-top:0;">
+        <div class="lbl">Primary call to action<small>Hover inverts to outline</small></div>
+        <div class="ui-row"><a class="btn btn--primary">Request a demo</a><a class="btn btn--ghost">Request a demo</a></div>
+      </div>
+      <div class="ui-block">
+        <div class="lbl">Secondary &amp; destructive<small>Solid ink / outline coral</small></div>
+        <div class="ui-row"><a class="btn btn--dark">View order</a><a class="btn btn--danger">Delete</a></div>
+      </div>
+      <div class="ui-block">
+        <div class="lbl">Sizes<small>Small · default · large</small></div>
+        <div class="ui-row"><a class="btn btn--primary btn--sm">Small</a><a class="btn btn--primary">Default</a><a class="btn btn--primary btn--lg">Large</a></div>
+      </div>
+      <div class="ui-block">
+        <div class="lbl">Icon + label<small>Leading or trailing icon</small></div>
+        <div class="ui-row"><a class="btn btn--primary"><svg class="ico"><use href="#ic-user"/></svg>Sign in</a><a class="btn btn--ghost"><svg class="ico"><use href="#ic-bag"/></svg>My store</a><a class="btn btn--ghost">Next <svg class="ico"><use href="#ic-arrow"/></svg></a></div>
+      </div>
+      <div class="ui-block">
+        <div class="lbl">Icon only<small>Circular, 52px</small></div>
+        <div class="ui-row"><a class="btn btn--primary btn--icon"><svg class="ico"><use href="#ic-search"/></svg></a><a class="btn btn--ghost btn--icon"><svg class="ico"><use href="#ic-settings"/></svg></a><a class="btn btn--ghost btn--icon"><svg class="ico"><use href="#ic-heart"/></svg></a></div>
+      </div>
+      <div class="ui-block">
+        <div class="lbl">States<small>Disabled &amp; loading</small></div>
+        <div class="ui-row"><a class="btn btn--primary btn--disabled">Unavailable</a><a class="btn btn--primary"><span class="btn-spin"></span>Saving…</a></div>
+      </div>
+      <div class="ui-block">
+        <div class="lbl">Full width<small>Forms &amp; mobile</small></div>
+        <div class="ui-row" style="flex:1;"><a class="btn btn--primary btn--block">Create account</a></div>
+      </div>
+      <div class="ui-block">
+        <div class="lbl">Text link &amp; tags<small>Inline emphasis</small></div>
+        <div class="ui-row"><a class="tlink">Resources</a><span class="chip-tag"><svg class="ico" style="width:15px;height:15px;color:var(--spearmint)"><use href="#ic-check"/></svg>Sustainable</span><span class="chip-tag" style="background:var(--periwinkle);color:#fff;">New</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 06 Icons ===== -->
+<section class="section section--white" id="icons">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">07</span>
+      <div><div class="sec-title">Iconography</div>
+        <p class="sec-lead">A single-weight line set, drawn on a 24px grid with rounded caps and joins — matching the open, friendly stroke of the wordmark.</p>
+      </div>
+    </div>
+    <div class="grid g2" style="align-items:start;gap:40px;">
+      <div class="icon-grid">
+        <div class="icon-cell"><svg><use href="#ic-search"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-arrow"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-chat"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-user"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-phone"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-bag"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-box"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-heart"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-globe"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-mega"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-check"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-spark"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-bag"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-truck"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-tag"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-card"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-chart"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-grid"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-filter"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-calendar"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-clock"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-bell"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-mail"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-settings"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-edit"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-trash"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-download"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-share"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-lock"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-star"/></svg></div>
+        <div class="icon-cell"><svg><use href="#ic-pin"/></svg></div>
+      </div>
+      <div>
+        <ul class="spec-list">
+          <li><b>Grid</b> 24 × 24px artboard, 2px safe padding</li>
+          <li><b>Stroke</b> 1.7px, consistent across the set</li>
+          <li><b>Caps &amp; joins</b> Rounded — never mitred</li>
+          <li><b>Corners</b> Soft radii echo the logo loop</li>
+          <li><b>Colour</b> Ink by default; accent only to signal state</li>
+          <li><b>Fills</b> None — the set stays line-only</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="foot">
+  <div class="wrap">
+    <img class="wm" src="assets/merchsmith-logo.svg" alt="merchsmith" style="height:40px;">
+    <div class="foot-grid">
+      <small>
+        Merchsmith Brand Guidelines · v1.0 — June 2026.<br>
+        Logo, colour and type defined by the Merchsmith brand identity.
+      </small>
+    </div>
+  </div>
+</footer>
+
+<script src="image-slot.js"></script>
+<script src="pattern.js"></script>
+</body>
+</html>

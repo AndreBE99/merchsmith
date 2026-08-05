@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept — Supplier connections &amp; product feeds</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--sans);background:#eceaf3;color:var(--ink);line-height:1.5;}
+.icn{width:18px;height:18px;display:inline-block;vertical-align:middle;}
+.wrap{max-width:1100px;margin:0 auto;padding:46px 30px 90px;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:18px;box-shadow:0 1px 4px rgba(20,22,45,.06);}
+h1{font-family:var(--serif);font-weight:500;font-size:40px;letter-spacing:-.015em;margin:0 0 12px;}
+.lede{font-size:17px;color:var(--ink-2);max-width:76ch;margin:0 0 8px;}
+.note-concept{font-size:13px;color:var(--periwinkle-deep);font-weight:600;background:#fff;border-left:3px solid var(--periwinkle);border-radius:8px;padding:11px 15px;margin:18px 0 0;max-width:76ch;}
+h2{font-family:var(--serif);font-weight:500;font-size:25px;margin:54px 0 6px;}
+h2 .num{color:var(--periwinkle-deep);font-size:18px;font-weight:700;font-family:var(--sans);margin-right:10px;vertical-align:2px;}
+.sub{font-size:15px;color:var(--ink-2);max-width:80ch;margin:0 0 22px;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:18px;padding:24px 26px;box-shadow:0 1px 3px rgba(20,22,45,.04);}
+.card + .card{margin-top:14px;}
+
+/* flow steps */
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;}
+.fstep{flex:1;min-width:150px;position:relative;padding:4px 18px 4px 0;}
+.fstep .fn{width:30px;height:30px;border-radius:50%;background:var(--periwinkle-deep);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center;margin-bottom:10px;}
+.fstep h4{margin:0 0 5px;font-size:14.5px;}
+.fstep p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5;}
+.fstep::after{content:"›";position:absolute;right:4px;top:8px;color:var(--line);font-size:22px;}
+.fstep:last-child::after{display:none;}
+
+/* search match demo */
+.searchdemo{display:flex;flex-direction:column;gap:9px;max-width:560px;}
+.sbar{display:flex;align-items:center;gap:9px;background:var(--paper);border:1.5px solid var(--line-soft);border-radius:10px;padding:10px 14px;font-size:14px;color:var(--ink);}
+.sbar .icn{color:var(--muted);width:16px;height:16px;}
+.sres{display:flex;align-items:center;gap:12px;border:1px solid var(--line-soft);border-radius:11px;padding:11px 14px;}
+.sres .slogo{width:36px;height:36px;border-radius:8px;background:#8246af;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;}
+.sres .sinfo{flex:1;}
+.sres .sinfo b{font-size:14px;color:var(--ink);}
+.sres .sinfo span{display:block;font-size:12px;color:var(--muted);}
+.matchpill{font-size:11px;font-weight:800;border-radius:999px;padding:3px 10px;}
+.m-ok{color:var(--green-deep,#2f8f5b);background:var(--tint-green,#e2f0e9);}
+.m-no{color:var(--flare);background:var(--tint-red,#f8e6e3);}
+.scta{font-size:12.5px;font-weight:700;color:#fff;background:var(--periwinkle-deep);border-radius:8px;padding:7px 13px;border:0;}
+.sres.blocked{opacity:.62;}
+
+/* two-path cards */
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:780px){.paths{grid-template-columns:1fr;}}
+.path{border:1.5px solid var(--line-soft);border-radius:14px;padding:18px 20px;}
+.path.b{border-color:var(--periwinkle);}
+.path .ph{display:flex;align-items:center;gap:9px;margin-bottom:6px;}
+.path .pn{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--periwinkle-deep);}
+.path h4{margin:0;font-size:16px;}
+.path .rec{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--periwinkle);border-radius:999px;padding:2px 8px;}
+.path p{font-size:13px;color:var(--ink-2);line-height:1.55;margin:8px 0 0;}
+.path .feat{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2);margin-top:9px;}
+.path .feat .icn{width:15px;height:15px;flex:none;}
+.yes{color:var(--green-deep,#2f8f5b);} .no{color:var(--muted);}
+
+.statuschips{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px;}
+.schip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;border-radius:999px;padding:5px 13px;}
+.sc-pend{color:#9a6b1f;background:#fbeccd;}
+.sc-live{color:var(--green-deep,#2f8f5b);background:var(--tint-green,#e2f0e9);}
+.sc-req{color:var(--periwinkle-deep);background:var(--tint-peri,#eceef9);}
+.sc-manual{color:var(--sky,#51768c);background:#e3eef4;}
+
+ul.clean{margin:6px 0 0;padding-left:20px;}
+ul.clean li{font-size:14px;color:var(--ink-2);margin-bottom:8px;}
+ul.clean b{color:var(--ink);}
+.q{font-size:14px;color:var(--ink-2);margin:6px 0 0;}
+.b{color:var(--ink);font-weight:700;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+<symbol id="i-cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+</defs></svg>
+
+<div class="wrap">
+  <span class="tag">Concept · for discussion</span>
+  <h1>Supplier connections &amp; product feeds</h1>
+  <p class="lede">How a distributor connects to the suppliers whose products stock their store. Distributors invite the suppliers they already work with; the supplier confirms; their products then become available to add to that distributor's store. A <b>name-match guard</b> stops distributors discovering and connecting to <em>other</em> distributors' suppliers they don't already know.</p>
+  <p class="note-concept">Concept only — nothing here is wired into the live platform yet. For you to react to before we build.</p>
+
+  <!-- 1 -->
+  <h2><span class="num">1</span>The connection flow</h2>
+  <p class="sub">A supplier's products never appear in a distributor's store until an explicit, confirmed connection exists between them.</p>
+  <div class="card">
+    <div class="flow">
+      <div class="fstep"><div class="fn">1</div><h4>Distributor searches</h4><p>Finds the supplier they already work with on Merchsmith — or uploads a CSV of their supplier list.</p></div>
+      <div class="fstep"><div class="fn">2</div><h4>Name-match guard</h4><p>The supplier only shows if the search matches ≥80% of their registered name (see §2).</p></div>
+      <div class="fstep"><div class="fn">3</div><h4>Request to connect</h4><p>Distributor sends a partner request. Supplier is notified by email + on their Merchsmith enquiries dashboard.</p></div>
+      <div class="fstep"><div class="fn">4</div><h4>Supplier confirms</h4><p>Supplier accepts the partnership — they choose to make their catalogue available to that distributor.</p></div>
+      <div class="fstep"><div class="fn">5</div><h4>Products available</h4><p>The supplier's products become addable to that distributor's store (API feed or manual).</p></div>
+    </div>
+    <div class="statuschips">
+      <span class="schip sc-req">Requested</span>
+      <span class="schip sc-pend">Awaiting supplier</span>
+      <span class="schip sc-live">Connected — live feed</span>
+      <span class="schip sc-manual">Connected — manual catalogue</span>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <h2><span class="num">2</span>The 80% name-match guard</h2>
+  <p class="sub">To stop a distributor browsing and poaching another distributor's suppliers, search only surfaces a supplier on a <b>two-signal guard</b> — the query must match at least <b>80%</b> of the supplier's registered company name <b>or</b> the distributor supplies the supplier's <b>email domain</b>. The distributor effectively has to <em>already know</em> who they're looking for, while accidental near-name collisions don't leak a supplier.</p>
+  <div class="card">
+    <div class="searchdemo">
+      <div class="sbar"><svg class="icn"><use href="#i-search"/></svg>BagWorks UK Ltd &nbsp;·&nbsp; or hello@bagworks.co.uk</div>
+      <div class="sres"><span class="slogo">BW</span><div class="sinfo"><b>BagWorks UK Ltd</b><span>Registered supplier · domain bagworks.co.uk</span></div><span class="matchpill m-ok">98% name · domain ✓</span><button class="scta">Request connection</button></div>
+      <div class="sres blocked"><span class="slogo" style="background:var(--muted)">B</span><div class="sinfo"><b>Bag&hellip; (partial query)</b><span>Hidden — 34% name, no domain match</span></div><span class="matchpill m-no">Below 80%</span></div>
+    </div>
+    <p class="q" style="margin-top:14px"><span class="b">Recommended algorithm:</b> token-set similarity (compare on words, ignoring order and corporate suffixes like "Ltd / Limited / UK") scored 0–100, threshold ≥80 — this tolerates dropped suffixes, trading names and word reordering far better than raw character distance. Combine with an <b>exact email-domain match</b> as an alternative pass: if the distributor knows the supplier's domain they're clearly a genuine contact, so surface it even if the typed name is loose. A vague single word matches neither and returns nothing.</p>
+  </div>
+
+  <!-- 3 -->
+  <h2><span class="num">3</span>Search results — found &amp; not found</h2>
+  <p class="sub">A search (or each row of a CSV upload) resolves to a clear results page so the distributor always has an action either way.</p>
+  <div class="card">
+    <div class="searchdemo" style="max-width:none;gap:11px">
+      <div class="sres"><span class="slogo">BW</span><div class="sinfo"><b>BagWorks UK Ltd</b><span>Found · matches a registered supplier</span></div><span class="matchpill m-ok">Found</span><button class="scta">Request connection</button></div>
+      <div class="sres"><span class="slogo" style="background:var(--sky,#51768c)">PH</span><div class="sinfo"><b>PrintHaus GmbH</b><span>Not on Merchsmith — choose how to add</span></div><span class="matchpill m-no">Not found</span><button class="scta" style="background:var(--sky,#51768c)">Add myself</button><button class="scta">Request onboarding</button></div>
+    </div>
+    <p class="q" style="margin-top:13px"><span class="b">Found</span> → Request connection (goes to the supplier to confirm). <span class="b">Not found</span> → the two options below. A CSV import lists every row under <b>Found</b> (with bulk "request all") or <b>Not found</b> (each flagged for Path A or B).</p>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <p class="sub" style="margin:0 0 14px"><span class="b">Seed examples in the live build</span> — the Organisations → Suppliers "Connect a supplier" search is wired with these discoverable suppliers so you can try the guard:</p>
+    <div class="searchdemo" style="max-width:none;gap:8px">
+      <div class="sres"><span class="slogo" style="background:var(--periwinkle-deep,#4a4ac2)">VT</span><div class="sinfo"><b>Veltex Textiles Ltd</b><span>veltex.co.uk · product · 760 products</span></div><span class="matchpill m-ok">try "Veltex"</span></div>
+      <div class="sres"><span class="slogo">IP</span><div class="sinfo"><b>Inkwell Print Co</b><span>inkwellprint.com · branding / decoration only</span></div><span class="matchpill m-ok">try "Inkwell Print"</span></div>
+      <div class="sres"><span class="slogo" style="background:var(--periwinkle-deep,#4a4ac2)">NP</span><div class="sinfo"><b>NovaPen Manufacturing</b><span>novapen.de · product · 1,430 products</span></div><span class="matchpill m-ok">try "novapen.de"</span></div>
+      <div class="sres"><span class="slogo" style="background:var(--sky,#51768c)">CA</span><div class="sinfo"><b>ClariTee Apparel</b><span>claritee.co · product + branding · 540 products</span></div><span class="matchpill m-ok">try "ClariTee"</span></div>
+    </div>
+    <p class="q" style="margin-top:13px">A name match (e.g. "Veltex"), a domain match (e.g. "novapen.de" or "hello@claritee.co"), or anything unmatched (e.g. "Acme Co") to see the not-found Path A / Path B options.</p>
+  </div>
+
+  <!-- 4 -->
+  <h2><span class="num">4</span>When the supplier isn't on Merchsmith</h2>
+  <p class="sub">From a "not found" result, the distributor can still bring the supplier on board — two ways, with different capabilities.</p>
+  <div class="paths">
+    <div class="path">
+      <div class="ph"><span class="pn">Path A</span><h4>Add it yourself</h4></div>
+      <p>The distributor creates the supplier record themselves and manages the relationship privately.</p>
+      <div class="feat"><svg class="icn yes"><use href="#i-check"/></svg>Manual product uploads (CSV / one-by-one)</div>
+      <div class="feat"><svg class="icn no"><use href="#i-cross"/></svg>No live API feed</div>
+      <div class="feat"><svg class="icn no"><use href="#i-cross"/></svg>No automated stock / price sync</div>
+      <p class="q"><span class="b">Best for:</span> small or occasional suppliers, or getting started fast.</p>
+    </div>
+    <div class="path b">
+      <div class="ph"><span class="pn">Path B</span><h4>Request Merchsmith onboards them</h4><span class="rec">Recommended</span></div>
+      <p>The distributor asks Merchsmith to formally add the supplier to the platform. Merchsmith invites &amp; verifies them and sets up the integration.</p>
+      <div class="feat"><svg class="icn yes"><use href="#i-check"/></svg>API connection / live product feed</div>
+      <div class="feat"><svg class="icn yes"><use href="#i-check"/></svg>Automated stock &amp; price sync</div>
+      <div class="feat"><svg class="icn yes"><use href="#i-check"/></svg>Supplier gets their own Merchsmith account &amp; enquiries dashboard</div>
+      <p class="q"><span class="b">Best for:</span> core suppliers a distributor orders from regularly.</p>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <h2><span class="num">5</span>How products reach the store · access &amp; revocation</h2>
+  <div class="card">
+    <ul class="clean">
+      <li><b>Connected (API):</b> the supplier's normalised feed flows in; the distributor chooses which products to publish to their store (and sets their own pricing/markup on top).</li>
+      <li><b>Connected (manual):</b> products the distributor uploaded for that supplier; no automatic updates — the distributor maintains them.</li>
+      <li><b>Per-distributor isolation:</b> a connection is between <em>one distributor and one supplier</em>. Another distributor seeing the same supplier in search still has to request &amp; be confirmed independently — connections and catalogues are never shared between distributors.</li>
+      <li><b>Decline &amp; revoke:</b> a supplier can decline a request, or later revoke a distributor's access. If products are already published, the distributor is <b>warned of the issue</b>, and those products are marked <span class="schip sc-pend" style="padding:2px 9px">Discontinued</span> — they stay visible for reference but <b>cannot be added to a project</b>.</li>
+      <li><b>Admin only:</b> only a distributor <b>admin</b> can search, request, add or onboard suppliers (for now).</li>
+    </ul>
+  </div>
+
+  <!-- 6 -->
+  <h2><span class="num">6</span>Resolved decisions</h2>
+  <div class="card">
+    <ul class="clean">
+      <li><b>Match guard:</b> token-set name similarity ≥80% (suffix-insensitive) <b>OR</b> exact email-domain match — prevents accidental collisions without blocking someone who genuinely knows the supplier.</li>
+      <li><b>CSV upload:</b> resolves to a found / not-found results page; bulk "request all" for matches, Path A/B per unmatched row.</li>
+      <li><b>Decline / revoke:</b> allowed; published products → warned + marked discontinued + unusable in projects.</li>
+      <li><b>Manual → API upgrade:</b> when a Path-A supplier later joins formally, the live feed reconciles with the manual catalogue (manual entries map to feed items where possible, the rest retained).</li>
+      <li><b>Permissions:</b> admin only, for now.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

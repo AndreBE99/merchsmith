@@ -1,0 +1,15 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# graphify (local/regenerable/machine-specific)
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/.pending_changes
+graphify-out/cost.json
+graphify-out/cache/
+graphify-out/graph.html
+graphify-out/20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
+
+# monorepo lock file for post-merge graph re-merge serialization
+.graphify-merge.lock/

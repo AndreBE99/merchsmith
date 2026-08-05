@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Your Team</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+a{color:inherit;text-decoration:none;}
+.header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
+.main{max-width:1120px;margin:0 auto;padding:30px 36px 90px;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px 36px;}
+.crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
+.crumb .sep{opacity:.6;}
+.pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1;letter-spacing:-.01em;margin:0;}
+.psub{font-size:14.5px;color:var(--text-soft);margin-top:10px;max-width:620px;line-height:1.55;}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:11px;padding:11px 18px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;}
+.btn:hover{filter:brightness(1.05);}
+.btn .icn{width:16px;height:16px;}
+.btn.ghost{background:#fff;color:var(--periwinkle-deep);border:1.5px solid var(--line-soft);}
+.btn.sm{padding:8px 13px;font-size:13px;border-radius:9px;}
+
+/* org summary */
+.orgband{display:flex;align-items:center;gap:18px;background:#fff;border:1px solid var(--line-soft);border-radius:18px;padding:20px 24px;margin-top:24px;box-shadow:0 4px 16px rgba(40,44,80,.04);}
+.orgband .logo{width:54px;height:54px;border-radius:14px;background:var(--slate,#51768c);color:#fff;display:grid;place-items:center;font-weight:800;font-size:18px;flex:none;}
+.orgband .info{flex:1;min-width:0;}
+.orgband .info h2{font-family:var(--serif);font-weight:500;font-size:23px;margin:0;}
+.orgband .info .meta{font-size:13px;color:var(--text-soft);margin-top:3px;}
+.orgband .info .meta b{color:var(--ink);font-weight:700;}
+.orgstats{display:flex;gap:26px;flex-wrap:wrap;}
+.ostat b{display:block;font-family:var(--serif);font-weight:500;font-size:26px;color:var(--ink);}
+.ostat span{font-size:12px;color:var(--muted);font-weight:600;}
+
+.toolbar{display:flex;align-items:center;gap:12px;margin:26px 0 16px;flex-wrap:wrap;}
+.search{flex:1;min-width:220px;display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:9px 13px;}
+.search input{border:0;outline:0;font:inherit;font-size:14px;width:100%;background:none;}
+.search .icn{width:17px;height:17px;color:var(--muted);}
+
+.teamblock{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:6px 20px 10px;margin-bottom:16px;box-shadow:0 2px 10px rgba(40,44,80,.03);}
+.tb-head{display:flex;align-items:center;gap:12px;padding:14px 0 12px;border-bottom:1px solid var(--line-soft);}
+.tb-head .tname{font-family:var(--serif);font-weight:500;font-size:19px;}
+.tb-head .tcount{font-size:12px;color:var(--muted);font-weight:600;background:var(--paper-2);border-radius:999px;padding:3px 10px;}
+.tb-head .right{margin-left:auto;}
+.urow{display:flex;align-items:center;gap:13px;padding:12px 0;border-top:1px solid var(--paper-2);cursor:pointer;border-radius:10px;transition:background .12s;}
+.urow:first-of-type{border-top:0;}
+.urow:hover{background:var(--paper);}
+.urow .av{width:40px;height:40px;border-radius:50%;flex:none;overflow:hidden;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px;}
+.urow .av img{width:100%;height:100%;object-fit:cover;}
+.urow .ui{flex:1;min-width:0;}
+.urow .ui b{display:block;font-size:14.5px;}
+.urow .ui span{font-size:12.5px;color:var(--text-soft);}
+.urow .perm{display:flex;gap:6px;flex-wrap:wrap;max-width:280px;justify-content:flex-end;}
+.permchip{font-size:10.5px;font-weight:700;color:var(--ink-2);background:var(--paper-2);border-radius:999px;padding:3px 9px;white-space:nowrap;}
+.rolechip{font-size:11px;font-weight:700;color:var(--periwinkle-deep);background:var(--tint-peri);border-radius:999px;padding:4px 11px;white-space:nowrap;}
+.um{font-size:11px;color:var(--muted);white-space:nowrap;width:70px;text-align:right;}
+.um.inv{color:#9a6b1f;font-weight:700;}
+.addline{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--periwinkle-deep);background:none;border:0;cursor:pointer;padding:11px 0 4px;}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(22,24,28,.5);backdrop-filter:blur(3px);display:none;z-index:80;}
+.scrim.open{display:block;}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(480px,100%);background:var(--paper);box-shadow:-20px 0 60px rgba(20,22,45,.3);transform:translateX(100%);transition:transform .28s cubic-bezier(.22,.61,.36,1);z-index:90;overflow-y:auto;}
+.drawer.open{transform:translateX(0);}
+.dwr-head{background:#fff;border-bottom:1px solid var(--line-soft);padding:22px 26px;display:flex;align-items:center;gap:15px;position:sticky;top:0;}
+.dwr-head .av{width:46px;height:46px;border-radius:50%;overflow:hidden;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;}
+.dwr-head .av img{width:100%;height:100%;object-fit:cover;}
+.dwr-x{margin-left:auto;border:0;background:none;font-size:24px;color:var(--muted);cursor:pointer;line-height:1;}
+.dwr-body{padding:22px 26px 60px;}
+.dwr-sec{margin-top:24px;}
+.dwr-sec:first-child{margin-top:0;}
+.dwr-sec h4{font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:9px 14px;font-size:13.5px;}
+.kv .k{color:var(--text-soft);}
+.kv .v{font-weight:600;color:var(--ink);}
+.prof-status{font-size:12.5px;font-weight:700;border-radius:10px;padding:9px 14px;}
+.prof-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:14px;}
+.prof-stats .ps{background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:11px 12px;text-align:center;}
+.prof-stats .ps b{display:block;font-family:var(--serif);font-weight:500;font-size:18px;color:var(--ink);}
+.prof-stats .ps span{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);}
+.secdot{font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;}
+.secdot.on{background:var(--tint-green);color:var(--green-deep);}
+.secdot.off{background:var(--paper-2);color:var(--muted);}
+.notif-row{display:flex;gap:8px;flex-wrap:wrap;}
+.notifchip{font-size:12px;font-weight:700;border-radius:999px;padding:5px 13px;background:var(--paper-2);color:var(--muted);border:1.5px solid transparent;}
+.notifchip.on{background:var(--tint-peri);color:var(--periwinkle-deep);border-color:var(--periwinkle);}
+.prof-status.act{background:var(--tint-green);color:var(--green-deep);}
+.prof-status.inv{background:#fbeccd;color:#9a6b1f;}
+.permlist{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;}
+.permlist li{font-size:13.5px;color:var(--ink);padding-left:24px;position:relative;}
+.permlist li::before{content:"";position:absolute;left:2px;top:6px;width:11px;height:7px;border-left:2px solid var(--green-deep);border-bottom:2px solid var(--green-deep);transform:rotate(-45deg);}
+.acts{background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:4px 16px;}
+.actrowp{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--paper-2);}
+.actrowp:first-child{border-top:0;}
+.actrowp .dot{width:8px;height:8px;border-radius:50%;background:var(--periwinkle);margin-top:5px;flex:none;}
+.actrowp b{display:block;font-size:13.5px;font-weight:600;}
+.actrowp span{font-size:12px;color:var(--muted);}
+.prof-foot{display:flex;gap:9px;flex-wrap:wrap;border-top:1px solid var(--line-soft);padding-top:18px;margin-top:24px;}
+.danger{color:var(--flare);border-color:var(--flare);}
+.fm-scrim{position:fixed;inset:0;background:rgba(22,24,28,.5);backdrop-filter:blur(3px);display:grid;place-items:start center;z-index:100;padding:8vh 16px;}
+.fm-modal{background:var(--paper);width:min(420px,100%);border-radius:18px;box-shadow:0 30px 80px rgba(20,22,45,.4);}
+.fm-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line-soft);}
+.fm-head h3{font-family:var(--serif);font-weight:500;font-size:21px;margin:0;flex:1;}
+.fm-body{padding:18px 22px;display:flex;flex-direction:column;gap:14px;}
+.fm-f{display:flex;flex-direction:column;gap:5px;}
+.fm-f span{font-size:12.5px;font-weight:700;color:var(--ink-2);}
+.fm-f input,.fm-f select{font:inherit;font-size:14px;border:1.5px solid var(--line-soft);border-radius:10px;padding:10px 12px;background:#fff;}
+.fm-foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 22px;border-top:1px solid var(--line-soft);}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:12px 20px;border-radius:12px;z-index:200;opacity:0;transition:opacity .25s,transform .25s;}
+.toast.on{opacity:1;transform:translateX(-50%);}
+@media(max-width:640px){.urow .perm{display:none;}.kv{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="t-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+<symbol id="t-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="t-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+<symbol id="t-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2a14 14 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+</defs></svg>
+
+<header class="header"><div class="brand" data-identity-lockup></div></header>
+<div class="crumbband"><div class="crumb"><span class="crumb-org">Mojo Promotions</span><span class="sep">›</span><span class="here">Team</span></div></div>
+
+<div class="main">
+  <div class="pagehead">
+    <div>
+      <h1 class="ptitle">Your Team</h1>
+      <p class="psub">Manage the people in your organisation who can brief, approve and order merch. Group them into teams so projects and approvals route to the right people.</p>
+    </div>
+    <button class="btn" id="inviteBtn"><svg class="icn"><use href="#t-plus"/></svg>Invite member</button>
+  </div>
+
+  <div class="orgband">
+    <div class="logo" id="orgInit">CX</div>
+    <div class="info">
+      <h2 id="orgName">Citrix</h2>
+      <div class="meta">Housed under <b>Mojo Promotions</b> · <span id="orgMeta"></span></div>
+    </div>
+    <div class="orgstats">
+      <div class="ostat"><b id="stMembers">0</b><span>Members</span></div>
+      <div class="ostat"><b id="stTeams">0</b><span>Teams</span></div>
+      <div class="ostat"><b id="stPending">0</b><span>Pending</span></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search"><svg class="icn"><use href="#t-search"/></svg><input id="search" placeholder="Search team members…"></div>
+    <button class="btn ghost" id="addTeamBtn"><svg class="icn"><use href="#t-plus"/></svg>Add team</button>
+  </div>
+
+  <div id="teams"></div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="toast" id="toast"></div>
+
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script>(function(){var o={distributor:'Mojo Promotions',customer:'Citrix',supplier:'BagWorks UK',admin:'Merchsmith'};var id=(window.MSID&&MSID.current&&MSID.current())||'distributor';document.querySelectorAll('.crumb-org').forEach(function(e){e.textContent=o[id]||o.distributor;});})();</script>
+<script src="sidebar.js"></script>
+<script src="chrome.js"></script>
+<script src="avatars.js"></script>
+<script src="team-page.js"></script>
+</body>
+</html>

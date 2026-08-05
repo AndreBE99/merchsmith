@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Logo set</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Fredoka:wght@500;600&family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#eef0f6;font-family:var(--sans);color:var(--ink);padding:46px 30px 90px;}
+.wrap{max-width:1080px;margin:0 auto;}
+h1{font-family:var(--serif);font-weight:500;font-size:36px;margin:0 0 6px;}
+.lede{font-size:15px;color:var(--ink-2);margin:0 0 30px;max-width:70ch;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:14px;}
+h2{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:34px 0 14px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.card{background:#fff;border:1px solid rgba(20,22,45,.08);border-radius:14px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(20,22,45,.04);}
+.card .lg{height:46px;display:flex;align-items:center;justify-content:center;}
+.card .nm{font-size:12.5px;color:var(--muted);font-weight:600;text-align:center;}
+.lockups{display:flex;flex-direction:column;gap:12px;}
+.lock{background:#fff;border:1px solid rgba(20,22,45,.08);border-radius:14px;padding:18px 22px;display:flex;align-items:center;gap:14px;}
+.lock .x{color:var(--muted);font-size:18px;}
+.lockcap{margin-left:auto;font-size:12px;color:var(--muted);font-weight:600;}
+.darkrow{background:#23231f;border-radius:14px;padding:20px 24px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Mock brand assets</span>
+  <h1>Fake organisation logos</h1>
+  <p class="lede">Lightweight SVG lettermarks for every demo organisation — distributor, customers and suppliers — so lockups, cards and headers look real. Served from <code>logos.js</code> via <code>MSLOGOS.svg(name, height)</code>. Swap for real artwork later by replacing the entry.</p>
+
+  <h2>Distributor &amp; platform</h2>
+  <div class="grid" id="g-dist"></div>
+
+  <h2>Customers</h2>
+  <div class="grid" id="g-cust"></div>
+
+  <h2>Suppliers</h2>
+  <div class="grid" id="g-sup"></div>
+
+  <h2>Example lockups (customer × distributor)</h2>
+  <div class="lockups" id="locks"></div>
+</div>
+<script src="logos.js"></script>
+<script>
+const card=(n)=>`<div class="card"><div class="lg">${MSLOGOS.svg(n,40)}</div><div class="nm">${n}</div></div>`;
+const dist=['mojo','Merchsmith'];
+const cust=['Citrix','Northwind Ltd','Volt Studios','Fernlea Foods','Meridian Bank','BrightPath Charity'];
+const sup=['BagWorks UK','PrintHouse Studio','GreenStock','Lumen Supplies','Inkwell Print','XD Connects','PF Concept','Mid Ocean Brands','Senator'];
+document.getElementById('g-dist').innerHTML=dist.map(card).join('');
+document.getElementById('g-cust').innerHTML=cust.map(card).join('');
+document.getElementById('g-sup').innerHTML=sup.map(card).join('');
+document.getElementById('locks').innerHTML=['Citrix','Northwind Ltd','Fernlea Foods'].map(c=>
+  `<div class="lock">${MSLOGOS.svg(c,34)}<span class="x">×</span>${MSLOGOS.svg('mojo',30)}<span class="lockcap">${c} housed under mojo</span></div>`).join('')
+  + `<div class="lock darkrow">${MSLOGOS.svg('Merchsmith',30)}<span class="lockcap" style="color:#aaa">Platform admin lockup</span></div>`;
+</script>
+</body>
+</html>

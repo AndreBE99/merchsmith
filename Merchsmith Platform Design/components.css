@@ -1,0 +1,50 @@
+/* components.css — shared visual primitives so a button/card/pill/toast
+   looks the same on every Merchsmith page. Linked after tokens.css.
+   Pages already use these class names (.btn, .card, etc.) — this routes
+   them through one consistent definition tied to the colourway tokens. */
+
+/* buttons */
+.ms-btn,.btn{display:inline-flex;align-items:center;gap:8px;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:11px;
+  padding:11px 17px;font-family:var(--sans);font-weight:700;font-size:14px;cursor:pointer;transition:filter .14s,border-color .14s;line-height:1;}
+.ms-btn:hover,.btn:hover{filter:brightness(1.06);}
+.ms-btn.ghost,.btn.ghost{background:#fff;color:var(--periwinkle-deep);border:1.5px solid var(--line-soft);}
+.ms-btn.ghost:hover,.btn.ghost:hover{filter:none;border-color:var(--periwinkle);}
+.ms-btn.sm,.btn.sm{padding:8px 13px;font-size:13px;border-radius:9px;}
+.ms-btn.danger,.btn.danger{background:var(--flare);}
+
+/* status pills — shared vocabulary */
+.ms-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;border-radius:999px;padding:3px 10px;letter-spacing:.01em;}
+.ms-pill.ok{background:var(--tint-green);color:var(--green-deep);}
+.ms-pill.info{background:var(--tint-peri);color:var(--periwinkle-ink);}
+.ms-pill.warn{background:#fbeccd;color:#9a6b1f;}
+.ms-pill.bad{background:var(--tint-red);color:var(--flare);}
+.ms-pill.muted{background:var(--paper-2);color:var(--muted);}
+
+/* shared footer (injected by chrome.js) */
+.ms-footer{background:var(--periwinkle-deep,#4a4ac2);color:#fff;margin-top:48px;padding:14px 36px;font-family:var(--sans);display:flex;flex-direction:column;justify-content:center;position:relative;min-height:0;border-top:1px solid var(--line-soft,rgba(20,22,45,.12));}
+.ms-footer .powered{margin-top:auto;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;opacity:.62;letter-spacing:.02em;}
+.ms-footer .powered .pwlogo{height:18px;width:auto;color:#fff;opacity:1;}
+.ms-footer .flinks{max-width:1280px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px 28px;flex-wrap:wrap;font-size:12.5px;}
+.ms-footer .flinks a{color:#fff;opacity:.82;text-decoration:none;}
+.ms-footer .flinks a:hover{opacity:1;text-decoration:underline;}
+.ms-footer .fcol{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px 22px;align-items:center;justify-content:flex-end;}
+.ms-footer .fsocial a{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);opacity:1;transition:background .15s;}
+.ms-footer .fsocial a:hover{background:rgba(255,255,255,.24);}
+.ms-footer .fsocial svg{width:17px;height:17px;color:#fff;}
+.ms-footer .cobr{display:flex;align-items:center;justify-content:center;gap:16px;}
+.ms-footer .cobr .cust{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:14px;opacity:.95;}
+.ms-footer .cobr .cdot{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:10px;font-weight:800;}
+.ms-footer .cobr .x{opacity:.5;}
+.ms-footer .cobr .mojo{font-family:var(--serif,"EB Garamond",Georgia,serif);font-weight:500;font-size:26px;letter-spacing:-.01em;color:#fff;}
+.ms-footer .flinks-dup-removed{display:none;}
+.ms-footer .flinks a{color:#fff;opacity:.82;text-decoration:none;}
+.ms-footer .flinks a:hover{opacity:1;text-decoration:underline;}
+.ms-footer .fcol{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px 22px;justify-content:flex-end;}
+.ms-footer .fcol.r{text-align:right;}
+.ms-footer .fsocial{display:flex;gap:12px;align-items:center;}
+
+/* toast (shared) */
+.ms-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink,#23231f);color:#fff;
+  font-family:var(--sans);font-size:13.5px;font-weight:600;padding:12px 20px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.25);
+  z-index:2000;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;}
+.ms-toast.on{opacity:1;transform:translateX(-50%);}

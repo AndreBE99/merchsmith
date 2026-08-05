@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept — Visual + Proof split</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--sans);background:#eceaf3;color:var(--ink);line-height:1.5;}
+.icn{width:18px;height:18px;display:inline-block;vertical-align:middle;}
+.wrap{max-width:1040px;margin:0 auto;padding:46px 30px 90px;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:18px;box-shadow:0 1px 4px rgba(20,22,45,.06);}
+h1{font-family:var(--serif);font-weight:500;font-size:40px;letter-spacing:-.015em;margin:0 0 12px;}
+.lede{font-size:17px;color:var(--ink-2);max-width:70ch;margin:0 0 10px;}
+.note-concept{font-size:13.5px;color:var(--periwinkle-deep);font-weight:600;background:#fff;border-left:3px solid var(--periwinkle);border-radius:8px;padding:11px 15px;margin:20px 0 0;max-width:72ch;}
+h2{font-family:var(--serif);font-weight:500;font-size:25px;margin:54px 0 6px;}
+h2 .num{color:var(--periwinkle-deep);font-size:18px;font-weight:700;font-family:var(--sans);margin-right:10px;vertical-align:2px;}
+.sub{font-size:15px;color:var(--ink-2);max-width:72ch;margin:0 0 22px;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:18px;padding:26px 28px;box-shadow:0 1px 3px rgba(20,22,45,.04);}
+.card + .card{margin-top:16px;}
+
+/* two-track diagram */
+.tracks{display:flex;flex-direction:column;gap:18px;}
+.track{border:1px solid var(--line-soft);border-radius:14px;overflow:hidden;}
+.track-h{display:flex;align-items:center;gap:11px;padding:13px 18px;background:var(--paper);border-bottom:1px solid var(--line-soft);}
+.track-h .badge{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:#fff;flex:none;}
+.track-h .badge.visual{background:var(--sky,#6aa6c4);}
+.track-h .badge.proof{background:var(--periwinkle,#7b85c5);}
+.track-h h3{margin:0;font-size:16px;font-weight:800;}
+.track-h .badge .icn{width:16px;height:16px;}
+.track-h p{margin:0;font-size:12.5px;color:var(--muted);font-weight:600;}
+.flow{display:flex;align-items:center;gap:0;padding:20px 18px;flex-wrap:wrap;}
+.step{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;min-width:96px;}
+.dot{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex:none;}
+.dot .icn{width:17px;height:17px;}
+.d-grey{background:var(--paper-2);color:var(--muted);}
+.d-blue{background:var(--tint-peri);color:var(--periwinkle-deep);}
+.d-amber{background:#fbeccd;color:#9a6b1f;}
+.d-green{background:var(--tint-green);color:var(--green-deep);}
+.d-red{background:var(--tint-red);color:var(--flare);}
+.step b{font-size:12.5px;font-weight:700;}
+.step span{font-size:11px;color:var(--muted);max-width:120px;}
+.arr{color:var(--line);flex:none;margin:0 2px 22px;}
+.arr .icn{width:16px;height:16px;}
+.loop{font-size:11px;color:var(--flare);font-weight:700;display:flex;align-items:center;gap:5px;margin:12px 0 0 18px;}
+.loop .icn{width:13px;height:13px;}
+
+/* status glossary */
+.gloss{width:100%;border-collapse:collapse;font-size:13.5px;}
+.gloss th{text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:0 14px 9px 0;border-bottom:1px solid var(--line-soft);}
+.gloss td{padding:11px 14px 11px 0;border-bottom:1px solid var(--paper-2);vertical-align:top;}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;border-radius:999px;padding:4px 11px;white-space:nowrap;}
+.pill .icn{width:13px;height:13px;}
+.p-grey{color:var(--muted);background:var(--paper-2);}
+.p-blue{color:var(--periwinkle-ink);background:var(--tint-peri);}
+.p-amber{color:#9a6b1f;background:#fbeccd;}
+.p-green{color:var(--green-deep);background:var(--tint-green);}
+.p-red{color:var(--flare);background:var(--tint-red);}
+.gloss .who{color:var(--ink-2);font-weight:600;}
+.gloss .desc{color:var(--ink-2);}
+
+/* dashboard row mockups */
+.rowmock{display:flex;flex-direction:column;gap:10px;}
+.dr{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:18px;border:1px solid var(--line-soft);border-radius:12px;padding:13px 16px;}
+.dr .pname{font-weight:700;font-size:14px;}
+.dr .actwrap{display:flex;flex-direction:column;gap:8px;}
+.actline{display:flex;align-items:center;gap:11px;}
+.actline .ico{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;}
+.actline .ico .icn{width:14px;height:14px;}
+.actline .albl{font-size:13px;font-weight:700;width:54px;flex:none;color:var(--ink-2);}
+.bar3{display:flex;gap:4px;width:130px;flex:none;}
+.seg{flex:1;height:6px;border-radius:3px;background:var(--track);}
+.seg.on{background:var(--periwinkle);}
+.seg.on.green{background:var(--spearmint);}
+.actline .st{font-size:12.5px;font-weight:700;}
+.vtag{font-size:9.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--tint-peri);border-radius:4px;padding:1.5px 6px;margin-left:7px;}
+
+/* modal option mockups */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:840px){.opts{grid-template-columns:1fr;}}
+.opt{border:1px solid var(--line-soft);border-radius:14px;padding:18px;background:var(--paper);}
+.opt h4{margin:0 0 4px;font-size:14px;font-weight:800;}
+.opt .rec{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:var(--periwinkle);border-radius:999px;padding:2px 8px;margin-left:7px;vertical-align:1px;}
+.opt p.k{font-size:12.5px;color:var(--muted);margin:0 0 14px;}
+.designarea{background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:14px;}
+.da-row{display:flex;align-items:center;gap:11px;padding:9px 0;}
+.da-row + .da-row{border-top:1px solid var(--paper-2);}
+.da-row .ico{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;}
+.da-row .ico .icn{width:14px;height:14px;}
+.da-lbl{font-size:13px;font-weight:700;flex:1;}
+.da-lbl span{display:block;font-size:11px;font-weight:600;color:var(--muted);}
+.da-act{font-size:11.5px;font-weight:700;color:#fff;background:var(--periwinkle);border-radius:7px;padding:5px 11px;white-space:nowrap;}
+.da-act.ghost{background:none;color:var(--periwinkle-deep);border:1px solid var(--line-soft);}
+.da-act.done{background:none;color:var(--green-deep);}
+.ext{display:flex;gap:5px;margin-top:6px;}
+.ext .seg{height:7px;border-radius:4px;}
+.exthead{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:.03em;text-transform:uppercase;}
+.q{font-size:13.5px;color:var(--ink-2);margin:8px 0 0;}
+.b{color:var(--ink);font-weight:700;}
+ul.clean{margin:8px 0 0;padding-left:20px;}
+ul.clean li{font-size:14px;color:var(--ink-2);margin-bottom:7px;}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--muted);}
+.legend span{display:flex;align-items:center;gap:6px;}
+.sw{width:13px;height:13px;border-radius:4px;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></symbol>
+<symbol id="i-bang" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="6" x2="12" y2="13"/><line x1="12" y1="17.5" x2="12" y2="17.5"/></symbol>
+<symbol id="i-cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+<symbol id="i-img" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></symbol>
+<symbol id="i-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></symbol>
+<symbol id="i-loop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.5 15a9 9 0 1 0 2.1-9.4L1 10"/></symbol>
+</defs></svg>
+
+<div class="wrap">
+  <span class="tag">Concept · for discussion</span>
+  <h1>Splitting Design into Visual + Proof</h1>
+  <p class="lede">Today "Design" is a single approval. In reality there are two distinct artefacts the customer signs off — the <b>Visual</b> (an indicative render of how it will look, producible early without full branding detail) and the <b>Proof</b> (the exact, to-scale technical drawing that is the binding artefact). This concept proposes splitting them into two approval stages that can run in sequence <em>or</em> in parallel, with a reworked status set.</p>
+  <p class="note-concept">This is a mock-up only — nothing in the live Dashboard, Gallery or modal has been changed. It's here for you to react to before we build.</p>
+
+  <!-- 1. The model -->
+  <h2><span class="num">1</span>The two stages</h2>
+  <p class="sub">Each stage is its own short approval cycle. The <b>Visual</b> usually leads (stage 1) and gives the customer early confidence on look &amp; feel; the <b>Proof</b> follows (stage 2) for technical sign-off — but the proof can start before the visual is approved when timelines are tight, so they may overlap.</p>
+
+  <div class="card">
+    <div class="tracks">
+      <div class="track">
+        <div class="track-h"><span class="badge visual"><svg class="icn"><use href="#i-img"/></svg></span><div><h3>Visual</h3><p>Indicative render · stage 1 · look &amp; feel</p></div></div>
+        <div class="flow">
+          <div class="step"><span class="dot d-grey"><svg class="icn"><use href="#i-img"/></svg></span><b>Not started</b><span>No visual yet</span></div>
+          <span class="arr"><svg class="icn"><use href="#i-arr"/></svg></span>
+          <div class="step"><span class="dot d-blue"><svg class="icn"><use href="#i-clock"/></svg></span><b>With studio</b><span>Visual being created</span></div>
+          <span class="arr"><svg class="icn"><use href="#i-arr"/></svg></span>
+          <div class="step"><span class="dot d-amber"><svg class="icn"><use href="#i-bang"/></svg></span><b>Awaiting approval</b><span>Sent to customer</span></div>
+          <span class="arr"><svg class="icn"><use href="#i-arr"/></svg></span>
+          <div class="step"><span class="dot d-green"><svg class="icn"><use href="#i-check"/></svg></span><b>Visual approved</b><span>Look signed off</span></div>
+        </div>
+        <div class="loop" style="padding-bottom:14px"><svg class="icn"><use href="#i-loop"/></svg>Changes requested → back to With studio (new visual version)</div>
+      </div>
+
+      <div class="track">
+        <div class="track-h"><span class="badge proof"><svg class="icn"><use href="#i-doc"/></svg></span><div><h3>Proof</h3><p>Technical to-scale drawing · stage 2 · binding sign-off</p></div></div>
+        <div class="flow">
+          <div class="step"><span class="dot d-grey"><svg class="icn"><use href="#i-doc"/></svg></span><b>Not started</b><span>Awaiting brief / visual</span></div>
+          <span class="arr"><svg class="icn"><use href="#i-arr"/></svg></span>
+          <div class="step"><span class="dot d-blue"><svg class="icn"><use href="#i-clock"/></svg></span><b>With studio</b><span>Proof being drawn</span></div>
+          <span class="arr"><svg class="icn"><use href="#i-arr"/></svg></span>
+          <div class="step"><span class="dot d-amber"><svg class="icn"><use href="#i-bang"/></svg></span><b>Awaiting approval</b><span>Sent to customer</span></div>
+          <span class="arr"><svg class="icn"><use href="#i-arr"/></svg></span>
+          <div class="step"><span class="dot d-green"><svg class="icn"><use href="#i-check"/></svg></span><b>Proof approved</b><span>Binding sign-off</span></div>
+        </div>
+        <div class="loop" style="padding-bottom:14px"><svg class="icn"><use href="#i-loop"/></svg>Changes requested → back to With studio (ver.2, ver.3…)</div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><span class="sw" style="background:var(--paper-2)"></span>Not started</span>
+      <span><span class="sw" style="background:var(--tint-peri)"></span>In progress (studio)</span>
+      <span><span class="sw" style="background:#fbeccd"></span>Your action</span>
+      <span><span class="sw" style="background:var(--tint-green)"></span>Approved</span>
+      <span><span class="sw" style="background:var(--tint-red)"></span>Changes / blocked</span>
+    </div>
+  </div>
+
+  <!-- 2. New status vocabulary -->
+  <h2><span class="num">2</span>Reworked statuses</h2>
+  <p class="sub">A shared vocabulary across both stages. Each status names who owns the next move — and crucially separates <b>"Give feedback"</b> (studio is blocked, needs information from you <em>before</em> it can produce the artefact) from <b>"Approve"</b> (the artefact exists and needs your sign-off).</p>
+  <div class="card">
+    <table class="gloss">
+      <thead><tr><th style="width:200px">Status</th><th style="width:150px">Customer sees</th><th style="width:150px">Distributor sees</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill p-grey"><svg class="icn"><use href="#i-img"/></svg>Not started</span></td><td class="who">—</td><td class="who">Start visual / proof</td><td class="desc">Stage not begun.</td></tr>
+        <tr><td><span class="pill p-blue"><svg class="icn"><use href="#i-clock"/></svg>With studio</span></td><td class="who">With studio</td><td class="who">Submit for approval</td><td class="desc">Studio is producing the artefact.</td></tr>
+        <tr><td><span class="pill p-red"><svg class="icn"><use href="#i-bang"/></svg>Information needed</span></td><td class="who"><b>Give feedback</b></td><td class="who">Awaiting customer info</td><td class="desc">Studio is blocked — needs artwork/details from the customer before it can produce this stage. <b>Not</b> an approval.</td></tr>
+        <tr><td><span class="pill p-amber"><svg class="icn"><use href="#i-bang"/></svg>Awaiting approval</span></td><td class="who"><b>Approve visual / proof</b></td><td class="who">Awaiting customer</td><td class="desc">Artefact produced and sent for sign-off.</td></tr>
+        <tr><td><span class="pill p-red"><svg class="icn"><use href="#i-cross"/></svg>Changes requested</span></td><td class="who">Changes requested</td><td class="who"><b>Revise &amp; resubmit</b></td><td class="desc">Customer rejected — back to studio for a new version.</td></tr>
+        <tr><td><span class="pill p-green"><svg class="icn"><use href="#i-check"/></svg>Approved</span></td><td class="who">Approved</td><td class="who">Approved</td><td class="desc">Signed off. Proof-approved is the gate that lets the line be ordered.</td></tr>
+        <tr><td><span class="pill p-grey"><svg class="icn"><use href="#i-cross"/></svg>Unbranded</span></td><td class="who">Unbranded</td><td class="who">Unbranded</td><td class="desc">No decoration — proof not applicable.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. Dashboard row -->
+  <h2><span class="num">3</span>How the dashboard row could roll up</h2>
+  <p class="sub">The table stays compact. The single "Design" action row reflects the <b>active stage</b> — Visual while that's in flight, then Proof — with a <span class="vtag">ver.</span> tag per artefact. Design is "done" only when the <b>Proof</b> is approved (or the line is unbranded).</p>
+  <div class="card rowmock">
+    <div class="dr"><div class="pname">Eco Charging Cable<br><span style="font-size:11px;color:var(--muted);font-weight:600">Visual leads</span></div>
+      <div class="actwrap"><div class="actline"><span class="ico d-amber"><svg class="icn"><use href="#i-bang"/></svg></span><span class="albl">Design</span><span class="bar3"><span class="seg on"></span><span class="seg"></span><span class="seg"></span></span><span class="st" style="color:#9a6b1f">Approve visual<span class="vtag">Visual v1</span></span></div></div>
+    </div>
+    <div class="dr"><div class="pname">Tech Travel Bag<br><span style="font-size:11px;color:var(--muted);font-weight:600">Visual done · proof live</span></div>
+      <div class="actwrap"><div class="actline"><span class="ico d-amber"><svg class="icn"><use href="#i-bang"/></svg></span><span class="albl">Design</span><span class="bar3"><span class="seg on green"></span><span class="seg on"></span><span class="seg"></span></span><span class="st" style="color:#9a6b1f">Approve proof<span class="vtag">Proof v2</span></span></div></div>
+    </div>
+    <div class="dr"><div class="pname">Recycled Tote<br><span style="font-size:11px;color:var(--muted);font-weight:600">Complete</span></div>
+      <div class="actwrap"><div class="actline"><span class="ico d-green"><svg class="icn"><use href="#i-check"/></svg></span><span class="albl">Design</span><span class="bar3"><span class="seg on green"></span><span class="seg on green"></span><span class="seg on green"></span></span><span class="st" style="color:var(--green-deep)">Approved</span></div></div>
+    </div>
+    <div class="dr"><div class="pname">Hoton Notebook<br><span style="font-size:11px;color:var(--muted);font-weight:600">Blocked on info</span></div>
+      <div class="actwrap"><div class="actline"><span class="ico d-red"><svg class="icn"><use href="#i-bang"/></svg></span><span class="albl">Design</span><span class="bar3"><span class="seg"></span><span class="seg"></span><span class="seg"></span></span><span class="st" style="color:var(--flare)">Give feedback<span class="vtag" style="color:var(--flare);background:var(--tint-red)">Visual</span></span></div></div>
+    </div>
+  </div>
+
+  <!-- 4. Modal options -->
+  <h2><span class="num">4</span>How the modal's Design area could present it</h2>
+  <p class="sub">Two directions for the modal. Both make the Visual → Proof relationship explicit; they differ in how much space they give each stage.</p>
+  <div class="opts">
+    <div class="opt">
+      <h4>Option A — Two stacked rows<span class="rec">Recommended</span></h4>
+      <p class="k">Visual and Proof each get their own row with status + inline action. Clearest for the parallel/overlap case.</p>
+      <div class="designarea">
+        <div class="exthead">Design</div>
+        <div class="da-row"><span class="ico d-green"><svg class="icn"><use href="#i-check"/></svg></span><span class="da-lbl">Visual<span>Approved · ver.1</span></span><span class="da-act done">Approved</span></div>
+        <div class="da-row"><span class="ico d-amber"><svg class="icn"><use href="#i-bang"/></svg></span><span class="da-lbl">Proof<span>Awaiting approval · ver.2</span></span><span class="da-act">Review &amp; approve</span></div>
+      </div>
+      <p class="q">Each row carries its own visual/proof preview + the approve action. The customer can approve the visual early, then the proof later.</p>
+    </div>
+    <div class="opt">
+      <h4>Option B — One extended track</h4>
+      <p class="k">A single 4-step progress: Visual draft → Visual approved → Proof → Proof approved. Simpler, but assumes visual always precedes proof.</p>
+      <div class="designarea">
+        <div class="exthead">Design progress</div>
+        <div class="ext"><span class="seg on green" style="flex:1"></span><span class="seg on green" style="flex:1"></span><span class="seg on" style="flex:1"></span><span class="seg" style="flex:1"></span></div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:10.5px;color:var(--muted);font-weight:600">
+          <span>Visual draft</span><span>Visual ✓</span><span>Proof</span><span>Proof ✓</span></div>
+        <div class="da-row" style="margin-top:12px;border-top:1px solid var(--paper-2)"><span class="ico d-amber"><svg class="icn"><use href="#i-bang"/></svg></span><span class="da-lbl">Now: Approve proof<span>ver.2 awaiting sign-off</span></span><span class="da-act">Review</span></div>
+      </div>
+      <p class="q">Lighter footprint, but can't express a proof that starts before the visual is signed off.</p>
+    </div>
+  </div>
+
+  <!-- 5. Decisions -->
+  <h2><span class="num">5</span>Decisions I'd need from you</h2>
+  <div class="card">
+    <ul class="clean">
+      <li><span class="b">Is the Visual always required,</span> or optional / skippable for repeat or simple lines (jump straight to Proof)?</li>
+      <li><span class="b">Can Proof begin before Visual approval?</span> (Determines Option A vs B — A supports it, B doesn't.)</li>
+      <li><span class="b">Does Visual approval gate anything,</span> or is it advisory? (e.g. must the visual be approved before a branded sample can be ordered?)</li>
+      <li><span class="b">Roll-up label:</span> in the table, show the active stage ("Approve visual" / "Approve proof") as drawn here — or always say "Design" with a sub-line?</li>
+      <li><span class="b">Versioning:</span> independent <span class="vtag">Visual vN</span> and <span class="vtag">Proof vN</span> counters (as shown), or one shared Design version?</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Project Sheet (Detailed)</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script>
+<script src="logos.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#54566b;}
+  body{font-family:var(--sans,'Inter',sans-serif);color:var(--ink,#23232a);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .printbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;background:#2c2d3a;color:#fff;padding:12px 22px;font-size:13.5px;}
+  .printbar b{font-weight:700;}
+  .printbar .pb-actions{display:flex;gap:10px;}
+  .printbar button{font:inherit;font-size:13px;font-weight:700;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;}
+  .pb-print{background:var(--periwinkle-deep,#5860a6);color:#fff;}
+  .pb-back{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);}
+  .deck{display:flex;flex-direction:column;align-items:center;gap:26px;padding:28px 20px 60px;}
+
+  /* ---- A3 landscape page ---- */
+  .page{width:1587px;height:1123px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.4);
+    display:grid;grid-template-columns:1fr 1fr;overflow:hidden;}
+
+  /* left — the visual */
+  .pg-visual{position:relative;background:#fff;display:flex;flex-direction:column;}
+  .pv-band{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:40px 46px 0;}
+  .pv-kicker{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--periwinkle-deep,#5860a6);}
+  .pv-proof{font-size:12.5px;color:var(--muted,#8b8b93);font-weight:600;}
+  .pv-imgwrap{flex:1;display:flex;align-items:center;justify-content:center;padding:24px 30px;}
+  .pv-imgwrap img{width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;}
+  .pv-visnote{padding:0 46px 38px;font-size:13px;color:var(--ink-2,#55555f);}
+  .pv-visnote b{color:var(--ink,#23232a);}
+  .pv-desc{padding:0 46px;font-size:14.5px;line-height:1.6;color:var(--ink-2,#44444d);}
+  .pv-desc-h{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted,#9a9aa3);margin:0 0 8px;}
+  .pv-usps{margin-top:20px;display:flex;flex-direction:column;gap:9px;}
+  .pv-status{margin-top:auto;padding:18px 46px 34px;}
+  .pv-status-h{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted,#9a9aa3);margin:0 0 10px;}
+  .pv-usp{display:flex;align-items:flex-start;gap:11px;font-size:13.5px;color:var(--ink,#23232a);}
+  .pv-usp .tick{width:20px;height:20px;border-radius:50%;background:var(--periwinkle-deep,#5860a6);color:#fff;flex:none;display:grid;place-items:center;font-size:12px;font-weight:800;margin-top:1px;}
+  .pv-swatches{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap;}
+  .pv-sw{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line-soft,#e7e6e1);border-radius:999px;padding:5px 12px 5px 6px;font-size:12px;font-weight:600;}
+  .pv-sw i{width:15px;height:15px;border-radius:50%;border:1px solid rgba(0,0,0,.12);display:inline-block;}
+
+  /* right — details + status */
+  .pg-detail{padding:46px 50px 40px;display:flex;flex-direction:column;background:var(--paper-2,#f4f3ee);}
+  .pd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;border-bottom:2px solid var(--ink,#23232a);padding-bottom:18px;}
+  .pd-lockup{display:flex;align-items:center;gap:12px;height:30px;}
+  .pd-lockup .lk svg, .pd-lockup .lk img{height:30px;width:auto;display:block;}
+  .pd-lockup .lk{display:flex;align-items:center;}
+  .pd-x{font-size:16px;color:var(--muted,#9a9aa3);}
+  .pd-proj{text-align:right;font-size:12px;color:var(--ink-2,#55555f);line-height:1.5;}
+  .pd-proj b{color:var(--ink,#23232a);}
+
+  .pd-name{font-family:var(--serif,'Fraunces',serif);font-weight:500;font-size:42px;line-height:1.04;letter-spacing:-.015em;margin:26px 0 0;}
+  .pd-supplier{font-size:14px;color:var(--ink-2,#55555f);margin-top:8px;}
+  .pd-supplier b{color:var(--ink,#23232a);}
+  .pd-badge{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line-soft,#e7e6e1);border-radius:999px;padding:6px 17px 6px 7px;font-size:14px;font-weight:700;color:var(--ink,#23232a);margin-top:16px;}
+  .pd-badge .statcircle{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;}
+  .pd-badge .statcircle .icn{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .sc-peri{border:1.9px solid var(--periwinkle,#7b85c5);color:var(--periwinkle-deep,#5860a6);}
+  .sc-green{border:1.9px solid var(--spearmint,#3bbf8a);color:var(--green-deep,#1f8a5b);}
+  .sc-ink{border:1.9px solid var(--ink,#23232a);color:var(--ink,#23232a);}
+  .sc-muted{border:1.9px solid var(--hair,#d8d6cf);color:var(--muted,#9a9aa3);}
+
+  /* fact grid */
+  .pd-facts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line-soft,#e7e6e1);border:1px solid var(--line-soft,#e7e6e1);border-radius:13px;overflow:hidden;margin:24px 0 6px;}
+  .fact{background:#fff;padding:13px 16px;}
+  .fact span{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted,#9a9aa3);}
+  .fact b{display:block;font-size:18px;font-weight:700;margin-top:3px;letter-spacing:-.01em;}
+
+  /* design block */
+  .pd-design{margin-top:22px;}
+  .pd-h{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted,#9a9aa3);margin:0 0 10px;}
+  .pd-designname{font-size:16px;font-weight:700;}
+  .pd-deco{margin-top:8px;display:flex;flex-direction:column;gap:5px;}
+  .pd-deco-row{display:flex;justify-content:space-between;gap:14px;font-size:13.5px;padding:6px 0;border-bottom:1px solid var(--line-soft,#eee);}
+  .pd-deco-row:last-child{border-bottom:0;}
+  .pd-deco-row span:last-child{color:var(--ink-2,#55555f);font-weight:600;white-space:nowrap;}
+  .pd-notes{font-size:12.5px;color:var(--ink-2,#55555f);margin-top:10px;font-style:italic;}
+
+  /* branding & price block */
+  .pd-brand{margin-top:20px;background:var(--paper-2,#f6f5f0);border:1px solid var(--line-soft,#e7e6e1);border-radius:13px;padding:15px 17px;}
+  .pd-brand-top{display:flex;align-items:baseline;justify-content:space-between;gap:14px;}
+  .pd-brand-meth{font-size:14px;font-weight:700;}
+  .pd-brand-meth small{font-weight:600;color:var(--ink-2,#55555f);}
+  .pd-price{display:flex;gap:26px;margin-top:12px;}
+  .pd-price .pp{display:flex;flex-direction:column;}
+  .pd-price .pp span{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted,#9a9aa3);}
+  .pd-price .pp b{font-size:22px;font-weight:800;letter-spacing:-.01em;color:var(--ink,#23232a);}
+  .pd-price .pp.sell b{color:var(--periwinkle-deep,#5860a6);}
+  .pd-price-note{font-size:11px;color:var(--muted,#9a9aa3);margin-top:9px;}
+
+  /* status section */
+  .pd-about{margin-top:20px;}
+  .pd-about-txt{font-size:14.5px;line-height:1.6;color:var(--ink-2,#44444d);margin:0;}
+  .pd-status{margin-top:22px;padding-top:0;}
+  .stage-row{display:grid;grid-template-columns:78px 1fr auto;align-items:center;gap:14px;padding:8px 0;}
+  .stage-name{font-size:13.5px;font-weight:700;}
+  .stage-bar{height:8px;border-radius:4px;background:var(--paper-2,#eceae3);overflow:hidden;}
+  .stage-fill{height:100%;border-radius:4px;}
+  .stage-state{font-size:13px;font-weight:700;white-space:nowrap;justify-self:end;}
+  .st-ok .stage-fill{background:#1f8a5b;} .st-ok .stage-state{color:#1f8a5b;}
+  .st-wait .stage-fill{background:#d39a32;} .st-wait .stage-state{color:#a9651b;}
+  .st-act .stage-fill{background:#5860a6;} .st-act .stage-state{color:#5860a6;}
+  .st-bad .stage-fill{background:#c0395f;} .st-bad .stage-state{color:#c0395f;}
+  .st-none .stage-fill{background:transparent;} .st-none .stage-state{color:#b6b6bd;}
+
+  .pd-foot{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line-soft,#e7e6e1);font-size:11.5px;color:var(--muted,#9a9aa3);}
+  .pd-foot .ms{display:flex;align-items:center;gap:7px;}
+  .pd-foot .ms svg, .pd-foot .ms img{height:15px;width:auto;}
+
+  @media print{
+    html,body{background:#fff;}
+    .printbar{display:none;}
+    .deck{padding:0;gap:0;}
+    .page,.cover{box-shadow:none;break-after:page;}
+    .page:last-child{break-after:auto;}
+    @page{size:A3 landscape;margin:0;}
+  }
+
+  /* ---- cover page ---- */
+  .cover{width:1587px;height:1123px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.4);
+    display:flex;flex-direction:column;align-items:center;text-align:center;padding:70px 80px;}
+  .cv-valid{font-family:var(--serif,'Fraunces',serif);font-weight:600;font-size:24px;letter-spacing:.01em;color:var(--periwinkle-deep,#5860a6);}
+  .cv-quote{font-family:var(--serif,'Fraunces',serif);font-weight:600;font-size:150px;line-height:.92;letter-spacing:-.02em;margin:46px 0 0;color:var(--ink,#23232a);}
+  .cv-client{font-size:42px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;color:var(--periwinkle-deep,#5860a6);margin:26px 0 0;}
+  .cv-meta{margin-top:40px;font-size:17px;line-height:2;color:var(--ink-2,#55555f);}
+  .cv-rule{width:560px;height:2px;background:var(--periwinkle,#7b85c5);margin:38px 0;opacity:.7;}
+  .cv-lockup{display:flex;align-items:center;gap:20px;height:58px;}
+  .cv-lockup .lk{display:flex;align-items:center;}
+  .cv-lockup .lk svg, .cv-lockup .lk img{height:58px;width:auto;display:block;}
+  .cv-lockup .div{width:1.5px;height:46px;background:var(--hair,#d8d6cf);}
+  .cv-tag{font-family:var(--serif,'Fraunces',serif);font-weight:600;font-size:24px;color:var(--muted,#b6b6bd);margin-top:30px;}
+  .cv-foot{margin-top:auto;font-size:15px;color:var(--ink-2,#55555f);display:flex;gap:14px;align-items:center;flex-wrap:wrap;justify-content:center;}
+  .cv-foot b{color:var(--ink,#23232a);font-weight:600;}
+  .cv-foot .sep{color:var(--hair,#d8d6cf);}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7zM9 8V6a3 3 0 0 1 6 0v2"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 1 4 10.5c-.7.6-1 1.2-1 2.5H9c0-1.3-.3-1.9-1-2.5A6 6 0 0 1 12 3z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><path d="M4 7h16v3H4zM5 10v10h14V10M10 14h4"/></symbol>
+</defs></svg>
+<div class="printbar">
+  <span><b>Detailed project sheet</b> · A3 landscape · one product per page</span>
+  <span class="pb-actions">
+    <button class="pb-back" onclick="history.length>1?history.back():window.close()">← Back</button>
+    <button class="pb-print" onclick="window.print()">Save as PDF / Print</button>
+  </span>
+</div>
+<div class="deck" id="deck"></div>
+
+<script>
+(function(){
+  const esc=s=>String(s==null?'':s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const gbp=n=>'£'+Number(n||0).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  const DEFAULT={
+    title:'Autumn Giveaways', client:'Citrix', distributor:'Mojo Promotions', owner:'Jess Doyle', created:'22 Aug 2025', deliverBy:'Fri. 17th Oct',
+    items:[
+      {name:'Eco Wheat-Straw Charging Cable', img:'cable', qty:100, each:8.45, delivery:'Fri. 10th Oct', overall:'progress', sts:['approved','awaiting','approved','withacm'], supplier:'Lumen Goods', colours:['Wheat','Black','White'], sizes:['1m','2m'], designName:'Citrix Logo White on Black', deco:[['Screen Printed Front','2 colour/s'],['Screen Printed Back','1 colour/s']], proof:'Version 1 (18/10/23 11:10)', visual:'Mojo Bespoke Visual 1 (Product: Volcanic Black, Branding: White)', notes:'The maximum number of print colours on this product is 2.', blurb:'Five-connector eco charging cable in wheat-straw bio-plastic, digitally printed in full colour.', usps:['Sustainably sourced · Wheat-straw bio-plastic · 9/10 eco','Fully brandable · 2 decoration methods','10-day lead time from approval','Low minimums · from 50 units'], pricing:{qty:100,unitSell:11.90,lineSell:1190}, branding:{unbranded:false,positions:[{name:'Front',method:'Screen print',colours:2},{name:'Back',method:'Screen print',colours:1}]}, validUntil:'30 Jul 2026' }
+    ]
+  };
+  let DATA=DEFAULT;
+  try{ const saved=JSON.parse(localStorage.getItem('ms-project-sheet')||'null'); if(saved&&saved.items&&saved.items.length) DATA=saved; }catch(e){}
+
+  const OVERALL={ progress:['sc-peri','i-clock','In progress'], ready:['sc-green','i-bag','Ready to order'], ordered:['sc-ink','i-box','Ordered'], idea:['sc-peri','i-bulb','Idea'], paused:['sc-muted','i-pause','Paused'], archived:['sc-muted','i-archive','Archived'] };
+  const STAGES=['Design','Price','Sample','Stock'];
+  const STAGE_MAP={
+    Design:{ approved:['Approved','st-ok',1], awaiting:['Awaiting approval','st-wait',.67], feedback:['Feedback required','st-bad',.67], reworking:['In rework','st-act',.5], withacm:['With studio','st-act',.33], notstarted:['Not started','st-none',0], unbranded:['Unbranded','st-none',0], dash:['Not started','st-none',0], pause:['Paused','st-none',.5] },
+    Price:{ approved:['Approved','st-ok',1], awaiting:['Awaiting approval','st-wait',.67], withacm:['Being prepared','st-act',.33], notapproved:['Not approved','st-bad',1], dash:['—','st-none',0], pause:['Paused','st-none',.5] },
+    Sample:{ approved:['Approved','st-ok',1], awaiting:['Awaiting approval','st-wait',.67], ordered:['Sample ordered','st-ok',1], sampleorder:['To order','st-wait',0], notapproved:['Not approved','st-bad',1], withacm:['Being checked','st-act',.33], dash:['Not required','st-none',0], pause:['Paused','st-none',.5] },
+    Stock:{ instock:['In stock','st-ok',1], notinstock:['Not in stock','st-bad',1], awaiting:['Awaiting','st-wait',.67], withacm:['Being checked','st-act',.33], ordered:['Reserved','st-ok',1], dash:['—','st-none',0], pause:['Paused','st-none',.5] }
+  };
+  const stageInfo=(stage,state)=>(STAGE_MAP[stage]||{})[state]||['—','st-none',0];
+
+  const SW={Wheat:'#e4cf9e',Black:'#23232a','Volcanic Black':'#23232a',White:'#f3f1ea',Natural:'#e9e2d0',Charcoal:'#41434c',Navy:'#26314f',Grey:'#9a9aa3',Stone:'#d8d2c4',Blue:'#3a5cc4',Kraft:'#c79a62',Cork:'#caa06a',Terracotta:'#c2683f',Birch:'#e6d6b8',Cream:'#f0e9d8'};
+  const swatch=c=>`<span class="pv-sw"><i style="background:${SW[c]||'#cfcfd6'}"></i>${esc(c)}</span>`;
+
+  const logoKey=name=>{ if(!window.MSLOGOS||!MSLOGOS.has) return null; if(MSLOGOS.has(name)) return name; const f=String(name||'').split(' ')[0]; if(MSLOGOS.has(f)) return f; if(MSLOGOS.has(f.toLowerCase())) return f.toLowerCase(); return null; };
+  const lk=name=>{ try{ const k=logoKey(name); if(k) return '<span class="lk">'+MSLOGOS.svg(k,30)+'</span>'; }catch(e){} return '<span class="lk" style="font-family:var(--serif);font-size:21px;font-weight:500">'+esc(name)+'</span>'; };
+  const msMark=(function(){ try{ if(window.MSLOGOS&&MSLOGOS.svg){ const s=MSLOGOS.svg('Merchsmith',15); if(s) return s; } }catch(e){} return '<b style="color:var(--periwinkle-deep)">Merchsmith</b>'; })();
+  const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+
+  function page(it,idx,total){
+    const ov=OVERALL[it.overall]||OVERALL.progress;
+    const isIdea=it.overall==='idea';
+    const stagesHTML=STAGES.map((stg,i)=>{ const [label,cls,pct]=stageInfo(stg,(it.sts&&it.sts[i])||'dash');
+      return `<div class="stage-row ${cls}"><span class="stage-name">${stg}</span><span class="stage-bar"><span class="stage-fill" style="width:${Math.round(pct*100)}%"></span></span><span class="stage-state">${esc(label)}</span></div>`; }).join('');
+    const decoHTML=(it.deco&&it.deco.length)?it.deco.map(d=>`<div class="pd-deco-row"><span>${esc(d[0])}</span><span>${esc(d[1])}</span></div>`).join(''):'<div class="pd-deco-row"><span>No decoration recorded</span><span>—</span></div>';
+    const cols=(it.colours||[]).map(swatch).join('');
+    const uspsHTML=(it.usps&&it.usps.length)?`<div class="pv-usps">${it.usps.map(u=>`<div class="pv-usp"><span class="tick">✓</span><span>${esc(u)}</span></div>`).join('')}</div>`:'';
+    const descHTML=it.blurb?`<div class="pv-desc"><p class="pv-desc-h">About this product</p>${esc(it.blurb)}</div>`:'';
+    const aboutHTML=it.blurb?`<div class="pd-about"><p class="pd-h">About this product</p><p class="pd-about-txt">${esc(it.blurb)}</p></div>`:'';
+    // branding & price block (as per the modal)
+    let brandHTML='';
+    const pr=it.pricing;
+    if(it.branding||pr){
+      let methLine='';
+      if(it.branding&&it.branding.unbranded) methLine='<span class="pd-brand-meth">Unbranded <small>· supplied blank</small></span>';
+      else if(it.branding&&it.branding.positions&&it.branding.positions.length){
+        methLine='<span class="pd-brand-meth">'+it.branding.positions.map(po=>esc(po.method)+' <small>· '+esc(po.name)+(po.colours?' · '+po.colours+' col':'')+'</small>').join(' &nbsp;/&nbsp; ')+'</span>';
+      } else methLine='<span class="pd-brand-meth">Branding to be confirmed</span>';
+      const priceHTML=pr?`<div class="pd-price">
+        <div class="pp"><span>Unit price${it.branding&&it.branding.unbranded?'':' (branded)'}</span><b>${gbp(pr.unitSell)}</b></div>
+        <div class="pp sell"><span>Line total · ${pr.qty} units</span><b>${gbp(pr.lineSell)}</b></div>
+      </div><div class="pd-price-note">Customer sell price as per the product price matrix — chosen decoration, current quantity.${it.validUntil?` Valid until <b>${esc(it.validUntil)}</b>.`:''}</div>`:'';
+      brandHTML=`<div class="pd-brand"><div class="pd-brand-top"><span class="pd-h" style="margin:0">Branding &amp; price</span></div><div style="margin-top:9px">${methLine}</div>${priceHTML}</div>`;
+    }
+    return `<div class="page">
+      <div class="pg-visual">
+        <div class="pv-band"><span class="pv-kicker">Visual</span>${it.proof?`<span class="pv-proof">${esc(it.proof)}</span>`:''}</div>
+        <div class="pv-imgwrap"><img src="assets/products/${esc(it.img)}.png" alt="" onerror="this.style.opacity=0"></div>
+        <div class="pv-status">
+          <p class="pv-status-h">Status</p>
+          ${stagesHTML}
+        </div>
+      </div>
+      <div class="pg-detail">
+        <div class="pd-head">
+          <div class="pd-lockup">${lk(DATA.client)}<span class="pd-x">×</span>${lk(DATA.distributor)}</div>
+          <div class="pd-proj"><b>${esc(DATA.title)}</b><br>Product ${idx+1} of ${total}</div>
+        </div>
+        <h1 class="pd-name">${esc(it.name)}</h1>
+        <div class="pd-supplier">Supplied by <b>${esc(it.supplier||'—')}</b>${it.designName&&it.designName!=='Unbranded'?` · ${esc(it.designName)}`:''}</div>
+        <span class="pd-badge"><span class="statcircle ${ov[0]}"><svg class="icn"><use href="#${ov[1]}"/></svg></span>${ov[2]}</span>
+        <div class="pd-facts">
+          <div class="fact"><span>Quantity</span><b>${it.qty} units</b></div>
+          <div class="fact"><span>Unit price</span><b>${isIdea?'TBC':gbp(it.each)}</b></div>
+          <div class="fact"><span>Line total</span><b>${isIdea?'TBC':gbp(it.qty*it.each)}</b></div>
+          <div class="fact"><span>Delivery</span><b>${esc(it.delivery==='asap'?'ASAP':it.delivery||'—')}</b></div>
+          <div class="fact"><span>Colours</span><b>${(it.colours&&it.colours.length)?esc(it.colours.join(', ')):'—'}</b></div>
+          <div class="fact"><span>Valid until</span><b>${esc(it.validUntil||'—')}</b></div>
+        </div>
+        <div class="pd-design">
+          <p class="pd-h">Design &amp; decoration</p>
+          <div class="pd-designname">${esc(it.designName||'Not yet started')}</div>
+          <div class="pd-deco">${decoHTML}</div>
+          ${it.notes?`<div class="pd-notes">${esc(it.notes)}</div>`:''}
+        </div>
+        ${brandHTML}
+        ${aboutHTML}
+        ${uspsHTML}
+        <div class="pd-foot">
+          <span>Prepared for <b style="color:var(--ink-2)">${esc(DATA.client)}</b> · ${esc(DATA.distributor)}</span>
+          <span>Generated ${today}${it.validUntil?` · prices valid until ${esc(it.validUntil)}`:''}</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function coverPage(){
+    const pageCount=DATA.items.length+1;
+    const distMark=lk(DATA.distributor);
+    const ftBits=[];
+    ftBits.push('<b>'+esc(DATA.distributor)+'</b>');
+    if(DATA.owner) ftBits.push('Prepared by '+esc(DATA.owner));
+    return `<div class="cover">
+      <div class="cv-valid">${pageCount} Pages / Valid 30 Days</div>
+      <div class="cv-quote">QUOTE</div>
+      <div class="cv-client">${esc(DATA.client)}</div>
+      <div class="cv-meta">
+        ${esc(today)}<br>
+        Ref: ${esc(DATA.ref||'MS-'+(DATA.title||'').replace(/[^A-Za-z0-9]/g,'').slice(0,6).toUpperCase()+'-01')}<br>
+        Created by: ${esc(DATA.owner||'—')}<br>
+        Payment Terms: Payment due prior to production of the goods.
+      </div>
+      <div class="cv-rule"></div>
+      <div class="cv-lockup">${distMark}<span class="div"></span>${lk(DATA.client)}</div>
+      <div class="cv-tag">Honest, Creative, Positive.</div>
+      <div class="cv-foot">${ftBits.join('<span class="sep">|</span>')}<span class="sep">|</span>Project: <b>${esc(DATA.title)}</b><span class="sep">|</span>All prices valid until <b>${esc(DATA.validUntil||'—')}</b></div>
+    </div>`;
+  }
+
+  document.getElementById('deck').innerHTML=DATA.items.map((it,i)=>page(it,i,DATA.items.length)).join('');
+})();
+</script>
+</body>
+</html>

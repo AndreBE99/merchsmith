@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept — Full price matrix &amp; pricing logic</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;font-family:var(--sans);background:#eceaf3;color:var(--ink);line-height:1.5;}
+.wrap{max-width:1240px;margin:0 auto;padding:46px 30px 90px;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:18px;box-shadow:0 1px 4px rgba(20,22,45,.06);}
+h1{font-family:var(--serif);font-weight:500;font-size:38px;letter-spacing:-.015em;margin:0 0 10px;}
+.lede{font-size:16.5px;color:var(--ink-2);max-width:80ch;margin:0 0 8px;}
+.note-concept{font-size:13px;color:var(--periwinkle-deep);font-weight:600;background:#fff;border-left:3px solid var(--periwinkle);border-radius:8px;padding:11px 15px;margin:18px 0 0;max-width:78ch;}
+h2{font-family:var(--serif);font-weight:500;font-size:24px;margin:50px 0 6px;}
+h2 .num{color:var(--periwinkle-deep);font-size:17px;font-weight:700;font-family:var(--sans);margin-right:10px;vertical-align:2px;}
+.sub{font-size:14.5px;color:var(--ink-2);max-width:82ch;margin:0 0 18px;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:8px 0;box-shadow:0 1px 3px rgba(20,22,45,.04);overflow-x:auto;}
+.card.pad{padding:22px 26px;}
+
+/* matrix */
+.mx{width:100%;border-collapse:collapse;font-size:13px;min-width:1000px;}
+.mx thead th{font-size:11.5px;font-weight:800;color:var(--ink-2);text-align:right;padding:10px 16px 9px;border-bottom:1.5px solid var(--line-soft);}
+.mx thead th:first-child{text-align:left;}
+.mx .methodrow td{padding:16px 16px 4px;}
+.mx .methodrow b{font-size:15px;}
+.mx .methodrow .code{color:var(--muted);font-weight:700;font-size:12px;float:right;}
+.mx tbody td{padding:8px 16px;text-align:right;border-bottom:1px solid var(--paper-2);color:var(--ink-2);}
+.mx tbody td:first-child{text-align:left;color:var(--ink);font-weight:600;}
+.mx tr.unbranded td{background:var(--tint-peri);font-weight:700;color:var(--periwinkle-ink);}
+.mx tr.unbranded td:first-child{color:var(--periwinkle-ink);}
+.mx .setup td{background:var(--paper);font-size:12px;color:var(--text-soft);font-weight:600;text-align:left;padding:7px 16px;}
+.mx .cmyk{width:18px;height:18px;border-radius:50%;background:conic-gradient(#19c3ff,#ff2fb9,#ffe600,#19c3ff);display:inline-block;vertical-align:-3px;}
+.hl{background:rgba(123,133,197,.12);}
+
+/* calc panels */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:880px){.cols{grid-template-columns:1fr;}}
+.calc{font-size:13.5px;}
+.calc .line{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--paper-2);}
+.calc .line:last-child{border-bottom:0;}
+.calc .line.total{font-weight:800;color:var(--ink);border-top:1.5px solid var(--line-soft);font-size:15px;}
+.calc .line .k{color:var(--ink-2);}
+.calc .line .v{font-weight:700;color:var(--ink);}
+.calc .muted{color:var(--muted);font-size:12px;}
+.steps{counter-reset:s;margin:0;padding:0;list-style:none;}
+.steps li{position:relative;padding:0 0 14px 34px;font-size:14px;color:var(--ink-2);}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-1px;width:22px;height:22px;border-radius:50%;background:var(--periwinkle-deep);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;}
+.steps li b{color:var(--ink);}
+table.mini{width:100%;border-collapse:collapse;font-size:13px;}
+table.mini th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;padding:0 14px 8px 0;border-bottom:1px solid var(--line-soft);}
+table.mini td{padding:8px 14px 8px 0;border-bottom:1px solid var(--paper-2);color:var(--ink-2);}
+table.mini td b{color:var(--ink);}
+.pill{display:inline-block;font-size:12px;font-weight:700;color:var(--periwinkle-ink);background:var(--tint-peri);border-radius:7px;padding:3px 9px;}
+.eq{font-size:13.5px;color:var(--ink-2);background:var(--paper);border-radius:9px;padding:11px 14px;margin-top:12px;font-family:ui-monospace,Menlo,monospace;}
+
+.mx-toolbar{display:flex;align-items:center;gap:14px;margin:0 0 12px;}
+.mx-toggle{display:inline-flex;align-items:center;gap:9px;border:1.5px solid var(--line-soft);background:#fff;border-radius:999px;padding:8px 15px;font:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;}
+.mx-toggle .mx-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--muted);transition:.15s;}
+.mx-toggle.on{border-color:var(--periwinkle-deep);color:var(--periwinkle-deep);}
+.mx-toggle.on .mx-dot{border-color:var(--periwinkle-deep);background:var(--periwinkle-deep);box-shadow:inset 0 0 0 2.5px #fff;}
+.mx-legend{font-size:13px;color:var(--muted);}
+.mx tr.deliv td{background:var(--paper);font-weight:700;color:var(--ink);border-top:1.5px solid var(--line-soft);}
+.mx tr.deliv td:first-child{color:var(--ink);}
+.mx tr.profit td{background:var(--tint-green);font-weight:800;color:var(--green-deep);}
+.mx tr.profit td:first-child{color:var(--green-deep);}
+.mx tr.profit.total td{font-size:14px;border-top:1px solid rgba(47,143,91,.3);}
+
+.mx-2sup{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;}
+.mx-2sup input{width:16px;height:16px;accent-color:var(--periwinkle-deep);}
+.mx tr.suphdr td{font-size:12px;font-weight:600;color:var(--text-soft);padding:11px 16px 5px;border-top:2px solid var(--line-soft);}
+.mx tr.suphdr.prod td{color:#8246af;}
+.mx tr.suphdr.prod b{color:#8246af;}
+.mx tr.suphdr.brand td{color:var(--periwinkle-deep);}
+.mx tr.suphdr.brand b{color:var(--periwinkle-deep);}
+.mx tr.deliv.prod td{background:rgba(130,70,175,.07);}
+
+.mx tr.sellrow td{background:#fdf2e3!important;color:#9a6b1f;font-weight:700;}
+.mx tr.sellrow td:first-child{color:#9a6b1f;font-weight:600;font-size:12px;}
+.mx tr.setup-fig td{background:var(--paper);font-size:12.5px;color:var(--ink-2);}
+.mx tr.setup-fig td:last-child{color:var(--ink);}
+
+.mx tr.locked td{background:var(--tint-peri);color:var(--periwinkle-ink);font-weight:700;}
+.mx tr.locked td:first-child{color:var(--periwinkle-deep);}
+.mx tr.applies td{font-size:11.5px;color:var(--text-soft);font-weight:600;}
+.mx tr.applies td:first-child{color:var(--ink-2);}
+
+.mx tr.addco td{padding:8px 16px;background:var(--paper);}
+.mx tr.addco button{border:1.5px dashed var(--line-soft);background:#fff;border-radius:8px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;color:var(--periwinkle-deep);cursor:pointer;}
+.mx tr.addco button:disabled{opacity:.5;cursor:default;}
+.mx tr.deliv.defco td{border-top:1.5px solid var(--line-soft);}
+
+.mx tr.deliv{cursor:pointer;}
+.mx tr.deliv .caret{display:inline-block;width:14px;color:var(--muted);font-size:11px;}
+.mx tr.selco td{background:rgba(123,133,197,.16)!important;color:var(--periwinkle-ink);font-weight:700;}
+.mx tr.deliv:not(.selco):hover td{background:var(--paper);}
+
+.mx tr.lk-extra{display:none;}
+.mx.show-all tr.lk-extra{display:table-row;}
+
+.mx-revert{border:1.5px solid var(--line-soft);background:#fff;border-radius:999px;padding:8px 14px;font:inherit;font-size:13px;font-weight:700;color:var(--flare);cursor:pointer;}
+.mx-revert:hover{border-color:var(--flare);}
+.lk-colsel{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font:inherit;font-weight:800;}
+.lk-colsel input{width:13px;height:13px;accent-color:var(--periwinkle-deep);}
+.lk-qty{width:48px;font:inherit;font-size:11px;font-weight:800;text-align:center;border:1px solid var(--line-soft);border-radius:5px;padding:2px 3px;margin-top:3px;background:#fff;}
+.mx td.colsel{background:rgba(123,133,197,.13)!important;}
+.mx th.colsel{background:rgba(123,133,197,.13);}
+.mx tr.sellrow td.colsel{background:#fbe8cc!important;}
+.mx tr.sellrow td:first-child.colsel{background:#fdf2e3!important;}
+.mx tr.lk-edit .lk-in{width:64px;font:inherit;font-size:12.5px;text-align:right;border:1.5px solid var(--periwinkle);border-radius:6px;padding:4px 6px;background:#fff;}
+.mx tr.lk-edit .lk-in::placeholder{color:var(--muted);font-style:italic;}
+.mx.lk-locking tr.lk-edit td{background:rgba(123,133,197,.06);}
+
+.mx tr.lk-2only{display:none;}
+.mx.two tr.lk-2only{display:table-row;}
+.lk-quotes{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 12px;}
+.lk-quote{background:var(--paper);border:1px solid var(--line-soft);border-radius:10px;padding:9px 12px;}
+.lk-quotes.two .lk-quote.single{display:none;}
+.lk-quote.two-only{display:none;}
+.lk-quotes.two .lk-quote.two-only{display:block;}
+.lk-qrole{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;}
+.lk-qfields{display:flex;gap:7px;flex-wrap:wrap;}
+.lk-qf{font:inherit;font-size:12.5px;border:1px solid var(--line-soft);border-radius:6px;padding:4px 8px;background:#fff;}
+
+.lk-reqstatus{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;border-radius:10px;padding:10px 14px;margin:0 0 12px;}
+.lk-reqstatus .i{width:16px;height:16px;color:currentColor;flex:none;}
+.lk-reqstatus.awaiting{background:rgba(123,133,197,.12);color:var(--periwinkle-ink);}
+.lk-reqstatus.quoted{background:var(--tint-green);color:var(--green-deep);}
+.lk-link{background:none;border:0;color:var(--periwinkle-deep);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;}
+.qreq-scrim{position:fixed;inset:0;background:rgba(22,24,28,.5);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;z-index:1500;overflow:auto;padding:6vh 16px;}
+.qreq-scrim.open{display:flex;}
+.qreq-modal{background:#fff;border-radius:16px;width:min(520px,100%);padding:26px 28px;box-shadow:0 30px 80px rgba(20,22,45,.35);position:relative;}
+.qreq-x{position:absolute;top:14px;right:16px;border:0;background:none;font-size:22px;color:var(--muted);cursor:pointer;line-height:1;}
+.qreq-eyebrow{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--periwinkle-deep);}
+.qreq-title{font-family:var(--serif);font-weight:500;font-size:23px;margin:3px 0 4px;}
+.qreq-sub{font-size:13px;color:var(--muted);margin-bottom:16px;}
+.qreq-clabel{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.qreq-contacts{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.qreq-sup{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--periwinkle-deep);margin:6px 0 1px;}
+.qreq-contact{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line-soft);border-radius:10px;padding:9px 12px;cursor:pointer;}
+.qreq-contact.on{border-color:var(--periwinkle-deep);background:rgba(123,133,197,.08);}
+.qreq-contact input{width:16px;height:16px;accent-color:var(--periwinkle-deep);}
+.qreq-cinfo b{font-size:13.5px;color:var(--ink);}
+.qreq-cinfo span{display:block;font-size:11.5px;color:var(--muted);}
+.qreq-field{margin-bottom:13px;}
+.qreq-field label{display:block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.qreq-field input,.qreq-field textarea{width:100%;font:inherit;font-size:14px;border:1.5px solid var(--line-soft);border-radius:9px;padding:9px 11px;}
+.qreq-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;}
+.qreq-foot{display:flex;gap:10px;margin-top:6px;}
+.qreq-send{flex:1;border:0;background:var(--periwinkle-deep);color:#fff;border-radius:10px;padding:11px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;}
+.qreq-send:disabled{opacity:.45;cursor:default;}
+.qreq-cancel{border:1.5px solid var(--line-soft);background:#fff;border-radius:10px;padding:11px 16px;font:inherit;font-weight:700;font-size:14px;color:var(--ink-2);cursor:pointer;}
+
+.qreq-specbox{background:var(--paper);border:1px solid var(--line-soft);border-radius:10px;padding:10px 13px;margin-bottom:16px;}
+.qreq-specrow{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:13px;}
+.qreq-specrow span{color:var(--muted);}
+.qreq-specrow b{color:var(--ink);text-align:right;}
+
+.cust-pill{display:inline-block;font-size:12px;font-weight:700;color:var(--periwinkle-ink);background:var(--tint-peri);border-radius:8px;padding:5px 11px;margin-bottom:16px;}
+.cust-mod{padding:16px 0;border-top:1px solid var(--line-soft);}
+.cust-mod:first-of-type{border-top:0;}
+.cust-modh{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.cust-sliderrow{display:flex;align-items:center;gap:18px;}
+.cust-sliderrow input[type=range]{flex:1;accent-color:var(--periwinkle-deep);}
+.cust-qty{font-family:var(--serif);font-size:26px;font-weight:500;color:var(--ink);min-width:90px;text-align:right;}
+.cust-ticks{display:flex;justify-content:space-between;margin-top:6px;}
+.cust-ticks span{font-size:11px;color:var(--muted);font-weight:600;}
+.cust-ticks span.on{color:var(--periwinkle-deep);font-weight:800;}
+.cust-priceline{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.cust-was{font-size:18px;color:var(--muted);text-decoration:line-through;}
+.cust-now{font-family:var(--serif);font-size:34px;font-weight:500;color:var(--ink);}
+.cust-each{font-size:14px;color:var(--muted);}
+.cust-disc{font-size:12px;font-weight:800;color:#fff;background:var(--flare);border-radius:999px;padding:4px 11px;}
+.cust-linetotal{font-size:14px;color:var(--ink-2);margin-top:8px;}
+.cust-linetotal b{color:var(--ink);font-size:16px;}
+.cust-saverow{display:flex;gap:12px;flex-wrap:wrap;}
+.cust-savebox{flex:1;min-width:120px;background:var(--tint-green);border-radius:12px;padding:14px 16px;}
+.cust-savebox span{display:block;font-family:var(--serif);font-size:24px;font-weight:500;color:var(--green-deep);}
+.cust-savebox small{font-size:11.5px;color:var(--green-deep);font-weight:600;}
+.cust-savebox.big{background:var(--green-deep);}
+.cust-savebox.big span,.cust-savebox.big small{color:#fff;}
+.cust-savebox.next{background:var(--tint-peri);}
+.cust-savebox.next span{color:var(--periwinkle-deep);font-size:18px;}
+.cust-savebox.next small{color:var(--periwinkle-ink);}
+.ac-in{width:100%;border:1px solid var(--line-soft);border-radius:7px;padding:7px 9px;font:inherit;font-size:13px;background:#fff;}
+.ac-in:focus{outline:0;border-color:var(--periwinkle);}
+.ac-num{text-align:right;}
+.ac-del{border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;}
+.ac-del:hover{color:var(--flare);}
+.ac-add{margin-top:12px;border:1.5px dashed var(--line-soft);background:none;border-radius:9px;padding:9px 15px;font:inherit;font-weight:700;font-size:13px;color:var(--periwinkle-deep);cursor:pointer;}
+.ac-add:hover{border-color:var(--periwinkle-deep);}
+#acTable td{vertical-align:middle;}
+.ac-hd{font-size:13px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-2);margin-bottom:12px;display:flex;align-items:center;gap:9px;}
+.ac-tag{font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:#fff;background:var(--periwinkle-deep);border-radius:6px;padding:2px 8px;}
+#acSupTable td{vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Concept · for discussion</span>
+  <h1>Full price matrix &amp; how the unit price is built</h1>
+  <p class="lede">Opened from a <b>“Show price table”</b> button under the Price slider. The matrix is the supplier's <b>cost</b> price by quantity break and method; the slider's customer unit price is derived from it via markup, with delivery handled separately.</p>
+  <p class="note-concept">Mock-up only — illustrative figures. Nothing live has changed.</p>
+
+  <h2><span class="num">1</span>The price matrix (supplier cost)</h2>
+  <p class="sub">Top row is the <b>unbranded</b> item. Each method below shows the per-unit <b>decoration cost</b> by quantity break, with rows per number of print colours where relevant, and the supplier's <b>setup charge</b>. These are <b>cost</b> figures from the supplier — the customer never sees this table.</p>
+  <div class="mx-toolbar">
+    <button class="mx-toggle" id="mxToggle" data-mode="cost"><span class="mx-dot"></span><span id="mxToggleLbl">Show sell prices</span></button>
+    <span class="mx-legend" id="mxLegend">Showing supplier <b>cost</b> per unit</span>
+    <label class="mx-2sup"><input type="checkbox" id="mx2sup"> Two-supplier (product + branding)</label>
+  </div>
+  <div class="card">
+    <table class="mx" id="mxTable"></table>
+  </div>
+  <script>
+  (function(){
+    const BREAKS=[50,100,250,500,1000,2500,5000,10000,20000];
+    const HLI=4; // 1000+ highlighted
+    const UNBRANDED=[3.10,2.74,2.45,2.18,1.98,1.82,1.70,1.61,1.55];
+    const METHODS=[
+      {name:'360 Digital print',code:'DRD04',setup:'£32.00 setup',setupTotal:32,rows:[{label:'Full colour',c:[1.05,0.94,0.86,0.86,0.86,0.85,0.84,0.83,0.83]}]},
+      {name:'Screenround',code:'GPE06',setup:'£25.00 / colour setup',setupTotal:50,rows:[
+        {label:'1 colour',c:[0.67,0.43,0.31,0.21,0.17,0.15,0.13,0.13,0.13]},
+        {label:'2 colours',c:[1.18,0.70,0.51,0.37,0.28,0.25,0.21,0.20,0.20]},
+        {label:'3 colours',c:[1.69,0.97,0.76,0.49,0.43,0.42,0.30,0.29,0.26]},
+        {label:'4 colours',c:[2.22,1.32,0.98,0.63,0.51,0.50,0.42,0.37,0.37]}]},
+      {name:'Pad print',code:'PAD02',setup:'£22.00 / colour setup',setupTotal:44,rows:[
+        {label:'1 colour',c:[0.62,0.40,0.29,0.22,0.18,0.16,0.14,0.13,0.12]},
+        {label:'2 colours',c:[1.05,0.66,0.47,0.35,0.29,0.26,0.22,0.20,0.19]}]},
+      {name:'Embroidery',code:'EMB08',setup:'£34.78 digitising',setupTotal:34.78,rows:[
+        {label:'Up to 5,000 st.',c:[2.95,2.40,2.10,1.85,1.62,1.48,1.35,1.28,1.22]},
+        {label:'5–10,000 st.',c:[4.20,3.55,3.10,2.70,2.40,2.20,2.02,1.90,1.82]}]},
+      {name:'Laser engrave',code:'LAS03',setup:'£30.00 setup',setupTotal:30,rows:[
+        {label:'Single tone',c:[0.84,0.58,0.44,0.33,0.27,0.24,0.21,0.19,0.18]}]}
+    ];
+    const BANDS=[[0,2.20],[60,2.00],[100,1.74],[150,1.67],[250,1.56],[300,1.54],[400,1.49],[500,1.45],[600,1.41],[700,1.39],[800,1.38],[900,1.37],[1000,1.36]];
+    const markup=tc=>{let m=BANDS[0][1];for(const b of BANDS){if(tc>=b[0])m=b[1];}return m;};
+    const f=n=>'£'+n.toFixed(2);
+    const f0=n=>'£'+Math.round(n).toLocaleString();
+    // sell unit for a branded line at break i (item+deco combined, setup in total, min £60 profit)
+    function sellUnit(deco,setupTotal,i){const q=BREAKS[i];const tc=(UNBRANDED[i]+deco)*q+setupTotal;let ts=tc*markup(tc);if(ts-tc<60)ts=tc+60;return ts/q;}
+    function unbrandedSell(i){const q=BREAKS[i];const tc=UNBRANDED[i]*q;let ts=tc*markup(tc);if(ts-tc<60)ts=tc+60;return ts/q;}
+    const COUNTRIES=[{name:'United Kingdom',def:true,mult:1},{name:'Ireland (ROI)',mult:1.8},{name:'France',mult:2.3}];
+    let selCo=0, coExpanded=false;
+    function deliveryCost(i,mult){const q=BREAKS[i];return 20*(1+0.35*Math.floor(q/500))*(mult||1);}
+    function delivery(i,mult){return Math.round(deliveryCost(i,mult)*1.25);}
+    function unbrandedProfit(i){return unbrandedSell(i)-UNBRANDED[i];}
+    function unbrandedProfitTotal(i){return unbrandedProfit(i)*BREAKS[i];}
+    const th=i=>'<th'+(i===HLI?' class="hl"':'')+'>'+BREAKS[i].toLocaleString()+'+</th>';
+    function render(mode){
+      const sell=mode==='sell';
+      let h='<thead><tr><th>'+(sell?'Sell / unit':'Cost / unit')+'</th>'+BREAKS.map((b,i)=>th(i)).join('')+'</tr></thead><tbody>';
+      const two=document.getElementById('mx2sup').checked;
+      // product (unbranded) section
+      if(two) h+='<tr class="suphdr prod"><td colspan="10">Product supplier · <b>BagWorks UK</b> — supplies the blank, dispatched to the decorator</td></tr>';
+      h+='<tr class="unbranded"><td>Unbranded item</td>'+UNBRANDED.map((c,i)=>'<td'+(i===HLI?' class="hl"':'')+'>'+f(sell?unbrandedSell(i):c)+'</td>').join('')+'</tr>';
+      if(two) h+='<tr class="deliv prod"><td>Delivery — blanks to decorator '+(sell?'· sell':'· cost')+'</td>'+BREAKS.map((b,i)=>'<td'+(i===HLI?' class="hl"':'')+'>'+(sell?f0(Math.round(deliveryCost(i)*0.6*1.25)):f(deliveryCost(i)*0.6))+'</td>').join('')+'</tr>';
+      // branding section
+      if(two) h+='<tr class="suphdr brand"><td colspan="10">Branding supplier · <b>PrintHouse Studio</b> — decorates &amp; dispatches finished goods</td></tr>';
+      for(const m of METHODS){
+        h+='<tr class="methodrow"><td colspan="10"><b>'+m.name+'</b> <span class="code">('+m.code+')</span></td></tr>';
+        for(const r of m.rows){
+          h+='<tr><td>'+r.label+'</td>'+r.c.map((c,i)=>'<td'+(i===HLI?' class="hl"':'')+'>'+f(sell?sellUnit(c,m.setupTotal,i):c)+'</td>').join('')+'</tr>';
+        }
+        h+='<tr class="setup"><td colspan="10">'+(sell?'Setup absorbed into sell price ('+m.setup+')':'Setup charge '+m.setup.replace(' setup','').replace(' / colour','/colour').replace(' digitising',' (digitising)'))+'</td></tr>';
+      }
+      // delivery + profit rows
+      const delRow=(co,idx,header)=>{ const onSel=idx===selCo; return '<tr class="deliv'+(onSel?' selco':'')+(header?' delhead':'')+'" data-co="'+idx+'"><td>'+(header?'<span class="caret">'+(coExpanded?'▾':'▸')+'</span>':'<span class="caret"></span>')+'Delivery · '+co.name+(idx===0?' (default)':'')+(onSel?' · selected':'')+' '+(sell?'· sell':'· cost')+'</td>'+BREAKS.map((b,i)=>'<td'+(i===HLI?' class="hl"':'')+'>'+(sell?f0(delivery(i,co.mult)):f(deliveryCost(i,co.mult)))+'</td>').join('')+'</tr>'; };
+      h+=delRow(COUNTRIES[selCo],selCo,true);
+      if(coExpanded){ COUNTRIES.forEach((co,idx)=>{ if(idx!==selCo) h+=delRow(co,idx,false); }); h+='<tr class="addco"><td colspan="10"><button type="button" id="mxAddCo">+ Add delivery country</button></td></tr>'; }
+      h+='<tr class="profit"><td>Profit / unit '+(sell?'':'(sell only)')+'</td>'+BREAKS.map((b,i)=>'<td'+(i===HLI?' class="hl"':'')+'>'+(sell?f(unbrandedProfit(i)):'—')+'</td>').join('')+'</tr>';
+      h+='<tr class="profit total"><td>Profit total</td>'+BREAKS.map((b,i)=>'<td'+(i===HLI?' class="hl"':'')+'>'+(sell?f0(unbrandedProfitTotal(i)):'—')+'</td>').join('')+'</tr>';
+      h+='</tbody>';
+      document.getElementById('mxTable').innerHTML=h;
+    }
+    const btn=document.getElementById('mxToggle');
+    btn.addEventListener('click',()=>{const next=btn.dataset.mode==='cost'?'sell':'cost';btn.dataset.mode=next;btn.classList.toggle('on',next==='sell');document.getElementById('mxToggleLbl').textContent=next==='sell'?'Show costs':'Show sell prices';document.getElementById('mxLegend').innerHTML=next==='sell'?'Showing customer <b>sell</b> per unit (cost × markup)':'Showing supplier <b>cost</b> per unit';render(next);});
+    document.getElementById('mx2sup').addEventListener('change',()=>render(btn.dataset.mode));
+    document.getElementById('mxTable').addEventListener('click',e=>{ if(e.target&&e.target.id==='mxAddCo'){ const n=prompt('Delivery country name:'); if(!n) return; const m=parseFloat(prompt('Cost multiplier vs UK (e.g. 1.8):','2')); COUNTRIES.push({name:n.trim(),mult:isNaN(m)?2:m}); coExpanded=true; render(btn.dataset.mode); return; } const row=e.target.closest&&e.target.closest('tr.deliv'); if(row){ if(row.classList.contains('delhead')){ coExpanded=!coExpanded; } else { selCo=+row.dataset.co; coExpanded=false; } render(btn.dataset.mode); } });
+    render('cost');
+  })();
+  </script>
+
+  <div class="card pad" style="margin-top:14px">
+    <h3 style="margin:0 0 4px;font-family:var(--serif);font-weight:500;font-size:19px">Locked prices — distributor override</h3>
+    <p class="sub" style="margin-bottom:14px">The distributor can <b>lock specific prices</b> against a product's costs for a chosen <b>branding</b> across a <b>selected quantity window</b>. Within that window the locked prices override the matrix; quantities above or below still use the matrix as normal.</p>
+    <div class="note-concept" style="margin:0 0 14px">These locked prices apply <b>only to this project, product &amp; branding</b> — they are not site-wide and do not carry to other projects, products or branding setups.</div>
+    <div class="note-concept" style="margin:0 0 14px">The customer only sees the <b>locked quantities chosen</b> — any breaks still using the standard matrix price are hidden, so the customer's quantity range is restricted to the locked window.</div>
+    <div style="display:flex;gap:10px;align-items:center;margin:0 0 12px;flex-wrap:wrap"><span class="pill">Front · Screenprint · 1 colour · locked window 100–1,000</span><label class="mx-2sup">Delivery country <select id="lkCo" style="font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:5px 9px;margin-left:4px"><option>United Kingdom</option><option>Ireland (ROI)</option><option>France</option><option value="__add">+ Add delivery country…</option></select></label><button class="mx-toggle" id="lkAll" data-on="0"><span class="mx-dot"></span>Show all prices</button><label class="mx-2sup"><input type="checkbox" id="lk2sup"> Two-supplier</label><button class="mx-revert" id="lkRevert" hidden>↺ Revert to defaults</button><button class="mx-toggle" id="lkReq"><span class="mx-dot"></span>Request quote check</button></div>
+    <div class="lk-reqstatus" id="lkReqStatus" hidden></div>
+    <div class="lk-quotes" id="lkQuotes">
+      <div class="lk-quote single"><span class="lk-qrole">Quote provided by</span><div class="lk-qfields"><input class="lk-qf" value="Sarah Hill" aria-label="Contact name"><input class="lk-qf" value="MerchCo Supplies" aria-label="Supplier"><input class="lk-qf" value="12/06/26 14:32" aria-label="Date & time"><input class="lk-qf" value="Quote #Q-48817" aria-label="Quote ref"></div></div>
+      <div class="lk-quote two-only"><span class="lk-qrole">Product quote provided by</span><div class="lk-qfields"><input class="lk-qf" value="Tom Reed" aria-label="Contact name"><input class="lk-qf" value="BagWorks UK" aria-label="Supplier"><input class="lk-qf" value="11/06/26 09:15" aria-label="Date & time"><input class="lk-qf" value="Quote #Q-48790" aria-label="Quote ref"></div></div>
+      <div class="lk-quote two-only"><span class="lk-qrole">Branding quote provided by</span><div class="lk-qfields"><input class="lk-qf" value="Sarah Hill" aria-label="Contact name"><input class="lk-qf" value="PrintHouse Studio" aria-label="Supplier"><input class="lk-qf" value="12/06/26 14:32" aria-label="Date & time"><input class="lk-qf" value="Quote #Q-48817" aria-label="Quote ref"></div></div>
+    </div>
+    <div class="card" style="margin-top:4px">
+      <table class="mx" id="lkTable">
+        <thead><tr><th>Cost component</th><th>50+</th><th>100+</th><th>250+</th><th>500+</th><th>1000+</th><th>2500+</th><th>5000+</th><th>10000+</th><th>20000+</th></tr></thead>
+        <tbody>
+          <tr class="suphdr prod lk-2only"><td colspan="10">Product supplier · <b>BagWorks UK</b> — quote by Tom Reed · 11/06/26 09:15 · #Q-48790</td></tr>
+          <tr class="lk-edit" data-r="cUnb"><td>Unbranded item / unit</td><td>£3.10</td><td>£2.74</td><td>£2.45</td><td>£2.18</td><td>£1.98</td><td>£1.82</td><td>£1.70</td><td>£1.61</td><td>£1.55</td></tr>
+          <tr class="sellrow lk-extra lk-edit" data-r="sUnb"><td>↳ sell / unit</td><td>—</td><td>£4.22</td><td>£3.41</td><td>£2.96</td><td>£2.69</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="suphdr brand lk-2only"><td colspan="10">Branding supplier · <b>PrintHouse Studio</b> — quote by Sarah Hill · 12/06/26 14:32 · #Q-48817</td></tr>
+          <tr class="lk-edit" data-r="cDeco"><td>Screenprint · 1 colour / unit</td><td>£0.67</td><td>£0.43</td><td>£0.31</td><td>£0.21</td><td>£0.17</td><td>£0.15</td><td>£0.13</td><td>£0.13</td><td>£0.13</td></tr>
+          <tr class="sellrow lk-extra lk-edit" data-r="sDeco"><td>↳ sell / unit</td><td>—</td><td>£0.66</td><td>£0.43</td><td>£0.29</td><td>£0.23</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="lk-edit setup-row" data-r="cSetup"><td>Setup charge · one-off <span class="muted" style="font-weight:600">(spread into unit price)</span></td><td>£25.00</td><td>£25.00</td><td>£25.00</td><td>£25.00</td><td>£25.00</td><td>£25.00</td><td>£25.00</td><td>£25.00</td><td>£25.00</td></tr>
+          <tr class="sellrow lk-extra lk-edit" data-r="sSetup"><td>↳ sell (×1.35, ↑£5)</td><td>£35.00</td><td>£35.00</td><td>£35.00</td><td>£35.00</td><td>£35.00</td><td>£35.00</td><td>£35.00</td><td>£35.00</td><td>£35.00</td></tr>
+          <tr class="deliv selco lk-edit" data-co="uk" data-r="cDeliv"><td>Delivery · United Kingdom · selected</td><td>£20.00</td><td>£20.00</td><td>£20.00</td><td>£27.00</td><td>£34.00</td><td>£55.00</td><td>£90.00</td><td>£160.00</td><td>£300.00</td></tr>
+          <tr class="sellrow lk-extra lk-edit" data-r="sDeliv"><td>↳ sell (×1.25)</td><td>£25.00</td><td>£25.00</td><td>£25.00</td><td>£34.00</td><td>£43.00</td><td>£69.00</td><td>£113.00</td><td>£200.00</td><td>£375.00</td></tr>
+          <tr class="locked" data-r="tCost"><td>Locked total / unit · cost <span class="muted" style="font-weight:600">(incl. setup)</span></td><td>—</td><td><b>£3.42</b></td><td><b>£2.86</b></td><td><b>£2.44</b></td><td><b>£2.18</b></td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="sellrow lk-extra" data-r="tSell"><td>Locked total / unit · sell <span class="muted" style="font-weight:600">(incl. setup)</span></td><td>—</td><td><b>£5.27</b></td><td><b>£3.98</b></td><td><b>£3.32</b></td><td><b>£2.96</b></td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="profit lk-extra" data-r="pUnit"><td>Profit / unit</td><td>—</td><td>£1.85</td><td>£1.12</td><td>£0.88</td><td>£0.78</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="profit total lk-extra" data-r="pTot"><td>Profit total</td><td>—</td><td>£185</td><td>£280</td><td>£440</td><td>£780</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="applies"><td>Applies</td><td>Matrix</td><td>Locked</td><td>Locked</td><td>Locked</td><td>Locked</td><td>Matrix</td><td>Matrix</td><td>Matrix</td><td>Matrix</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2><span class="num">2</span>From cost to the customer's unit price</h2>
+  <p class="sub">The unit price in the slider is the <b>sell</b> price. It's built from the supplier <b>total cost</b> (item + decoration + setup), a banded <b>markup</b> on that total, then divided back to a per-unit figure. Setup is absorbed into the unit sell price, not shown as a line.</p>
+  <div class="note-concept" style="margin:0 0 16px">⚑ <b>Once a price is approved it is locked and cannot be changed</b> — to amend it, the customer must reopen it (Request changes) and approve the new price again. <b>Prices expire after 30 days by default</b> (distributor-configurable); on expiry the line returns to <b>Being checked</b> for re-quoting.</div>
+  <div class="cols">
+    <div class="card pad">
+      <h3 style="margin:0 0 4px;font-family:var(--serif);font-weight:500;font-size:19px">Worked example — Screenround, 2 colours, 1,000 units</h3>
+      <p class="muted" style="margin:0 0 12px">Front print, 2 colours.</p>
+      <div class="calc">
+        <div class="line"><span class="k">Unbranded item · 1,000 break</span><span class="v">£1.98 × 1000 = £1,980.00</span></div>
+        <div class="line"><span class="k">Decoration · 2 colours · 1,000 break</span><span class="v">£0.28 × 1000 = £280.00</span></div>
+        <div class="line"><span class="k">Setup · £25 × 2 colours</span><span class="v">£50.00</span></div>
+        <div class="line total"><span class="k">Total supplier cost</span><span class="v">£2,310.00</span></div>
+        <div class="line"><span class="k">Markup (total cost over £1,000 band)</span><span class="v">× 1.36</span></div>
+        <div class="line total"><span class="k">Total sell price</span><span class="v">£3,141.60</span></div>
+        <div class="line"><span class="k">Distributor profit (sell − cost)</span><span class="v" style="color:var(--green-deep)">£831.60</span></div>
+        <div class="line"><span class="k">Unit sell price (÷ 1,000)</span><span class="v"><span class="pill">£3.14 / unit</span></span></div>
+        <div class="line muted"><span class="k">Profit / unit</span><span class="v" style="color:var(--green-deep)">£0.83</span></div>
+      </div>
+      <div class="eq">unit = ( (item + deco)·qty + setup ) × markup ÷ qty</div>
+    </div>
+    <div class="card pad">
+      <h3 style="margin:0 0 10px;font-family:var(--serif);font-weight:500;font-size:19px">Markup bands (on total cost)</h3>
+      <table class="mini">
+        <thead><tr><th>Total cost over</th><th>Markup ×</th><th>Min. profit (£)</th></tr></thead>
+        <tbody>
+          <tr><td>£0</td><td><b>2.20</b></td><td>60.00</td></tr>
+          <tr><td>£60</td><td><b>2.00</b></td><td>—</td></tr>
+          <tr><td>£100</td><td><b>1.74</b></td><td>—</td></tr>
+          <tr><td>£150</td><td><b>1.67</b></td><td>—</td></tr>
+          <tr><td>£250</td><td><b>1.56</b></td><td>—</td></tr>
+          <tr><td>£300</td><td><b>1.54</b></td><td>—</td></tr>
+          <tr><td>£400</td><td><b>1.49</b></td><td>—</td></tr>
+          <tr><td>£500</td><td><b>1.45</b></td><td>—</td></tr>
+          <tr><td>£600</td><td><b>1.41</b></td><td>—</td></tr>
+          <tr><td>£700</td><td><b>1.39</b></td><td>—</td></tr>
+          <tr><td>£800</td><td><b>1.38</b></td><td>—</td></tr>
+          <tr><td>£900</td><td><b>1.37</b></td><td>—</td></tr>
+          <tr><td>£1,000</td><td><b>1.36</b></td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p class="muted" style="margin-top:11px">Distributor-editable. A single <b>minimum profit floor of £60</b> protects the smallest orders; above that the markup % alone applies. Setup is inside the total cost, so it's marked up too — then absorbed into the per-unit sell figure.</p>
+    </div>
+  </div>
+
+  <h2><span class="num">3</span>Delivery — separate, scales with quantity</h2>
+  <p class="sub">Delivery is <b>not</b> in the unit price — it's a separate line that rises with quantity (more boxes / pallets) as the slider moves. The supplier delivery cost is marked up <b>25%</b> and <b>rounded to the nearest £</b>.</p>
+  <div class="card pad">
+    <table class="mini" style="max-width:680px">
+      <thead><tr><th>Per unit / break</th><th>250</th><th>1,000</th><th>2,500</th><th>5,000</th><th>10,000</th></tr></thead>
+      <tbody>
+        <tr><td>Supplier delivery</td><td>£16.00</td><td>£28.40</td><td>£52.00</td><td>£94.80</td><td>£171.20</td></tr>
+        <tr><td>+25%</td><td>£20.00</td><td>£35.50</td><td>£65.00</td><td>£118.50</td><td>£214.00</td></tr>
+        <tr class="profit"><td>Charged (rounded)</td><td><b>£20</b></td><td><b>£36</b></td><td><b>£65</b></td><td><b>£119</b></td><td><b>£214</b></td></tr>
+      </tbody>
+    </table>
+    <div class="eq" style="max-width:680px">delivery = round( supplierDelivery(qty) × 1.25 )</div>
+    <p class="sub" style="margin:14px 0 0"><b>Setup charge:</b> marked up <b>×1.35</b> and rounded <b>up to the nearest £5</b> (e.g. £25.00 cost → £33.75 → <b>£35.00</b> sell). Like delivery, it's a one-off and not part of the per-unit price, but it is spread into the unit sell price shown in the locked matrix.</p>
+    <div class="eq" style="max-width:680px">setup sell = roundUpTo5( setupCost × 1.35 )</div>
+  </div>
+
+  <h2><span class="num">4</span>Additional charges (ad-hoc)</h2>
+  <p class="sub">Both sides can add ad-hoc line items — e.g. an <b>express fee</b>, <b>additional design services</b>, sampling or carriage surcharges. The <b>supplier</b> adds charges to the <b>distributor</b> (cost); the <b>distributor</b> adds charges to the <b>customer</b> (sell). Each line has a title, description, quantity and unit price; totals calculate live.</p>
+  <div class="card pad">
+    <div class="ac-hd">Supplier → distributor <span class="ac-tag" style="background:#8246af">Cost</span></div>
+    <table class="mx" id="acSupTable" style="min-width:0">
+      <thead><tr><th style="width:24%">Charge</th><th style="width:40%">Description</th><th style="width:90px">Qty</th><th style="width:110px">Unit cost</th><th style="width:110px">Line cost</th><th style="width:40px"></th></tr></thead>
+      <tbody id="acSupBody"></tbody>
+      <tfoot><tr><td colspan="4" style="text-align:right;font-weight:700;color:var(--ink-2)">Supplier charges total</td><td style="font-weight:800;color:var(--ink)" id="acSupCost">£0.00</td><td></td></tr></tfoot>
+    </table>
+    <button class="ac-add" id="acSupAdd">+ Add supplier charge</button>
+    <p class="muted" style="margin:12px 0 0">The supplier enters their cost; these feed the distributor's cost view.</p>
+
+    <div class="ac-hd" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--line-soft)">Distributor → customer <span class="ac-tag">Sell</span></div>
+    <table class="mx" id="acTable" style="min-width:0">
+      <thead><tr><th style="width:22%">Charge</th><th style="width:38%">Description</th><th style="width:90px">Qty</th><th style="width:110px">Unit price</th><th style="width:110px">Line total</th><th style="width:40px"></th></tr></thead>
+      <tbody id="acBody"></tbody>
+      <tfoot><tr><td colspan="4" style="text-align:right;font-weight:700;color:var(--ink-2)">Additional charges total</td><td style="font-weight:800;color:var(--ink)" id="acTotal">£0.00</td><td></td></tr></tfoot>
+    </table>
+    <button class="ac-add" id="acAdd">+ Add charge</button>
+    <p class="muted" style="margin:12px 0 0">Distributor-only to edit. The customer sees the agreed line items and the total on their quote.</p>
+  </div>
+  <script>
+  (function(){
+    const f=n=>'£'+(n||0).toFixed(2);
+    // supplier → distributor
+    const sBody=document.getElementById('acSupBody');
+    if(sBody){
+      const MK=1.35;
+      let SUP=[ {t:'Rush production',d:'Pull-forward on the press schedule',q:1,u:120}, {t:'Courier upgrade',d:'Pre-10:30 next-day on the blanks',q:1,u:38} ];
+      const srow=(c,i)=>`<tr data-i="${i}">
+        <td><input class="ac-in" data-k="t" value="${(c.t||'').replace(/"/g,'&quot;')}" placeholder="Title"></td>
+        <td><input class="ac-in" data-k="d" value="${(c.d||'').replace(/"/g,'&quot;')}" placeholder="Description"></td>
+        <td><input class="ac-in ac-num" data-k="q" type="number" min="1" value="${c.q}"></td>
+        <td><input class="ac-in ac-num" data-k="u" type="number" min="0" step="0.01" value="${c.u}"></td>
+        <td class="ac-lc" style="font-weight:700">${f(c.q*c.u)}</td>
+        <td><button class="ac-del" title="Remove">&times;</button></td></tr>`;
+      const sdraw=()=>{ sBody.innerHTML=SUP.map(srow).join(''); stot(); };
+      const stot=()=>{ const c=SUP.reduce((a,x)=>a+(+x.q||0)*(+x.u||0),0); document.getElementById('acSupCost').textContent=f(c); };
+      sBody.addEventListener('input',e=>{ const tr=e.target.closest('tr'); if(!tr)return; const i=+tr.dataset.i,k=e.target.dataset.k; SUP[i][k]=e.target.classList.contains('ac-num')?parseFloat(e.target.value)||0:e.target.value; if(k==='q'||k==='u'){ const lc=(+SUP[i].q||0)*(+SUP[i].u||0); tr.querySelector('.ac-lc').textContent=f(lc); stot(); } });
+      sBody.addEventListener('click',e=>{ const d=e.target.closest('.ac-del'); if(d){ SUP.splice(+d.closest('tr').dataset.i,1); sdraw(); } });
+      document.getElementById('acSupAdd').onclick=()=>{ SUP.push({t:'',d:'',q:1,u:0}); sdraw(); };
+      sdraw();
+    }
+    // distributor → customer
+    const body=document.getElementById('acBody'); if(!body) return;
+    let SEED=[
+      {t:'Express fee',d:'1-week turnaround vs standard 3 weeks',q:1,u:200},
+      {t:'Additional design services',d:'Bespoke artwork origination — 2 hrs',q:2,u:45}
+    ];
+    function row(c,i){ return `<tr data-i="${i}">
+      <td><input class="ac-in" data-k="t" value="${(c.t||'').replace(/"/g,'&quot;')}" placeholder="Title"></td>
+      <td><input class="ac-in" data-k="d" value="${(c.d||'').replace(/"/g,'&quot;')}" placeholder="Description"></td>
+      <td><input class="ac-in ac-num" data-k="q" type="number" min="1" value="${c.q}"></td>
+      <td><input class="ac-in ac-num" data-k="u" type="number" min="0" step="0.01" value="${c.u}"></td>
+      <td class="ac-lt" style="font-weight:700">${f(c.q*c.u)}</td>
+      <td><button class="ac-del" title="Remove">&times;</button></td></tr>`; }
+    function draw(){ body.innerHTML=SEED.map(row).join(''); total(); }
+    function total(){ const t=SEED.reduce((a,c)=>a+(+c.q||0)*(+c.u||0),0); document.getElementById('acTotal').textContent=f(t); }
+    body.addEventListener('input',e=>{ const tr=e.target.closest('tr'); if(!tr)return; const i=+tr.dataset.i; const k=e.target.dataset.k; SEED[i][k]=e.target.classList.contains('ac-num')?parseFloat(e.target.value)||0:e.target.value; if(k==='q'||k==='u'){ tr.querySelector('.ac-lt').textContent=f((+SEED[i].q||0)*(+SEED[i].u||0)); total(); } });
+    body.addEventListener('click',e=>{ const d=e.target.closest('.ac-del'); if(d){ SEED.splice(+d.closest('tr').dataset.i,1); draw(); } });
+    document.getElementById('acAdd').onclick=()=>{ SEED.push({t:'',d:'',q:1,u:0}); draw(); };
+    draw();
+  })();
+  </script>
+
+  <h2><span class="num">5</span>Distributor discounts</h2>
+  <p class="sub">The distributor can apply discounts that reduce the customer sell price (and their profit). They stack/resolve by specificity, most-specific winning. Some are defined in <b>Distributor settings</b>, others set on the project/product.</p>
+  <div class="card pad">
+    <table class="mini" style="max-width:760px">
+      <thead><tr><th>Discount level</th><th>Set where</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td><b>Site-wide</b></td><td>Distributor settings</td><td>5% off everything (promo)</td></tr>
+        <tr><td><b>Category</b></td><td>Distributor settings</td><td>10% off “Tech” products</td></tr>
+        <tr><td><b>Per customer</b></td><td>Customer organisation settings</td><td>Acme Ltd · 7.5% standing</td></tr>
+        <tr><td><b>Per project</b></td><td>On the project</td><td>Autumn Giveaways · 3%</td></tr>
+        <tr><td><b>Per product</b></td><td>On the product line</td><td>This line · 2.5% off</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin-top:11px">Resolution: <b>per-product → per-project → per-customer → category → site-wide</b> (most specific wins, or they combine — your call). The discount shows on the customer price as a saving and reduces the distributor profit accordingly.</p>
+  </div>
+
+  <h2><span class="num">6</span>Customer price-break savings</h2>
+  <p class="sub">Shown <b>under the customer prices only</b> — a single row for the <b>exact branding chosen</b> (position, method, print colours), so the customer can see how the unit price drops at higher quantities and what they'd save by ordering more.</p>
+  <div class="card pad">
+    <p class="pill" style="margin:0 0 12px">Front · Screenprint · 2 colours</p>
+    <table class="mini" style="max-width:1000px">
+      <thead><tr><th>Per unit / break</th><th>250</th><th>500</th><th>1,000 (current)</th><th>2,500</th><th>5,000</th></tr></thead>
+      <tbody>
+        <tr><td>Unit price</td><td><b>£5.21</b></td><td><b>£4.36</b></td><td class="hl"><b>£3.14</b></td><td><b>£3.34</b></td><td><b>£3.02</b></td></tr>
+        <tr><td>Line total</td><td>£1,302.50</td><td>£2,180.00</td><td class="hl">£3,140.00</td><td>£8,350.00</td><td>£15,100.00</td></tr>
+        <tr><td>You save / unit</td><td>—</td><td>£0.85</td><td class="hl">£2.07</td><td>£1.87</td><td>£2.19</td></tr>
+        <tr class="profit"><td>You save</td><td>—</td><td>£425.00</td><td class="hl">£2,070.00</td><td>£4,675.00</td><td>£10,950.00</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin-top:11px">“You save” is versus the smallest break's unit price. Distributor-only figures (cost, markup, profit) never appear here.</p>
+  </div>
+
+  <h2><span class="num">7</span>Customer-facing — slider, savings &amp; discount</h2>
+  <p class="sub">How the three customer modules behave as the quantity changes. Drag the slider — all three update live. Distributor-only figures never appear here.</p>
+  <div class="card pad">
+    <div class="cust-pill">Front · Screenprint · 2 colours · 10% project discount</div>
+
+    <!-- 1) Price slider -->
+    <div class="cust-mod">
+      <div class="cust-modh">1 · Quantity</div>
+      <div class="cust-sliderrow">
+        <input type="range" id="cuRange" min="0" max="4" step="1" value="2">
+        <output id="cuQty" class="cust-qty">1,000</output>
+      </div>
+      <div class="cust-ticks" id="cuTicks"></div>
+    </div>
+
+    <!-- 3) Unit discount with struck pre-discount price -->
+    <div class="cust-mod">
+      <div class="cust-modh">2 · Your unit price</div>
+      <div class="cust-priceline">
+        <span class="cust-was" id="cuWas">£3.49</span>
+        <span class="cust-now" id="cuNow">£3.14</span>
+        <span class="cust-each">/ unit</span>
+        <span class="cust-disc" id="cuDisc">10% off</span>
+      </div>
+      <div class="cust-linetotal">Line total <b id="cuTotal">£3,140.00</b></div>
+    </div>
+
+    <!-- 2) Discount savings as quantity grows -->
+    <div class="cust-mod">
+      <div class="cust-modh">3 · The more you order, the more you save</div>
+      <div class="cust-saverow">
+        <div class="cust-savebox"><span id="cuSaveUnit">£2.07</span><small>saved / unit vs 250</small></div>
+        <div class="cust-savebox big"><span id="cuSaveTot">£2,070</span><small>total saving</small></div>
+        <div class="cust-savebox next" id="cuNextBox"><span id="cuNext">£0.20 less / unit</span><small id="cuNextLbl">if you order 2,500</small></div>
+      </div>
+    </div>
+
+    <!-- 4) Delivery -->
+    <div class="cust-mod">
+      <div class="cust-modh">4 · Delivery</div>
+      <div class="cust-priceline"><span class="cust-now" style="font-size:24px" id="cuDeliv">£36</span><span class="cust-each">to United Kingdom · scales with quantity</span></div>
+      <div class="cust-linetotal"><a href="#" style="color:var(--periwinkle-deep);font-weight:700;text-decoration:none">Change country ›</a></div>
+    </div>
+
+    <!-- 5) Additional costs -->
+    <div class="cust-mod">
+      <div class="cust-modh">5 · Additional costs</div>
+      <div id="cuAddl"></div>
+      <div class="cust-linetotal" style="margin-top:10px">Additional total <b id="cuAddlTot">£290.00</b></div>
+    </div>
+  </div>
+  <script>
+  (function(){
+    const BREAKS=[250,500,1000,2500,5000];
+    const BASE=[5.21,4.36,3.49,3.71,3.36];   // pre-discount unit
+    const DISC=0.10;                          // 10% project discount
+    const f=n=>'£'+n.toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const f0=n=>'£'+Math.round(n).toLocaleString();
+    const rng=document.getElementById('cuRange');
+    const ticks=document.getElementById('cuTicks');
+    ticks.innerHTML=BREAKS.map((b,i)=>'<span class="'+(i==rng.value?'on':'')+'">'+b.toLocaleString()+'</span>').join('');
+    const DELIV=[20,27,36,55,90];
+    const ADDL=[{t:'Express fee · 1-week turnaround',v:200},{t:'Additional design services · 2 hrs',v:90}];
+    function net(i){ return BASE[i]*(1-DISC); }
+    function render(){
+      const i=+rng.value, q=BREAKS[i];
+      document.getElementById('cuQty').textContent=q.toLocaleString();
+      document.getElementById('cuWas').textContent=f(BASE[i]);
+      document.getElementById('cuNow').textContent=f(net(i));
+      document.getElementById('cuDisc').textContent=Math.round(DISC*100)+'% off';
+      document.getElementById('cuTotal').textContent=f(net(i)*q);
+      // savings vs smallest break (250)
+      const baseUnit=net(0);
+      const saveUnit=baseUnit-net(i), saveTot=saveUnit*q;
+      document.getElementById('cuSaveUnit').textContent=saveUnit>0?f(saveUnit):'—';
+      document.getElementById('cuSaveTot').textContent=saveTot>0?f0(saveTot):'—';
+      // next-break incentive
+      const nb=document.getElementById('cuNextBox');
+      if(i<BREAKS.length-1){ nb.style.display=''; const d=net(i)-net(i+1); document.getElementById('cuNext').textContent=(d>0?f(d):'£0.00')+' less / unit'; document.getElementById('cuNextLbl').textContent='if you order '+BREAKS[i+1].toLocaleString(); }
+      else nb.style.display='none';
+      // delivery (scales with qty)
+      document.getElementById('cuDeliv').textContent=f0(DELIV[i]);
+      [...ticks.children].forEach((t,k)=>t.classList.toggle('on',k===i));
+    }
+    // additional costs (fixed line items)
+    document.getElementById('cuAddl').innerHTML=ADDL.map(a=>`<div class="cust-linetotal" style="display:flex;justify-content:space-between;margin-top:0;padding:5px 0"><span>${a.t}</span><b>${f(a.v)}</b></div>`).join('');
+    document.getElementById('cuAddlTot').textContent=f(ADDL.reduce((s,a)=>s+a.v,0));
+    rng.addEventListener('input',render); render();
+  })();
+  </script>
+
+  <h2><span class="num">8</span>How it drives the slider</h2>
+  <div class="card pad">
+    <ol class="steps">
+      <li>The chosen <b>method + colour count</b> (from the branding builder) selects the matrix row; the slider <b>quantity</b> selects the break column.</li>
+      <li>Item + decoration + setup at that break → <b>total supplier cost</b>.</li>
+      <li>Apply the <b>markup band</b> for that cost (respecting the min-profit floor) → total sell, ÷ qty → <b>unit sell price</b> shown on the slider and in the customer's table.</li>
+      <li><b>Delivery</b> is calculated separately (×1.25, rounded) and shown as its own line — it doesn't affect the unit price.</li>
+      <li>Any quantity that falls <b>between breaks</b> uses the <b>closest break below</b> the chosen quantity — for both the <b>unit price</b> and the <b>delivery cost</b>.</li>
+    </ol>
+  </div>
+
+  <h2><span class="num">9</span>Sample pricing</h2>
+  <p class="sub">Samples are priced per type (<b>unbranded</b> and <b>branded</b>). Each sample's <b>cost</b> can be a fixed price, a <b>quote requested from the supplier</b>, or <b>free</b>. The <b>sell</b> price applies a markup rule — the same shape as setup costs: <b>×1.35, minimum +£5 uplift</b>.</p>
+  <div class="cols">
+    <div class="card pad">
+      <h3 style="margin:0 0 10px;font-family:var(--serif);font-weight:500;font-size:19px">The three cost modes</h3>
+      <table class="mini">
+        <thead><tr><th>Cost mode</th><th>Cost</th><th>Sell (×1.35, min +£5)</th></tr></thead>
+        <tbody>
+          <tr><td><b>Cost price</b> — e.g. £8.45</td><td>£8.45</td><td>£13.45</td></tr>
+          <tr><td><b>Cost price</b> — e.g. £45.00</td><td>£45.00</td><td>£60.75</td></tr>
+          <tr><td><b>Request quote</b> from supplier</td><td>TBC</td><td>Price on request</td></tr>
+          <tr><td><b>Free</b></td><td>£0.00</td><td>Free</td></tr>
+        </tbody>
+      </table>
+      <div class="eq">sample sell = max( cost × 1.35, cost + £5 )</div>
+    </div>
+    <div class="card pad">
+      <h3 style="margin:0 0 10px;font-family:var(--serif);font-weight:500;font-size:19px">In the modal — Sample tab</h3>
+      <ul style="margin:0;padding-left:20px">
+        <li class="sub" style="margin-bottom:8px"><b>Distributor</b> sets the mode per sample type: Cost price (enter £), Request quote, or Free — and sees the <b>Cost → Markup → Sell</b> breakdown.</li>
+        <li class="sub" style="margin-bottom:8px"><b>Customer</b> sees only the resulting <b>sell price</b> (or “Free” / “Price on request”), plus the lead time.</li>
+        <li class="sub" style="margin-bottom:0">A <b>branded</b> sample still requires the design to be approved before it can be ordered.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2><span class="num">10</span>Decisions I'd need</h2>
+  <div class="card pad">
+    <ul style="margin:0;padding-left:20px">
+      <li style="margin-bottom:8px;color:var(--ink-2)">Customer sees the <b>unit sell price + delivery</b> only — confirm the matrix &amp; markup stay distributor-only.</li>
+      <li style="margin-bottom:8px;color:var(--ink-2)">Are markup bands keyed on <b>total cost</b> (as shown) or per-unit cost?</li>
+      <li style="margin-bottom:8px;color:var(--ink-2)">Should the <b>min-profit floor</b> apply, and is it £ or %?</li>
+      <li style="color:var(--ink-2)">Delivery rounding — nearest £ (shown) or always round up?</li>
+    </ul>
+  </div>
+</div>
+<script>
+(function(){
+  const tbl=document.getElementById('lkTable'), btn=document.getElementById('lkAll');
+  if(btn) btn.addEventListener('click',()=>{ const on=btn.dataset.on==='0'; btn.dataset.on=on?'1':'0'; btn.classList.toggle('on',on); tbl.classList.toggle('show-all',on); });
+  const co=document.getElementById('lkCo');
+  const DELIV={ 'United Kingdom':['£20.00','£20.00','£20.00','£27.00','£34.00'], 'Ireland (ROI)':['£36.00','£36.00','£36.00','£49.00','£61.00'], 'France':['£46.00','£46.00','£46.00','£62.00','£78.00'] };
+  if(co) co.addEventListener('change',()=>{
+    if(co.value==='__add'){ const n=prompt('Delivery country name:'); if(!n){ co.selectedIndex=0; co.dispatchEvent(new Event('change')); return; } const m=parseFloat(prompt('Cost multiplier vs UK (e.g. 1.8):','2'))||2; const base=[20,20,20,27,34]; DELIV[n.trim()]=base.map(b=>'£'+(b*m).toFixed(2)); const opt=document.createElement('option'); opt.textContent=n.trim(); co.insertBefore(opt, co.querySelector('option[value="__add"]')); co.value=n.trim(); }
+    const row=tbl.querySelector('tr.deliv.selco'); if(!row) return; const v=DELIV[co.value]||[]; row.querySelector('td').textContent='Delivery · '+co.value+' · selected'; const tds=[...row.querySelectorAll('td')].slice(1); v.forEach((x,i)=>{ if(tds[i]) tds[i].textContent=x; }); });
+})();
+</script>
+<script>
+(function(){
+  const tbl=document.getElementById('lkTable'); if(!tbl) return;
+  const revertBtn=document.getElementById('lkRevert');
+  const heads=[...tbl.querySelectorAll('thead th')];
+  const QCOLS=[1,2,3,4,5,6,7,8,9]; // quantity columns
+  // store defaults + add column checkboxes
+  heads.forEach((th,ci)=>{ if(ci===0){ th.dataset.label=th.textContent; return; }
+    const lbl=th.textContent.replace('+','').trim(); th.innerHTML='<label class="lk-colsel"><input type="checkbox" data-col="'+ci+'"' + (th.classList.contains('hl')?' checked':'') + '></label><input class="lk-qty" type="text" data-col="'+ci+'" value="'+lbl+'">';
+  });
+  tbl.querySelectorAll('tbody tr td').forEach(td=>{ td.dataset.def=td.innerHTML; });
+  function selectedCols(){ return [...tbl.querySelectorAll('thead input[type=checkbox][data-col]')].filter(c=>c.checked).map(c=>+c.dataset.col); }
+  function applyColHighlight(){ const cols=selectedCols();
+    heads.forEach((th,ci)=>th.classList.toggle('colsel',cols.includes(ci)));
+    tbl.querySelectorAll('tbody tr').forEach(tr=>{
+      const sum = tr.classList.contains('locked')||tr.classList.contains('sellrow')||tr.classList.contains('profit');
+      const applies = tr.classList.contains('applies');
+      [...tr.children].forEach((td,ci)=>{
+        if(ci===0) return;
+        const onSel=cols.includes(ci);
+        td.classList.toggle('colsel',onSel);
+        td.classList.toggle('hl',onSel);          // background follows selection
+        if(td.querySelector('input')) return;      // don't clobber edit inputs
+        if(applies){ td.textContent = onSel ? 'Locked' : 'Matrix'; }
+        else if(sum){ td.innerHTML = onSel ? (td.dataset.def||'—') : '—'; }
+      });
+    });
+  }
+  function setEdit(on){
+    const cols=selectedCols();
+    tbl.querySelectorAll('tr.lk-edit').forEach(row=>{
+      [...row.children].forEach((td,ci)=>{
+        if(ci===0) return;
+        if(on && cols.includes(ci)){
+          const cur=td.dataset.def||td.textContent.trim();
+          td.innerHTML='<input class="lk-in" type="text" value="'+(td.dataset.val||'')+'" placeholder="'+cur+'">';
+        } else {
+          const inp=td.querySelector('input');
+          if(inp){ td.dataset.val=inp.value.trim(); td.textContent=inp.value.trim()||td.dataset.def; }
+        }
+      });
+    });
+    tbl.classList.toggle('lk-locking',on);
+  }
+  tbl.addEventListener('change',e=>{ if(e.target.matches('thead input[type=checkbox][data-col]')){ applyColHighlight(); setEdit(false); setEdit(true); } });
+  applyColHighlight();
+  // show all prices on by default; editability driven purely by column selection
+  document.getElementById('lkAll').dataset.on='1'; document.getElementById('lkAll').classList.add('on'); tbl.classList.add('show-all');
+  revertBtn.hidden=false; setEdit(true);
+  revertBtn.addEventListener('click',()=>{ tbl.querySelectorAll('tr.lk-edit td').forEach(td=>{ td.dataset.val=''; const inp=td.querySelector('input'); if(inp){ inp.value=''; } else if(td.dataset.def){ td.textContent=td.dataset.def; } }); });
+})();
+</script>
+<script>
+(function(){
+  const tbl=document.getElementById('lkTable'); const cb=document.getElementById('lk2sup'); const q=document.getElementById('lkQuotes');
+  if(cb) cb.addEventListener('change',()=>{ tbl.classList.toggle('two',cb.checked); if(q) q.classList.toggle('two',cb.checked); });
+})();
+</script>
+
+  <div class="qreq-scrim" id="qreqScrim"><div class="qreq-modal" id="qreqModal"></div></div>
+  <script>
+  (function(){
+    const scrim=document.getElementById('qreqScrim'), modal=document.getElementById('qreqModal');
+    const reqBtn=document.getElementById('lkReq'), statusEl=document.getElementById('lkReqStatus');
+    const CONTACTS=[{n:'Sarah Hill',r:'Account Manager',e:'sarah@printhouse.co',s:'branding'},{n:'Priya Shah',r:'Estimating',e:'priya@printhouse.co',s:'branding'},{n:'Tom Reed',r:'Production',e:'tom@bagworks.co.uk',s:'product'},{n:'Dana Vale',r:'Sales',e:'dana@bagworks.co.uk',s:'product'}];
+    const isTwo=()=>{ const c=document.getElementById('lk2sup'); return !!(c&&c.checked); };
+    let state='idle', sel=new Set();
+    const open=()=>{ scrim.classList.add('open'); document.body.style.overflow='hidden'; };
+    const close=()=>{ scrim.classList.remove('open'); document.body.style.overflow=''; };
+    scrim.addEventListener('click',e=>{ if(e.target===scrim) close(); });
+    function renderReq(){
+      modal.innerHTML='<button class="qreq-x" data-x>×</button><div class="qreq-eyebrow">Quote check</div><div class="qreq-title">Request a price quote from production</div>'
+      +'<div class="qreq-sub">Eco Wheat-Straw Charging Cable · SKU Mp34576</div>'
+      +'<div class="qreq-specbox"><div class="qreq-specrow"><span>Product colour</span><b>Volcanic Black (PMS 345c)</b></div><div class="qreq-specrow"><span>Branding</span><b>Front · Screenprint · 1 colour (White)</b></div><div class="qreq-specrow"><span>Variant / size</span><b>Large · USB-C</b></div></div>'
+      +'<div class="qreq-clabel">Notify contacts to provide the quote</div><div class="qreq-contacts">'
+      + (isTwo()
+          ? ('<div class="qreq-sup">Product supplier · BagWorks UK</div>'
+             + CONTACTS.map((c,i)=>c.s==='product'?'<label class="qreq-contact'+(sel.has(i)?' on':'')+'"><input type="checkbox" data-c="'+i+'"'+(sel.has(i)?' checked':'')+'><span class="qreq-cinfo"><b>'+c.n+'</b><span>'+c.r+' · '+c.e+'</span></span></label>':'').join('')
+             + '<div class="qreq-sup">Branding supplier · PrintHouse Studio</div>'
+             + CONTACTS.map((c,i)=>c.s==='branding'?'<label class="qreq-contact'+(sel.has(i)?' on':'')+'"><input type="checkbox" data-c="'+i+'"'+(sel.has(i)?' checked':'')+'><span class="qreq-cinfo"><b>'+c.n+'</b><span>'+c.r+' · '+c.e+'</span></span></label>':'').join(''))
+          : CONTACTS.map((c,i)=>'<label class="qreq-contact'+(sel.has(i)?' on':'')+'"><input type="checkbox" data-c="'+i+'"'+(sel.has(i)?' checked':'')+'><span class="qreq-cinfo"><b>'+c.n+'</b><span>'+c.r+' · '+c.e+'</span></span></label>').join(''))
+      +'</div>'
+      +'<div class="qreq-field"><label>Quantities to quote</label><input type="text" value="100, 250, 500, 1000"></div>'
+      +'<div class="qreq-field"><label>Notes for production</label><textarea placeholder="Anything to flag…"></textarea></div>'
+      +'<div class="qreq-foot"><button class="qreq-send" id="qreqSend" disabled>Send request</button><button class="qreq-cancel" data-x>Cancel</button></div>';
+      modal.querySelectorAll('[data-c]').forEach(cb=>cb.addEventListener('change',()=>{ const i=+cb.dataset.c; if(cb.checked)sel.add(i);else sel.delete(i); cb.closest('.qreq-contact').classList.toggle('on',cb.checked); const s=modal.querySelector('#qreqSend'); s.disabled=sel.size===0; s.textContent=sel.size?('Send request to '+sel.size+' contact'+(sel.size>1?'s':'')):'Send request'; }));
+      modal.querySelector('#qreqSend').addEventListener('click',()=>{ state='awaiting'; const names=[...sel].map(i=>CONTACTS[i].n).join(', '); statusEl.hidden=false; statusEl.className='lk-reqstatus awaiting'; statusEl.innerHTML='<svg viewBox="0 0 24 24" class="i"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Awaiting quote from '+names+' · <button class="lk-link" id="lkViewReply">View / simulate supplier reply</button>'; close(); wireReply(); });
+      modal.querySelectorAll('[data-x]').forEach(b=>b.addEventListener('click',close));
+    }
+    function renderReply(){
+      open();
+      modal.innerHTML='<button class="qreq-x" data-x>×</button><div class="qreq-eyebrow">Supplier enquiries · quote response</div><div class="qreq-title">Provide your price quote</div>'
+      +'<div class="qreq-sub">PrintHouse Studio · Eco Wheat-Straw Charging Cable · SKU Mp34576</div>'
+      +'<div class="qreq-specbox"><div class="qreq-specrow"><span>Product colour</span><b>Volcanic Black (PMS 345c)</b></div><div class="qreq-specrow"><span>Branding</span><b>Front · Screenprint · 1 colour (White)</b></div><div class="qreq-specrow"><span>Variant / size</span><b>Large · USB-C</b></div></div>'
+      +'<div class="qreq-grid"><div class="qreq-field"><label>100+ / unit</label><input value="£0.40"></div><div class="qreq-field"><label>250+ / unit</label><input value="£0.29"></div><div class="qreq-field"><label>500+ / unit</label><input value="£0.20"></div><div class="qreq-field"><label>1000+ / unit</label><input value="£0.16"></div></div>'
+      +'<div class="qreq-field"><label>Setup charge</label><input value="£25.00"></div>'
+      +'<div class="qreq-grid"><div class="qreq-field"><label>Your name</label><input value="Sarah Hill"></div><div class="qreq-field"><label>Quote ref</label><input value="Q-48817"></div></div>'
+      +'<div class="qreq-foot"><button class="qreq-send" id="qreqSubmit">Submit quote</button><button class="qreq-cancel" data-x>Cancel</button></div>';
+      modal.querySelector('#qreqSubmit').addEventListener('click',()=>{ state='quoted'; const now=new Date(); const stamp=String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+String(now.getFullYear()).slice(2)+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'); statusEl.className='lk-reqstatus quoted'; statusEl.innerHTML='<svg viewBox="0 0 24 24" class="i"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Quote received from Sarah Hill · '+stamp+' · #Q-48817 — locked prices updated'; const card=document.querySelector('.lk-quote.single .lk-qfields'); if(card){ const f=card.querySelectorAll('.lk-qf'); if(f[0])f[0].value='Sarah Hill'; if(f[2])f[2].value=stamp; if(f[3])f[3].value='Quote #Q-48817'; } close(); });
+      modal.querySelectorAll('[data-x]').forEach(b=>b.addEventListener('click',close));
+    }
+    function wireReply(){ const v=document.getElementById('lkViewReply'); if(v) v.addEventListener('click',renderReply); }
+    reqBtn.addEventListener('click',()=>{ sel=new Set(); renderReq(); open(); });
+  })();
+  </script>
+<script>
+  // lkLiveCalc — live-recalculate locked-table sums as figures are entered
+  (function(){
+    const tbl=document.getElementById('lkTable'); if(!tbl) return;
+    const BANDS=[[0,2.20],[60,2.00],[100,1.74],[150,1.67],[250,1.56],[300,1.54],[400,1.49],[500,1.45],[600,1.41],[700,1.39],[800,1.38],[900,1.37],[1000,1.36]];
+    const markup=tc=>{let m=BANDS[0][1];for(const b of BANDS){if(tc>=b[0])m=b[1];}return m;};
+    const f=n=>'£'+n.toFixed(2), f0=n=>'£'+Math.round(n).toLocaleString();
+    const num=s=>{ if(s==null) return NaN; const m=String(s).replace(/[^0-9.]/g,''); return m===''?NaN:parseFloat(m); };
+    const cell=(r,ci)=>tbl.querySelector('tr[data-r="'+r+'"]')?.children[ci];
+    const val=(r,ci)=>{ const td=cell(r,ci); if(!td) return NaN; const inp=td.querySelector('input'); return num(inp?(inp.value||inp.placeholder):td.textContent); };
+    const setBold=(r,ci,txt)=>{ const td=cell(r,ci); if(!td||td.querySelector('input')) return; td.innerHTML = td.querySelector('b')?('<b>'+txt+'</b>'):txt; };
+    function qtyFor(ci){ const q=tbl.querySelector('thead .lk-qty[data-col="'+ci+'"]'); return q?num(q.value):NaN; }
+    function selected(){ return [...tbl.querySelectorAll('thead input[type=checkbox][data-col]')].filter(c=>c.checked).map(c=>+c.dataset.col); }
+    function roundUp5(n){ return Math.ceil(n/5)*5; }
+    function recompute(){
+      selected().forEach(ci=>{
+        const qty=qtyFor(ci); if(!qty) return;
+        const unb=val('cUnb',ci), deco=val('cDeco',ci), setup=val('cSetup',ci), deliv=val('cDeliv',ci);
+        if([unb,deco,setup,deliv].some(isNaN)) return;
+        const goodsUnit = unb+deco+setup/qty;
+        const totalCost = goodsUnit*qty;
+        const mk=markup(totalCost);
+        const unbSell=unb*mk, decoSell=deco*mk;
+        const setupSell=roundUp5(setup*1.35), delivSell=Math.round(deliv*1.25);
+        const costUnit = goodsUnit;
+        const sellUnit = unbSell+decoSell+setupSell/qty;
+        const profitUnit = sellUnit-costUnit, profitTot=profitUnit*qty;
+        setBold('sUnb',ci,f(unbSell)); setBold('sDeco',ci,f(decoSell));
+        setBold('sSetup',ci,f0(setupSell)); setBold('sDeliv',ci,f0(delivSell));
+        setBold('tCost',ci,f(costUnit)); setBold('tSell',ci,f(sellUnit));
+        setBold('pUnit',ci,f(profitUnit)); setBold('pTot',ci,f0(profitTot));
+      });
+    }
+    tbl.addEventListener('input',e=>{ if(e.target.matches('.lk-in,.lk-qty')) recompute(); });
+    tbl.addEventListener('change',()=>setTimeout(recompute,0));
+    setTimeout(recompute,60);
+  })();
+  </script>
+</body>
+</html>

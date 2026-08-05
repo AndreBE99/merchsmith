@@ -1,0 +1,6 @@
+[submodule "merchsmith-backend"]
+	path = merchsmith-backend
+	url = git@github.com:Merchsmith/merchsmith-backend.git
+[submodule "merchsmith-frontend"]
+	path = merchsmith-frontend
+	url = git@github.com:AndreBE99/merchsmith-frontend.git

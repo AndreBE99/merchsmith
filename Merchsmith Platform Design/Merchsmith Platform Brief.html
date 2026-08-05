@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Platform Brief &amp; Concept</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#eceaf3;font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;}
+.icn{width:18px;height:18px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.wrap{max-width:1080px;margin:0 auto;padding:46px 30px 100px;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:18px;box-shadow:0 1px 4px rgba(20,22,45,.06);}
+h1{font-family:var(--serif);font-weight:500;font-size:42px;letter-spacing:-.015em;margin:0 0 12px;}
+.lede{font-size:17px;color:var(--ink-2);max-width:74ch;margin:0 0 4px;line-height:1.6;}
+.cobrand{display:flex;align-items:center;gap:11px;margin:22px 0 0;font-weight:700;color:var(--ink-3);font-size:14px;}
+.cobrand .mojo{font-family:"Fredoka",var(--sans);font-weight:600;font-size:22px;color:var(--flare);}
+.cobrand .x{color:var(--muted);}
+
+h2{font-family:var(--serif);font-weight:500;font-size:26px;margin:54px 0 6px;letter-spacing:-.01em;}
+h2 .num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--periwinkle-deep);color:#fff;font-size:15px;font-weight:700;font-family:var(--sans);margin-right:12px;vertical-align:3px;}
+.sub{font-size:15px;color:var(--text-soft);max-width:80ch;margin:0 0 20px;}
+
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:22px 26px;box-shadow:0 1px 3px rgba(20,22,45,.04);}
+.card + .card{margin-top:14px;}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(max-width:860px){.cols2,.cols3{grid-template-columns:1fr;}}
+.mini-h{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;margin:0 0 8px;}
+.mini-h .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--paper-2);color:var(--periwinkle-deep);flex:none;}
+.mini-h .ic .icn{width:18px;height:18px;}
+.card p.k{font-size:13.5px;color:var(--ink-2);margin:0;line-height:1.55;}
+ul.clean{margin:6px 0 0;padding-left:20px;}
+ul.clean li{font-size:14px;color:var(--ink-2);margin-bottom:7px;}
+ul.clean li b{color:var(--ink);}
+.role{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:6px;padding:2px 8px;margin-left:6px;vertical-align:1px;}
+.r-cust{background:rgba(81,118,140,.16);color:#3f5e70;}
+.r-dist{background:var(--tint-peri);color:var(--periwinkle-deep);}
+.r-sup{background:#efe6f6;color:#8246af;}
+.r-adm{background:#e8e4f2;color:#3C4279;}
+
+/* flow */
+.flow{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;}
+.fstep{flex:1;min-width:130px;background:#fff;border:1px solid var(--line-soft);border-radius:13px;padding:14px 15px;position:relative;}
+.fstep .n{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.04em;}
+.fstep b{display:block;font-size:14.5px;margin:3px 0 4px;}
+.fstep span{font-size:12px;color:var(--muted);}
+.farrow{display:grid;place-items:center;width:26px;color:var(--line);flex:none;}
+.farrow .icn{width:18px;height:18px;}
+@media(max-width:860px){.farrow{width:100%;height:22px;transform:rotate(90deg);}}
+
+/* workflow chips */
+.wf{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.wf .chip{font-size:12.5px;font-weight:700;color:var(--ink);background:var(--paper);border:1px solid var(--line-soft);border-radius:9px;padding:7px 12px;}
+.statusline{font-size:13px;color:var(--ink-2);margin-top:10px;}
+.statusline b{color:var(--ink);}
+
+.built{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--green-deep);background:var(--tint-green);border-radius:999px;padding:3px 10px;}
+.concept{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:#9a6b1f;background:#fbeccd;border-radius:999px;padding:3px 10px;}
+.next{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--tint-peri);border-radius:999px;padding:3px 10px;}
+
+.statustbl{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px;}
+.statustbl th{text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:0 14px 9px 0;border-bottom:1px solid var(--line-soft);}
+.statustbl td{padding:11px 14px 11px 0;border-bottom:1px solid var(--paper-2);color:var(--ink-2);vertical-align:top;}
+.statustbl td:first-child{font-weight:700;color:var(--ink);white-space:nowrap;}
+
+.q{background:#fff;border:1px solid var(--line-soft);border-left:3px solid var(--flare);border-radius:10px;padding:13px 16px;margin-bottom:10px;font-size:14px;color:var(--ink-2);}
+.q b{color:var(--ink);}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:12px;}
+.foot-note{margin-top:60px;font-size:13px;color:var(--muted);text-align:center;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="b-store" viewBox="0 0 24 24"><path d="M4 9.5 5.5 5h13L20 9.5M4 9.5h16M4 9.5v10.5h16V9.5M4 9.5a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0M9 20v-5h4v5"/></symbol>
+<symbol id="b-merch" viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
+<symbol id="b-brand" viewBox="0 0 24 24"><path d="M14.5 5.5l4 4M4 20l1-4L16 5a2.1 2.1 0 0 1 3 3L8 19l-4 1z"/></symbol>
+<symbol id="b-bag" viewBox="0 0 24 24"><path d="M6 7h12l1 13H5zM9 7a3 3 0 0 1 6 0"/></symbol>
+<symbol id="b-card" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></symbol>
+<symbol id="b-org" viewBox="0 0 24 24"><path d="M4 21V6l6-2.5V21M10 21V8.5L20 6v15M4 21h17"/></symbol>
+<symbol id="b-leaf" viewBox="0 0 24 24"><path d="M5 19c0-7 5-12 14-12 0 9-5 13-11 13a3.6 3.6 0 0 1-3-1zM7 17c2-4 5-6 9-7"/></symbol>
+<symbol id="b-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="b-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v4h4"/></symbol>
+</defs></svg>
+
+<div class="wrap">
+  <span class="tag">Platform brief · updated 9 Jul 2026</span>
+  <h1>Merchsmith — the platform in full</h1>
+  <p class="lede">A white-labelled merchandise procurement platform: <b>Merchsmith</b> operates it, a <b>distributor</b> runs it for their <b>customers</b>, with <b>suppliers</b> feeding products and producing behind the scenes. This brief captures how the pieces fit together — what's built, what's concepted, and what's next — as a shared reference for the development team.</p>
+  <div class="cobrand"><span>Header lockup:</span> <span>[ Customer ]</span><span class="x">×</span><span class="mojo">distributor</span><span style="font-weight:500;color:var(--muted)">· logo swaps to the customer in context; shows the logged-in customer × distributor</span></div>
+
+  <!-- 1. Actors -->
+  <h2><span class="num">1</span>Who uses it</h2>
+  <p class="sub">Merchsmith operates the platform; one distributor account sits at the hub of each install. Customers and suppliers live underneath it and never see each other. Role drives what every screen shows — switched in the prototype via the floating "Viewing as" pill.</p>
+  <div class="cols2">
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-doc"/></svg></span>Platform Admin <span class="role r-adm">Operator</span></div>
+      <p class="k">Merchsmith's console: onboards distributors and suppliers, imports and normalises supplier feeds, curates the master product database into the <b>curated range</b> (with listing/promotion fees and supplier invoicing), and manages store layout, platform branding and data backup.</p></div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-org"/></svg></span>Distributor <span class="role r-dist">Hub</span></div>
+      <p class="k">Runs the platform under their own co-brand and colourway. Manages customers, suppliers, pricing/markup, lead times, their store range (curated / edited / bespoke), the store homepage content, and every project via the master Projects table. Sees cost, margin &amp; profit.</p></div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-bag"/></svg></span>Customer <span class="role r-cust">Buyer</span></div>
+      <p class="k">Browses the store, builds projects (Create Project wizard + brief), approves visuals/proofs &amp; prices, orders samples, picks delivery dates, reviews products for their organisation. Sees sell price only. Can have teams (Marketing, HR…) ordering separately.</p></div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-merch"/></svg></span>Supplier <span class="role r-sup">Producer</span></div>
+      <p class="k">Product (blanks) or branding (decoration). Provides the product feed (API / CSV / manual), replies to stock / delivery / quote enquiries, confirms critical delivery dates, receives orders, uploads proofs for the distributor to check.</p></div>
+  </div>
+
+  <!-- 2. The spine -->
+  <h2><span class="num">2</span>The end-to-end spine</h2>
+  <p class="sub">Two flows meet at the store. The supply side fills the shelves; the demand side runs left to right from browsing to production.</p>
+  <p class="sub" style="margin-bottom:8px"><b>Supply side</b> <span class="built" style="vertical-align:2px">Built</span></p>
+  <div class="flow" style="margin-bottom:22px">
+    <div class="fstep"><span class="n">FEED</span><b>Supplier feed</b><span>API / CSV / manual (real PF Concept, Xoopar, Bio Labs feeds imported)</span></div>
+    <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
+    <div class="fstep"><span class="n">NORMALISE</span><b>Import &amp; map</b><span>Adapters, field + value mapping, custom fields</span></div>
+    <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
+    <div class="fstep"><span class="n">CURATE</span><b>Product database</b><span>Curated range, tiers + fees, supplier invoicing</span></div>
+    <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
+    <div class="fstep"><span class="n">RANGE</span><b>Distributor range</b><span>Curated / edited / bespoke; promoted products</span></div>
+    <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
+    <div class="fstep"><span class="n">SELL</span><b>Store</b><span>The customer-facing shop</span></div>
+  </div>
+  <p class="sub" style="margin-bottom:8px"><b>Demand side</b></p>
+  <div class="flow">
+    <div class="fstep"><span class="n">DISCOVER</span><b>Store</b><span>Departments → categories → product</span></div>
+    <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
+    <div class="fstep"><span class="n">COLLECT</span><b>Projects</b><span>Create Project wizard → brief → “Add to project”</span></div>
+    <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
+    <div class="fstep"><span class="n">RESOLVE</span><b>Workflow</b><span>Design · Price · Sample · Stock · Date</span></div>
+    <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
+    <div class="fstep"><span class="n">ORDER</span><b>Basket → Finance</b><span>Totals, payment, PO</span></div>
+    <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
+    <div class="fstep"><span class="n">PRODUCE</span><b>Suppliers</b><span>Receive order, proof, dispatch</span></div>
+  </div>
+
+  <!-- 3. Surfaces -->
+  <h2><span class="num">3</span>The surfaces</h2>
+  <p class="sub">Two navigation models coexist: a left <b>account sidebar</b> and the <b>Store top-nav</b>. Everything below is clickable in the prototype — see the Developer Index for the full page list with per-page change history.</p>
+
+  <div class="cols2">
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-store"/></svg></span>Store <span class="built">Built</span></div>
+      <p class="k">Reads the shared catalogue (real imported feeds), filtered by the distributor's range. Data-driven top nav and departments with faceted filters (sub-category, price, colour, brand, eco).</p>
+      <ul class="clean"><li><b>Homepage is distributor-editable</b> (Store Settings): show/hide/duplicate/reorder sections, curated Best Sellers, trust badges, brand marquee, discover tiles, customer quotes, sustainability band.</li><li>Product page: gallery with zoom + swatch-linked images, USP story blocks, org-only reviews, "You might also like", price breaks &amp; lead time, <b>Add to Project</b>. Distributor sees the full canonical data pane + price matrix.</li></ul>
+    </div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-merch"/></svg></span>Projects <span class="built">Built</span></div>
+      <p class="k">The heart of the workflow, at two levels:</p>
+      <ul class="clean"><li><b>Project workspace</b> — product table with the four-stage modal, brief control panel, comments, supplier tags, dual Supplier/Customer delivery + order-by dates, PDF project sheets.</li><li><b>Master Projects table</b> (distributor) — every project for every customer with expandable product rows (the same engine embedded), KPI cards, and combinable filters: project status, product status, order-by windows (Overdue / Today / Tomorrow / This week), stage breakdown (who owes the next action), collaborator + supplier.</li></ul>
+    </div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-doc"/></svg></span>Platform Admin console <span class="built">Built</span></div>
+      <p class="k">Supplier onboarding (guided wizard / invite / quick add) with connect-time field mapping; the multi-feed import wizard (adapter framework, value mapping, preview-in-store); master product database (sortable, bulk actions, sub-category + brand tagging); curated range with placement tiers, fees and supplier invoicing; store layout manager; platform branding; data backup + blank go-live mode.</p></div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-brand"/></svg></span>Brand Assets <span class="built">Built</span></div>
+      <p class="k">The customer's DAM: guidelines, logos, colours (Pantone refs), fonts, images, product artwork. Selections flow into the project brief and the branding builder; uploaded artwork surfaces against matching brief lines.</p></div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-bag"/></svg></span>Basket &amp; Orders <span class="built">Built</span></div>
+      <p class="k">Orders + sample orders with per-line delivery and addresses; order history and status tracking. Duplicate products combine to reach higher quantity-break rates.</p></div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-card"/></svg></span>Finance / checkout <span class="next">Next</span></div>
+      <p class="k">Billing address, payment terms (at order vs 30 days), payment method (card, BACS, Apple/Google Pay), <b>credit limit</b>, payment deadline warnings, Order Reference / PO upload. Nav placeholders exist (Finance → Invoices / Credit Limit); the pages are the next build alongside the backend (Stripe + Xero).</p></div>
+  </div>
+
+  <!-- 4. Workflow -->
+  <h2><span class="num">4</span>The per-product workflow <span class="built" style="vertical-align:6px">Built</span></h2>
+  <p class="sub">Each product in a project moves through five parallel areas. Whoever owns the next action sees it highlighted; the other role sees a neutral status. The full vocabulary lives on the <b>Status Reference</b> page and drives every action pill in both project tables.</p>
+  <div class="card">
+    <div class="wf">
+      <span class="chip">Design — Visual + Proof</span>
+      <span class="chip">Price</span>
+      <span class="chip">Sample</span>
+      <span class="chip">Stock</span>
+      <span class="chip">Delivery date</span>
+    </div>
+    <div class="statusline"><b>Order gate:</b> a line is orderable once Visual + Proof approved (or unbranded), Price approved, Sample approved-or-not-required, Stock confirmed (or made-to-order), and the delivery date is set/confirmed.</div>
+    <table class="statustbl">
+      <thead><tr><th>Area</th><th>What happens</th><th>Supplier touch-point</th></tr></thead>
+      <tbody>
+        <tr><td>Design</td><td>Branding builder (colour, positions, method, print colours) → indicative <b>Visual</b> → technical <b>Proof</b>, each approved &amp; versioned independently</td><td>Branding supplier uploads proofs</td></tr>
+        <tr><td>Price</td><td>Cost matrix → markup bands → unit sell price &amp; delivery; locked/override prices; customer discounts; additional charges both sides; live slider. Distributor can <b>override any product data field</b> without touching the source feed</td><td>Quote / price check enquiry</td></tr>
+        <tr><td>Sample</td><td>Unbranded / branded; cost from supplier quote (with who/reference/timestamp) or manual entry; ordered into separate baskets</td><td>Sample dispatch → Approve</td></tr>
+        <tr><td>Stock</td><td>API auto-instock, manual check, or made-to-order; reservation with “reserved until”</td><td>Stock check &amp; reservation</td></tr>
+        <tr><td>Delivery date</td><td>Dual dates for the distributor — <b>Supplier delivery</b> (confirmed via the critical-date request, or entered manually with who agreed it) and <b>Customer delivery</b>. Standard ↔ Critical toggle; <b>order-by deadlines</b> (supplier + customer) derived from lead times and filterable across every project</td><td>Delivery-date confirmation (who/when recorded)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 5. Cross-cutting -->
+  <h2><span class="num">5</span>Cross-cutting threads</h2>
+  <div class="cols3">
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-leaf"/></svg></span>Sustainability</div><p class="k">Phase 1 ships a <b>USP strip</b> on product pages; the full scored breakdown (Origin, Materials, Longevity, End of Life, Certifications) is Phase 2, gated behind a platform flag. Eco scores already import from real feeds and filter in store.</p></div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-card"/></svg></span>Money &amp; terms</div><p class="k">Distributor markup bands, per-customer discounts &amp; credit limits, VAT throughout, PO handling. Plus the <b>platform's own commercial model</b>: curated-range listing + promotion fees invoiced to suppliers monthly.</p></div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-doc"/></svg></span>Roles &amp; visibility</div><p class="k">Cost/margin/profit is distributor-only; the customer sees sell price &amp; savings. Data overrides and supplier agreements are distributor-only. Every surface flips by role, including the two project tables.</p></div>
+  </div>
+
+  <!-- 6. Where it goes next -->
+  <h2><span class="num">6</span>Where it goes next</h2>
+  <div class="q"><b>Going live (the big one)</b> — a real backend: live supplier API pulls, Stripe payments, Xero invoicing, shared persistence (today everything is localStorage, per-browser, with backup/restore as the seatbelt).</div>
+  <div class="q"><b>Finance pages</b> — Invoices + Credit Limit are nav placeholders; build alongside checkout.</div>
+  <div class="q"><b>Hand-over to account manager</b> — an explicit lifecycle stage: customer builds the brief + candidates, then hands the project to their AM; collaborators formally attach at that moment.</div>
+  <div class="q"><b>Finder (Phase 2)</b> — AI assistant that suggests store products against a brief line (type, qty, target price, colours, eco, deadline), ranked with rationale.</div>
+  <div class="q"><b>Permissions gating</b> — roles are documented (e.g. customer "Studio" edits Brand Assets) but not yet enforced in the UI.</div>
+
+  <div class="legend">
+    <span class="built">Built</span>
+    <span class="concept">Concept exists</span>
+    <span class="next">Not yet built</span>
+  </div>
+
+  <h2><span class="num">7</span>The product feed — proven on real data</h2>
+  <p class="sub">The original open question ("can the store run on a real feed?") is answered: yes, end to end, minus only the live pull.</p>
+  <div class="card">
+    <ul class="clean">
+      <li><b>Real feeds imported:</b> PF Concept (2,000+ products across 4 joined JSON feeds — price, print, stock, product), Xoopar (223 products from an Akeneo PIM export, EUR→GBP), Bio Labs (411-row WooCommerce CSV). All flow through the adapter framework → field/value mapping → product database → curated range → store.</li>
+      <li><b>The data contract is proven:</b> decoration cost books, price breaks, stock, variants, images, certifications and custom fields all round-trip from feed to store product page.</li>
+      <li><b>The remaining gap is infrastructure, not design:</b> this prototype can't make live authenticated API calls — production points the same import pipeline at the real endpoints on a schedule. That's part of the going-live backend phase.</li>
+    </ul>
+  </div>
+
+  <p class="foot-note">Working brief for the development team — updated 9 Jul 2026 to reflect the built platform. See the Developer Index for every page + change history, and HANDOVER.md for the full architecture.</p>
+</div>
+</body>
+</html>
