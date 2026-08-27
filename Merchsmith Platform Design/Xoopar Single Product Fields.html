@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One product, every field — XP61145.14A</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#eceaf3;font-family:var(--sans);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1360px;margin:0 auto;padding:38px 26px 90px;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:15px;}
+h1{font-family:var(--serif);font-weight:500;font-size:34px;letter-spacing:-.015em;margin:0 0 9px;}
+.lede{font-size:15px;color:var(--ink-2);max-width:90ch;margin:0 0 4px;}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 4px;}
+.stat{background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:11px 15px;}
+.stat b{display:block;font-size:19px;font-weight:800;letter-spacing:-.02em;line-height:1.15;}
+.stat span{font-size:11px;color:var(--text-soft);font-weight:700;}
+.legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:18px 0 4px;font-size:11.5px;color:var(--text-soft);font-weight:600;}
+.grp{margin-top:24px;}
+.grp h2{font-family:var(--serif);font-weight:500;font-size:19px;margin:0 0 9px;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:13px;padding:6px 18px 10px;}
+.tscroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{text-align:left;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:800;padding:11px 12px 8px 0;border-bottom:1px solid var(--line-soft);white-space:nowrap;}
+td{padding:8px 12px 8px 0;border-bottom:1px solid var(--paper-2);color:var(--ink-2);vertical-align:top;}
+tr:last-child td{border-bottom:0;}
+.xf{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--ink);font-weight:600;}
+.mf{font-size:12px;font-weight:700;color:var(--periwinkle-deep);}
+.mf.none{color:#9a2c2c;font-weight:700;}
+.raw{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--text-soft);word-break:break-word;}
+.val{font-weight:700;color:var(--ink);word-break:break-word;}
+.loc{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.04em;color:var(--periwinkle-deep);background:var(--tint-peri);border-radius:4px;padding:1px 5px;margin-left:5px;vertical-align:1px;}
+.s{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:2px 7px;white-space:nowrap;}
+.s-ok{background:var(--tint-green);color:var(--green-deep);}
+.s-tr{background:#fbeccd;color:#9a6b1f;}
+.s-none{background:#fbdddd;color:#9a2c2c;}
+.s-skip{background:var(--paper-2);color:var(--muted);}
+.foot{margin-top:52px;font-size:12.5px;color:var(--muted);text-align:center;}
+a{color:var(--periwinkle-deep);}
+a:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Single record · XP61145.14A · ICE-P white</span>
+  <h1>One product, every field it supplies</h1>
+  <p class="lede">Everything Xoopar returns for one fully-described product, mapped to the field names used on the development site. This is one of the 223 complete records, so it shows the best case — anything marked as having no destination field is a genuine gap rather than a missing value.</p>
+
+  <div class="stats">
+    <div class="stat"><b>77</b><span>attributes on this record</span></div>
+    <div class="stat"><b>£11.09</b><span>net cost at 50 · £10.75 at 1,000</span></div>
+    <div class="stat"><b>2,709</b><span>stock quantity</span></div>
+    <div class="stat"><b>5 images</b><span>+ packaging, pantone, datasheet</span></div>
+    <div class="stat"><b>Digital + pad</b><span>40 × 35 mm, both sides</span></div>
+  </div>
+
+  <div class="legend">
+    <span class="s s-ok">Direct</span> straight into the field
+    <span class="s s-tr">Transform</span> converted or derived first
+    <span class="s s-none">No field</span> nothing on the dev site to hold it
+    <span class="s s-skip">Not used</span>
+    <span class="loc">locales</span> localised — en_US taken first
+  </div>
+
+  <div id="out"></div>
+  <p class="foot">Record XP61145.14A from the live Xoopar API export · dev-site field names per Product Fields 100826 · Merchsmith Platform</p>
+</div>
+
+<script>
+const OK='<span class="s s-ok">Direct</span>', TR='<span class="s s-tr">Transform</span>', NONE='<span class="s s-none">No field</span>', SK='<span class="s s-skip">Not used</span>';
+const L='<span class="loc">locales</span>';
+const NF='— none —';
+const G=[
+ ['Identity &amp; codes',[
+  ['identifier','XP61145.14A','','Item / SKU code · Supplier product code · Variant SKU','XP61145.14A',OK],
+  ['family_article_code','XP61145','','Model code · Related product codes','XP61145 — the parent article shared by every ICE-P colour',TR],
+  ['ean','4895228104571','','EAN / barcode','4895228104571',OK],
+  ['upc','842807105348','','EAN / barcode (fallback)','not needed — EAN present',TR],
+  ['hs_customs_code','8507600090','','HS code','8507600090',OK],
+  ['categories','["Charge"]','','Sub-category','Charge',TR],
+  ['type_of_product','Powerbank',L,'Department · Category source','<b>Tech</b> — keyword-matched from "Powerbank"',TR],
+  ['uuid','93f2e14a-…-994458875b7b','',NF,'Akeneo internal id — worth holding for re-sync matching',NONE],
+  ['asin','B0CLPLMY7N','',NF,'Amazon id. Signals licensed retail stock',NONE],
+ ]],
+ ['Naming &amp; copy',[
+  ['retail_name','ICE-P white',L,'Product name','ICE-P white',OK],
+  ['designation','ICE-P','','Product name (2nd choice)','not needed',TR],
+  ['long_description','Your new best friend will never leave you in the dark!…',L,'Description','full product page copy — 5 locales supplied',OK],
+  ['short_description','ICE-P - Powerbank 5000mAh - Recycled plastic - White',L,'Description (short) · Product name (fallback)','used on the product card, and as the name on records with no retail_name',TR],
+  ['brand','XOOPAR','','Brand','XOOPAR',OK],
+  ['collection','CHARGE','',NF,'Xoopar’s own range grouping — useful for merchandising',NONE],
+  ['new','true','',NF,'Would drive a "New" badge',NONE],
+ ]],
+ ['Price &amp; stock',[
+  ['GIFT_BRONZE_T3_','[{amount:"12.90",currency:"EUR"}]','','Price-break unit prices · Price currency','<b>£11.09</b> net cost — €12.90 × 0.86',TR],
+  ['GIFT_BRONZE_T3_1000','[{amount:"12.50",currency:"EUR"}]','','Price-break quantities · unit prices','<b>£10.75 at 1,000</b> — a real break on this product',TR],
+  ['minimum_printing_quantity','50.0000','','Minimum order quantity','50 — also the first break quantity',TR],
+  ['stock','2709.0000','','Stock quantity · Stock status','2,709 → In stock',TR],
+ ]],
+ ['Physical &amp; packaging',[
+  ['product_colors','White','','Colours · Variant colour','White → base colour <b>White</b>',TR],
+  ['material','plastique recyclé certifié GRS','','Material','Recycled GRS-certified plastic (French source)',TR],
+  ['weight_g','{amount:"0.0850",unit:"KILOGRAM"}','','Weight (g)','<b>85 g</b> — the feed sends kg despite the name, so × 1,000',TR],
+  ['length_cm · width_cm · height_cm','7.6 · 6.5 · 1.4 CENTIMETER','','Dimensions','7.6 × 6.5 × 1.4 cm',TR],
+  ['size','76x65x14(mm)','','Size · Variant size','76x65x14(mm)',OK],
+  ['packaging_gift','50 pcs/ctn 530 x 155 x 315mm 6.90kg','','Packaging: outer carton quantity · type description','50 per carton · 530×155×315 mm · 6.9 kg — parsed from one string',TR],
+  ['manufacturing_country','China','','Country of origin','China',OK],
+  ['manufacturer_s_warranty_year','2.0000','',NF,'2 years — worth showing on the product page',NONE],
+ ]],
+ ['Branding',[
+  ['type_of_printing','["Numerique","Tampographie"]','','Print methods · Print method display name','<b>Digital print, Pad print</b> — French names mapped',TR],
+  ['printing_zone_size','40x35 mm','','Max print width (mm) · Max print height (mm)','40 wide × 35 high — split from one string',TR],
+  ['printing_zone_size_2','40x35mm','','Max print width/height for position 2','40 × 35 mm second area',TR],
+  ['printing_technical_fees','[{amount:"50.00"}]','','Decoration setup cost','<b>£43.00</b> origination',TR],
+  ['setting_fees_front_and_back_printing','[{amount:"75.00"}]','','Decoration setup cost (both sides)','<b>£64.50</b>',TR],
+  ['digital_print_price_position','[{amount:"0.80"}]','','Decoration run-cost unit prices · Print/technique code','<b>£0.69</b> per position, technique DTF',TR],
+  ['pad_print_price_position','[{amount:"0.55"}]','','Decoration run-cost unit prices · Print/technique code','<b>£0.47</b> per position, technique PAD',TR],
+  ['pad_print_2_colors_price','0,8','','Price tier colour count · run-cost unit price','£0.69 at 2 colours — comma decimal parsed',TR],
+  ['front_and_back_printing','true','',NF,'Whether both sides can be printed. Nearest field is a second print position',NONE],
+  ['template','drive.google.com/file/d/1Wvb212…','',NF,'Artwork template for the studio',NONE],
+  ['digital_print_description · pad_print_description · screen_print_description · laser_engraving_description','A modern process that prints the logo directly…',L,'—','generic method blurbs — ours are used instead. Note laser breaks the pattern: <b>_engraving_</b>, not _print_',SK],
+ ]],
+ ['Eco &amp; compliance',[
+  ['certification','grs','','Eco credentials','<b>GRS</b>',TR],
+  ['ce_eu','…XP61145_CE__Report.pdf','','Compliance / certifications','<b>CE</b> — the standard’s name, with the PDF kept as a document',TR],
+  ['rohs_eu','…XP61145_RoHS__Report.pdf','','Compliance / certifications','<b>RoHS</b> + report',TR],
+  ['reach_eu','…Xoopar__reach_235_75….pdf','','Compliance / certifications','<b>REACH</b> + report',TR],
+  ['msds_global','…XP61145_MSDS__Report.pdf','','Compliance / certifications','MSDS safety data sheet',TR],
+  ['un38_3_global','…Lithium_Battery_UN38.3_Test_Report.pdf','','Compliance / certifications','UN38.3 battery transport test',TR],
+ ]],
+ ['Media',[
+  ['main_photo','media-files/…grok_image_0373cb1a….jpeg','','Image URL','primary image — behind API credentials, needs a proxy',OK],
+  ['image_1 … image_5','media-files/…image_2.png etc','','Image URL','5 gallery images, in order',OK],
+  ['video_link','drive.google.com/file/d/1Vjrz…','','Video URL(s)','Drive-hosted on this record, so not embeddable',TR],
+  ['packaging_photo_link','https://www.xoopar.fr/3112-large_default/Ice-P.jpg','',NF,'<b>Preferred packaging shot</b> — a public URL, so no auth proxy needed. Wins over photo_packaging_1',NONE],
+  ['photo_packaging_1','media-files/…ice_p_packaging.png','',NF,'Same packaging shot, API-hosted. Used only when no public URL is supplied',NONE],
+  ['photo_pantone','media-files/…pantone_ice_p.png','',NF,'Pantone reference photo',NONE],
+  ['technical_sheet','…Fiche_produit_ice_p.pdf','',NF,'The product datasheet — worth surfacing on the product page',NONE],
+  ['main_photo_link · link_image1-5 · hd_image_link · technical_sheet_url','drive.google.com/…','','—','8 Drive duplicates of images and the datasheet — reference links only, not embeddable',SK],
+ ]],
+ ['Specification',[
+  ['battery_capacity_mah','{amount:"5000",unit:"MILLIAMPEREHOUR"}','',NF,'5,000 mAh',NONE],
+  ['charger_power_mah','{amount:"5000",unit:"MILLIAMPEREHOUR"}','',NF,'5,000 mAh output',NONE],
+  ['battery_type','["Lithium_polymere"]','',NF,'Lithium polymer — underscored enum, needs a value map',NONE],
+  ['battery_weight_kg','{amount:"0.0552",unit:"KILOGRAM"}','',NF,'0.0552 kg — needed for dangerous-goods shipping',NONE],
+  ['connectors','["Lightning","USB_C"]','',NF,'Lightning, USB-C — a good filter candidate',NONE],
+  ['load_type','["Filaire"]','',NF,'Wired (French: Filaire)',NONE],
+  ['nfc · magnetic · rfid_protection','false','',NF,'Feature flags — none true on this record',NONE],
+ ]],
+ ['French taxes',[
+  ['accumulator_tax_2','0,025','',NF,'€0.025 battery levy — a real cost for FR delivery',NONE],
+  ['eco_participation_deee_2','0','',NF,'€0 WEEE eco-participation fee',NONE],
+ ]],
+ ['Dev fields this product cannot fill',[
+  ['—','not supplied','','Lead time','<b>Xoopar sends no lead time at all.</b> The importer defaults to 15 working days — agree a real figure per supplier',NONE],
+  ['—','not supplied','','Manufacturer','Only <code>brand</code> is given (XOOPAR). Manufacturer is a separate concept',NONE],
+  ['—','not supplied','','Decoration max colours','Implied by the 2-colour pad price, never stated',NONE],
+  ['—','not supplied','','Print position code · Print position name','This record has no <code>printing_position_*</code> attributes — only 18 of 1,188 do',NONE],
+  ['—','not supplied','','Packaging: inner box quantity','Only the outer carton is given',NONE],
+  ['—','not supplied','','Incoming stock quantity · due date','No restock data in the feed',NONE],
+  ['—','not supplied','','Price-break delivery costs','Not priced by Xoopar',NONE],
+  ['—','not supplied','','Price tier logo/print area in cm²','Costs vary by colour count here, not by print area',NONE],
+ ]],
+];
+document.getElementById('out').innerHTML=G.map(([t,rows])=>`
+<div class="grp"><h2>${t}</h2>
+<div class="card"><div class="tscroll"><table>
+<thead><tr><th style="width:20%">Xoopar attribute</th><th style="width:22%">Value as supplied</th><th style="width:20%">Dev-site field</th><th style="width:26%">Stored as</th><th style="width:7%">Handling</th></tr></thead>
+<tbody>${rows.map(([x,raw,loc,mf,val,st])=>`<tr>
+<td class="xf">${x==='—'?'<span style="color:var(--muted)">—</span>':x+(loc||'')}</td>
+<td class="raw">${raw}</td>
+<td class="${mf===NF?'mf none':'mf'}">${mf==='—'?'<span style="color:var(--muted)">—</span>':mf}</td>
+<td class="val">${val}</td>
+<td>${st}</td></tr>`).join('')}</tbody>
+</table></div></div></div>`).join('');
+</script>
+</body>
+</html>

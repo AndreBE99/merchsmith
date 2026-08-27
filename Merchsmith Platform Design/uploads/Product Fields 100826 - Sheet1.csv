@@ -1,0 +1,59 @@
+Product name
+Item / SKU code
+Price-break quantities
+Price-break unit prices (net cost — not RRP/gross)
+Price currency
+Category source
+Department
+Sub-category
+Description
+Brand
+Manufacturer
+Model code
+Supplier product code
+Colours
+Size
+Material
+Dimensions
+Weight (g)
+Minimum order quantity
+Country of origin
+Eco credentials
+Compliance / certifications
+Lead time
+EAN / barcode
+HS code
+Video URL(s)
+Related product codes
+Packaging: inner box quantity
+Packaging: outer carton quantity
+Packaging: type description
+Print methods
+Print method display name (when priced separately from its name)
+Decoration setup cost
+Decoration max colours
+Print position code
+Print position name
+Max print width (mm)
+Max print height (mm)
+"Print/technique code (joins method to its pricing, if priced separately)"
+Price tier colour count (when setup/run cost varies by number of colours)
+Price tier logo/print area in cm² (when setup/run cost varies by print size)
+Decoration run-cost columns (one per quantity)
+"Select multiple columns if tiers are split one-per-column (e.g. Qty1, Qty2… / ItemPriceNet_Qty1…)"
+Decoration run-cost quantity (when the price feed repeats one row per tier)
+Technique codes to price separately (comma-delimited multi-code field)
+Image URL
+Stock quantity
+Stock status
+Incoming stock quantity (one column per restock slot)
+"Incoming stock due date (one column per restock slot, same order)"
+"Select multiple columns if tiers are split one-per-column (e.g. Qty1, Qty2… / ItemPriceNet_Qty1…)"
+"Price-break quantities (multi-tier, pipe-delimited)"
+"Price-break unit prices (multi-tier, pipe-delimited)"
+"Price-break delivery costs (multi-tier, pipe-delimited)"
+"Decoration run-cost quantities (multi-tier, pipe-delimited)"
+"Decoration run-cost unit prices (multi-tier, pipe-delimited)"
+Variant SKU
+Variant colour
+Variant size

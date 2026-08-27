@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xoopar → Merchsmith field map</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#eceaf3;font-family:var(--sans);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1400px;margin:0 auto;padding:38px 26px 90px;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:15px;}
+h1{font-family:var(--serif);font-weight:500;font-size:34px;letter-spacing:-.015em;margin:0 0 9px;}
+.lede{font-size:15px;color:var(--ink-2);max-width:88ch;margin:0 0 4px;}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 6px;}
+.stat{background:#fff;border:1px solid var(--line-soft);border-radius:11px;padding:11px 15px;}
+.stat b{display:block;font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.15;}
+.stat span{font-size:11px;color:var(--text-soft);font-weight:700;}
+.legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:20px 0 6px;font-size:11.5px;color:var(--text-soft);font-weight:600;}
+.grp{margin-top:26px;}
+.grp h2{font-family:var(--serif);font-weight:500;font-size:20px;margin:0 0 3px;}
+.grp p.gs{font-size:13px;color:var(--text-soft);margin:0 0 11px;max-width:92ch;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:13px;padding:6px 18px 10px;}
+.tscroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{text-align:left;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:800;padding:11px 12px 8px 0;border-bottom:1px solid var(--line-soft);white-space:nowrap;}
+td{padding:8px 12px 8px 0;border-bottom:1px solid var(--paper-2);color:var(--ink-2);vertical-align:top;}
+tr:last-child td{border-bottom:0;}
+.xf{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--ink);font-weight:600;}
+.mf{font-size:12px;font-weight:700;color:var(--periwinkle-deep);}
+.mf.none{color:#9a2c2c;font-weight:700;}
+.cnt{font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap;}
+.ty{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--text-soft);white-space:nowrap;}
+.sv{font-size:11.5px;color:var(--text-soft);word-break:break-word;}
+.nt{font-size:12px;color:var(--ink-2);}
+.nt b{color:var(--ink);}
+.s{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:2px 7px;white-space:nowrap;}
+.s-ok{background:var(--tint-green);color:var(--green-deep);}
+.s-tr{background:#fbeccd;color:#9a6b1f;}
+.s-new{background:#fbdddd;color:#9a2c2c;}
+.s-skip{background:var(--paper-2);color:var(--muted);}
+.foot{margin-top:52px;font-size:12.5px;color:var(--muted);text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Mapping worksheet · Xoopar API · 1,188 records</span>
+  <h1>Xoopar → Merchsmith field map</h1>
+  <p class="lede">Every attribute Xoopar returns, mapped to the field names used on the development site. Grouped by purpose, and within each group ordered by how many of the 1,188 records carry it. Attributes with no destination field are gaps in the model, not missing values.</p>
+
+  <div class="stats">
+    <div class="stat"><b>107</b><span>attributes supplied</span></div>
+    <div class="stat"><b>+6</b><span>record-level fields</span></div>
+    <div class="stat"><b>59</b><span>dev-site fields</span></div>
+    <div class="stat"><b>1,188</b><span>records · 223 fully described</span></div>
+    <div class="stat"><b>GIFT_BRONZE_T3</b><span>confirmed price band</span></div>
+  </div>
+
+  <div class="legend">
+    <span class="s s-ok">Direct</span> straight across
+    <span class="s s-tr">Transform</span> converted, parsed or derived
+    <span class="s s-new">No field</span> nothing on the dev site holds it
+    <span class="s s-skip">Not used</span> deliberately ignored
+  </div>
+
+  <div id="out"></div>
+  <p class="foot">Generated from the live Xoopar API export · counts are records carrying that attribute out of 1,188 · Merchsmith Platform</p>
+</div>
+
+<script>
+const OK='<span class="s s-ok">Direct</span>', TR='<span class="s s-tr">Transform</span>', NEW='<span class="s s-new">New field</span>', SK='<span class="s s-skip">Not used</span>';
+const GROUPS=[
+ ['Record level','Fields on the record itself rather than inside the values bag.',[
+  ['identifier','—','text',1188,'Item / SKU code · Supplier product code',OK,'The SKU. Primary key for the import, and the variant SKU.'],
+  ['uuid','—','text',1188,'— none —',NEW,'Akeneo internal id. Worth holding for re-sync matching.'],
+  ['family','categorie_primaire','text',1188,'—',SK,'Every record shares one family, so it carries no information.'],
+  ['categories','["Charge"]','list',215,'Sub-category · Category source',TR,'Present only on described products. Department still comes from <code>type_of_product</code>.'],
+  ['parent','null','text',1188,'—',SK,'Always null — no product models in this export, so no variant grouping to follow.'],
+  ['associations.Couleurs','{products:[]}','object',1188,'—',SK,'Colour-sibling grouping, empty on every record. Would give us variant families if Xoopar populated it.'],
+  ['enabled','true','boolean',1188,'— none —',OK,'Disabled records should be skipped on import.'],
+  ['updated','2026-08-01T06:23:40+02:00','date',1188,'— none —',NEW,'Use for incremental syncs — pull only what changed.'],
+ ]],
+ ['Naming &amp; description','Only 223 records carry a real name; the rest fall back to short_description.',[
+  ['short_description','ICE-P - Powerbank 5000mAh - Recycled plastic - White','text · locales',1188,'Product name (fallback) · Description',TR,'The only naming field on all 1,188. Used as the name when retail_name and designation are both absent, which is what keeps 965 records out of the store as bare codes.'],
+  ['retail_name','Smart Bag EVERLESS BLACK','text · locales',223,'Product name',OK,'Preferred name. en_US taken first, then any locale.'],
+  ['designation','Smart Bag EVERLESS','text',223,'Product name (2nd choice)',TR,'The un-coloured base name. Second in the fallback chain.'],
+  ['long_description','Its unique new storage technology enables you to fold…','text · locales',212,'Description',OK,'Product page description. en_US preferred.'],
+  ['family_article_code','60110','text',221,'Model code · Related product codes',TR,'The parent article shared by colour variants — the closest thing to a variant family in this feed.'],
+  ['brand','Everless','text',215,'Brand',OK,'Note it is the sub-brand, not always "XOOPAR". <b>Manufacturer is never supplied.</b>'],
+  ['collection','HOSPITALITY','text',215,'— none —',NEW,'Xoopar’s own range grouping. Useful for merchandising; no home in the model yet.'],
+ ]],
+ ['Classification','',[
+  ['type_of_product','sac / Powerbank','text · locales',218,'Department · Category source',TR,'Free text in French or English, keyword-matched to a department. Falls back to Tech. Absent on 970 records, which all default to Tech — worth reviewing before those go live.'],
+ ]],
+ ['Pricing','Confirmed band: GIFT_BRONZE_T3. The quantity suffix is a genuine break.',[
+  ['GIFT_BRONZE_T3_','€7.82','money',1188,'Price-break unit prices · Price currency',TR,'<b>The unit cost price.</b> EUR → GBP at the editable rate (0.86). €0 means unpriced, not free — those 14 records list as POA.'],
+  ['GIFT_BRONZE_T3_1000','€7.82','money',1188,'Price-break quantities · unit prices',TR,'Price at 1,000 units. Differs from base on 184 records; zeros ignored, so 167 get a real break. The importer reads any <code>_&lt;qty&gt;</code> suffix generically, so new break attributes need no code change.'],
+  ['bespoke_minimum','25.0000','text',7,'— none —',NEW,'Minimum for a bespoke version. Only 7 records.'],
+  ['minimum_printing_quantity','50.0000','text',191,'Minimum order quantity',TR,'Also sets the quantity on the first price break. Defaults to 50 when absent.'],
+ ]],
+ ['Stock',' ',[
+  ['stock','117.0000','text',815,'Stock quantity · Stock status',TR,'Numeric string. No warehouse breakdown, so <code>stock.locations</code> stays empty. Absent on 373 records → imported as 0.'],
+ ]],
+ ['Colour','',[
+  ['product_colors','White','text',310,'Colours · Variant colour',TR,'Single colour per record, run through the 19-colour base mapping. Watch for conflicts with the name (record 100483 says Blue but is named BK/black).'],
+  ['photo_pantone','media-files/…pantone_ice_p.png','url',32,'— none —',NEW,'Pantone reference photo.'],
+  ['link_pantone_ref_photo','drive.google.com/…','url',3,'—',SK,'Drive duplicate of the above.'],
+ ]],
+ ['Dimensions &amp; weight','The weight attribute is misnamed — it sends kilograms.',[
+  ['weight_g','0.0850 KILOGRAM','measure',1187,'Weight (g)',TR,'<b>Named grams, sends kilograms.</b> Multiplied by 1,000 to get grams; values above 1 are treated as grams already (mis-entered), which is what "19.05" was.'],
+  ['length_cm / width_cm / height_cm','10.0 / 1.1 / 6.2 CENTIMETER','measure',193,'Dimensions',TR,'Joined into a single "L × W × H cm" string.'],
+  ['size','10x6,2x1,1 cm','text',207,'Size · Variant size',OK,'Free-text size as printed on the datasheet. Comma decimals are French.'],
+  ['size_2','5,5 x 5,5 x 1 cm','text',45,'—',SK,'Second size, meaning unclear — likely a component or folded size. Ask Xoopar.'],
+  ['backpack_capacity_l · backpack_size','20 LITER · 10.11 INCH','measure',1,'—',SK,'One record each. Category-specific.'],
+ ]],
+ ['Images &amp; media','Feed-hosted images sit behind the API credentials; Drive links are not embeddable.',[
+  ['main_photo','media-files/…jpeg','url',203,'Image URL',OK,'Primary image. Needs proxying or re-hosting in production.'],
+  ['image_1 … image_6','media-files/…png','url','78–215','Image URL',OK,'Gallery, in order. Between 1 and 6 per product.'],
+  ['photo_packaging_1','media-files/…packaging.png','url',106,'— none —',NEW,'Packaging shot, API-hosted. <b>Second choice</b> — used only when no public packaging URL is supplied.'],
+  ['main_photo_link · link_image1-6 · hd_image_link · technical_sheet_url · link_pantone_ref_photo','drive.google.com/…','url',192,'— none —',TR,'Google Drive duplicates of images and documents, kept as reference links only — they cannot be embedded. The collector now takes every Drive-hosted key, matched on the host rather than the field name.'],
+  ['packaging_photo_link','https://www.xoopar.fr/3112-large_default/Ice-P.jpg','url',125,'— none —',TR,'<b>Not always a Drive link</b> — often a direct xoopar.fr image, which unlike the <code>media-files</code> URLs needs no auth proxy. <b>First choice</b> for the packaging shot; falls back to <code>photo_packaging_1</code>. Drive-hosted values are ignored.'],
+  ['video_link','youtube.com/watch?v=…','url',72,'Video URL(s)',OK,'Mix of YouTube and Drive. Only YouTube embeds.'],
+  ['technical_sheet','media-files/…Fiche_produit.pdf','url',168,'— none —',NEW,'The datasheet PDF — worth surfacing on the product page.'],
+  ['technical_sheet_url','drive.google.com/…','url',176,'— none —',TR,'Drive duplicate.'],
+ ]],
+ ['Branding &amp; decoration','Absent entirely on the licensed goods, which now import as "Product only".',[
+  ['type_of_printing','["Numerique","Tampographie"]','list',193,'Print methods · Print method display name',TR,'<b>French method names</b> — Numerique → digital, Tampographie → pad, Sérigraphie → screen, Gravure laser → laser, Broderie → embroidery.'],
+  ['printing_zone_size','40x35 mm','text',199,'Max print width (mm) · Max print height (mm)',TR,'One string — split into width and height.'],
+  ['printing_zone_size_2','80x40 mm','text',202,'Max print width/height for position 2',TR,'A second print area — probably the back.'],
+  ['printing_technical_fees','€50.00','money',183,'Decoration setup cost',TR,'Origination per order. <b>Was silently dropping</b> before the money-array fix.'],
+  ['setting_fees_front_and_back_printing','€75.00','money',87,'Decoration setup cost (both sides)',TR,'Setup when printing both sides.'],
+  ['front_and_back_printing','false','boolean',183,'— none —',NEW,'Whether two-sided printing is possible. Nearest equivalent is a second print position.'],
+  ['digital_print_price_position','€0.80','money',151,'Decoration run-cost unit prices · Print/technique code',TR,'Run cost per position. Same for the pad, screen and laser equivalents.'],
+  ['pad_print_price_position','€0.80','money',162,'Decoration run-cost unit prices · Print/technique code',TR,''],
+  ['screen_print_price','€0.40','money',12,'Decoration run-cost unit prices · Print/technique code',TR,''],
+  ['laser_engraving_price','€0.75','money',15,'Decoration run-cost unit prices · Print/technique code',TR,''],
+  ['pad_print_2_colors_price','0,8','text',151,'Price tier colour count · run-cost unit price',TR,'Two-colour pad print uplift. Comma decimal — needs parsing.'],
+  ['printing_position_1 … _5','["numerique","tampographie"]','list','10–18','Print position code · Print position name · Technique codes to price separately',TR,'<b>The per-position matrix</b> — which methods each of up to 5 positions accepts. Only 18 records, but this is the data the Branding Builder wants. Worth asking Xoopar to populate it fully.'],
+  ['digital_print_description · pad_print_description · screen_print_description · <b>laser_engraving_description</b>','A modern process that prints the logo directly…','text · locales',186,'—',SK,'Generic method blurbs, identical across products; ours are better written. Note the laser one breaks the naming pattern — <code>_engraving_</code>, not <code>_print_</code>.'],
+  ['nfc_option · nfc_option_price','false · €0.30','boolean · money',20,'— none —',NEW,'NFC encoding as a paid add-on.'],
+  ['template','drive.google.com/…','url',149,'— none —',NEW,'Artwork template for the studio. Drive-hosted.'],
+ ]],
+ ['Certifications &amp; compliance','These hold document URLs, not booleans.',[
+  ['certification','OBP / grs','text',89,'Eco credentials',TR,'Sustainability standard as a short code. Upper-cased for display.'],
+  ['ce_eu · rohs_eu · reach_eu · ukca_eu · red_eu','media-files/…Report.pdf','url','1–14','Compliance / certifications',TR,'<b>PDF report links.</b> The standard’s name goes on the product, the URL is kept as an attached document — previously the whole URL was shown as a certification.'],
+  ['msds_global · un38_3_global','media-files/…pdf','url',6,'Compliance / certifications',TR,'Battery shipping paperwork.'],
+  ['fcc_id_usa · fcc_sdoc_usa · fcc_declaration_usa · por65_usa','media-files/…pdf','url',1,'Compliance / certifications',TR,'US compliance. One record each.'],
+  ['carbon_footprint','2,36 kg de Co2','text',23,'Eco credentials',TR,'French text with a comma decimal. Parsed to a number.'],
+ ]],
+ ['Product specification','Tech attributes that populate the product info panel.',[
+  ['battery_weight_kg','0.0552 KILOGRAM','measure',1170,'— none —',NEW,'Needed for dangerous-goods shipping. Zero on most records.'],
+  ['battery_capacity_mah · charger_power_mah','3000 MILLIAMPEREHOUR','measure',26,'— none —',NEW,'Capacity and output.'],
+  ['battery_type','["Lithium_polymere"]','list',20,'— none —',NEW,'Underscored enum — needs a value map.'],
+  ['connectors','["Lightning","USB_C"]','list',122,'— none —',NEW,'Good filter candidate for tech products.'],
+  ['load_type','["Filaire"]','list',32,'— none —',NEW,'French: Filaire = wired.'],
+  ['autonomy · power_w · bluetooth_distance_m','45 HOUR · 40 WATT · 10 METER','measure',10,'— none —',NEW,''],
+  ['nfc · magnetic · rfid_protection · bluetooth · microphone · bluetooth_stereo_pairing','false','boolean',164,'— none —',NEW,'Only the true ones would become feature tags.'],
+  ['material','ABS / plastique recyclé certifié GRS','text',74,'Material',OK,'Mixed French and English. Also drives the eco score heuristic.'],
+  ['manufacturer_s_warranty_year','2.0000','text',161,'— none —',NEW,'Worth showing on the product page.'],
+  ['new','true','boolean',191,'— none —',NEW,'Would drive a "New" badge.'],
+ ]],
+ ['Identifiers, logistics &amp; taxes','',[
+  ['ean','842978149103','number',654,'EAN / barcode',OK,''],
+  ['upc','7350080718726','number',121,'EAN / barcode (fallback)',TR,'Used when EAN is absent.'],
+  ['asin','B07YBJX44X','text',659,'— none —',NEW,'Amazon id. <b>A strong signal of licensed retail stock</b> — combined with no decoration data it marks a "Product only" item.'],
+  ['hs_customs_code','39249000','number',1180,'HS code',OK,''],
+  ['hs_customs_code_2','8544429000','number',32,'— none —',NEW,'Second code, likely for an accessory in the box.'],
+  ['manufacturing_country','China','text',1180,'Country of origin',OK,''],
+  ['packaging_gift','400 pcs/ctn 56x33x25 cm 14,5Kg','text',166,'Packaging: outer carton quantity · type description',TR,'Carton quantity, dimensions and weight in one string — parsed apart. <b>Inner box quantity is never supplied.</b>'],
+  ['accumulator_tax_2','0,025','text',204,'— none —',NEW,'French battery levy. Comma decimal.'],
+  ['eco_participation_deee_2','0','text',204,'— none —',NEW,'French WEEE eco-participation fee. Both are real costs for FR delivery.'],
+ ]],
+ ['Dev-site fields Xoopar cannot fill','Nothing in the feed maps to these, so they need another source or a manual default.',[
+  ['—','—','—','—','Lead time',NEW,'<b>No lead time anywhere in the feed.</b> The importer defaults to 15 working days — agree a real figure per supplier before go-live.'],
+  ['—','—','—','—','Manufacturer',NEW,'Only <code>brand</code> is supplied, which is the sub-brand rather than the manufacturer.'],
+  ['—','—','—','—','Decoration max colours',NEW,'Never stated. Implied on some records by the existence of a 2-colour pad price.'],
+  ['—','—','—','—','Packaging: inner box quantity',NEW,'Only the outer carton is given, inside <code>packaging_gift</code>.'],
+  ['—','—','—','—','Incoming stock quantity · due date',NEW,'No restock or inbound data in the feed.'],
+  ['—','—','—','—','Price-break delivery costs',NEW,'Xoopar does not price delivery.'],
+  ['—','—','—','—','Price tier logo/print area in cm²',NEW,'Decoration cost varies by colour count here, never by print area.'],
+  ['—','—','—','—','Print position code · name',NEW,'Only 18 of 1,188 records carry <code>printing_position_*</code>. Worth asking Xoopar to populate it.'],
+ ]],
+];
+document.getElementById('out').innerHTML=GROUPS.map(([t,s,rows])=>`
+<div class="grp"><h2>${t}</h2>${s&&s.trim()?`<p class="gs">${s}</p>`:'<div style="height:8px"></div>'}
+<div class="card"><div class="tscroll"><table>
+<thead><tr><th style="width:19%">Xoopar attribute</th><th style="width:8%">Records</th><th style="width:9%">Type</th><th style="width:15%">Sample</th><th style="width:17%">Dev-site field</th><th style="width:8%">Handling</th><th>Notes</th></tr></thead>
+<tbody>${rows.map(([x,sv,ty,n,mf,st,nt])=>`<tr>
+<td class="xf">${x}</td>
+<td class="cnt">${typeof n==='number'?n.toLocaleString():n}</td>
+<td class="ty">${ty}</td>
+<td class="sv">${sv==='—'?'<span style="color:var(--muted)">—</span>':sv}</td>
+<td class="${(mf==='—'||mf==='— none —')?'mf none':'mf'}">${mf==='—'?'<span style="color:var(--muted)">—</span>':mf}</td>
+<td>${st}</td>
+<td class="nt">${nt||''}</td></tr>`).join('')}</tbody>
+</table></div></div></div>`).join('');
+</script>
+</body>
+</html>

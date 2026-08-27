@@ -268,6 +268,8 @@ window.MSFEED = (function(){
               setup:band.setup, breaks:band.breaks, sizeBands:d.bands.length>1?d.bands.map(b=>b.sizeCm2):null };
           });
           const methods=[...new Set(decoration.map(d=>d.method))];
+        // Licensed / retail goods carry no decoration data — they sell unbranded ("Product only").
+        const productOnly=!methods.length && !T(r,'printing_zone_size') && !MZ(r,'minimum_printing_quantity');
           const totalStock=variants.reduce((s,v)=>s+((v.stock&&v.stock.direct)||0),0);
           const locs=[...new Set(variants.map(v=>v.stock&&v.stock.location).filter(Boolean))];
           const pr=prodIdx[String(m.modelcode)]||null;
@@ -320,6 +322,8 @@ window.MSFEED = (function(){
   // FX → GBP. Xoopar prices are EUR. Editable via VM.fx.
   const DEFAULT_FX={EUR:0.86, USD:0.79, GBP:1};
   function fxRate(cur){ const f=(VM.fx&&VM.fx[cur])||DEFAULT_FX[cur]; return f||1; }
+  // weight_g is misnamed: the feed sends KILOGRAM units (0.0850 = 85 g). Values > 1 are grams typed into a kg field.
+  function xoWeightGr(v){ if(v==null) return null; return v>1 ? +v.toFixed(2) : +(v*1000).toFixed(2); }
   // Xoopar free-text type_of_product (en/fr/es) → platform department
   function deptFromXoopar(t){ const v=String(t||'').toLowerCase();
     if(/cable|powerbank|charg|adapter|speaker|earbud|bluetooth|hub|lamp|lampe|rfid|nfc|tag|popsocket|tech|usb|wireless|charge|enceinte|altavoz|thermometer|light/.test(v)) return 'Tech';
@@ -330,8 +334,11 @@ window.MSFEED = (function(){
     if(/umbrella|outdoor|parapluie|sport|fitness/.test(v)) return 'Outdoor';
     return 'Tech'; // Xoopar is predominantly a tech-gadget catalogue
   }
-  const XO_METHOD={'digital printing':'dtf','pad printing':'pad','laser engraving':'laser','screen printing':'screenprint','embroidery':'embroidery','transfer':'transfer','doming':'dtf','uv printing':'dtf'};
-  function xMethod(name){ const v=String(name||'').toLowerCase().trim(); return XO_METHOD[v]||(/(laser|engrav)/.test(v)?'laser':/pad/.test(v)?'pad':/screen/.test(v)?'screenprint':/embro/.test(v)?'embroidery':'dtf'); }
+  const XO_METHOD={'digital printing':'dtf','pad printing':'pad','laser engraving':'laser','screen printing':'screenprint','embroidery':'embroidery','transfer':'transfer','doming':'dtf','uv printing':'dtf',
+    // the live API returns French method names
+    'numerique':'dtf','numérique':'dtf','tampographie':'pad','serigraphie':'screenprint','sérigraphie':'screenprint',
+    'gravure laser':'laser','gravure':'laser','broderie':'embroidery','transfert':'transfer','doming 3d':'dtf'};
+  function xMethod(name){ const v=String(name||'').toLowerCase().trim(); return XO_METHOD[v]||(/(laser|gravure|engrav)/.test(v)?'laser':/(pad|tampo)/.test(v)?'pad':/(screen|serigraph|sérigraph)/.test(v)?'screenprint':/(embro|broderie)/.test(v)?'embroidery':/transfer|transfert/.test(v)?'transfer':'dtf'); }
   const xoopar={
     id:'xoopar', name:'Xoopar (Akeneo PIM)', format:'JSON · Akeneo values{} attribute bag · EUR→GBP',
     files:[ {key:'products',label:'Products export',root:'(array of {values})',required:true} ],
@@ -341,23 +348,37 @@ window.MSFEED = (function(){
       if(locale){ const m=a.find(x=>x.locale===locale); if(m) return m.data; }
       const n=a.find(x=>x.locale===null); return (n||a[0]).data; },
     txt(r,key,locale){ const d=this.val(r,key,locale); return d==null?'':decode(Array.isArray(d)?d.join(', '):String(d)); },
-    measure(r,key){ const d=this.val(r,key); if(d==null) return null; if(typeof d==='object'&&d.amount!=null) return num(d.amount); return num(d); },
+    // measurement {amount,unit} OR money [{amount,currency}] OR a bare number/string
+    measure(r,key){ let d=this.val(r,key); if(d==null) return null;
+      if(Array.isArray(d)) d=d[0];
+      if(d&&typeof d==='object'&&d.amount!=null) return num(d.amount);
+      return num(d); },
     flatten(files, warnings){
       const file=files.find(f=>f.json&&Array.isArray(f.json)); if(!file){ warnings.push('No Xoopar product array found.'); return []; }
       const recs=file.json.filter(r=>r&&r.values); const out=[];
-      let eurCt=0;
+      let eurCt=0; const tierBands=new Set();
       recs.forEach(r=>{
         const V=this.val.bind(this), T=this.txt.bind(this), MZ=this.measure.bind(this);
         const code=String(r.identifier||T(r,'family_article_code')||r.uuid||'').trim();
-        const name=T(r,'retail_name','en_US')||T(r,'retail_name')||T(r,'designation','en_US')||T(r,'designation')||code;
+        const name=T(r,'retail_name','en_US')||T(r,'retail_name')||T(r,'designation','en_US')||T(r,'designation')||T(r,'short_description','en_US')||T(r,'short_description')||code;
         const typ=T(r,'type_of_product','en_US')||T(r,'type_of_product','fr_FR')||T(r,'type_of_product');
         const dept=deptFromXoopar(typ);
-        // price (EUR → GBP)
+        // price — the live API prices on a customer tier attribute (GIFT_<BAND>_T<n>_[qty]); legacy exports used `price`.
+        // Base attr = unit price; the same attr suffixed with a quantity is a break at that quantity (0 = unpriced, ignored).
+        const tierKeys=Object.keys(r.values||{}).filter(k=>/^GIFT_[A-Z]+_T\d+_/.test(k));
+        const tierBase=tierKeys.find(k=>/_$/.test(k))||tierKeys[0];
+        const moneyOf=k=>{ const d=V(r,k); const m=Array.isArray(d)?d[0]:d; return (m&&m.amount!=null)?{amt:num(m.amount),cur:m.currency||'EUR'}:null; };
         const priceArr=V(r,'price'); const pe=Array.isArray(priceArr)?priceArr[0]:null;
-        const cur=(pe&&pe.currency)||'EUR'; if(cur==='EUR') eurCt++;
-        const rawAmt=pe?num(pe.amount):null; const unit=rawAmt!=null?+(rawAmt*fxRate(cur)).toFixed(2):null;
+        let money = pe?{amt:num(pe.amount),cur:pe.currency||'EUR'} : (tierBase?moneyOf(tierBase):null);
+        if(money&&!(money.amt>0)) money=null;                   // €0 = not priced
+        const cur=(money&&money.cur)||'EUR'; if(cur==='EUR') eurCt++;
+        const unit=money?+(money.amt*fxRate(cur)).toFixed(2):null;
         const moq=MZ(r,'minimum_printing_quantity')||num(T(r,'minimum_printing_quantity'))||50;
         const breaks=unit!=null?[{q:moq||1,unit}]:[];
+        tierKeys.forEach(k=>{ const m=k.match(/_(\d+)$/); if(!m) return; const q=+m[1]; const mo=moneyOf(k);
+          if(mo&&mo.amt>0&&q>(moq||1)){ const u=+(mo.amt*fxRate(mo.cur)).toFixed(2); if(u!==unit) breaks.push({q,unit:u}); } });
+        breaks.sort((a,b)=>a.q-b.q);
+        if(tierBase&&!pe) tierBands.add(tierBase.replace(/_$/,''));
         // colours
         let colsRaw=V(r,'product_colors'); colsRaw=Array.isArray(colsRaw)?colsRaw:(colsRaw?[colsRaw]:[]);
         const colours=colsRaw.map(c=>({name:decode(String(c).replace(/\b\w/g,m=>m.toUpperCase())), base:'', hex:''}));
@@ -371,17 +392,34 @@ window.MSFEED = (function(){
         const decoration=prints.map(pn=>{ const method=xMethod(pn); const run=MZ(r,RUNKEY[method]); const breaksD=run!=null?[{q:moq||1,price:run}]:[];
           return { code:method.toUpperCase(), method, impMethod:decode(pn), dependence:'None', setup:setup||0, breaks:breaksD, unresolved:false }; });
         const methods=[...new Set(decoration.map(d=>d.method))];
+        // Licensed / retail goods carry no decoration data — they sell unbranded ("Product only").
+        const productOnly=!methods.length && !T(r,'printing_zone_size') && !MZ(r,'minimum_printing_quantity');
         // dimensions
         const dims=[MZ(r,'length_cm'),MZ(r,'width_cm'),MZ(r,'height_cm')].filter(x=>x!=null);
         const dimensions=dims.length?dims.join(' × ')+' cm':(T(r,'size')||'');
         // certifications / eco
-        const certs=[]; ['certification','ce_eu','rohs_eu','reach_eu','ukca_eu'].forEach(k=>{ const d=V(r,k); if(d===true) certs.push(k.replace(/_eu$/,'').toUpperCase()); else if(typeof d==='string'&&d&&!/^no$/i.test(d)) certs.push(decode(d)); });
+        const certs=[], certDocs=[];
+        ['certification','ce_eu','rohs_eu','reach_eu','ukca_eu','red_eu','msds_global','un38_3_global'].forEach(k=>{
+          const d=V(r,k); if(d===true||d===false){ if(d===true) certs.push(k.replace(/_(eu|global)$/,'').toUpperCase().replace('_','-')); return; }
+          const s=(typeof d==='string')?d.trim():''; if(!s||/^no$/i.test(s)) return;
+          const label=k==='certification'?decode(s).toUpperCase():k.replace(/_(eu|global)$/,'').toUpperCase().replace('_','.');
+          certs.push(label);                                     // the standard, not the URL
+          if(/^https?:/i.test(s)) certDocs.push({label,url:s});   // the report itself
+        });
         const co2=MZ(r,'carbon_footprint');
         const features=[]; ['nfc','rfid_protection','magnetic','bluetooth'].forEach(k=>{ if(V(r,k)===true) features.push(k.toUpperCase().replace('_',' ')); });
         let eco=5; const mat=T(r,'material'); if(/recycl|rpet|bamboo|organic|cork/i.test(name+' '+mat)) eco=8; else if(certs.length) eco=7; else if(co2) eco=6;
         const stock=num(T(r,'stock'))||0;
         const newFlag=V(r,'new')===true;
-        const driveLinks=[]; ['template','hd_image_link','link_image1','technical_sheet_url','video_link'].forEach(k=>{ const d=T(r,k); if(d) driveLinks.push(d); });
+        // Drive-hosted duplicates: reference links only (not embeddable)
+        const driveLinks=[];
+        ['template','main_photo_link','hd_image_link','link_image1','link_image2','link_image3','link_image4','link_image5','link_image6',
+         'technical_sheet_url','packaging_photo_link','link_pantone_ref_photo','video_link'].forEach(k=>{ const d=T(r,k); if(/^https?:/i.test(d)&&/drive\.google|docs\.google/i.test(d)) driveLinks.push(d); });
+        // Packaging shot. Precedence: a directly-fetchable host first (packaging_photo_link is often a
+        // public xoopar.fr URL needing no auth proxy), then the API-hosted media-files copy.
+        const packCands=[T(r,'packaging_photo_link'),T(r,'photo_packaging_1')]
+          .filter(u=>/^https?:/i.test(u||'')&&!/drive\.google|docs\.google/i.test(u));
+        const packUrl=packCands.find(u=>!/\/api\/media-files\//i.test(u))||packCands[0]||'';
         out.push({
           _src:'xoopar', code, name, dept, cat:typ, groupDesc:'', group:'',
           priceFrom:unit, breaks, rrp:null, moq, lead:15, sustainability:eco,
@@ -389,20 +427,25 @@ window.MSFEED = (function(){
           decoration, stock:{ total:stock, locations:[] }, currency:'GBP', srcCurrency:cur,
           image:imgs[0]||'', images:imgs, brand:T(r,'brand'), material:mat,
           origin:T(r,'manufacturing_country'), certifications:[...new Set(certs)],
-          carton:null, weightGr:MZ(r,'weight_g'), dimensions, branding:decoration[0]?{method:decoration[0].method,name:decoration[0].impMethod,location:'',size:T(r,'printing_zone_size'),maxColours:''}:null,
+          carton:null, weightGr:xoWeightGr(MZ(r,'weight_g')), dimensions, certDocs, branding:decoration[0]?{method:decoration[0].method,name:decoration[0].impMethod,location:'',size:T(r,'printing_zone_size'),maxColours:''}:null,
           size:T(r,'size'), gender:'', ean:T(r,'ean')||T(r,'upc'), hsCode:T(r,'hs_customs_code'),
           video:T(r,'video_link'), desc:T(r,'long_description','en_US')||T(r,'long_description'), subcat:T(r,'collection'),
-          features, co2, driveLinks, newArrival:newFlag,
+          features, co2, driveLinks, packagingImage:packUrl, newArrival:newFlag, productOnly, licensed:productOnly&&!!T(r,'asin'),
           _gaps:(unit==null?['price']:[]).concat(imgs.length?[]:['image'])
         });
       });
+      if(tierBands.size) warnings.push('Priced from customer tier attribute'+(tierBands.size>1?'s':'')+' '+[...tierBands].join(', ')+' — confirm this is the band Merchsmith trades on.');
+      const noPrice=out.filter(p=>p.priceFrom==null).length; if(noPrice) warnings.push(noPrice+' products have no usable price (attribute absent or €0) → listed as POA.');
+      const noName=out.filter(p=>p.name===p.code).length; if(noName) warnings.push(noName+' products have no name (fell back to the product code).');
+      const po=out.filter(p=>p.productOnly).length; if(po) warnings.push(po+' products have no decoration data → imported as "Product only" (unbranded); branding is switched off for these.');
       if(eurCt) warnings.push(eurCt+' products priced in EUR → converted to GBP at '+fxRate('EUR')+' (editable in value maps · fx.EUR).');
       const noImg=out.filter(p=>!p.image).length; if(noImg) warnings.push(noImg+' products have only Google-Drive image links (not directly embeddable — need re-hosting).');
       warnings.push(out.length+' Xoopar products parsed from the Akeneo export.');
       return out;
     },
     coverage:[
-      ['name','retail_name (en_US)','ok'],['code','identifier','ok'],['price','price EUR → GBP','heur'],
+      ['name','retail_name → designation → short_description','heur'],['productOnly','no decoration attrs → unbranded','heur'],['code','identifier','ok'],
+      ['price','GIFT_<band>_T<n>_ tier attr EUR → GBP','heur'],['price breaks','same attr suffixed by qty','heur'],
       ['dept','type_of_product keyword','heur'],['colours','product_colors','ok'],['image','main_photo / image_1-6','ok'],
       ['material','material','ok'],['origin','manufacturing_country','ok'],['ean','ean / upc','ok'],
       ['methods','type_of_printing','ok'],['decoration','*_print_price + technical_fees','heur'],

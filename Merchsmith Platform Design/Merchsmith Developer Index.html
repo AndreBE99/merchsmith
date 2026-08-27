@@ -200,6 +200,13 @@ const CATS=[
       ['2026-06-24','Initial build.'],
     ]},
     {f:'Merchsmith Product Feed Spec.html',t:'Product Feed Spec',d:'The normalised product feed shape the platform expects from suppliers.',h:[['2026-06-24','Initial build.']]},
+    {f:'Xoopar Single Product Fields.html',t:'Xoopar — one product, every field',d:'Every attribute supplied for one fully-described product (ICE-P white), the raw value and what Merchsmith stores after transformation.',h:[['2026-08-10','Initial build — all 77 attributes on record XP61145.14A, grouped, with raw values beside their transformed Merchsmith values.']]},
+    {f:'Xoopar Field Map.html',t:'Xoopar → Merchsmith field map',d:'Every attribute the Xoopar API supplies, the Merchsmith field it maps to and how it is handled — the worksheet for mirroring the mapping on the development site.',h:[['2026-08-10','Initial build — all 107 supplied attributes plus 6 record-level fields, grouped by purpose with record counts, sample values, target fields and handling notes.']]},
+    {f:'Xoopar API Product Preview.html',t:'Xoopar API — product preview',d:'The live Xoopar API export run through the adapter: a complete product as the store renders it, tier-pricing findings, and the adapter fixes made.',h:[
+      ['2026-08-10','Full 1,188-record export analysed. Tier pricing adopted (GIFT_BRONZE_T3 + qty-suffixed breaks). Adapter fixed: money-array attributes (decoration + setup fees were silently null for 185 products), French print-method names, compliance URLs vs certification names, weight kg→g, short_description name fallback. Corrected the earlier "wrong endpoint" conclusion — 223 of 1,188 records carry full content.'],
+      ['2026-08-10','Extended to 3 records: side-by-side field comparison; findings on licensed (unbrandable) PopGrips, flat tier pricing, weight-unit and colour-conflict faults.'],
+      ['2026-08-10','Initial build — single Xoopar API record run through the adapter: field-by-field mapping, gaps, tier-price findings.'],
+    ]},
     {f:'Merchsmith Platform Brief.html',t:'Platform Brief',d:'The overall product vision and scope — updated to reflect the built platform.',h:[
       ['2026-07-09','Rewritten against the latest design: Platform Admin actor, supply-side flow (feeds → curation → range → store), all built surfaces re-statused, dual delivery/order-by dates, commercial model, revised next steps.'],
       ['2026-06-14','Initial build.'],
