@@ -8,7 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
-<script src="theme.js"></script>
+<script>if(/[?&]store=merchsmith\b/.test(location.search)) window.MS_SCOPE='platform';</script>
+<script>if(/[?&]embed=1\b/.test(location.search))document.documentElement.classList.add('embed');</script>
+<script src="theme.js?v=10"></script>
+<script src="store-appearance.js?v=4"></script>
+<script>if(!/[?&]store=merchsmith\b/.test(location.search)&&window.MSAPPEAR) MSAPPEAR.apply();</script>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;background:#fff;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
@@ -28,7 +32,7 @@ a{color:inherit;}
 .headtools .badge{position:absolute;top:-7px;right:-9px;background:var(--flare);color:#fff;font-size:10px;font-weight:700;border-radius:999px;min-width:16px;height:16px;display:grid;place-items:center;padding:0 3px;}
 .account .av{width:30px;height:30px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px;}
 /* store sub-nav band */
-.storeband{background:var(--slate,#51768c);color:#fff;padding:13px 36px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.storeband{background:var(--slate,#51768c);color:#fff;padding:13px var(--page-gutter);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
 .crumb{font-size:13.5px;font-weight:600;display:flex;gap:8px;align-items:center;opacity:.92;}
 .crumb a{text-decoration:none;cursor:pointer;}
 .crumb a:hover{text-decoration:underline;}
@@ -37,8 +41,8 @@ a{color:inherit;}
 .storecats a{text-decoration:none;cursor:pointer;opacity:.92;}
 .storecats a.active{text-decoration:underline;text-underline-offset:5px;opacity:1;}
 .storecats a:hover{opacity:1;}
-.main{max-width:none;margin:0;padding:30px clamp(20px,3vw,48px) 90px;}
-.main.home{max-width:1280px;margin:0 auto;padding:30px 36px 90px;}
+.main{max-width:none;margin:0;padding:30px var(--page-gutter) 90px;}
+.main.home{max-width:none;margin:0;padding:30px var(--page-gutter) 90px;}
 h1.page{font-family:var(--serif);font-weight:500;font-size:38px;margin:0 0 12px;letter-spacing:-.01em;}
 .intro{font-size:14px;color:var(--text-soft);max-width:75ch;line-height:1.7;margin:0 0 30px;}
 .dept-head{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:start;margin-bottom:30px;}
@@ -207,6 +211,21 @@ h1.page{font-family:var(--serif);font-weight:500;font-size:38px;margin:0 0 12px;
 .susc{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--green-deep);background:var(--tint-green);border-radius:999px;padding:2px 9px;margin-top:6px;}
 .empty{color:var(--muted);font-size:14px;padding:40px 0;}
 
+/* distributor: is this product stocked? */
+.dv-range{margin:34px 0 0;display:flex;align-items:center;gap:13px;background:#fff;border:1.5px solid var(--line-soft);border-radius:13px;padding:14px 17px;}
+.dv-range.in{border-color:var(--spearmint,#36C0A0);background:var(--tint-green,#f0fbf7);}
+.dv-range.locked{background:var(--paper-2);}
+.dv-rdot{width:10px;height:10px;border-radius:50%;background:var(--line);flex:none;}
+.dv-range.in .dv-rdot{background:var(--spearmint,#36C0A0);}
+.dv-rtx{display:flex;flex-direction:column;line-height:1.35;margin-right:auto;}
+.dv-rtx b{font-size:14.5px;}
+.dv-rtx span{font-size:12.5px;color:var(--ink-2);}
+.dv-rbtn{font:inherit;font-size:13px;font-weight:800;white-space:nowrap;border:1.5px solid var(--periwinkle-deep);background:#fff;color:var(--periwinkle-deep);border-radius:999px;padding:8px 17px;cursor:pointer;}
+.dv-rbtn.on{background:var(--spearmint,#36C0A0);border-color:var(--spearmint,#36C0A0);color:#fff;}
+.dv-rbtn:hover{opacity:.9;}
+.dv-rlink{font-size:12.5px;font-weight:700;color:var(--periwinkle-deep);text-decoration:none;white-space:nowrap;}
+.dv-rlink:hover{text-decoration:underline;}
+
 /* product page */
 .pp{display:grid;grid-template-columns:1.1fr 1fr;gap:46px;}
 @media(max-width:900px){.pp{grid-template-columns:1fr;}}
@@ -239,7 +258,26 @@ h1.page{font-family:var(--serif);font-weight:500;font-size:38px;margin:0 0 12px;
 .usp .ic{width:40px;height:40px;border-radius:11px;background:#fff;border:1px solid var(--line-soft);display:grid;place-items:center;color:var(--periwinkle-deep);}
 .usp .ic .icn{width:21px;height:21px;}
 /* distributor view panel + accordions */
-.dv-panel{margin-top:30px;border:1.5px solid var(--periwinkle);border-radius:16px;overflow:hidden;background:#fff;}
+.dv-notes{margin-top:12px;background:#fff;border:1.5px solid var(--periwinkle);border-radius:16px;padding:16px 18px;}
+.dv-nhd{border-bottom:1px solid var(--line-soft);padding-bottom:11px;}
+.dv-nhd{display:flex;align-items:center;gap:9px;margin-bottom:12px;}
+.dv-nhd .icn{width:17px;height:17px;color:var(--periwinkle-deep);}
+.dv-nhd b{font-size:13.5px;}
+.msdef-banner{padding:12px var(--page-gutter,clamp(20px,2.5vw,36px)) 0;font-size:13px;}
+.msdef-banner a{color:var(--ink-3);font-weight:700;text-decoration:none;}
+.msdef-banner a:hover{color:var(--ink);text-decoration:underline;}
+.dv-racts{display:flex;align-items:center;gap:8px;flex:none;flex-wrap:nowrap;margin-left:auto;}
+.dv-range .dv-rtx{flex:1 1 220px;min-width:0;}
+.dv-range:has(.dv-racts){flex-wrap:wrap;}
+.dv-rbtn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line-soft);}
+.dv-rbtn.ghost:hover{border-color:var(--periwinkle);}
+.dv-rsel{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink);background:#fff;
+  border:1.5px solid var(--line-soft);border-radius:999px;padding:9px 14px;cursor:pointer;}
+.dv-range.rec-pend{background:#fbeccd;border-color:#e3b24f;}
+.dv-range.rec-pend .dv-rdot{background:#c98a14;}
+.dv-range.rec-feat{background:var(--tint-peri,#eceefb);border-color:var(--periwinkle);}
+.dv-range.rec-feat .dv-rdot{background:var(--periwinkle-deep);}
+.dv-panel{margin-top:12px;border:1.5px solid var(--periwinkle);border-radius:16px;overflow:hidden;background:#fff;}
 .dv-head{display:flex;align-items:center;gap:13px;padding:16px 20px;background:var(--tint-peri);border-bottom:1px solid var(--line-soft);width:100%;border:0;cursor:pointer;font:inherit;text-align:left;}
 .dv-head .dv-pchev{width:18px;height:18px;color:var(--periwinkle-deep);transform:rotate(90deg);transition:transform .2s;flex:none;}
 .dv-panel.collapsed .dv-head{border-bottom:0;}
@@ -367,7 +405,7 @@ textarea.ov-in{resize:vertical;}
 /* gallery: variant thumbs + zoom */
 .pp-gallery .stage{cursor:zoom-in;}
 .pp-zoom{position:absolute;right:12px;bottom:12px;width:36px;height:36px;border-radius:10px;border:1px solid var(--line-soft);background:rgba(255,255,255,.92);font-size:17px;color:var(--ink-2);cursor:pointer;line-height:1;}
-.pp-zoom:hover{color:var(--periwinkle-deep);border-color:var(--periwinkle-deep);}
+.pp-gallery .pp-zoom:hover{color:var(--periwinkle-deep);border-color:var(--periwinkle-deep);}
 .pp-galrow{display:flex;gap:8px;margin:10px 0 0;flex-wrap:wrap;}
 .pp-galth{width:56px;height:56px;border:1.5px solid var(--line-soft);border-radius:10px;background:#fff;padding:3px;cursor:pointer;}
 .pp-galth.on{border-color:var(--periwinkle-deep);}
@@ -551,20 +589,27 @@ textarea.ov-in{resize:vertical;}
 @media(max-width:820px){.hm-pgrid{grid-template-columns:repeat(3,1fr);}.hm-disc,.hm-brandrow,.hm-faq{grid-template-columns:1fr;}.hm-heroimg{aspect-ratio:16/10;}.hm-usps{grid-template-columns:repeat(2,1fr);}.hm-ecoband{grid-template-columns:1fr;gap:28px;}.hm-steps{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:520px){.hm-pgrid{grid-template-columns:repeat(2,1fr);}.hm-heroact{flex-direction:column;align-items:stretch;}.hm-btn{justify-content:center;}.hm-newsform{flex-direction:column;border-radius:16px;}.hm-newsform button{padding:14px;}.hm-mrow span{font-size:16px;}.hm-usps{grid-template-columns:1fr;}.hm-ecostats{grid-template-columns:1fr 1fr;}}
 </style>
+<style id="noImgLine">/* store product cards: no hairline or shadow around the image cards (the polish pass added one) */
+html.ui-polish .pcard,html.ui-polish .pcard:hover{border:0!important;box-shadow:none!important;}</style>
+<style id="storeEmbed">/* ?embed=1: the store product page shown inside the project product pop-out (Product details) */
+html.embed .header,html.embed .ms-side,html.embed .ms-sidegrip,html.embed .ms-footer,html.embed .msid-switch,html.embed .crumbband,html.embed #ppback,html.embed #addproj,html.embed #fulfilBrief,html.embed .briefcard,html.embed .ss-mbtn,html.embed footer,html.embed .storeband,html.embed .chat-fab,html.embed .chat-panel{display:none!important;}
+html.embed .ms-layout{display:block!important;} html.embed .ms-content{margin-left:0!important;width:100%!important;}
+html.embed body{background:#fff!important;} html.embed .main{max-width:none!important;padding-top:6px!important;}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<symbol id="s-dash" viewBox="0 0 24 24"><path d="M4 20h16M7 20v-6M12 20V9M17 20v-10"/></symbol>
-<symbol id="s-merch" viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
-<symbol id="s-store" viewBox="0 0 24 24"><path d="M4 9.5 5.5 5h13L20 9.5M4 9.5h16M4 9.5v10.5h16V9.5M4 9.5a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0"/></symbol>
-<symbol id="s-bag" viewBox="0 0 24 24"><path d="M6 7h12l1 13H5zM9 7a3 3 0 0 1 6 0"/></symbol>
-<symbol id="s-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
-<symbol id="s-leaf" viewBox="0 0 24 24"><path d="M5 19c0-7 5-12 14-12 0 9-5 13-11 13a3.6 3.6 0 0 1-3-1z"/></symbol>
-<symbol id="s-truck" viewBox="0 0 24 24"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7M6.5 18.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM17.5 18.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></symbol>
-<symbol id="s-print" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 14h8v7H8z"/></symbol>
-<symbol id="s-check" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
-<symbol id="s-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-<symbol id="s-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="s-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 20v-6M12 20V9M17 20v-10"/></symbol>
+<symbol id="s-merch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
+<symbol id="s-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5 5.5 5h13L20 9.5M4 9.5h16M4 9.5v10.5h16V9.5M4 9.5a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0"/></symbol>
+<symbol id="s-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5zM9 7a3 3 0 0 1 6 0"/></symbol>
+<symbol id="s-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+<symbol id="s-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-7 5-12 14-12 0 9-5 13-11 13a3.6 3.6 0 0 1-3-1z"/></symbol>
+<symbol id="s-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7M6.5 18.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM17.5 18.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></symbol>
+<symbol id="s-print" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 14h8v7H8z"/></symbol>
+<symbol id="s-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+<symbol id="s-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="s-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="s-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 15.5a2.5 2.5 0 0 1-2.5 2.5H8l-4 3V6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5z"/></symbol>
 </defs></svg>
 
 <header class="header">
@@ -605,9 +650,12 @@ textarea.ov-in{resize:vertical;}
 <script src="ms-brands.js?v=2"></script>
 <script src="logos.js"></script>
 <script src="identity.js"></script>
-<script src="sidebar.js"></script>
-<script src="chrome.js"></script>
+<script src="sidebar.js?v=26"></script>
+<script src="chrome.js?v=3"></script>
 <script src="colour-map.js?v=1"></script>
-<script src="store-page.js?v=64"></script>
+<script src="product-notes.js?v=4"></script>
+<script src="two-supplier.js?v=9"></script>
+<script src="product-warnings.js?v=4"></script>
+<script src="store-page.js?v=77"></script>
 </body>
 </html>

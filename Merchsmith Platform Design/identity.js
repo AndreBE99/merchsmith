@@ -32,7 +32,8 @@
   const ORDER = ['admin','distributor','customer','supplier'];
   const KEY = 'ms-identity';
 
-  function current(){ try{ const v=localStorage.getItem(KEY); return IDENTITIES[v]?v:'distributor'; }catch(e){ return 'distributor'; } }
+  function current(){ if(window.MS_SCOPE==='platform') return 'admin';
+    try{ const v=localStorage.getItem(KEY); return IDENTITIES[v]?v:'distributor'; }catch(e){ return 'distributor'; } }
   function set(id){ if(!IDENTITIES[id]) return; try{ localStorage.setItem(KEY,id); }catch(e){}
     // keep legacy per-page role flags in sync so existing views pick it up
     try{ if(id==='customer'||id==='distributor') localStorage.setItem('ms-role', id==='customer'?'cust':'dist'); }catch(e){}
@@ -43,6 +44,9 @@
   function mark(name, h, fallbackCls){
     return `<span class="${fallbackCls}">${name}</span>`;
   }
+  // organisation names come from the Organisation profile when one has been saved
+  const orgName=(k,fb)=>{ try{ return (window.MSORG&&MSORG.name(k))||fb; }catch(e){ return fb; } };
+  function imgMark(key,alt,h){ try{ const url=localStorage.getItem(key); if(url) return `<img class="msid-logoimg" src="${url}" alt="${alt}" style="height:${h}px;width:auto;display:block">`; }catch(e){} return ''; }
   function distMark(h){
     // distributor's uploaded platform logo (with mono tone) overrides the wordmark
     try{
@@ -52,7 +56,7 @@
         return `<img class="msid-logoimg" src="${url}" alt="${DISTRIBUTOR.name}" style="height:${h}px;width:auto;display:block;${filt}">`;
       }
     }catch(e){}
-    return mark(DISTRIBUTOR.name, h, 'msid-mojo');
+    return mark(orgName('distributor',DISTRIBUTOR.name), h, 'msid-mojo');
   }
   function custMark(h){
     try{
@@ -62,18 +66,18 @@
         return `<img class="msid-logoimg" src="${url}" alt="${CUSTOMER.name}" style="height:${h}px;width:auto;display:block;${filt}">`;
       }
     }catch(e){}
-    return mark(CUSTOMER.name, h, 'msid-custname');
+    return mark(orgName('customer',CUSTOMER.name), h, 'msid-custname');
   }
   function lockupHTML(id){
     id = id||current();
     if(id==='admin'){
-      return `<span class="msid-lock">${mark('Merchsmith',26,'msid-merch')}<span class="msid-admintag">Platform Admin</span></span>`;
+      return `<span class="msid-lock"><img class="msid-mslogo" src="assets/merchsmith-wordmark-white.png" alt="Merchsmith"></span>`;
     }
     if(id==='customer'){ // distributor mark first, then the customer they're housed under
       return `<span class="msid-lock"><span class="msid-logo">${distMark(28)}</span><span class="msid-x">×</span><span class="msid-logo">${custMark(26)}</span></span>`;
     }
     if(id==='supplier'){ // distributor first, then the supplier
-      return `<span class="msid-lock"><span class="msid-logo">${distMark(28)}</span><span class="msid-x">×</span><span class="msid-logo">${mark(SUPPLIER.name,26,'msid-custname')}</span></span>`;
+      return `<span class="msid-lock"><span class="msid-logo">${distMark(28)}</span><span class="msid-x">×</span><span class="msid-logo">${imgMark('ms-sup-logo',SUPPLIER.name,26)||mark(orgName('supplier',SUPPLIER.name),26,'msid-custname')}</span></span>`;
     }
     // distributor: their own brand
     return `<span class="msid-lock"><span class="msid-logo">${distMark(28)}</span></span>`;
@@ -82,6 +86,7 @@
   // ---- styles ----
   const css = `
   .msid-lock{display:inline-flex;align-items:center;gap:11px;font-family:var(--sans);}
+  .msid-mslogo{height:22px;width:auto;display:block;}
   .msid-logo{display:inline-flex;align-items:center;}
   .msid-logo svg{display:block;}
   .msid-custname,.msid-mojo,.msid-merch{font-family:var(--serif,"EB Garamond",Georgia,serif);font-weight:500;font-size:23px;line-height:1;color:#fff;letter-spacing:-.01em;}
@@ -162,7 +167,17 @@
     }));
   }
 
-  window.MSID = { current, set, get:()=>IDENTITIES[current()], all:IDENTITIES, lockupHTML, initial,
+  // the signed-in person's own profile edits (My profile) override the seed identity
+  function withProfile(k){ const base=IDENTITIES[k]; try{ const s=JSON.parse(localStorage.getItem('ms-people')||'null');
+      const m=s&&s.me&&s.me[k]; if(!m) return base; const o=Object.assign({},base);
+      if(m.n) o.who=m.n; if(m.title) o.title=m.title; if(m.email) o.email=m.email; if(m.tel) o.tel=m.tel;
+      const p=s.photos&&s.photos[(o.who||'').toLowerCase()]; if(p) o.photo=p; else if(m.photo==='') delete o.photo;
+      return o; }catch(e){ return base; } }
+  window.addEventListener('ms-org-updated',()=>{ document.querySelectorAll('[data-identity-lockup],.header .brand').forEach(b=>{ if(b.querySelector('.msid-lock')) b.innerHTML=lockupHTML(); }); });
+  window.MSID = { current, set, get:()=>withProfile(current()), all:IDENTITIES, lockupHTML, initial, SUPPLIER,
+    setSupplier(name){ if(!name) return SUPPLIER.name; SUPPLIER.name=name;
+      SUPPLIER.short=name.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+      this.relock(); return SUPPLIER.name; },
     relock(){ document.querySelectorAll('[data-identity-lockup]').forEach(el=>{ el.innerHTML=lockupHTML(); }); } };
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', build); else build();
 })();

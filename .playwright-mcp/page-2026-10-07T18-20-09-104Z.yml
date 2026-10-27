@@ -1,0 +1,6 @@
+- generic [active] [ref=f21e1]:
+  - generic [ref=f21e3]:
+    - progressbar [ref=f21e4]
+    - paragraph [ref=f21e7]: Loading application...
+  - button "Open Next.js Dev Tools" [ref=f21e13] [cursor=pointer]
+  - alert [ref=f21e17]

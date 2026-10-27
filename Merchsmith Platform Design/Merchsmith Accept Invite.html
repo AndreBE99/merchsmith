@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Accept your invitation</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js?v=10"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;min-height:100vh;background:var(--paper);font-family:var(--sans);color:var(--ink);display:grid;place-items:center;padding:30px 18px;-webkit-font-smoothing:antialiased;}
+.wrap{width:min(480px,100%);}
+.mark{display:block;height:22px;width:auto;margin:0 auto 22px;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:20px;padding:30px 30px 26px;box-shadow:0 18px 50px rgba(20,22,45,.08);}
+.org{display:flex;align-items:center;gap:13px;margin-bottom:18px;}
+.orglogo{width:52px;height:52px;border-radius:13px;background:var(--paper);border:1px solid var(--line-soft);display:grid;place-items:center;overflow:hidden;font-weight:800;color:var(--ink-3);flex:none;}
+.orglogo img{width:100%;height:100%;object-fit:contain;padding:6px;}
+.org b{display:block;font-size:15px;}
+.org span{font-size:12.5px;color:var(--ink-3);}
+h1{font-family:var(--serif);font-weight:500;font-size:28px;line-height:1.15;margin:0 0 8px;letter-spacing:-.01em;}
+.lede{font-size:14px;color:var(--ink-2);line-height:1.55;margin:0 0 20px;}
+.avrow{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.av{width:64px;height:64px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:800;overflow:hidden;flex:none;}
+.av img{width:100%;height:100%;object-fit:cover;}
+.f{display:grid;gap:5px;margin-bottom:12px;}
+.f span{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);}
+.f input{font-family:var(--sans);font-size:14.5px;color:var(--ink);border:1.5px solid var(--line-soft);border-radius:11px;padding:11px 12px;background:#fff;}
+.f input:focus{outline:0;border-color:var(--periwinkle);}
+.f input[readonly]{background:var(--paper);color:var(--ink-3);}
+.hint{font-size:12px;color:var(--ink-3);margin:-4px 0 12px;}
+.err{font-size:12.5px;font-weight:700;color:#b3261e;margin:0 0 12px;min-height:1em;}
+.btn{width:100%;font-family:var(--sans);font-size:14.5px;font-weight:800;color:#fff;background:var(--periwinkle-deep);border:0;border-radius:11px;padding:13px;cursor:pointer;}
+.btn:hover{filter:brightness(.95);}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line-soft);width:auto;padding:8px 14px;font-size:12.5px;}
+.small{font-size:12px;color:var(--ink-3);text-align:center;margin-top:16px;line-height:1.5;}
+.done{text-align:center;}
+.tick{width:60px;height:60px;border-radius:50%;background:var(--tint-green);color:var(--green-deep);display:grid;place-items:center;margin:0 auto 14px;font-size:28px;font-weight:800;}
+.done a.btn{display:block;text-decoration:none;margin-top:20px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="mark" src="assets/merchsmith-wordmark-ink.png" alt="Merchsmith">
+  <div class="card" id="card"></div>
+  <p class="small">Prototype screen — shows what an invited person sees when they open their invitation link.</p>
+</div>
+<script src="identity.js"></script>
+<script src="avatars.js"></script>
+<script src="names.js?v=2"></script>
+<script src="address.js?v=1"></script>
+<script src="org-data.js?v=8"></script>
+<script src="admin-data.js?v=3"></script>
+<script src="product-notes.js?v=5"></script>
+<script src="people.js?v=11"></script>
+<script>(function(){ const q=new URLSearchParams(location.search), D=window.ORG_DATA; if(D&&(D.customers||[]).some(c=>c.id===q.get('org'))) location.replace('Merchsmith Customer Onboarding.html'+location.search); })();</script>
+<script>
+(function(){
+  const P=window.MSPEOPLE, OD=window.ORG_DATA, A=window.ADMIN||{};
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const qs=new URLSearchParams(location.search), orgKey=qs.get('org')||'', uk=(qs.get('u')||'').toLowerCase();
+  const card=document.getElementById('card');
+  // resolve the org + its people through the same store the rest of the app uses
+  let org=null, teams=[];
+  if(orgKey==='mojo'){ org={name:'Mojo Promotions',initials:'MP',type:'distributor'}; teams=P.hydrate('mojo',OD.mojoTeams); }
+  else if(orgKey==='merchsmith'){ org={name:'Merchsmith',initials:'MS',type:'merchsmith'}; teams=[{name:'Operators',users:A.team||[]}]; P.hydrateContacts('merchsmith',A.team||[]); }
+  else { const c=OD.customers.find(x=>x.id===orgKey), s=OD.suppliers.find(x=>x.id===orgKey);
+    if(c){ org=Object.assign({type:'customer'},P.hydrateOrg(c.id,c)); teams=P.hydrate(c.id,c.teams); }
+    else if(s){ org=Object.assign({type:'supplier'},P.hydrateOrg(s.id,s)); teams=[{name:'Contacts',users:P.hydrateContacts(s.id,s.contacts||[])}]; } }
+  let user=null, team='';
+  teams.forEach(t=>t.users.forEach(u=>{ const k=(u._ukey||(u.email||u.n||'')).toLowerCase(); if(k===uk){ user=u; team=t.name; } }));
+  const orgHead=org?`<div class="org"><span class="orglogo">${org.logo?`<img src="${esc(org.logo)}" alt="">`:esc(org.initials||'')}</span><div><b>${esc(org.name)}</b><span>on Merchsmith</span></div></div>`:'';
+
+  if(!org||!user||user.status!=='invited'){
+    card.innerHTML=`${orgHead}<h1>This invitation isn't valid</h1><p class="lede">${user&&user.status==='deactivated'?'It has been revoked.':user?'It has already been accepted — sign in instead.':'The link may be incomplete, or the invitation was withdrawn.'} Ask whoever invited you to send a new one.</p>`;
+    return;
+  }
+  let pic;
+  const role=P.normRole(user.role);
+  card.innerHTML=`${orgHead}
+    <h1>Join ${esc(org.name)}</h1>
+    <p class="lede">You've been invited as <b>${esc(role)}</b>${team&&team!=='Contacts'?' in '+esc(team):''}. Check your details, add a photo if you like, and set a password.</p>
+    <div class="avrow"><span class="av" id="av">${P.avHTML(user)}</span>
+      <label class="btn ghost">Add a photo<input type="file" accept="image/*" id="file" hidden></label></div>
+    <label class="f"><span>Full name</span><input id="n" value="${esc(user.n)}" autocomplete="name"></label>
+    <label class="f"><span>Email</span><input value="${esc(user.email||'')}" readonly></label>
+    <label class="f"><span>Password</span><input id="p1" type="password" autocomplete="new-password"></label>
+    <p class="hint">At least 8 characters.</p>
+    <label class="f"><span>Confirm password</span><input id="p2" type="password" autocomplete="new-password"></label>
+    <p class="err" id="err"></p>
+    <button class="btn" id="go">Accept and continue</button>`;
+  document.getElementById('file').onchange=async e=>{ try{ pic=await P.readPhoto(e.target.files[0]); document.getElementById('av').innerHTML=`<img src="${pic}" alt="">`; }catch(x){ document.getElementById('err').textContent=x.message; } };
+  if(window.MSNAME) MSNAME.upgrade(document.getElementById('n'),{pref:true,prefValue:user.pref||''});
+  document.getElementById('go').onclick=()=>{
+    const err=document.getElementById('err'), n=document.getElementById('n').value.trim(), p1=document.getElementById('p1').value, p2=document.getElementById('p2').value;
+    if(!n){ err.textContent='Please enter your name.'; return; }
+    if(p1.length<8){ err.textContent='Your password needs at least 8 characters.'; return; }
+    if(p1!==p2){ err.textContent='The two passwords do not match.'; return; }
+    const f={n}; if(window.MSNAME){ const np=MSNAME.parts(document.getElementById('n')); if(!np.firstName){ err.textContent='Please enter your first name.'; return; } Object.assign(f,np); } if(pic) f.photo=pic;
+    P.saveUser(orgKey,user,f); P.setStatus(orgKey,user,'active');
+    const land={distributor:'Merchsmith Home.html',customer:'Merchsmith Home.html',supplier:'Merchsmith Supplier Portal.html',merchsmith:'Merchsmith Admin.html'}[org.type]||'Merchsmith Home.html';
+    card.innerHTML=`<div class="done"><div class="tick">✓</div><h1>You're in</h1><p class="lede">Welcome to ${esc(org.name)}, ${esc(n.split(' ')[0])}. Your account is active.</p><a class="btn" href="${land}">Go to Merchsmith</a></div>`;
+  };
+})();
+</script>
+</body>
+</html>

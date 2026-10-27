@@ -1,0 +1,231 @@
+- generic [ref=f9e1]:
+  - button "Open Next.js Dev Tools" [ref=f9e13] [cursor=pointer]
+  - alert [ref=f9e17]
+  - generic [ref=f9e19]:
+    - banner [ref=f9e20]:
+      - generic [ref=f9e21]:
+        - heading [level=6] [ref=f9e508]: XD Connects
+        - generic [ref=f9e28]:
+          - textbox [ref=f9e509]:
+            - /placeholder: Search products, projects…
+          - group [aria-hidden]
+        - generic [ref=f9e34]:
+          - button [ref=f9e510] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f9e40]: "4"
+          - button [expanded] [ref=f9e511] [cursor=pointer]
+    - complementary [ref=f9e512]:
+      - navigation [ref=f9e48]:
+        - link [ref=f9e513] [cursor=pointer]:
+          - /url: /
+        - link [ref=f9e514] [cursor=pointer]:
+          - /url: /supplier/products
+        - link [ref=f9e515] [cursor=pointer]:
+          - /url: /orders
+        - button [ref=f9e516] [cursor=pointer]
+        - link [ref=f9e517] [cursor=pointer]:
+          - /url: /supplier/connection-requests
+        - link [ref=f9e518] [cursor=pointer]:
+          - /url: /chats
+        - link [ref=f9e519] [cursor=pointer]:
+          - /url: /calendar
+        - link [ref=f9e520] [cursor=pointer]:
+          - /url: /supplier/billing
+        - link [ref=f9e521] [cursor=pointer]:
+          - /url: /supplier/settings
+    - main [ref=f9e87]:
+      - generic [ref=f9e88]: Orders › MS-1002
+      - generic [ref=f9e93]:
+        - generic [ref=f9e95]:
+          - link [ref=f9e522] [cursor=pointer]:
+            - /url: /orders
+          - generic [ref=f9e99]:
+            - heading [level=1] [ref=f9e523]: MS-1002
+            - paragraph [ref=f9e101]: placed 11 Sept 2026
+          - button [ref=f9e524] [cursor=pointer]: Comments
+          - generic [ref=f9e525]:
+            - link [ref=f9e526] [cursor=pointer]:
+              - /url: "#line-1"
+            - link [ref=f9e527] [cursor=pointer]:
+              - /url: "#line-2"
+          - button [ref=f9e528] [cursor=pointer]: Minimise all
+        - generic [ref=f9e107]:
+          - generic [ref=f9e108]:
+            - generic [ref=f9e109]:
+              - generic [ref=f9e110]:
+                - generic [ref=f9e112]:
+                  - generic [ref=f9e113]:
+                    - paragraph [ref=f9e114]: 1. [TEST] Cork Cover Notebook
+                    - button [ref=f9e529] [cursor=pointer]: Comments
+                    - generic [ref=f9e116]: Dispatched
+                  - paragraph [ref=f9e118]: 250 × £2.94 · Cover · Laser engrave
+                  - generic [ref=f9e119]: Kraft × 250
+                - button [ref=f9e530] [cursor=pointer]
+              - generic [ref=f9e531]:
+                - paragraph [ref=f9e129]: Order received
+                - paragraph [ref=f9e132]: Sent
+                - paragraph [ref=f9e135]: Acknowledged
+                - paragraph [ref=f9e138]: Proof
+                - paragraph [ref=f9e141]: Confirmed
+                - paragraph [ref=f9e144]: In production
+                - paragraph [ref=f9e147]: Dispatched
+                - paragraph [ref=f9e150]: Delivered
+              - generic [ref=f9e153]:
+                - generic [ref=f9e154]:
+                  - paragraph [ref=f9e155]: Tracked by DPD
+                  - paragraph [ref=f9e156]: Tracking 15100210047712.
+                - generic [ref=f9e157]:
+                  - generic [ref=f9e158]:
+                    - paragraph [ref=f9e159]: Delivery info
+                    - paragraph [ref=f9e160]:
+                      - text: Supplier deadline 25 Sept 2026
+                      - generic [ref=f9e161]:
+                        - generic [ref=f9e162]: 0 of 2 dispatched
+                        - generic [ref=f9e163]: 1. 150 → Customer Admin (Test), Test Customer, 1 Example Street, Leeds, LS1 1AA · DPD 151002100477121
+                        - generic [ref=f9e164]: 2. 100 → Events Team (Test), Test Customer c/o NEC, Hall 5 Loading Bay, Birmingham, B40 1NT · DPD 151002100477122
+                    - paragraph [ref=f9e165]: DPD · 15100210047712 · shipped 23 Sept 2026
+                  - generic [ref=f9e166]:
+                    - paragraph [ref=f9e167]: Supplier documents
+                    - generic [ref=f9e168]:
+                      - generic [ref=f9e169]: Acknowledgement OA-1002-1 · dispatch 25 Sept 2026 · checked ✓
+                      - generic [ref=f9e170]: Proof Proof 1002-1.pdf (v1) · confirmed ✓
+            - generic [ref=f9e171]:
+              - generic [ref=f9e172]:
+                - generic [ref=f9e174]:
+                  - generic [ref=f9e175]:
+                    - paragraph [ref=f9e176]: 2. [TEST] Prodir Ds8 True Biotic Pen
+                    - button [ref=f9e540] [cursor=pointer]: Comments
+                    - generic [ref=f9e178]: Dispatched
+                  - paragraph [ref=f9e180]: 250 × £1.14 · Barrel · Pad print · 1 colour
+                  - generic [ref=f9e181]: Blue × 250
+                - button [ref=f9e541] [cursor=pointer]
+              - generic [ref=f9e542]:
+                - paragraph [ref=f9e191]: Order received
+                - paragraph [ref=f9e194]: Sent
+                - paragraph [ref=f9e197]: Acknowledged
+                - paragraph [ref=f9e200]: Proof
+                - paragraph [ref=f9e203]: Confirmed
+                - paragraph [ref=f9e206]: In production
+                - paragraph [ref=f9e209]: Dispatched
+                - paragraph [ref=f9e212]: Delivered
+              - generic [ref=f9e215]:
+                - generic [ref=f9e216]:
+                  - paragraph [ref=f9e217]: Tracked by DPD
+                  - paragraph [ref=f9e218]: Tracking 15100220047712.
+                - generic [ref=f9e219]:
+                  - generic [ref=f9e220]:
+                    - paragraph [ref=f9e221]: Delivery info
+                    - paragraph [ref=f9e222]: Supplier deadline 25 Sept 2026 Deliver to Customer Admin (Test), Test Customer, 1 Example Street, Leeds, LS1 1AA
+                    - paragraph [ref=f9e223]: DPD · 15100220047712 · shipped 23 Sept 2026
+                  - generic [ref=f9e224]:
+                    - paragraph [ref=f9e225]: Supplier documents
+                    - generic [ref=f9e226]:
+                      - generic [ref=f9e227]: Acknowledgement OA-1002-2 · dispatch 25 Sept 2026 · checked ✓
+                      - generic [ref=f9e228]: Proof Proof 1002-2.pdf (v1) · confirmed ✓
+          - generic [ref=f9e229]:
+            - generic [ref=f9e230]:
+              - paragraph [ref=f9e231]: Your invoices
+              - generic [ref=f9e233]:
+                - paragraph [ref=f9e234]: PO PO-1002-1
+                - generic [ref=f9e235]: No invoice sent yet
+                - button [ref=f9e551] [cursor=pointer]: Send invoice
+            - generic [ref=f9e238]:
+              - paragraph [ref=f9e239]: Documents1
+              - generic [ref=f9e241]:
+                - paragraph [ref=f9e242]:
+                  - link [ref=f9e552] [cursor=pointer]:
+                    - /url: /orders/MS-1002/po/PO-1002-1
+                    - text: Purchase order PO-1002-1 ↗
+                - text: sent 12 Sept 2026 · £1,020.00
+      - generic [ref=f9e245]:
+        - generic [ref=f9e246]:
+          - generic [ref=f9e247]:
+            - link [ref=f9e553] [cursor=pointer]:
+              - /url: /store/pages/contact
+              - text: Let's Talk.
+            - paragraph [ref=f9e249]: Sustainable promotional merchandise, branded in-house and delivered on time.
+          - generic [ref=f9e250]:
+            - heading [level=4] [ref=f9e554]: Company
+            - link [ref=f9e555] [cursor=pointer]:
+              - /url: /store/pages/about
+              - text: About us
+            - link [ref=f9e556] [cursor=pointer]:
+              - /url: /store/pages/environment
+              - text: Environmental footprint
+            - link [ref=f9e557] [cursor=pointer]:
+              - /url: /store/pages/value-chain
+              - text: Value chain
+            - link [ref=f9e558] [cursor=pointer]:
+              - /url: /store/pages/people
+              - text: People & culture
+          - generic [ref=f9e256]:
+            - heading [level=4] [ref=f9e559]: Let us help
+            - link [ref=f9e560] [cursor=pointer]:
+              - /url: /store/pages/faq
+              - text: FAQ
+            - link [ref=f9e561] [cursor=pointer]:
+              - /url: /store/pages/terms
+              - text: Terms & conditions
+            - link [ref=f9e562] [cursor=pointer]:
+              - /url: /store/pages/privacy
+              - text: Privacy
+            - link [ref=f9e563] [cursor=pointer]:
+              - /url: /store/pages/returns
+              - text: Returns
+            - link [ref=f9e564] [cursor=pointer]:
+              - /url: /store/pages/contact
+              - text: Contact us
+        - generic [ref=f9e263]:
+          - generic [ref=f9e264]:
+            - heading [level=4] [ref=f9e565]: Stay in touch
+            - paragraph [ref=f9e266]: Product drops, sustainability news and the occasional good idea. No more than monthly.
+          - generic [ref=f9e267]:
+            - textbox [ref=f9e566]:
+              - /placeholder: Your work email
+            - button [ref=f9e567] [cursor=pointer]: Sign up
+        - generic [ref=f9e276]:
+          - generic [ref=f9e277]: Accredited
+          - generic [ref=f9e278]: New accreditation
+        - generic [ref=f9e299]:
+          - generic [ref=f9e300]:
+            - generic [ref=f9e301]: © 2026 Test Distributor
+            - link [ref=f9e573] [cursor=pointer]:
+              - /url: /store/pages/cookies
+              - text: Cookie policy
+            - link [ref=f9e574] [cursor=pointer]:
+              - /url: /store/pages/accessibility
+              - text: Accessibility
+            - generic [ref=f9e304]: Powered by Merchsmith
+          - generic [ref=f9e305]: Secured by Stripe
+  - button [aria-hidden] [ref=f9e578] [cursor=pointer]
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f9e313]:
+    - button [ref=f9e315] [cursor=pointer]: ×
+  - menu [ref=f9e581]:
+    - generic [ref=f9e587]:
+      - generic [ref=f9e588]: Supplier Admin (Test)
+      - paragraph [ref=f9e589]: Supplier Admin · XD Connects
+    - menuitem "My profile" [active] [ref=f9e590] [cursor=pointer]
+    - menuitem "Notifications" [ref=f9e597] [cursor=pointer]
+    - generic "Account settings will be available soon" [ref=f9e604]:
+      - menuitem "Account settings Soon" [disabled]:
+        - generic: Account settings
+        - generic: Soon
+    - generic [ref=f9e605]:
+      - paragraph [ref=f9e607]: Switch profile
+      - menuitem "Platform admin admin@platform.com" [ref=f9e608] [cursor=pointer]:
+        - generic [ref=f9e609]:
+          - generic [ref=f9e610]: Platform admin
+          - paragraph [ref=f9e611]: admin@platform.com
+      - menuitem "Distributor admin admin@distributor.com" [ref=f9e612] [cursor=pointer]:
+        - generic [ref=f9e613]:
+          - generic [ref=f9e614]: Distributor admin
+          - paragraph [ref=f9e615]: admin@distributor.com
+      - menuitem "Supplier admin admin@supplier.com" [ref=f9e616] [cursor=pointer]:
+        - generic [ref=f9e620]:
+          - generic [ref=f9e621]: Supplier admin
+          - paragraph [ref=f9e622]: admin@supplier.com
+      - menuitem "Customer admin admin@customer.com" [ref=f9e623] [cursor=pointer]:
+        - generic [ref=f9e624]:
+          - generic [ref=f9e625]: Customer admin
+          - paragraph [ref=f9e626]: admin@customer.com
+    - menuitem "Sign out" [ref=f9e628] [cursor=pointer]

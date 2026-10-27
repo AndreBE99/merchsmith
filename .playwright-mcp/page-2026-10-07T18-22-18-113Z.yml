@@ -1,0 +1,115 @@
+- generic [active] [ref=f24e1]:
+  - button "Open Next.js Dev Tools" [ref=f24e7] [cursor=pointer]
+  - alert [ref=f24e11]
+  - generic [ref=f24e13]:
+    - banner [ref=f24e14]:
+      - generic [ref=f24e15]:
+        - heading "Test Distributor" [level=6] [ref=f24e18]
+        - generic [ref=f24e22]:
+          - textbox "Search" [ref=f24e27]:
+            - /placeholder: Search products, projects, orders…
+          - group [aria-hidden]
+        - generic [ref=f24e28]:
+          - button "notifications" [ref=f24e29] [cursor=pointer]
+          - button "user menu" [ref=f24e35] [cursor=pointer]
+    - complementary "Main navigation" [ref=f24e40]:
+      - navigation [ref=f24e41]:
+        - link "Dashboard" [ref=f24e42] [cursor=pointer]:
+          - /url: /
+        - link "Store" [ref=f24e48] [cursor=pointer]:
+          - /url: /store
+        - link "Projects" [ref=f24e53] [cursor=pointer]:
+          - /url: /projects
+        - link "Orders" [ref=f24e58] [cursor=pointer]:
+          - /url: /orders
+        - link "Organisations" [ref=f24e62] [cursor=pointer]:
+          - /url: /organisations
+        - link "Users" [ref=f24e67] [cursor=pointer]:
+          - /url: /users/all
+        - link "Team" [ref=f24e72] [cursor=pointer]:
+          - /url: /users
+        - link "Chats" [ref=f24e78] [cursor=pointer]:
+          - /url: /chats
+        - link "Calendar" [ref=f24e81] [cursor=pointer]:
+          - /url: /calendar
+        - link "Calls" [ref=f24e84] [cursor=pointer]:
+          - /url: /calls
+        - link "Emails" [ref=f24e87] [cursor=pointer]:
+          - /url: /emails
+        - link "Finance" [ref=f24e91] [cursor=pointer]:
+          - /url: /finance
+        - link "Settings" [ref=f24e95] [cursor=pointer]:
+          - /url: /settings
+    - main [ref=f24e99]:
+      - generic [ref=f24e101]:
+        - generic [ref=f24e102]: Test Distributor
+        - generic [ref=f24e103]: ›
+        - generic [ref=f24e104]: Dashboard
+      - generic [ref=f24e107]:
+        - generic [ref=f24e108]:
+          - generic [ref=f24e109]:
+            - heading "Good afternoon, Distributor" [level=1] [ref=f24e110]
+            - generic [ref=f24e111]: Distributor Admin · Test Distributor
+          - generic [ref=f24e112]:
+            - link "Open project view" [ref=f24e113] [cursor=pointer]:
+              - /url: /projects
+            - link "Browse store" [ref=f24e119] [cursor=pointer]:
+              - /url: /store
+        - generic [ref=f24e124]:
+          - generic [ref=f24e125]:
+            - generic [ref=f24e126]: Open orders
+            - generic [ref=f24e127]: —
+            - generic [ref=f24e128]: None ready yet
+          - generic [ref=f24e129]:
+            - generic [ref=f24e130]: Awaiting approval
+            - generic [ref=f24e131]: —
+            - generic [ref=f24e132]: Nothing waiting
+          - generic "GMV will show once the Orders module records when each order is placed" [ref=f24e133]:
+            - generic [ref=f24e134]: GMV this month
+            - generic [ref=f24e135]: —
+            - generic [ref=f24e136]: Needs order dates
+          - generic [ref=f24e137]:
+            - generic [ref=f24e138]: Avg. margin
+            - generic [ref=f24e139]: —
+            - generic [ref=f24e140]: No approved prices yet
+        - generic [ref=f24e141]:
+          - generic [ref=f24e142]:
+            - generic [ref=f24e143]:
+              - generic [ref=f24e144]:
+                - heading "Project pipeline" [level=3] [ref=f24e145]
+                - link "Open projects ›" [ref=f24e146] [cursor=pointer]:
+                  - /url: /projects
+              - generic [ref=f24e147]:
+                - generic [ref=f24e148]:
+                  - generic [ref=f24e149]: "0"
+                  - text: Idea
+                - generic [ref=f24e150]:
+                  - generic [ref=f24e151]: "0"
+                  - text: In progress
+                - generic [ref=f24e152]:
+                  - generic [ref=f24e153]: "0"
+                  - text: Ready to order
+                - generic [ref=f24e154]:
+                  - generic [ref=f24e155]: "0"
+                  - text: Ordered
+                - generic [ref=f24e156]:
+                  - generic [ref=f24e157]: "0"
+                  - text: Delivered
+            - generic [ref=f24e158]:
+              - generic [ref=f24e159]:
+                - heading "Top customers" [level=3] [ref=f24e160]
+                - link "Organisations ›" [ref=f24e161] [cursor=pointer]:
+                  - /url: /organisations?tab=customer
+              - generic [ref=f24e162]: Loading…
+          - generic [ref=f24e163]:
+            - generic [ref=f24e164]:
+              - heading "Your tasks" [level=3] [ref=f24e166]
+              - generic [ref=f24e167]: Across active projects
+              - generic [ref=f24e168]: Loading…
+            - generic [ref=f24e169]:
+              - heading "Recent activity" [level=3] [ref=f24e171]
+              - generic [ref=f24e172]: No project activity yet.
+  - button "Messages" [ref=f24e173] [cursor=pointer]
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f24e176]:
+    - button [ref=f24e178] [cursor=pointer]: ×

@@ -1,0 +1,58 @@
+[      82ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[      93ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[   27355ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[   27376ms] [LOG] [Fast Refresh] done in 123ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  104000ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  104038ms] [LOG] [Fast Refresh] done in 139ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  316913ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  316915ms] [LOG] [Fast Refresh] done in 106ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  784747ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  784803ms] [LOG] [Fast Refresh] done in 157ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  807410ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  807469ms] [LOG] [Fast Refresh] done in 160ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1291192ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1291245ms] [LOG] [Fast Refresh] done in 155ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1305973ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1306006ms] [LOG] [Fast Refresh] done in 83ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1317356ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1317376ms] [LOG] [Fast Refresh] done in 123ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1321953ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1321965ms] [LOG] [Fast Refresh] done in 88ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1334883ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1334892ms] [LOG] [Fast Refresh] done in 113ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1343951ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1343964ms] [LOG] [Fast Refresh] done in 70ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1354696ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1354699ms] [LOG] [Fast Refresh] done in 78ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1370544ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1370550ms] [LOG] [Fast Refresh] done in 63ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1376132ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1376141ms] [LOG] [Fast Refresh] done in 69ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1394174ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1394202ms] [LOG] [Fast Refresh] done in 131ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1963378ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[16474235ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me:0
+[16474260ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me/permissions:0
+[16474269ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/platform/settings:0
+[16474295ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/curated-range/count:0
+[16474312ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/platform/distributor-environments?page=1&limit=1:0
+[16474313ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/products?page=1&limit=1:0
+[16474317ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/platform/suppliers?page=1&limit=1:0
+[17613537ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me:0
+[17613553ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me/permissions:0
+[18378216ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me:0
+[18378371ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me/permissions:0
+[18381893ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[18382796ms] [LOG] [Fast Refresh] done in 1181ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[19227781ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19228783ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19229786ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19230790ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19231794ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19236799ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19241807ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19246818ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19251837ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19256865ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19261942ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19267013ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=PogOCpi3NeaMNmQXLlcBd' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422

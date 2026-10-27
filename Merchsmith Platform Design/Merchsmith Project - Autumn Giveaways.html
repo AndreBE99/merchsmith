@@ -10,9 +10,21 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
-<link rel="stylesheet" href="product-modal.css">
-<link rel="stylesheet" href="project-brief.css">
-<script src="theme.js"></script>
+<link rel="stylesheet" href="product-modal.css?v=101">
+<link rel="stylesheet" href="project-brief.css?v=6">
+<script>/* Layout sync (Sep 2026 clean-up). Small "keep X lined up with Y" fixes register here instead of each watching the whole page.
+   They run together, once per frame at most, only after real events: load, resize, a click, the product pop-out opening/closing,
+   or an explicit __msLayout.run(). Nothing re-triggers itself, so the page can't loop or freeze. */
+window.__msLayout=window.__msLayout||(function(){ const fns=[]; let q=0, busy=false;
+  const flush=()=>{ q=0; if(busy) return; busy=true; fns.forEach(f=>{ try{ f(); }catch(e){ console.warn('layout sync',e); } }); busy=false; };
+  const run=()=>{ if(!q) q=requestAnimationFrame(flush); };
+  let ct=0; const later=()=>{ clearTimeout(ct); ct=setTimeout(run,120); };
+  addEventListener('resize',run); addEventListener('load',()=>{ run(); setTimeout(run,400); }); document.addEventListener('click',later,true);
+  document.addEventListener('DOMContentLoaded',()=>{ const pm=document.getElementById('pmodal'); if(pm) new MutationObserver(()=>{ run(); setTimeout(run,380); }).observe(pm,{attributes:true,attributeFilter:['class']}); run(); });
+  return {add(f){ fns.push(f); run(); }, run}; })();
+/* kept for older code paths: a debounced, self-quietening watcher */
+window.__msObserve=window.__msObserve||(fn=>{ let t=0; const o=new MutationObserver(()=>{ if(t) return; t=setTimeout(()=>{ t=0; try{ fn(); }catch(e){} o.takeRecords(); },120); }); return o; });</script>
+<script src="theme.js?v=10"></script>
 <script>if(new URLSearchParams(location.search).get('embed')==='1')document.documentElement.classList.add('embed');</script>
 <style>
 html.embed .header,html.embed .crumbband,html.embed .foot,html.embed .tdiv,html.embed .titlerow,html.embed .metabar,
@@ -26,6 +38,32 @@ html.embed #brief{margin-top:8px;}
 html.embed .filterbar2{display:none!important;}
 /* comments drawer inside the embed iframe: full height of the embedded area */
 html.embed .cdrawer-panel{border-left:1px solid var(--line-soft);}
+.metabar .mb-tools{margin-left:auto;margin-right:16px;gap:16px;flex:none;} .mb-tools .moredrop .it-row{white-space:nowrap;} .metabar .mb-tools~.brief-btn{margin-left:0;}
+
+/* missed order-by: dates stay visible, struck through; "Deadline missed" sits underneath like the Critical tag */
+:is(#rows,#pmRowClone) .obwrap.is-missed .dl-line .dv{text-decoration:line-through;text-decoration-thickness:1.5px;color:var(--muted)!important;}
+:is(#rows,#pmRowClone) .obwrap .dl-foot{display:flex;justify-content:flex-start;margin-top:2px;} :is(#rows,#pmRowClone) .dl-foot.solo{justify-content:center;}
+:is(#rows,#pmRowClone) .obwrap .dl-foot .deadchip{display:inline-block;font-size:11px!important;font-weight:700;padding:2px 7px!important;border-radius:5px;background:var(--tint-red)!important;color:#b4232c!important;white-space:nowrap!important;margin:0!important;width:auto!important;max-width:none!important;line-height:1.4;}
+
+/* title tools: comment count uses the same pink badge as the rows */
+html.ui-polish .titletools>.it .badge{background:var(--periwinkle-deep)!important;color:#fff!important;top:-7px!important;right:-7px!important;min-width:18px!important;height:18px!important;font-size:10.5px!important;font-weight:700;line-height:1!important;padding:0 5px!important;box-shadow:0 0 0 2px #fff;border:0!important;}
+
+/* modal open: title row loses View brief / Add Product; the close button takes their place; product row runs full width */
+html.pm-isopen .titlerow .titletools>.brief-btn,html.pm-isopen .titlerow .titletools>.addbtn{display:none!important;}
+html.pm-isopen .pmodal-panel>.pm-close{display:none!important;}
+.tt-close{display:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--g300,var(--line-soft));background:#fff;color:var(--g700,var(--ink-2));place-items:center;cursor:pointer;transition:background .15s,border-color .15s,color .15s;} .tt-close .icn{width:18px;height:18px;} .tt-close:hover{border-color:var(--g400,var(--ink-3));color:var(--ink);background:var(--g50,var(--paper));}
+html.pm-isopen .titlerow .tt-close{display:grid;position:relative;z-index:2;pointer-events:auto;}
+html.pm-isopen #pmodal .pm-rowbar{padding-right:22px!important;}
+
+/* select tick: top-left corner of the row, clear of the thumbnail */
+:is(#rows,#pmRowClone) .prod .chk{top:10px!important;left:10px!important;margin-top:0!important;}
+
+/* title-row flag / comment / more: same tiles as the Orders table */
+.titletools .it,.mb-tools .it{width:34px!important;height:34px!important;border-radius:10px!important;background:rgba(255,255,255,.96)!important;border:1px solid var(--line-soft,#e4e7ec)!important;box-shadow:0 1px 3px rgba(20,22,45,.1)!important;display:inline-grid!important;place-items:center;color:var(--ink-3,#5b5f77);cursor:pointer;position:relative;transition:border-color .15s,color .15s,box-shadow .15s,transform .15s;padding:0!important;}
+.titletools .it:hover,.mb-tools .it:hover{border-color:var(--periwinkle)!important;color:var(--periwinkle-deep)!important;box-shadow:0 3px 10px rgba(20,22,45,.14)!important;transform:translateY(-1px);}
+.titletools .it .icn,.mb-tools .it .icn{width:16px!important;height:16px!important;}
+.titletools .it.flagged,.titletools .it.on.flag,.mb-tools .it.flagged{color:var(--flare,#e8552f)!important;border-color:color-mix(in srgb,var(--flare,#e8552f) 35%,#fff)!important;background:color-mix(in srgb,var(--flare,#e8552f) 8%,#fff)!important;}
+.titletools .it .badge,.mb-tools .it .badge{position:absolute!important;top:-6px!important;right:-6px!important;min-width:18px;height:18px;border-radius:999px;background:var(--flare,#e8552f)!important;color:#fff!important;font-size:10.5px;font-weight:800;line-height:1;display:grid;place-items:center;padding:0 4px;border:2px solid #fff;}
 </style>
 <style>
 :root{ /* palette now in tokens.css */ }
@@ -80,7 +118,7 @@ a{color:inherit;}
 @media(max-width:1120px){.roleswitch .rs-opt{padding:6px 10px;font-size:11.5px;}}
 
 /* ---------- Breadcrumb band ---------- */
-.crumbband{background:var(--periwinkle);color:#fff;padding:13px 36px;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px var(--page-gutter);}
 .crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;white-space:nowrap;}
 .crumb .sep{opacity:.6;}
 .crumb .here{opacity:.85;font-weight:500;}
@@ -88,7 +126,7 @@ a{color:inherit;}
 .crumb .crumb-link:hover{text-decoration:underline;}
 
 /* ---------- Main ---------- */
-.main{max-width:none;margin:0;padding:30px 26px 60px;}
+.main{max-width:none;margin:0;padding:30px var(--page-gutter) 60px;}
 .titlerow{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
 .titleleft{display:flex;align-items:center;gap:18px;}
 .ptitle{font-family:var(--serif);font-weight:500;font-size:40px;line-height:1;letter-spacing:-.01em;margin:0;white-space:nowrap;flex:none;}
@@ -98,9 +136,10 @@ a{color:inherit;}
 .avatars .av img{width:100%;height:100%;object-fit:cover;display:block;}
 .avatars .av:first-child{margin-left:0;}
 .avatars .add{width:26px;height:26px;border-radius:50%;border:1.5px dashed var(--periwinkle);color:var(--periwinkle-deep);margin-left:6px;display:grid;place-items:center;cursor:pointer;}
+.titlerow .titletools{display:flex;align-items:center;gap:10px;}
 .titletools{display:flex;align-items:center;gap:18px;color:var(--ink);}
-.addbtn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--ink);background:none;border:0;cursor:pointer;}
-.addbtn .icn{width:18px;height:18px;color:var(--periwinkle-deep);stroke-width:2;}
+.addbtn{display:inline-flex;align-items:center;gap:9px;font:inherit;font-size:14px;font-weight:700;color:#fff;background:var(--periwinkle-deep);border:0;border-radius:999px;padding:11px 19px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 14px rgba(94,104,176,.32);}
+.addbtn .icn{width:17px;height:17px;color:#fff;stroke-width:2;}
 .titletools .it{position:relative;display:inline-flex;cursor:pointer;color:#555;}
 .titletools .it.flag{color:var(--muted);}
 .titletools .it.flag.on{color:var(--flare);}
@@ -119,10 +158,10 @@ a{color:inherit;}
 .metabar .mi+.mi{border-left:1px solid var(--line-soft);}
 .metabar .mi .icn{width:15px;height:15px;color:var(--periwinkle-deep);flex:none;}
 .metabar .mi b{color:var(--ink);font-weight:700;}
-.metabar .brief-btn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;background:var(--paper-2);border:0;border-radius:999px;padding:8px 15px;font-family:var(--sans);font-size:13px;font-weight:700;color:var(--periwinkle-deep);cursor:pointer;transition:background .15s,color .15s;}
-.metabar .brief-btn:hover{background:var(--periwinkle);color:#fff;}
-.metabar .brief-btn .icn{width:15px;height:15px;transition:transform .2s;}
-.metabar .brief-btn.open .icn{transform:rotate(180deg);}
+.brief-btn{position:relative;margin-left:0;display:inline-flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--periwinkle-deep);border-radius:999px;padding:9px 16px;font-family:var(--sans);font-size:14px;font-weight:700;color:var(--periwinkle-deep);cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(94,104,176,.14);transition:background .15s,color .15s,transform .16s cubic-bezier(.34,1.56,.64,1),box-shadow .16s;}
+.brief-btn:hover{background:var(--periwinkle-deep);color:#fff;transform:translateY(-2px);box-shadow:0 8px 20px rgba(94,104,176,.3);} .brief-btn.open{background:var(--periwinkle-deep);color:#fff;}
+.brief-btn .icn{width:16px;height:16px;transition:transform .2s;} .brief-btn .bb-caret{width:14px;height:14px;}
+.brief-btn.open .bb-caret{transform:rotate(180deg);}
 
 /* expandable project brief */
 .brief{margin-top:18px;border-top:1px solid var(--line);}
@@ -241,7 +280,7 @@ html.embed #filterBarTok{display:none!important;}
 .pimg img{width:100%;height:100%;object-fit:contain;padding:6px;}
 .pimg .icn{width:30px;height:30px;opacity:.5;}
 .pimg-zoom{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(20,22,45,.42);color:#fff;opacity:0;cursor:zoom-in;transition:opacity .15s;}
-.pimg-zoom .icn{width:22px;height:22px;opacity:1;color:#fff;}
+.pimg-zoom .icn{width:18px;height:18px;opacity:1;color:var(--ink);}
 .pimg{position:relative;}
 .pimg:hover .pimg-zoom{opacity:1;}
 .lightbox{position:fixed;inset:0;z-index:120;background:rgba(20,22,28,.7);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:40px;}
@@ -361,7 +400,18 @@ html.embed #filterBarTok{display:none!important;}
 .dl-tidy .dstat.bad{background:rgba(255,46,23,.14);color:#d33a22;}
 .dl-tidy .dstat.req{background:var(--tint-peri);color:var(--periwinkle-deep);}
 .dl-tidy .dstat:hover{box-shadow:0 0 0 1.5px currentColor;}
-.dl-tidy .daypick{margin-left:auto;opacity:0;transition:opacity .12s;}
+.dl-tidy .dl-cal{display:flex;justify-content:flex-start;line-height:0;}
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy{display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;align-items:flex-start!important;gap:5px;width:100%;}
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy>*{position:static!important;width:100%;margin:0!important;}
+:is(#rows,#pmRowClone) .row .leadcell .dl2-note{white-space:normal!important;}
+/* the date line is the only in-flow child, so it centres at the same height as the Order by date; calendar sits above it, tag/lead time below */
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy{position:relative;overflow:visible;}
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy>.dl-cal{position:absolute!important;left:0;bottom:calc(100% + 6px);width:auto;}
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy.is-crit>.dl-cal,:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy.is-crit>.dl-foot{left:11px;}
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy>.dl-foot{position:absolute!important;left:0;right:0;top:calc(100% + 6px);width:auto;}
+:is(#rows,#pmRowClone) .row>.cell.leadcell{overflow:visible;}
+:is(#rows,#pmRowClone) .row .leadcell .dl-foot{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;} :is(#rows,#pmRowClone) .row .leadcell .dl-foot .nofail,:is(#rows,#pmRowClone) .row .leadcell .dl-foot .notcrit{white-space:nowrap!important;flex:none;}
+.dl-tidy .daypick{margin-left:0;opacity:.85;transition:opacity .12s;cursor:pointer;display:inline-grid;place-items:center;}
 .row:hover .dl-tidy .daypick,.dl-tidy:hover .daypick{opacity:.85;}
 .dl-tidy .daypick:hover{opacity:1;}
 .dl-tidy .dl-foot{margin-top:1px;}
@@ -454,6 +504,10 @@ html.embed #filterBarTok{display:none!important;}
 .statactions .cb{position:absolute;top:-8px;right:-9px;min-width:15px;height:15px;border-radius:999px;font-size:9px;font-weight:700;display:grid;place-items:center;padding:0 3px;border:1.5px solid #fff;color:#fff;}
 .statactions .cb.unread{background:var(--flare);}
 .statactions .cb.read{background:var(--periwinkle);}
+/* count badge: larger, bolder, dark enough to read */
+.statactions .cb{min-width:18px!important;height:18px!important;font-size:10.5px!important;font-weight:800!important;line-height:1!important;color:#fff!important;border:2px solid #fff!important;padding:0 4px!important;top:-9px!important;right:-10px!important;box-shadow:0 1px 3px rgba(20,22,45,.18);font-variant-numeric:tabular-nums;}
+.statactions .cb.read{background:var(--periwinkle-deep)!important;}
+.statactions .cb.unread{background:var(--flare)!important;}
 .row .expand{position:absolute;top:-1px;right:-1px;background:var(--periwinkle);color:#fff;width:30px;height:30px;border-radius:0 14px 0 12px;display:grid;place-items:center;cursor:pointer;opacity:0;transition:opacity .15s;}
 .row:hover .expand{opacity:1;}
 .row .expand .icn{width:15px;height:15px;}
@@ -498,9 +552,9 @@ html.embed #filterBarTok{display:none!important;}
 .avatars .add{transition:transform .18s,background .18s,color .18s;}
 .avatars .add:hover{background:var(--periwinkle);color:#fff;transform:rotate(90deg);}
 
-.addbtn{transition:color .18s;}
-.addbtn:hover{color:var(--periwinkle-deep);}
-.addbtn .icn{transition:transform .25s;}
+.addbtn{transition:transform .16s cubic-bezier(.34,1.56,.64,1),box-shadow .16s;}
+.addbtn:hover{color:#fff;transform:translateY(-2px);box-shadow:0 8px 22px rgba(94,104,176,.42);} .addbtn:active{transform:translateY(0);}
+.addbtn .icn{transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
 .addbtn:hover .icn{transform:rotate(90deg);}
 
 .titletools .it{transition:color .18s,transform .18s;}
@@ -678,8 +732,26 @@ html.embed #filterBarTok{display:none!important;}
 .pm-secpill.act .ai.awaiting.sechead-bang{width:24px;height:24px;min-width:24px;border-radius:50%;background:var(--blossom);color:#fff;display:inline-grid;place-items:center;flex:none;padding:0;}
 .pm-secpill.act .ai.awaiting.sechead-bang .icn{width:14px;height:14px;}
 .pm-secpill.act .ai.awaiting.sechead-bang .b{display:none;}
-.pm-pinfo{position:absolute;top:0;right:-480px;height:100%;width:min(440px,82%);background:#fff;box-shadow:-18px 0 50px rgba(20,22,45,.16);border-left:1px solid var(--line-soft);transition:right .28s cubic-bezier(.4,0,.2,1);z-index:6;display:flex;flex-direction:column;border-radius:0 20px 20px 0;}
+.pm-pinfo{position:fixed!important;top:0!important;bottom:0;right:-1200px;height:100vh!important;width:min(1120px,96vw);z-index:12000;display:flex;flex-direction:column;background:#fff;box-shadow:-18px 0 50px rgba(20,22,45,.16);border-left:1px solid var(--line-soft);transition:right .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-radius:0;}
 .pm-pinfo.open{right:0;}
+/* section heading matches the selected step in the top row (tint + accent bar + status beside the title) */
+#pmodal .pm-sechead{background:color-mix(in srgb,var(--periwinkle-deep) 11%,#fff);border-radius:12px;padding:10px 16px 10px 14px;border-left:4px solid var(--periwinkle-deep);gap:12px;}
+#pmodal .pm-sechead .pm-secspacer{display:none;}
+#pmodal .pm-secname{font-size:26px;}
+/* selected step: same treatment as the heading below (full-height 4px accent edge on a rounded tint, no floating bar) */
+#pmRowClone .acts > .actrow.pm-cur{border-left:4px solid var(--periwinkle-deep)!important;border-radius:8px!important;padding-left:8px!important;background:color-mix(in srgb,var(--periwinkle-deep) 11%,#fff)!important;}
+#pmRowClone .acts > .actrow.pm-cur::before{display:none!important;}
+/* Visual tab: the main visual panel gets depth; Visual images sit under the Branding summary */
+#pmsec-design [data-dpane="visual"] .dsv-split > .dsv-col{background:#fff;border:1px solid var(--line-soft);border-radius:18px;padding:18px 20px;box-shadow:0 1px 2px rgba(16,24,40,.05),0 14px 34px rgba(20,22,45,.10);}
+#pmsec-design [data-dpane="visual"] .dsv-side .bb-moved{margin:0!important;}
+/* Branding tab: no white panel behind the step cards (matches the Visual tab) */
+#pmsec-design [data-dpane="builder"] > .pm-section.bb-wrap{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important;}
+.pm-pinfo-head h3{white-space:nowrap;}
+.pm-pinfo-body{flex:1;overflow:auto;padding:26px 30px 40px!important;}
+.pm-pinfo-body.fr{padding:0!important;overflow:hidden;display:flex;} .pm-storefr{flex:1;width:100%;height:100%;border:0;display:block;}
+.pm-pdbtn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12.5px;font-weight:700;border:1.5px solid var(--line-soft);background:#fff;color:var(--periwinkle-deep);border-radius:999px;padding:5px 11px;cursor:pointer;margin-top:8px;white-space:nowrap;}
+.pm-pdbtn:hover{border-color:var(--periwinkle);}
+.pm-pnt{display:inline!important;} .pname .pm-infoic,.pm-infoic{display:inline-grid!important;width:22px!important;height:22px!important;min-height:0!important;margin:0 0 0 4px!important;padding:0!important;place-items:center;vertical-align:-5px;border:0;border-radius:50%;background:none;color:var(--periwinkle-deep);cursor:pointer;padding:0;} .pm-infoic:hover{background:var(--tint-peri,#eef0fa);}
 .pm-pinfo-head{display:flex;align-items:center;justify-content:space-between;padding:22px 24px 16px;border-bottom:1px solid var(--line-soft);}
 .pm-pinfo-head h3{font-family:var(--serif);font-weight:500;font-size:20px;margin:0;}
 .pm-pinfo-x{width:34px;height:34px;border-radius:50%;border:0;background:var(--paper);color:var(--ink-3);display:grid;place-items:center;cursor:pointer;}
@@ -804,17 +876,361 @@ html.embed #filterBarTok{display:none!important;}
 html.modalonly{background:transparent!important;}
 html.modalonly body>*:not(.pmodal):not(.pv-scrim):not(svg){display:none!important;}
 html.modalonly .pmodal-scrim{background:transparent!important;backdrop-filter:none!important;}
-html.modalonly .pmodal{position:static!important;}
+html.modalonly .pmodal{position:fixed!important;inset:0!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:auto!important;height:auto!important;clip-path:none!important;} html.modalonly .pmodal-panel{inset:0!important;left:0!important;top:0!important;width:100%!important;height:100%!important;max-width:none!important;border-radius:0!important;}
 /* read-only: hide action CTAs */
 html.modalonly .js-cta,html.modalonly .pm-cta:not(.pm-cta-sec),html.modalonly .ds-open,html.modalonly #scFoot,html.modalonly .pm-secact{display:none!important;}
 html.modalonly .pm-nav{display:none!important;}
+
+/* product table: shared fixed-minimum columns so the header always lines up with the rows */
+:root{--cols:minmax(0,1.7fr) minmax(0,2fr) minmax(0,1fr) minmax(0,1.1fr) minmax(0,1.25fr) minmax(0,1.3fr) 44px 44px;}
+.status>*{max-width:100%;}
+/* narrow tracks: content must wrap/shrink to the track, not overflow it (root cause of clipping = nowrap intrinsic widths) */
+@media(max-width:1180px){
+  .row .orderby,.row .orderby *,.row .leadcell,.row .leadcell *:not(svg):not(.icn),.row .statchip{white-space:normal!important;min-width:0;}
+  .row .leadcell *:not(svg):not(.icn){max-width:100%;}
+  .row .statchip{max-width:100%;flex-shrink:1;}
+  .row .statchip{padding:6px 8px!important;gap:5px!important;text-align:center;justify-content:center;line-height:1.2;}
+  .row .orderby,.row .leadcell{text-align:center;overflow-wrap:break-word;}
+  .row .leadcell .lead.dl-tidy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:4px;width:100%;}
+  .row .leadcell .dl-foot{position:static!important;width:100%;margin:0!important;}
+  .row .actrow>*:nth-child(3) *{flex-shrink:0;}
+  .row .priceblock,.row .priceblock *:not(svg):not(input){white-space:normal!important;min-width:0;} .row .priceblock{flex-wrap:wrap;justify-content:center;text-align:center;}
+}
+.actrow{grid-template-columns:22px 58px minmax(0,1fr) auto auto!important;} .asub{min-width:0;text-overflow:ellipsis;}
+.row .leadcell>*{flex-wrap:wrap;row-gap:4px;} .row .leadcell{flex-wrap:wrap;row-gap:4px;}
+.row>.cell{min-width:0;overflow:hidden;} .row .leadcell *{flex-wrap:wrap;}
+@media(max-width:1100px){.asub{display:none;} .actrow{grid-template-columns:22px 58px minmax(0,1fr) auto!important;}}
+@media(max-width:1280px){.prod .pimg{width:112px!important;height:112px!important;} .prod .chk{margin-top:-48px!important;}}
+@media(max-width:1180px){.prod{flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;} .prod .chk{top:10px;margin-top:0!important;} .prod .grip{top:50px;}}
+@media(max-width:1050px){.prod .pimg{width:96px!important;height:96px!important;}}
+.thead>*,.row>*{min-width:0;}
+.thead{border:1px solid transparent;position:sticky;top:calc(var(--ms-headh,0px) + var(--tr-h,0px));z-index:30;transition:box-shadow .15s;}
+.thead.stuck{box-shadow:0 8px 18px -10px rgba(20,22,45,.25);border-radius:0 0 12px 12px;}
+/* bigger thumbnail: grip + tick float over the image instead of taking their own columns */
+.row{padding:14px 8px;}
+.prod{position:relative;gap:14px;padding:0 12px 0 6px;}
+.prod .grip{position:absolute;left:-6px;top:50%;transform:translateY(-50%);opacity:0;transition:opacity .15s;z-index:2;}
+.row:hover .prod .grip{opacity:1;}
+.prod .chk{position:absolute;left:14px;top:50%;margin-top:-66px;z-index:3;background:#fff;opacity:0;transition:opacity .15s,border-color .12s;}
+.row:hover .prod .chk,.prod .chk.on,.row.checked .prod .chk{opacity:1;}
+.prod .chk.on{background:var(--periwinkle);border-color:var(--periwinkle);color:#fff;}
+.prod .pimg{width:148px;height:148px;border-radius:14px;}
+.prod .pimg img{padding:10px;}
+.prod .pname{min-width:0;overflow-wrap:break-word;}
+:is(#rows,#pmRowClone):not(.labels-shown) .prod .pimg{width:112px;height:112px;}
+:is(#rows,#pmRowClone):not(.labels-shown) .prod .chk{margin-top:-48px;}
+/* project title row stays pinned under the header while scrolling; the table head pins beneath it */
+.titlerow{position:sticky;top:var(--ms-headh,0px);z-index:36;background:var(--paper);margin-left:calc(-1 * var(--page-gutter,24px));margin-right:calc(-1 * var(--page-gutter,24px));padding:12px var(--page-gutter,24px);transition:box-shadow .15s;}
+/* scrolling settles on a whole product row, just below the pinned title row + table head */
+html.row-snap{scroll-snap-type:y proximity;}
+html{scroll-padding-top:calc(var(--ms-headh,0px) + var(--tr-h,0px) + var(--th-h,0px) + 10px);}
+:is(#rows,#pmRowClone) .row{scroll-snap-align:start;scroll-margin-top:0;}
+@media (prefers-reduced-motion: reduce){html.row-snap{scroll-snap-type:none;}}
+html.gview.row-snap{scroll-snap-type:none;} html.gview :is(#rows,#pmRowClone) .row{scroll-snap-align:none;}
+/* title shrinks when pinned: scaled (not resized) so the row height, and the page, don't jump */
+.titlerow .ptitle{transform-origin:left center;transition:transform .18s ease;}
+html .titlerow.stuck .ptitle{transform:scale(.8)!important;}
+.titlerow .avatars{transition:transform .18s ease;}
+html .titlerow.stuck .avatars{transform:translateX(calc(var(--pt-w,0px) * -0.2));}
+.titlerow.stuck{box-shadow:0 8px 18px -12px rgba(20,22,45,.28);border-bottom:1px solid var(--line-soft);}
+/* pop-out open: the page can't jump, so the bar itself gets shorter as well as the title shrinking */
+.titlerow{transition:padding .18s ease,margin .18s ease;}
+html.pm-isopen .titlerow.stuck{padding-top:4px!important;padding-bottom:4px!important;margin-top:0!important;}
+html.pm-isopen .titlerow .ptitle{transition:transform .18s ease,font-size .18s ease;}
+html.pm-isopen .titlerow.stuck .ptitle{transform:none!important;font-size:28px!important;}
+html.pm-isopen .titlerow.stuck .avatars{transform:none!important;}
+html.pm-isopen .titlerow.stuck .pm-close,html.pm-isopen .titlerow.stuck [id*="pmClose"]{transform:scale(.85);transition:transform .18s ease;}
+.profitrow{margin-top:4px;}
+:is(#rows,#pmRowClone) .row>.cell:has(.obwrap),:is(#rows,#pmRowClone) .row>.cell.leadcell{padding-left:8px!important;padding-right:8px!important;}
+/* progress bars removed from the Actions column: the dot + label carry the status */
+:is(#rows,#pmRowClone) .actrow .bar{display:none!important;}
+/* status text is never truncated */
+:is(#rows,#pmRowClone).labels-shown .actrow .asub{max-width:none!important;opacity:1!important;overflow:visible!important;text-overflow:clip!important;white-space:nowrap!important;line-height:1.2;}
+/* action text stays on one line: on wide screens Actions takes room from Status, and the status pill compacts to fit */
+@media(min-width:1101px){:root{--cols:1.7fr 1.95fr 1fr 1.35fr 1.35fr 0.95fr 0.5fr 0.5fr!important;}}
+:is(#rows,#pmRowClone) .row>.cell:has(>.status){container-type:inline-size;min-width:0;}
+:is(#rows,#pmRowClone) .status .statchip,:is(#rows,#pmRowClone) .status .orderbtn{white-space:nowrap;}
+@container (max-width:104px){:is(#rows,#pmRowClone) .status .statchip{font-size:12px!important;gap:5px!important;padding:6px 9px!important;} :is(#rows,#pmRowClone) .status .orderbtn{font-size:12.5px!important;padding:8px 13px!important;gap:6px!important;}}
+@container (max-width:72px){:is(#rows,#pmRowClone) .status .statchip{font-size:0!important;gap:0!important;padding:7px!important;} :is(#rows,#pmRowClone) .status .statchip .statcircle{margin:0!important;} :is(#rows,#pmRowClone) .status .orderbtn{font-size:0!important;gap:0!important;padding:9px!important;} :is(#rows,#pmRowClone) .status .orderbtn .icn{margin:0!important;}}
+/* dates get more room now that progress is dots: take it from Actions */
+:root{--cols:2fr 1.2fr 1.05fr 1.45fr 1.4fr 1.2fr 0.55fr 0.55fr!important;}
+:is(#rows,#pmRowClone) .row>.cell:has(>.acts){padding-left:10px!important;padding-right:6px!important;}
+/* version tag sits right after its label instead of at the far edge of the column */
+:is(#rows,#pmRowClone) .acts .actrow:has(.vertag)>.bar,:is(#rows,#pmRowClone) .acts .actrow:has(.vertag)>.asub{display:none!important;}
+:is(#rows,#pmRowClone) .acts .actrow:has(.vertag){grid-template-columns:22px max-content max-content!important;}
+:is(#rows,#pmRowClone) .acts .actrow>.vertag{grid-column:3!important;grid-row:1!important;justify-self:start!important;margin:0 0 0 -6px!important;font-size:10px!important;padding:1px 5px!important;}
+:is(#rows,#pmRowClone) .row .status *{white-space:nowrap!important;}
+:is(#rows,#pmRowClone) .row>.cell:has(.orderbtn),:is(#rows,#pmRowClone) .row>.cell:has(.statuspill),:is(#rows,#pmRowClone) .row>.cell:nth-child(7){padding-left:8px!important;padding-right:8px!important;}
+:is(#rows,#pmRowClone) .orderbtn{white-space:nowrap;}
+/* progress: small status dot + plain label, no filled chips */
+:is(#rows,#pmRowClone) .actrow .ai{width:8px!important;height:8px!important;min-width:8px!important;border-radius:50%!important;padding:0!important;border:0!important;box-shadow:none!important;background:var(--g300,#c9ccd6)!important;align-self:center;}
+:is(#rows,#pmRowClone) .actrow .ai svg,:is(#rows,#pmRowClone) .actrow .ai .b{display:none!important;}
+/* dots: green = sorted, red = you need to act, orange = waiting on the other side */
+:is(#rows,#pmRowClone) .actrow .ai.approved,:is(#rows,#pmRowClone) .actrow .ai.instock,:is(#rows,#pmRowClone) .actrow .ai.ordered{background:#22a06b!important;}
+:is(#rows,#pmRowClone) .actrow .ai.withacm{background:#e0a526!important;}
+:is(#rows,#pmRowClone) .actrow .ai.awaiting,:is(#rows,#pmRowClone) .actrow .ai.feedback,:is(#rows,#pmRowClone) .actrow .ai.sampleorder,:is(#rows,#pmRowClone) .actrow .ai.notapproved,:is(#rows,#pmRowClone) .actrow .ai.notinstock{background:#d6453d!important;}
+:is(#rows,#pmRowClone) .margintag{background:none!important;padding:0!important;}
+.lightbox{padding:24px!important;} .lightbox-card{max-width:min(1000px,94vw)!important;} .lightbox-img{padding:20px!important;} .lightbox-img img{width:100%;max-height:78vh!important;}
+:is(#rows,#pmRowClone) .actrow .adash{width:8px;text-align:center;color:var(--g400,#a3a7b3);}
+:is(#rows,#pmRowClone) .actrow .alabel{background:none!important;border:0!important;padding:0!important;font-weight:600!important;color:var(--g800,#2a2d3a)!important;font-size:13px!important;}
+:is(#rows,#pmRowClone) .actrow .asub{background:none!important;border:0!important;padding:0!important;color:var(--g500,#6b7080)!important;font-weight:500!important;font-size:12.5px!important;text-transform:none!important;letter-spacing:0!important;}
+:is(#rows,#pmRowClone) .actrow .asub.link{color:var(--periwinkle-deep)!important;}
+/* dates: fixed-width Cus / Sup labels so dates line up; plain Standard; small grey calendar after the date */
+:is(#rows,#pmRowClone) .dl-line{display:grid!important;grid-template-columns:minmax(0,1fr);align-items:center;column-gap:6px;width:100%!important;}
+:is(#rows,#pmRowClone) .dl-line .dv .dt,:is(#rows,#pmRowClone) .obwrap .dv .dt{display:inline;margin-left:5px;font-size:11.5px;font-weight:500;color:var(--g500,#6b7080);}
+/* Cus / Sup lines: subtle tint in the Organisations colours (customer spearmint, supplier blossom) */
+:is(#rows,#pmRowClone) .dl-line:has(>.dk){border-radius:7px;padding:3px 6px!important;margin:0!important;width:100%!important;max-width:100%!important;box-sizing:border-box;}
+:is(#rows,#pmRowClone) .dl-line.dl-cus{background:color-mix(in srgb,var(--spearmint) 12%,#fff);}
+:is(#rows,#pmRowClone) .dl-line.dl-sup{background:color-mix(in srgb,var(--blossom) 16%,#fff);}
+:is(#rows,#pmRowClone) .lead.dl-tidy,:is(#rows,#pmRowClone) .obwrap.dl-tidy{gap:4px!important;}
+:is(#rows,#pmRowClone) .dl-line .dv{white-space:nowrap!important;font-size:12.5px!important;letter-spacing:-.01em;}
+:is(#rows,#pmRowClone) .dl-line .dv .dt{margin-left:4px!important;font-size:11px!important;}
+:is(#rows,#pmRowClone) .dl-line .dv{min-width:max-content;white-space:nowrap!important;line-height:1.3;}
+:is(#rows,#pmRowClone) .dl-line:has(>.dk){display:flex!important;flex-wrap:wrap;align-items:center;column-gap:5px;row-gap:1px;}
+:is(#rows,#pmRowClone) .dl-line:has(>.dk)>.dk{flex:0 0 100%;line-height:1.2;}
+:is(#rows,#pmRowClone) .dl-line:not(:has(>.dk)){grid-template-columns:minmax(0,max-content) auto;justify-content:start;}
+:is(#rows,#pmRowClone) .dl-line .dk{font-size:10.5px!important;font-weight:700!important;color:var(--g500,#6b7080)!important;text-transform:uppercase;letter-spacing:.03em;background:none!important;padding:0!important;}
+:is(#rows,#pmRowClone) .leadcell .notcrit{background:none!important;border:0!important;padding:0!important;color:var(--g500,#6b7080)!important;font-size:11.5px!important;font-weight:500!important;text-transform:none!important;letter-spacing:0!important;}
+:is(#rows,#pmRowClone) .dl-line .dl-cal{position:static!important;display:inline-flex!important;align-items:center;width:auto!important;margin:0!important;line-height:0;}
+:is(#rows,#pmRowClone) .dl-line .daypick{display:inline-flex;align-items:center;line-height:0;cursor:pointer;}
+:is(#rows,#pmRowClone) .dl-line .daypick svg,:is(#rows,#pmRowClone) .dl-line .dl-cal svg{width:13px!important;height:13px!important;color:var(--g400,#9aa0ad)!important;}
+:is(#rows,#pmRowClone) .dl-line .daypick:hover svg,:is(#rows,#pmRowClone) .dl-line .dl-cal:hover svg{color:var(--periwinkle-deep)!important;}
+</style>
+<script>(function(){ const RX=/\b(\d{1,2})(st|nd|rd|th)\b/g, DAY=/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\./g, EOD=/,\s*(17:00|17:30|18:00|23:59|00:00)\b/g;
+  // display-only tidy of dates: no ordinals, no full stop after the day, no time when it's end of day
+  const tidy=s=>s.replace(RX,'$1').replace(DAY,'$1').replace(EOD,'');
+  const clean=root=>{ const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT); let n; while((n=w.nextNode())){ const v=tidy(n.nodeValue); if(v!==n.nodeValue) n.nodeValue=v; }
+    // tint Cus / Sup lines
+    root.querySelectorAll&&root.querySelectorAll('.dl-line>.dk').forEach(k=>{ const l=k.parentElement, t=k.textContent.trim().toLowerCase(); l.classList.toggle('dl-cus',t==='cus'); l.classList.toggle('dl-sup',t==='sup'); });
+    // a time sits at the end of the date line
+    root.querySelectorAll&&root.querySelectorAll('.dl-line .dv, .obwrap .dv').forEach(d=>{ if(d.querySelector('.dt')) return; const n=[...d.childNodes].find(x=>x.nodeType===3&&/,\s*\d{1,2}:\d{2}\s*$/.test(x.nodeValue)); if(!n) return; const m=n.nodeValue.match(/^(.*?),\s*(\d{1,2}:\d{2})\s*$/); n.nodeValue=m[1]; const s=document.createElement('span'); s.className='dt'; s.textContent=m[2]; n.after(s); });
+    // calendar icon moves to the end of the first date line
+    root.querySelectorAll&&root.querySelectorAll('.lead.dl-tidy>.dl-cal').forEach(c=>{ const l=c.parentElement.querySelector('.dl-line'); if(l) l.appendChild(c); }); };
+  addEventListener('DOMContentLoaded',()=>{ ['rows','metabar'].forEach(id=>{ const el=document.getElementById(id); if(!el) return; clean(el); let q=false; const o=new MutationObserver(()=>{ if(q) return; q=true; requestAnimationFrame(()=>{ try{ clean(el); }catch(e){} o.takeRecords(); q=false; }); }); o.observe(el,{childList:true,subtree:true,characterData:true}); }); }); })();</script>
+<script>addEventListener('DOMContentLoaded',()=>{ const tr=document.querySelector('.titlerow'); if(!tr) return; const th=document.querySelector('.thead'), pt=tr.querySelector('.ptitle'); const set=()=>{ if(pt) document.documentElement.style.setProperty('--pt-w',pt.offsetWidth+'px'); document.documentElement.style.setProperty('--tr-h',tr.offsetHeight+'px'); if(th) document.documentElement.style.setProperty('--th-h',th.offsetHeight+'px'); }; new ResizeObserver(set).observe(tr); if(th) new ResizeObserver(set).observe(th); set();
+  const hh=()=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ms-headh'))||0;
+  // row snapping switches on once the table head is pinned (sitting at its sticky position under the title row)
+  const snap=()=>{ const h=document.querySelector('.thead'); if(!h) return; const pin=hh()+tr.offsetHeight; document.documentElement.classList.toggle('row-snap',h.getBoundingClientRect().top<=pin+0.5); };
+  addEventListener('scroll',()=>{ if(document.querySelector('#pmodal.open')) return; tr.classList.toggle('stuck',tr.getBoundingClientRect().top<=hh()+0.5&&scrollY>40); snap(); },{passive:true}); snap();
+  // with the product pop-out open the page doesn't scroll, its panel does: shrink the title the same way
+  /* pop-out open: pm-inset.js drives 'stuck' from the pop-out's own scroll position */
+   });</script>
+
+<style id="galleryView">
+/* ===== Gallery view: the same rows laid out as cards (html.gview) ===== */
+html.gview main .thead{display:none!important;}
+html.gview #rows{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:30px 26px;align-items:stretch;}
+/* same breakpoints as the store's product grid, plus a 5th column on very wide screens */
+@media(min-width:2100px){html.gview #rows{grid-template-columns:repeat(5,minmax(0,1fr));}}
+@media(max-width:1680px){html.gview #rows{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:1150px){html.gview #rows{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:600px){html.gview #rows{grid-template-columns:minmax(0,1fr);}}
+
+html.gview #rows .row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-areas:"prod prod" "acts acts" "price status" "ob dd";gap:0!important;padding:0!important;margin:0!important;border-radius:16px!important;align-items:stretch!important;overflow:hidden;min-width:0!important;width:auto!important;}
+html.gview #rows .row>*{min-width:0!important;border-right:0!important;height:auto!important;}
+html.gview #rows .row>.expand{position:absolute!important;top:12px;left:auto;right:12px;z-index:3;}
+html.gview #rows .row>.prod{grid-area:prod;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0!important;padding:0!important;border-bottom:1px solid var(--line-soft)!important;}
+html.gview #rows .row>.prod .grip{display:none!important;}
+html.gview #rows .row>.prod .chk{position:absolute!important;top:12px;left:12px;z-index:3;background:#fff;}
+html.gview #rows .row>.prod .pimg{width:100%!important;height:auto!important;aspect-ratio:4/3;margin:0!important;border-radius:0!important;background:#fff;display:grid!important;place-items:center;flex:none!important;}
+html.gview #rows .row>.prod .pimg img{width:78%!important;height:78%!important;object-fit:contain!important;max-width:none!important;max-height:none!important;transition:transform .35s cubic-bezier(.22,.61,.36,1);}
+html.gview #rows .row:hover>.prod .pimg img{transform:scale(1.04);}
+html.gview #rows .row>.prod .pname{padding:12px 16px 14px!important;font-size:15.5px!important;line-height:1.3!important;max-width:none!important;display:flex!important;flex-direction:column;gap:3px;-webkit-line-clamp:unset!important;}
+html.gview #rows .row>.cell:nth-child(3){grid-area:acts;padding:12px 16px!important;border-bottom:1px solid var(--line-soft)!important;}
+html.gview #rows .row>.cell:nth-child(4){grid-area:price;padding:12px 16px!important;border-bottom:1px solid var(--line-soft)!important;border-right:1px solid var(--line-soft)!important;justify-content:flex-start!important;}
+html.gview #rows .row>.cell:nth-child(5){grid-area:ob;padding:12px 10px 14px 16px!important;justify-content:flex-start!important;}
+html.gview #rows .row>.cell.leadcell{grid-area:dd;padding:12px 16px 14px 10px!important;justify-content:flex-start!important;}
+html.gview #rows .row>.cell:nth-child(7){grid-area:status;padding:12px 12px!important;border-bottom:1px solid var(--line-soft)!important;justify-content:center!important;align-items:center!important;}
+html.gview #rows .row>.cell:nth-child(5)::before,html.gview #rows .row>.cell.leadcell::before{content:"Order by";font-size:11px;font-weight:800;color:var(--ink-3);margin-bottom:6px;}
+html.gview #rows .row>.cell.leadcell::before{content:"Delivery date";}
+html.gview #rows .row>.metacell{position:absolute!important;top:10px;padding:0!important;z-index:3;height:auto!important;width:auto!important;}
+/* card toolbar top right: flag · comments · open, three matching 34px buttons, 6px apart */
+html.gview #rows .row>.metacell{top:12px!important;display:block!important;border:0!important;background:none!important;overflow:visible!important;}
+html.gview #rows .row>.metacell:nth-last-child(2){right:92px!important;} html.gview #rows .row>.metacell:last-child{right:52px!important;}
+html.gview #rows .row>.metacell>.statactions{display:block!important;background:none!important;box-shadow:none!important;border:0!important;padding:0!important;margin:0!important;gap:0!important;overflow:visible!important;}
+html.gview #rows .row>.metacell .it.flagbtn.flag-on{color:var(--flare)!important;border-color:color-mix(in srgb,var(--flare) 35%,#fff)!important;background:color-mix(in srgb,var(--flare) 8%,#fff)!important;}
+html.gview #rows .row>.metacell .it.flagbtn.flag-on .icn{fill:var(--flare);}
+html.gview #rows .row>.metacell .it,html.gview #rows .row>.expand{position:relative;width:34px!important;height:34px!important;min-width:0!important;margin:0!important;padding:0!important;border-radius:10px!important;background:rgba(255,255,255,.96)!important;border:1px solid var(--line-soft)!important;box-shadow:0 1px 3px rgba(20,22,45,.1)!important;display:grid!important;place-items:center!important;color:var(--ink-3);cursor:pointer;transition:border-color .15s,color .15s,box-shadow .15s,transform .15s;}
+html.gview #rows .row>.metacell .it .icn,html.gview #rows .row>.expand .icn{width:16px!important;height:16px!important;}
+html.gview #rows .row>.metacell .it:hover,html.gview #rows .row>.expand:hover{border-color:var(--periwinkle)!important;color:var(--periwinkle-deep)!important;box-shadow:0 3px 10px rgba(20,22,45,.14)!important;transform:translateY(-1px);}
+html.gview #rows .row>.metacell .it.chat-has{color:var(--ink-2);}
+html.gview #rows .row>.metacell .it .cb{position:absolute!important;top:-6px!important;right:-6px!important;border:2px solid #fff;}
+html.gview #rows .row>.expand{top:12px!important;right:12px!important;opacity:1!important;color:var(--periwinkle-deep)!important;}
+/* flag and comments only when they carry something, otherwise on hover (like the list) */
+html.gview #rows .row>.metacell:has(.flagbtn:not(.flag-on)),html.gview #rows .row>.metacell:has(.it:not(.chat-has):not(.flagbtn)){opacity:0;transition:opacity .15s;}
+html.gview #rows .row:hover>.metacell,html.gview #rows .row:focus-within>.metacell{opacity:1!important;}
+@media (hover:none){html.gview #rows .row>.metacell{opacity:1!important;}}
+html.gview #rows .row .acts{gap:6px!important;}
+html.gview #rows .row .cell:nth-of-type(2) .kv{flex-direction:row!important;align-items:center;gap:8px;justify-content:space-between;}
+html.gview #rows .row .priceblock{margin-top:8px!important;align-items:flex-start!important;text-align:left!important;}
+html.gview #rows .row .status{width:100%;display:flex;justify-content:center;}
+
+
+/* larger cards: after the base rules so they win */
+html.gview #rows .row>.prod .pname{font-size:17px!important;padding:16px 20px 16px!important;}
+html.gview #rows .row>.cell:nth-child(3){padding:16px 20px!important;}
+html.gview #rows .row>.cell:nth-child(4),html.gview #rows .row>.cell:nth-child(7){padding:16px 20px!important;}
+html.gview #rows .row>.cell:nth-child(5){padding:16px 12px 18px 20px!important;} html.gview #rows .row>.cell.leadcell{padding:16px 20px 18px 12px!important;}
+/* date tags back in flow inside cards (cards clip overflow) */
+html.gview #rows .row .lead.dl-tidy>.dl-foot,html.gview #rows .row .lead.dl-tidy>.dl-cal{position:static!important;}
+html.gview #rows .row .lead.dl-tidy>.dl-cal{align-self:flex-start;margin-bottom:4px;}
+html.gview #rows .row .lead.dl-tidy>.dl-foot{margin-top:6px;}
+html.gview #rows .row .orderby .dl-foot,html.gview #rows .row .orderby [class*="foot"]{position:static!important;margin-top:6px;}
+
+/* card layout v2: actions left | qty & price right, then Order by | Delivery date, status centred at the bottom */
+html.gview #rows .row{grid-template-areas:"prod prod" "acts price" "ob dd" "status status"!important;}
+html.gview #rows .row>.cell:nth-child(3){border-right:1px solid var(--line-soft)!important;border-bottom:1px solid var(--line-soft)!important;}
+html.gview #rows .row>.cell:nth-child(3) .acts{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;}
+html.gview #rows .row>.cell:nth-child(3) .acts>*{width:100%!important;min-width:0!important;}
+html.gview #rows .row>.cell:nth-child(4){border-right:0!important;border-bottom:1px solid var(--line-soft)!important;display:flex!important;flex-direction:column!important;justify-content:center!important;}
+html.gview #rows .row>.cell:nth-child(4) .kv{flex-direction:column!important;align-items:flex-start!important;gap:4px!important;}
+html.gview #rows .row>.cell:nth-child(5),html.gview #rows .row>.cell.leadcell{border-bottom:1px solid var(--line-soft)!important;}
+html.gview #rows .row>.cell:nth-child(7){border-bottom:0!important;border-right:0!important;padding:14px 20px 16px!important;display:flex!important;justify-content:center!important;align-items:center!important;}
+html.gview #rows .row>.cell:nth-child(7) .status{width:auto!important;justify-content:center;}
+
+/* everything in a card cell starts at its left edge */
+html.gview #rows .row>.cell:nth-child(4) .kv,html.gview #rows .row>.cell:nth-child(4) .kv .k,html.gview #rows .row>.cell:nth-child(4) .priceblock{text-align:left!important;align-items:flex-start!important;justify-content:flex-start!important;}
+html.gview #rows .row>.cell:nth-child(4) .qtybox{margin-left:0!important;margin-right:auto!important;}
+html.gview #rows .row .profitrow,html.gview #rows .row .profitrow .margintag{white-space:nowrap!important;}
+html.gview #rows .row>.cell:nth-child(5),html.gview #rows .row>.cell.leadcell{text-align:left!important;align-items:flex-start!important;justify-content:flex-start!important;}
+html.gview #rows .row>.cell:nth-child(5)>*,html.gview #rows .row>.cell.leadcell>*{margin-left:0!important;margin-right:auto!important;align-self:flex-start!important;text-align:left!important;}
+html.gview #rows .row>.cell:nth-child(4) .priceblock>*{justify-content:flex-start!important;text-align:left!important;margin-left:0!important;}
+/* qty & price cell: centred (per John) */
+html.gview #rows .row>.cell:nth-child(4),html.gview #rows .row>.cell:nth-child(4) .kv,html.gview #rows .row>.cell:nth-child(4) .kv .k,html.gview #rows .row>.cell:nth-child(4) .priceblock,html.gview #rows .row>.cell:nth-child(4) .priceblock>*{text-align:center!important;align-items:center!important;justify-content:center!important;}
+html.gview #rows .row>.cell:nth-child(4) .qtybox,html.gview #rows .row>.cell:nth-child(4) .priceblock>*{margin-left:auto!important;margin-right:auto!important;}
+</style>
+<style id="pmTopRow">
+/* modal: product row along the top, no left rail */
+.pm-body{grid-template-columns:minmax(0,1fr)!important;}
+.pm-body>.pm-rail{display:none!important;}
+.pm-head .pm-titlewrap .pm-titlerow,.pm-head #pmStat{display:none!important;}
+.pm-head{padding-top:8px!important;padding-bottom:8px!important;} .pm-head:not(:has(.pm-latest:not(:empty))){display:none!important;}
+.pm-rowbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding:14px 64px 14px 18px;border-bottom:1px solid var(--line-soft);background:#fff;flex:none;}
+.pm-rowclone{flex:1 1 760px;min-width:0;}
+.pm-rowclone .row{margin:0!important;box-shadow:none!important;border:1px solid var(--line-soft)!important;}
+.pm-rowclone .row>.expand,.pm-rowclone .row .grip,.pm-rowclone .row .chk{display:none!important;}
+.pm-rowclone .row .pmopen{cursor:default;} .pm-rowclone .row .pname.link{text-decoration:none;}
+.pm-rowclone .row .pname,.pm-rowclone .row .pname:hover,.pm-rowclone .row .pname.link,.pm-rowclone .row .pname.link:hover{color:var(--ink)!important;text-decoration:none!important;cursor:default!important;} .pm-rowclone .row .pimg{cursor:default!important;} .pm-rowclone .pm-supedit{cursor:pointer!important;} .pm-rowclone .pm-supedit:hover{color:var(--periwinkle-deep)!important;text-decoration:underline;text-underline-offset:2px;}
+.pm-rowclone [data-pmarea]{cursor:pointer;border-radius:10px;transition:background .15s,box-shadow .15s;}
+.pm-rowclone [data-pmarea]:hover{background:var(--paper);}
+.pm-rowclone [data-pmarea].pm-cur{background:var(--tint-peri);box-shadow:0 0 0 5px var(--tint-peri);color:var(--periwinkle-deep);font-weight:800;}
+.pm-rowclone [data-pmarea]:hover:not(.pm-cur){box-shadow:0 0 0 5px var(--paper);}
+.pm-rowclone [data-pmarea]:focus-visible{outline:2px solid var(--periwinkle-deep);outline-offset:2px;}
+.pm-rowside{flex:0 1 auto;margin-left:auto;display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap;justify-content:flex-end;}
+.pm-rowside .pm-railfacts{display:flex!important;flex-wrap:wrap;gap:6px 18px;margin:0!important;padding:0!important;border:0!important;}
+.pm-rowside .pm-railfacts .rf{display:flex!important;flex-direction:column;gap:2px;border:0!important;padding:0!important;margin:0!important;min-width:0;}
+.pm-rowside .pm-railfacts .rf .k{font-size:11.5px;color:var(--muted);white-space:nowrap;} .pm-rowside .pm-railfacts .rf .v{font-size:14px;font-weight:700;white-space:nowrap;}
+.pm-rowside .pm-railfacts .qty-edit input{width:72px;}
+#pmRowSide #pmRailNav{display:none!important;}
+.pm-rowside .pm-railfacts{align-items:flex-start;gap:8px 22px!important;}
+.pm-rowside .pm-railfacts .rf-group{display:flex;flex-direction:column;gap:4px;margin:0!important;padding:0!important;border:0!important;}
+.pm-rowside .pm-railfacts .rf-group:has(.lead.dl-tidy){display:none!important;}
+.pm-rowside .pm-railfacts .rf-gh{font-size:10.5px!important;font-weight:800;color:var(--ink-3);margin:0!important;padding:0!important;text-transform:none;}
+.pm-rowside .pm-railfacts .rf-group>.rf,.pm-rowside .pm-railfacts .rf-group>div:not(.rf-gh){}
+.pm-rowside .pm-railfacts .rf-group:first-child{flex-direction:row;flex-wrap:wrap;align-items:flex-end;gap:4px 16px;} .pm-rowside .pm-railfacts .rf-group:first-child>.rf-gh{width:100%;}
+.pm-rowside .pm-railfacts .qty-edit input{padding:4px 8px!important;height:30px!important;font-size:13.5px!important;}
+.pm-rowside .rf-collab{display:flex;} .pm-rowside .rf-collab img,.pm-rowside .rf-collab .collab-av{width:28px!important;height:28px!important;margin-right:-6px;border:2px solid #fff;border-radius:50%;}
+.pm-rowside .pm-railfacts .rf-group:last-child{flex-direction:row!important;flex-wrap:wrap;align-items:center;gap:4px 0;} .pm-rowside .pm-railfacts .rf-group:last-child>.rf-gh{width:100%;}
+.pm-rowside .pm-railfacts .rf-group:last-child>*:not(.rf-gh),.pm-rowside .pm-railfacts .rf-group:last-child .rf-collab{display:flex!important;flex-direction:row!important;align-items:center;}
+.pm-rowside .pm-railfacts .rf-group:last-child .collab-av{margin:0 -6px 0 0!important;flex:none;}
+/* compact side column: sits right of the row on one line above 1000px */
+.pm-rowbar{display:grid!important;grid-template-columns:minmax(640px,1fr) auto;align-items:center;gap:14px!important;}
+
+.pm-rowclone{min-width:0;}
+.pm-rowside{flex-direction:column;align-items:stretch!important;gap:8px!important;margin:0!important;width:max-content;max-width:300px;}
+.pm-rowside .pm-railfacts{flex-direction:column;gap:8px!important;}
+.pm-rowside .pm-railfacts .rf-gh{display:none!important;}
+.pm-rowside .pm-railfacts .rf-group:first-child{display:grid!important;grid-template-columns:repeat(3,auto);gap:6px 16px!important;align-items:end;}
+.pm-rowside .pm-railfacts .rf .k{font-size:11px!important;} .pm-rowside .pm-railfacts .rf .v{font-size:13px!important;}
+.pm-rowside .pm-railfacts .qty-edit input{width:64px!important;height:26px!important;padding:2px 6px!important;}
+.pm-rowside .pm-railfacts .rf-group:last-child{position:absolute;opacity:0;pointer-events:none;height:0;overflow:hidden;}
+.pm-rowside{position:relative;}
+.pm-rowtools .pm-collab{display:flex;align-items:center;margin-right:auto;padding-left:6px;} .pm-rowtools .pm-collab>*{width:26px!important;height:26px!important;border-radius:50%;border:2px solid #fff;margin-left:-6px;flex:none;object-fit:cover;font-size:10px;display:grid;place-items:center;}
+.pm-rowtools #pmPinfoBtn{width:36px!important;height:36px!important;padding:0!important;justify-content:center;} .pm-rowtools #pmPinfoBtn>span{display:none!important;}
+@media(max-width:1100px){ .pm-rowbar{grid-template-columns:minmax(0,1fr);gap:10px!important;}
+  .pm-rowside{flex-direction:row!important;align-items:center!important;width:auto;max-width:none;justify-content:flex-end;flex-wrap:wrap;}
+  .pm-rowside .pm-railfacts .rf-group:first-child{grid-template-columns:repeat(5,auto)!important;}
+  .pm-rowtools .pm-collab{margin-right:6px;} }
+/* the bar is the table row only, on the table's page background */
+#pmRowSide{display:none!important;}
+.pm-rowbar{display:block!important;background:var(--paper-2,#f1f2f6)!important;padding:18px 72px 18px 22px!important;border-bottom:1px solid var(--line-soft);}
+.pm-rowbar .pm-rowclone .row{background:#fff!important;box-shadow:0 1px 2px rgba(20,22,45,.05),0 4px 14px rgba(20,22,45,.05)!important;border:1px solid var(--line-soft)!important;border-radius:16px!important;}
+.pmodal-panel>.pm-close{z-index:5;}
+.pm-rowtools{display:flex;align-items:center;gap:8px;} .pm-rowtools .rt-btn{width:auto!important;white-space:nowrap;margin:0!important;}
+.pm-rowtools .rt-btn .rt-chev{display:none;}
+
+/* action status always visible in the modal's row */
+#pmRowClone .acts .actrow>.asub,#pmRowClone .acts .actrow:has(.vertag)>.asub{display:inline-block!important;max-width:none!important;opacity:1!important;white-space:nowrap!important;overflow:visible!important;}
+/* modal row: Actions gets more room than in the table; each action on one line like the row view (dot · name · V tag · status on the right) */
+#pmRowClone .pm-thead{position:static!important;margin:0 0 8px!important;box-shadow:none!important;pointer-events:none;grid-template-columns:minmax(0,1.4fr) minmax(0,2.2fr) minmax(0,.9fr) minmax(124px,1.35fr) minmax(124px,1.35fr) minmax(0,.95fr) 40px 40px!important;}
+#pmRowClone .row{grid-template-columns:minmax(0,1.4fr) minmax(0,2.2fr) minmax(0,.9fr) minmax(124px,1.35fr) minmax(124px,1.35fr) minmax(0,.95fr) 40px 40px!important;}
+#pmRowClone .dl-line>*:first-child,#pmRowClone .dl-tag,#pmRowClone [class*="dl-"] .dk{white-space:nowrap!important;}
+#pmRowClone .acts{gap:7px!important;}
+#pmRowClone .acts .actrow{display:grid!important;grid-template-columns:22px max-content auto minmax(0,1fr)!important;grid-template-areas:"ai lbl tag sub"!important;column-gap:8px!important;align-items:center!important;min-width:0;}
+#pmRowClone .acts .actrow>.ai{grid-area:ai;}
+#pmRowClone .acts .actrow>.alabel{grid-area:lbl;white-space:nowrap;}
+#pmRowClone .acts .actrow>.vertag{grid-area:tag;justify-self:start;display:inline-flex!important;}
+#pmRowClone .acts .actrow>.asub{grid-area:sub;justify-self:end!important;text-align:right!important;white-space:nowrap!important;width:auto!important;min-width:0!important;max-width:none!important;font-size:12.5px!important;}
+#pmRowClone .row>.cell:nth-child(3){overflow:visible!important;}
+/* two-supplier note under the product name */
+#pmRowClone .pm-2sup{display:inline-flex;align-items:center;margin-top:5px;max-width:100%;font-size:11px;font-weight:700;line-height:1.3;color:var(--periwinkle-deep);background:var(--tint-peri,#eceef9);border-radius:6px;padding:2px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:help;}
+#pmRowClone .pm-2sup b{font-weight:700;color:var(--ink-2);} #pmRowClone button.pm-2sup{border:0;cursor:pointer;font-family:inherit;text-align:left;} #pmRowClone .pm-2sup{display:inline-block!important;white-space:normal!important;max-width:100%!important;overflow-wrap:anywhere;padding:3px 8px!important;}
+#pmRowClone .leadcell .dl-line,#pmRowClone .orderby .dl-line{max-width:100%!important;box-sizing:border-box;} #pmRowClone .leadcell,#pmRowClone .orderby{min-width:0;overflow:hidden;} #pmRowClone button.pm-2sup:hover{filter:brightness(.96);text-decoration:underline;} #pmRowClone .pm-2sup.off{background:var(--g100,#f2f4f7);color:var(--g600,#475467);}
+#pmRowClone .acts .actrow>.bar{display:none!important;}
+/* no "latest comment" strip */
+#pmodal .pm-head{display:none!important;}
+/* row bar + work area share the page background of the pinned title row above */
+#pmodal .pm-rowbar{background:var(--paper)!important;border-bottom:0!important;}
+#pmodal .pmodal-panel,#pmodal .pm-body,#pmodal .pm-main,#pmodal #pmWork{background:var(--paper)!important;}
+</style>
+<style id="prodNoBreak">
+/* pop-out opened from the gallery: its row uses the list layout, so nothing inside may widen a column */
+html.gview #pmRowClone .row>*{min-width:0!important;}
+html.gview #pmRowClone .row{display:grid!important;grid-template-columns:var(--cols)!important;grid-template-areas:none!important;}
+
+/* product cell: every thumbnail the same (largest that fits); names wrap only between words */
+:is(html:not(.gview) #rows,#pmRowClone) .row>.prod{container-type:inline-size;min-width:0;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:8px!important;}
+:is(html:not(.gview) #rows,#pmRowClone) .row>.prod .pimg{flex:none!important;width:min(148px,calc(100cqi - 30px))!important;height:min(148px,calc(100cqi - 30px))!important;min-width:0!important;max-width:none!important;aspect-ratio:auto;}
+:is(html:not(.gview) #rows,#pmRowClone) .row>.prod .pimg img{width:100%!important;height:100%!important;object-fit:contain!important;max-width:none!important;max-height:none!important;}
+:is(html:not(.gview) #rows,#pmRowClone) .row>.prod .pname{min-width:0!important;width:100%;overflow-wrap:normal!important;word-break:normal!important;hyphens:none!important;}
+:is(html:not(.gview) #rows,#pmRowClone) .row>.prod .pname *{overflow-wrap:normal!important;word-break:normal!important;hyphens:none!important;}
+/* drag handle: its own gutter so it doesn't sit on the photo */
+:is(html:not(.gview) #rows,#pmRowClone) .row>.prod{padding-left:20px!important;}
+:is(html:not(.gview) #rows,#pmRowClone) .row>.prod .grip{left:1px!important;}
+:is(html:not(.gview) #rows,#pmRowClone) .row>.prod .chk{left:1px!important;top:12px!important;margin-top:0!important;}
+#pmRowClone.pm-noasub .acts .actrow>.asub{display:none!important;}
+:is(html:not(.gview) #rows,#pmRowClone) .row>.prod .pimg{width:min(148px,calc(100cqi - 16px))!important;height:min(148px,calc(100cqi - 16px))!important;}
+/* pop-out row: Product column is locked to the list's width (set by script), so its thumbnail matches the list */
+#pmRowClone .row{grid-template-columns:var(--pm-clone-cols,var(--cols))!important;}
+/* Order by + Delivery Date 25% narrower; the space goes to Product */
+:root{--cols:2.71fr 1.2fr 1.05fr 1.07fr 1.07fr 1.2fr 0.55fr 0.55fr!important;}
+@media(min-width:1101px){:root{--cols:2.68fr 1.65fr 1fr 1.01fr 1.01fr 0.95fr 0.5fr 0.5fr!important;}}
+/* time on the label row never wraps or overlaps the Sup/Cus label */
+:is(#rows,#pmRowClone) .row .dl-line:has(.dt){position:relative!important;}
+:is(#rows,#pmRowClone) .row .dl-line .dt{position:absolute!important;top:6px!important;right:8px!important;left:auto!important;margin:0!important;white-space:nowrap!important;font-size:10.5px!important;line-height:1.2!important;font-weight:700;}
+/* wide windows: name goes back beside the photo, so rows are shorter */
+@media (min-width:1560px){
+  :is(html:not(.gview) #rows,#pmRowClone) .row>.prod{flex-direction:row!important;align-items:center!important;gap:14px!important;}
+  :is(html:not(.gview) #rows,#pmRowClone) .row>.prod .pimg{width:120px!important;height:120px!important;}
+  :is(html:not(.gview) #rows,#pmRowClone) .row>.prod .pname{width:auto;flex:1 1 0;}
+}
+</style>
+<script>if(/[?&]overlay=modal/.test(location.search)) document.documentElement.classList.add('ovmodal');</script>
+<style id="ovModal">/* opened from the Projects table (embed overlay): a framed dialog with its own close button, since the project title row isn't shown */
+html.ovmodal,html.ovmodal body{background:transparent!important;}
+html.ovmodal #pmodal{inset:3vh 3vw!important;background:none!important;}
+html.ovmodal #pmodal .pmodal-panel{border-radius:18px!important;overflow:hidden;box-shadow:0 30px 80px rgba(16,24,40,.35)!important;height:100%!important;}
+html.ovmodal.pm-isopen .pmodal-panel>.pm-close{display:grid!important;position:absolute;top:16px;right:16px;z-index:40;background:#fff;box-shadow:0 2px 8px rgba(16,24,40,.15);}
+html.ovmodal main>*:not(#pmodal):not(script):not(style){visibility:hidden;}
 </style>
 </head>
 <body>
 
 <!-- icon sprite -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="ic-magnify" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="ic-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+<symbol id="ic-brush" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18.4 2.6a2 2 0 0 1 2.9 2.9L12 14.8 9.2 12z"/><path d="M9.2 12c-2 0-3.7 1.6-3.7 3.6 0 1.6-1.1 2.9-2.5 3.4 1 1 2.5 1.6 4 1.6 3 0 5-2.2 5-4.8z"/></symbol>
+<symbol id="ic-magnify" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
 <symbol id="i-mark" viewBox="143.4 251.4 89.1 91.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" stroke="none" d="M194.66 336.80 C191.83 336.80 189.16 335.66 187.15 333.59 C185.15 331.54 184.04 328.79 184.03 325.87 L184.03 308.30 L190.95 308.30 L190.95 325.86 C190.95 326.88 191.34 327.84 192.04 328.56 C193.45 330.00 195.88 329.99 197.28 328.56 L217.53 307.71 C218.98 306.22 218.98 303.80 217.53 302.31 C216.83 301.59 215.90 301.19 214.91 301.19 L160.07 301.19 C157.23 301.18 154.56 300.04 152.56 297.98 C150.55 295.91 149.44 293.17 149.44 290.24 C149.44 287.33 150.55 284.58 152.56 282.51 L172.81 261.66 C176.95 257.39 183.69 257.40 187.83 261.66 C189.84 263.73 190.94 266.47 190.95 269.38 L190.95 286.95 L184.03 286.95 L184.03 269.39 C184.03 268.38 183.64 267.42 182.94 266.69 C181.54 265.26 179.10 265.25 177.70 266.70 L157.45 287.55 C156.75 288.27 156.36 289.23 156.36 290.24 C156.36 291.26 156.75 292.22 157.45 292.94 C158.15 293.66 159.09 294.07 160.08 294.07 L214.92 294.07 C217.76 294.07 220.42 295.22 222.43 297.28 C226.57 301.54 226.57 308.48 222.42 312.74 L202.17 333.59 C200.17 335.66 197.50 336.80 194.66 336.80"></path></symbol>
   <symbol id="ic-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 20v-6M12 20V9M17 20v-10"/></symbol>
   <symbol id="i-crt" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><g fill="currentColor" stroke="none"><path d="M4 32 A28 28 0 0 1 60 32 L46 32 A14 14 0 0 0 18 32 Z"/><rect x="6" y="35.5" width="52" height="2.6" rx="1.3"/><rect x="9.5" y="40.7" width="45" height="2.4" rx="1.2" opacity="0.82"/><rect x="13" y="45.6" width="38" height="2.2" rx="1.1" opacity="0.62"/><rect x="17" y="50.2" width="30" height="2" rx="1" opacity="0.46"/><rect x="21" y="54.5" width="22" height="1.8" rx="0.9" opacity="0.34"/></g></symbol>
@@ -826,7 +1242,7 @@ html.modalonly .pm-nav{display:none!important;}
   <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></symbol>
   <symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c0-3.5 3.1-5.5 7-5.5s7 2 7 5.5"/></symbol>
   <symbol id="ic-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17h12l-1.6-2.6V11a4.4 4.4 0 0 0-8.8 0v3.4L6 17zM10 20a2 2 0 0 0 4 0"/></symbol>
-  <symbol id="ic-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.6M12 18.8v2.6M21.4 12h-2.6M5.2 12H2.6M18.6 5.4l-1.8 1.8M7.2 16.8l-1.8 1.8M18.6 18.6l-1.8-1.8M7.2 7.2 5.4 5.4"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
   <symbol id="ic-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 16.5h6"/></symbol>
   <symbol id="ic-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4M6 4h11l-2 3.5L17 11H6"/></symbol>
   <symbol id="ic-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></symbol>
@@ -893,26 +1309,15 @@ html.modalonly .pm-nav{display:none!important;}
     <div class="titleleft">
       <h1 class="ptitle">Autumn Giveaways</h1>
       <div class="avatars">
-        <span class="av" title="Jess D."><img src="assets/avatars/av1.jpg" alt="Jess D."></span>
-        <span class="av" title="Mara K."><img src="assets/avatars/av2.jpg" alt="Mara K."></span>
-        <span class="av" title="Alex S."><img src="assets/avatars/av3.jpg" alt="Alex S."></span>
+        <span class="av" title="Jess Doyle"><img src="assets/avatars/av1.jpg" alt="Jess Doyle"></span>
+        <span class="av" title="Mara Whitfield"><img src="assets/avatars/av2.jpg" alt="Mara Whitfield"></span>
+        <span class="av" title="Alex Stone"><img src="assets/avatars/av3.jpg" alt="Alex Stone"></span>
         <span class="add"><svg class="icn" style="width:14px;height:14px;stroke-width:2"><use href="#ic-plus"/></svg></span>
       </div>
     </div>
     <div class="titletools">
+      <button class="brief-btn" id="briefToggle" title="Project brief"><svg class="icn bb-doc"><use href="#ic-doc"/></svg>View brief <svg class="icn bb-caret"><use href="#ic-caret"/></svg></button>
       <button class="addbtn"><svg class="icn"><use href="#ic-plus"/></svg>Add Product</button>
-      <span class="it flag" title="Mark as urgent"><svg class="icn"><use href="#ic-flag"/></svg></span>
-      <span class="it" title="Comment on product"><svg class="icn"><use href="#ic-chat"/></svg><span class="badge">1</span></span>
-      <span class="moremenu">
-        <span class="it moretoggle" id="ttMore" title="More actions"><svg class="icn"><use href="#ic-more"/></svg></span>
-        <div class="moredrop" id="ttMoreDrop">
-          <button class="it-row"><svg class="icn"><use href="#ic-pause"/></svg>Pause product</button>
-          <button class="it-row"><svg class="icn"><use href="#ic-archive"/></svg>Archive product</button>
-          <button class="it-row"><svg class="icn"><use href="#ic-copy"/></svg>Duplicate product</button>
-          <button class="it-row" id="ttDownload"><svg class="icn"><use href="#ic-download"/></svg>Download summary sheet</button>
-          <button class="it-row" id="ttDownloadDetail"><svg class="icn"><use href="#ic-download"/></svg>Download detailed sheet (1/page)</button>
-        </div>
-      </span>
     </div>
   </div>
   <div class="tdiv"></div>
@@ -922,7 +1327,20 @@ html.modalonly .pm-nav{display:none!important;}
     <span class="mi"><svg class="icn"><use href="#ic-cal"/></svg>All delivered by <b id="miDelivery">—</b></span>
     <span class="mi"><svg class="icn"><use href="#ic-user"/></svg>Owner <b>Jess Doyle</b></span>
     <span class="mi"><svg class="icn"><use href="#ic-clock"/></svg>Created <b>22 Aug 2025</b></span>
-    <button class="brief-btn" id="briefToggle" title="Project brief">View brief <svg class="icn"><use href="#ic-caret"/></svg></button>
+    <div class="titletools mb-tools">
+      <span class="it flag" title="Flag project" aria-label="Flag project"><svg class="icn"><use href="#ic-flag"/></svg></span>
+      <span class="it mb-comments" title="Project comments · 1 unread" aria-label="Project comments, 1 unread" role="button" tabindex="0"><svg class="icn"><use href="#ic-chat"/></svg><span class="badge">1</span></span>
+      <span class="moremenu">
+        <span class="it moretoggle" id="ttMore" title="Project actions" aria-label="Project actions"><svg class="icn"><use href="#ic-more"/></svg></span>
+        <div class="moredrop" id="ttMoreDrop">
+          <button class="it-row"><svg class="icn"><use href="#ic-pause"/></svg>Pause project</button>
+          <button class="it-row"><svg class="icn"><use href="#ic-archive"/></svg>Archive project</button>
+          <button class="it-row"><svg class="icn"><use href="#ic-copy"/></svg>Duplicate project</button>
+          <button class="it-row" id="ttDownload"><svg class="icn"><use href="#ic-download"/></svg>Download summary sheet</button>
+        </div>
+      </span>
+    </div>
+    
   </div>
 
   <!-- expandable project brief (rendered by project-brief.js) -->
@@ -938,8 +1356,7 @@ html.modalonly .pm-nav{display:none!important;}
         <input type="text" class="searchinput" id="searchInput" placeholder="Search products…" aria-label="Search products">
         <span class="it" id="searchToggle" title="Search"><svg class="icn"><use href="#ic-search"/></svg></span>
       </span>
-      <span class="seg"><a class="it" href="Merchsmith Gallery.html" title="Gallery view"><svg class="icn"><use href="#ic-grid"/></svg></a><span class="it on"><svg class="icn"><use href="#ic-list"/></svg></span></span>
-      <span class="seg densseg" id="densSeg"><button class="it" data-d="compact">Compact</button><button class="it on" data-d="comfort">Comfortable</button></span>
+      <span class="seg" id="viewSeg"><a class="it" href="?view=gallery" data-view="gallery" title="Gallery view"><svg class="icn"><use href="#ic-grid"/></svg></a><a class="it on" href="?view=list" data-view="list" title="List view"><svg class="icn"><use href="#ic-list"/></svg></a></span>
       <span class="sortctl" id="sortCtl" title="Sort">Sort <svg class="icn"><use href="#ic-caret"/></svg></span>
       <span class="it" id="selectAll" title="Select all"><svg class="icn"><use href="#ic-check"/></svg></span>
     </div>
@@ -979,6 +1396,7 @@ html.modalonly .pm-nav{display:none!important;}
   <div class="pmodal-panel" role="dialog" aria-modal="true">
     <button class="pm-close" id="pmClose" aria-label="Close"><svg class="icn"><use href="#ic-x"/></svg></button>
 
+    <div class="pm-rowbar" id="pmRowBar"><div class="pm-rowclone" id="pmRowClone"></div><div class="pm-rowside" id="pmRowSide"></div></div>
     <div class="pm-body">
       <aside class="pm-rail rail-tall">
         <div class="rail-h">Overview</div>
@@ -1014,7 +1432,7 @@ html.modalonly .pm-nav{display:none!important;}
       </div>
     </div>
     <div class="pm-pinfo" id="pmPinfo" aria-hidden="true">
-      <div class="pm-pinfo-head"><h3>Product information</h3><button class="pm-pinfo-x" id="pmPinfoClose" aria-label="Close"><svg class="icn"><use href="#ic-x"/></svg></button></div>
+      <div class="pm-pinfo-head"><h3>Product details</h3><button class="pm-pinfo-x" id="pmPinfoClose" aria-label="Close"><svg class="icn"><use href="#ic-x"/></svg></button></div>
       <div class="pm-pinfo-body" id="pmPinfoBody"></div>
     </div>
     <div class="pm-nav">
@@ -1025,13 +1443,16 @@ html.modalonly .pm-nav{display:none!important;}
   </div>
 </div>
 
-<script src="lead-times.js"></script>
+<script src="lead-times.js?v=3"></script>
 <script src="delivery-confirm.js"></script>
 <script src="image-slot.js"></script>
 <script src="store-feed.js?v=2"></script>
 <script src="dist-projects-data.js?v=5"></script>
-<script src="product-modal.js"></script>
-<script src="order-data.js"></script>
+<script src="two-supplier.js?v=9"></script>
+<script src="product-warnings.js?v=4"></script>
+<script src="product-modal.js?v=147"></script>
+<script src="store-listing.js?v=1"></script>
+<script src="order-data.js?v=8"></script>
 <script>
 const ACT = ['Design','Price','Sample','Stock'];
 let ROLE = ['cust','dist'].includes(localStorage.getItem('ms-role')) ? localStorage.getItem('ms-role') : 'dist';
@@ -1055,30 +1476,30 @@ const COLLABORATORS = [
 // Role-aware action labels: who OWNS the pending action at each state, the verb they see, and the neutral status the other side sees.
 const ACTIONMAP = {
   design: {
-    withacm:    {owner:'dist', verb:'Submit for approval', neut:'With studio', wait:true},
-    awaiting:   {owner:'cust', verb:'Approve design',       neut:'Awaiting approval', wait:true},
-    feedback:   {owner:'cust', verb:'Give feedback',        neut:'Feedback required', wait:true},
-    notapproved:{owner:'dist', verb:'Revise & resubmit',    neut:'Not approved'},
+    withacm:    {owner:'dist', verb:'Submit', neut:'With studio', wait:true},
+    awaiting:   {owner:'cust', verb:'Approve',       neut:'In review', wait:true},
+    feedback:   {owner:'cust', verb:'Give feedback',        neut:'Needs feedback', wait:true},
+    notapproved:{owner:'dist', verb:'Revise',    neut:'Not approved'},
     approved:   {owner:null,   neut:'Approved'},
     unbranded:  {owner:null,   neut:'Unbranded', muted:true}
   },
   price: {
-    withacm:    {owner:'dist', verb:'Submit for approval', neut:'Being checked', wait:true},
-    awaiting:   {owner:'cust', verb:'Approve price',        neut:'Awaiting approval', wait:true},
-    notapproved:{owner:'dist', verb:'Re-quote & resubmit',  neut:'Not approved'},
+    withacm:    {owner:'dist', verb:'Submit', neut:'Checking', wait:true},
+    awaiting:   {owner:'cust', verb:'Approve',        neut:'In review', wait:true},
+    notapproved:{owner:'dist', verb:'Re-quote',  neut:'Not approved'},
     approved:   {owner:null,   neut:'Approved'}
   },
   sample: {
-    sampleorder:{owner:'both', verb:'Order sample',   neut:'Awaiting sample', wait:true},
-    awaiting:   {owner:'cust', verb:'Approve sample',  neut:'Awaiting approval', wait:true},
-    ordered:    {owner:'cust', verb:'Approve sample',  neut:'Sample ordered', wait:true},
-    notapproved:{owner:'dist', verb:'Re-order sample', neut:'Not approved'},
+    sampleorder:{owner:'both', verb:'Order',   neut:'Sample due', wait:true},
+    awaiting:   {owner:'cust', verb:'Approve',  neut:'In review', wait:true},
+    ordered:    {owner:'cust', verb:'Approve',  neut:'Ordered', wait:true},
+    notapproved:{owner:'dist', verb:'Re-order', neut:'Not approved'},
     approved:   {owner:null,   neut:'Approved'}
   },
   stock: {
-    withacm:    {owner:'dist', verb:'Request stock check', neut:'Being checked', wait:true},
-    awaiting:   {owner:'dist', verb:'View supplier reply', neut:'Awaiting supplier', wait:true},
-    notinstock: {owner:'dist', verb:'Re-request stock',    neut:'Not in stock'},
+    withacm:    {owner:'dist', verb:'Check stock', neut:'Checking', wait:true},
+    awaiting:   {owner:'dist', verb:'View reply', neut:'With supplier', wait:true},
+    notinstock: {owner:'dist', verb:'Re-request',    neut:'Not in stock'},
     instock:    {owner:null,   neut:'In stock'}
   }
 };
@@ -1215,7 +1636,7 @@ function costOf(p){ let h=0; for(const c of p.name) h=(h*31 + c.charCodeAt(0))>>
 const marginPct = p => Math.round((1 - costOf(p)/p.each)*100);
 function priceBlockInner(p){
   if(ideaSubmitted(p)) return dash;
-  if(ROLE==='dist') return `<div class="unit">${gbp(costOf(p))} <small>cost / unit</small></div><div class="total">${gbp(costOf(p)*p.qty)} <span class="margintag">${gbp((p.each-costOf(p))*p.qty)} profit</span></div>`;
+  if(ROLE==='dist') return `<div class="unit">${gbp(costOf(p))}</div><div class="total">${gbp(costOf(p)*p.qty)}</div><div class="profitrow"><span class="margintag">${gbp((p.each-costOf(p))*p.qty)} profit</span></div>`;
   return `<div class="unit">${gbp(p.each)} <small>each</small></div><div class="total">${gbp(lineTotal(p))}${priceApproved(p) ? '' : ' <span class="esttag">Est.</span>'}</div>`;
 }
 // per-product comment + flag states (source order) to demo the icons in different states
@@ -1337,7 +1758,7 @@ if(EMBED){
     if(d.msCmd==='download'){ const b=document.getElementById('ttDownload'); if(b) b.click(); }
     if(d.msCmd==='obFilter' && window.__obCascade) window.__obCascade(d.modes||[]);
     if(d.msCmd==='obFilter' && window.__bdCascade) window.__bdCascade(d.bd||null);
-    if(d.msCmd==='obFilter' && d.dens){ const re=document.getElementById('rows'); if(re) re.classList.toggle('labels-shown', d.dens!=='compact'); }
+    if(d.msCmd==='obFilter' && d.dens){ const re=document.getElementById('rows'); if(re) re.classList.add('labels-shown'); }
     if(d.msCmd==='obFilter' && typeof d.sup==='string'){ supFilter=d.sup; if(typeof buildFilters==='function') buildFilters(); applyView(); }
   });
   const sendH=()=>{ if(OVERLAY) return; try{ parent.postMessage({msEmbedH:document.documentElement.scrollHeight,pid:EMBED_PID},'*'); }catch(e){} };
@@ -1362,9 +1783,13 @@ const productVariants = {
 const coloursOf = p => (productVariants[p.name]||{}).colours || ['Standard'];
 const sizesOf = p => (productVariants[p.name]||{}).sizes || ['One size'];
 const SUPPLIERS=['Veloce Print','Lumen Goods','Fjord Textiles','Baltic Promo Works','Orchard & Co'];
-const supplierName = p => { if(supplierOf[p.name]) return supplierOf[p.name];
+const two2 = p => window.MSTWO?MSTWO.get(p.name,'autumn'):null;
+const supplierName = p => { const t=two2(p); if(t) return t.brand; if(supplierOf[p.name]) return supplierOf[p.name];
   let x=0; for(const ch of p.name) x=(x*31+ch.charCodeAt(0))>>>0; return SUPPLIERS[x%SUPPLIERS.length]; };
-const supLead = p => supLeadDays[p.name] || 10;
+// two-supplier lines: blank supplier lead + transit to the decorator + decorator lead
+const blankLead = p => { const t=two2(p); if(t&&t.blankLead!=null) return t.blankLead; return 6; };
+const supLead = p => { const t=two2(p); if(t) return blankLead(p)+t.transit+t.brandLead; return supLeadDays[p.name] || 10; };
+window.__leadParts = p => { const t=two2(p); return t?{blank:t.blank,blankLead:blankLead(p),transit:t.transit,brand:t.brand,brandLead:t.brandLead,lieu:window.MSLead?MSLead.lieuFor(t.brand):3}:null; };
 const custLeadDays = p => window.MSLead ? MSLead.custLead(supLead(p), supplierName(p)) : supLead(p)+3;
 function parseDelivery(p){ return p.deliveryISO ? new Date(p.deliveryISO+'T00:00') : null; }
 function triggerMissed(p){ p.deadlineMissed=true; p.sup='none'; p.orderISO=null; p.orderDisplay=null; if(p.confirmData){ p.confirmData.orderRequiredISO=''; p.confirmData.orderRequiredDisplay=''; p.confirmData.proofISO=''; p.confirmData.proofDisplay=''; } p.status={type:'clock',label:'In Progress'}; }
@@ -1433,32 +1858,32 @@ function statusHTML(p){
 }
 
 function orderByDistHTML(p){
-  if(p.deadlineMissed) return '<div class="deadchip urgent">Deadline missed</div>';
+  const missed=!!p.deadlineMissed;
   const now=(typeof EMBED!=='undefined'&&EMBED)?Date.now():NOW.getTime();
   let supTs=null, note='', hard=false;
   if(p.orderISO){ supTs=new Date(p.orderISO).getTime(); hard=true;
     if(p.sup==='confirmed') note='Agreed with '+((((p.confirmData||{}).contactNames||[])[0])||'supplier'); }
   else { let t=null; try{ t=obTs(p); }catch(e){} if(t!==null){ supTs=t; note='From lead time'; } }
-  if(supTs===null) return '<span class="obnone">—</span>';
+  if(supTs===null) return missed?'<div class="dl-foot solo"><span class="deadchip urgent">Deadline missed</span></div>':'<span class="obnone">—</span>';
   const custTs=window.MSLead?MSLead.subWorkingHours(new Date(supTs),4).getTime():(supTs-4*3600000);
   const fmt=ts=>{ const d=new Date(ts); return hard&&window.MSLead?MSLead.fmtDateTime(d,NOW):(window.MSLead?MSLead.fmtDate(d):d.toLocaleDateString('en-GB')); };
   const cls=ts=>ts<now?'over':(ts-now<7*86400000?'soon':'');
-  return `<div class="obwrap dl-tidy"${note?` title="${note}"`:''}>
-    <div class="dl-line ${cls(custTs)}"><span class="dk">Cus</span><span class="dv">${fmt(custTs)}</span></div>
+  return `<div class="obwrap dl-tidy${missed?' is-missed':''}"${note?` title="${note}"`:''}>
     <div class="dl-line ${cls(supTs)}"><span class="dk">Sup</span><span class="dv">${hard&&p.orderDisplay?p.orderDisplay:fmt(supTs)}</span></div>
+    <div class="dl-line ${cls(custTs)}"><span class="dk">Cus</span><span class="dv">${fmt(custTs)}</span></div>${missed?'<div class="dl-foot"><span class="deadchip urgent">Deadline missed</span></div>':''}
   </div>`;
 }
 
 function orderByHTML(p){
   if(ROLE==='dist') return orderByDistHTML(p);
-  if(p.deadlineMissed){ const dc=deadchip(p); if(dc) return dc; }  // keep the urgent pill only for a missed deadline
+  const missed=!!p.deadlineMissed;
   let t=null; try{ t=obTs(p); }catch(e){}
-  if(t===null) return '<span class="obnone">—</span>';
+  if(t===null) return missed?'<div class="dl-foot solo"><span class="deadchip urgent">Deadline missed</span></div>':'<span class="obnone">—</span>';
   const now=(typeof EMBED!=='undefined'&&EMBED)?Date.now():NOW.getTime();
   const d=new Date(t);
   const disp=window.MSLead?MSLead.fmtDate(d):d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
   const cls=t<now?'over':(t-now<7*86400000?'soon':'');
-  return `<div class="obwrap dl-tidy"><div class="dl-line ${cls}"><span class="dv">${disp}</span></div></div>`;
+  return `<div class="obwrap dl-tidy${missed?' is-missed':''}"><div class="dl-line ${cls}"><span class="dv">${disp}</span></div>${missed?'<div class="dl-foot"><span class="deadchip urgent">Deadline missed</span></div>':''}</div>`;
 }
 
 function distLeadHTML(p){
@@ -1477,7 +1902,7 @@ function distLeadHTML(p){
     // Standard delivery: supplier date defaults from lead time (customer date − days in lieu)
     const cd=parseDelivery(p); const lieu=window.MSLead?MSLead.lieuFor(supplierName(p)):3;
     if(cd){ const sd=window.MSLead?MSLead.subWorkingDays(cd,lieu):new Date(cd.getTime()-lieu*86400000);
-      supDisp=window.MSLead?MSLead.fmtDate(sd):p.delivery; supNote='Estimated from '+custLeadDays(p)+'-day lead time'; supEst=true; }
+      supDisp=window.MSLead?MSLead.fmtDate(sd):p.delivery; supNote='Estimated from '+custLeadDays(p)+'-day lead time'+(window.__leadParts&&__leadParts(p)?(lp=>' ('+lp.blankLead+' blank + '+lp.transit+' transit + '+lp.brandLead+' branding + '+lp.lieu+' in lieu)')(__leadParts(p)):''); supEst=true; }
   }
   const custDisp=isDate?(p.deadlineMissed?`<span class="missed-date">${p.delivery}</span>`:p.delivery):'<span class="asaplabel">ASAP</span>';
   // supplier confirmation folds into ONE status marker on the supplier line (detail lives in the tooltip / popovers)
@@ -1491,7 +1916,7 @@ function distLeadHTML(p){
   return `<div class="lead dl-tidy${critical&&isDate?' is-crit':''}">
     <div class="dl-line"><span class="dk">Sup</span><span class="dv"${supNote?` title="${supNote}"`:''}>${supDisp}</span>${marker}<span class="daypick sup-pick" title="Set supplier delivery date manually">${cal}</span></div>
     <div class="dl-line"><span class="dk">Cus</span><span class="dv">${custDisp}</span><span class="daypick cust-pick" title="Change customer delivery date">${cal}</span></div>
-    <div class="dl-foot">${isDate?badge:`<span class="dl2-note">Lead time: ${custLeadDays(p)} working days</span>`}</div>
+    <div class="dl-foot">${isDate?badge:`<span class="dl2-note"${window.__leadParts&&__leadParts(p)?(lp=>` title="${lp.blankLead} days ${lp.blank} + ${lp.transit} transit + ${lp.brandLead} branding at ${lp.brand} + ${lp.lieu} in lieu"`)(__leadParts(p)):''}>Lead time: ${custLeadDays(p)} working days${window.__leadParts&&__leadParts(p)?' · 2 suppliers':''}</span>`}</div>
   </div>`;
 }
 
@@ -1510,7 +1935,8 @@ function leadHTML(p){
   }
   if(!isDate){
     return `<div class="lead dl-tidy">
-      <div class="dl-line"><span class="dk">Del</span><span class="dv"><span class="asaplabel">ASAP</span></span><span class="daypick choose-action" title="Choose a delivery date">${cal}</span></div>
+      <div class="dl-cal"><span class="daypick choose-action" title="Choose a delivery date">${cal}</span></div>
+      <div class="dl-line"><span class="dv"><span class="asaplabel">ASAP</span></span></div>
       <div class="dl-foot"><span class="dl2-note">Lead time: ${custLeadDays(p)} working days</span></div>
     </div>`;
   }
@@ -1518,8 +1944,9 @@ function leadHTML(p){
   const pickCls = p.deadlineMissed ? 'daypick choose-action' : 'daypick';
   const pickTitle = p.deadlineMissed ? 'Choose a new date' : 'Change delivery date';
   return `<div class="lead dl-tidy${critical?' is-crit':''}">
-    <div class="dl-line"><span class="dk">Del</span><span class="dv">${dateHTML}</span>${marker}<span class="${pickCls}" title="${pickTitle}">${cal}</span></div>
-    <div class="dl-foot">${tag}</div>
+    <div class="dl-cal"><span class="${pickCls}" title="${pickTitle}">${cal}</span></div>
+    <div class="dl-line"><span class="dv">${dateHTML}</span></div>
+    <div class="dl-foot">${tag}${marker}</div>
   </div>`;
 }
 
@@ -1619,7 +2046,6 @@ briefToggle.addEventListener('click', () => {
         {duration:340, easing:'cubic-bezier(.22,.61,.36,1)', fill:'backwards'}
       );
     }
-    brief.scrollIntoView({block:'nearest', behavior: reduce ? 'auto' : 'smooth'});
   } else {
     brief.hidden = true;
   }
@@ -1808,7 +2234,7 @@ function updateMeta(){
   const c=document.getElementById('miCount'); if(c) c.textContent=vis.length;
   const priced=vis.filter(p=>!ideaSubmitted(p)&&p.status.type!=='pause'&&p.status.type!=='archived');
   const t=document.getElementById('miTotal'); if(t) t.textContent=gbp(priced.reduce((a,p)=>a+(ROLE==='dist'?costOf(p)*p.qty:lineTotal(p)),0));
-  const tl=document.getElementById('miTotalLbl'); if(tl) tl.textContent=ROLE==='dist'?'cost total':'est. total';
+  const tl=document.getElementById('miTotalLbl'); if(tl) tl.textContent=ROLE==='dist'?'total':'est. total';
   const md=document.getElementById('miDelivery'); if(md){ const mo={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11}; let best=-1,bs='\u2014'; vis.forEach(p=>{ const m=/(\d+)(?:st|nd|rd|th)\s+([A-Za-z]{3})/.exec(p.delivery||''); if(m){ const v=mo[m[2]]*100+(+m[1]); if(v>best){best=v;bs=p.delivery;} } }); md.textContent=bs; } }
 buildFilters(); applyView();
 
@@ -1956,7 +2382,7 @@ function footHTML(tabKey, idx, setback){
   }
   if(idx>=last){
     let h=`<span class="pm-cta complete"><svg class="icn"><use href="#ic-check"/></svg>${f.done}</span>`;
-    if(ROLE===reviewer) h+=secBtn;
+    if(ROLE===reviewer && tabKey!=='sample') h+=secBtn;
     return h;
   }
   const next=idx+1; const owner=owners[next];
@@ -1991,7 +2417,18 @@ function sectionHeaderHTML(p, area){
     ${act?`<div class="pm-secact">${act}</div>`:''}
   </div>`;
 }
-function sectionInnerHTML(p, area){ return sectionHeaderHTML(p,area)+`<div class="pm-info">${infoHTML(p,area)}</div>`; }
+function sectionInnerHTML(p, area){ let h=sectionHeaderHTML(p,area), info=infoHTML(p,area);
+  // Price / Sample / Stock (as Design): status pill sits beside the sub-tabs on the left; actions sit at the right end of the row
+  if(area!=='design'){ const t=document.createElement('template'); t.innerHTML=info; const tabs=t.content.querySelector('.dsg-tabs');
+    if(tabs){ const f=FLOWS[area], st=p.actions[f.ai].st, {idx,setback}=resolveStep(area,st);
+      const act=(area==='price')?'':footHTML(area,idx,setback);
+      const pl=document.createElement('span'); pl.className='sec-tabpill'; pl.innerHTML=sectionStatusPill(p,area); tabs.appendChild(pl);
+      const ab=document.createElement('div'); ab.className='dsg-tabact sec-tabact'; if(act) ab.innerHTML=`<div class="pm-secact">${act}</div>`;
+      if(area==='price'){ const bar=[...t.content.querySelectorAll('.cu-apprbar')].find(b=>b.querySelector('button'));
+        if(bar){ const sb=bar.parentElement; ab.appendChild(bar); if(sb&&sb.classList.contains('dp-statusbar')&&!sb.children.length) sb.remove(); } }
+      if(ab.childNodes.length) tabs.appendChild(ab);
+      info=t.innerHTML; h=`<div class="pm-sechead"><h3 class="pm-secname">${AREA_NAME[area]}</h3><span class="pm-secspacer"></span></div>`; } }
+  return h+`<div class="pm-info">${info}</div>`; }
 function refreshSection(p, area){
   const sec=document.getElementById('pmsec-'+area); if(!sec) return;
   sec.innerHTML=sectionInnerHTML(p,area); wireCard(p, area, sec);
@@ -2070,12 +2507,10 @@ function renderWork(p){
   const sec=document.getElementById('pmsec-'+a); if(sec) wireCard(p,a,sec);
 }
 function pinfoHTML(p){
-  return `<div style="font-size:12px;font-style:italic;color:var(--muted);margin-bottom:8px">Pulled from the original merch-store listing — placeholder content until supplied.</div>
-    <div class="pm-section"><h4>Description</h4><p>${p.name} — marketing description, key features and sustainability story from the store catalogue will appear here.</p></div>
-    <div class="pm-section"><h4>Materials</h4><p>Placeholder — material composition and finish.</p></div>
-    <div class="pm-section"><h4>Dimensions &amp; weight</h4><p>Placeholder — product and packed dimensions, unit weight.</p></div>
-    <div class="pm-section"><h4>Certifications</h4><p>Placeholder — e.g. REACH, RoHS, GRS.</p></div>
-    <div class="pm-section"><h4>Store listing</h4><p><a href="#" class="pm-link">View on merch store ↗</a></p></div>`;
+  // the real store product page, embedded (same data + design as the store); unlinked items get the link picker
+  const sp=window.MSLISTING?MSLISTING.resolve(p):null;
+  if(sp) return '<iframe class="pm-storefr" title="Store listing" src="Merchsmith Store.html?embed=1#product='+encodeURIComponent(sp.id)+'"></iframe>';
+  return window.MSLISTING?MSLISTING.html(p,{}):'';
 }
 function infoHTML(p, tabKey){
   if(window.MSModal && (tabKey==='design'||tabKey==='price'||tabKey==='sample'||tabKey==='stock')){ const __b=window.MSModal.body(p,tabKey,msCtx(p)); if(__b) return __b; }
@@ -2125,7 +2560,7 @@ function refreshModalTab(p, tabKey){ const cont=document.getElementById('pmConte
 function msCtx(p){ return { role:ROLE, gbp, persist:window.persist,
   onQty:(qv)=>{ if(qv>0){ p.qty=qv; if(typeof updateRailPrice==='function') updateRailPrice(p); } },
   refresh:(tabKey)=>{ if(window.__currentModalProduct && window.__currentModalProduct()===p) refreshSection(p, tabKey||'design'); },
-  setStatus:(pp,ai,st,msg)=>{ pp.actions[ai].st=st; if(typeof syncActionSub==='function')syncActionSub(pp,ai,['design','price','sample','stock'][ai]); if(typeof recomputeProductStatus==='function')recomputeProductStatus(pp); if(typeof updateUnderlyingRow==='function')updateUnderlyingRow(pp); if(window.MSlog&&msg)window.MSlog(pp,{type:'status',icon:'ic-check',label:msg,who:0}); if(window.persist)persist(); } }; }
+  setStatus:(pp,ai,st,msg)=>{ if(ai===3&&st==='instock'&&window.PMStock&&!PMStock.ready(pp)){ st='awaiting'; msg='Confirm stock for every chosen colour first ('+PMStock.chosen(pp).join(', ')+')'; } pp.actions[ai].st=st; if(typeof syncActionSub==='function')syncActionSub(pp,ai,['design','price','sample','stock'][ai]); if(typeof recomputeProductStatus==='function')recomputeProductStatus(pp); if(typeof updateUnderlyingRow==='function')updateUnderlyingRow(pp); if(window.MSlog&&msg)window.MSlog(pp,{type:'status',icon:'ic-check',label:msg,who:0}); if(window.persist)persist(); } }; }
 function tabContentHTML(p, tabKey){ return sectionInnerHTML(p, tabKey); }
 
 // ---- interactivity: change status, animate the pill, celebrate ----
@@ -2145,10 +2580,12 @@ function wireCard(p, tabKey, secEl){
   const sec=root.querySelector('.js-sec');
   if(sec) sec.onclick=()=>applyCard(p,tabKey,0,{setback:true});
 }
-function openStockReq(p){ if(!window.MSConfirm)return; MSConfirm.openStockReq({ productName:p.name, supplierName:supplierName(p), qty:p.qty, colours:coloursOf(p), sizes:sizesOf(p), data:p.stockReq||{}, now:NOW,
+// stock is held by the blank supplier on two-supplier lines
+const stockSupplier = p => { const t=two2(p); return t?t.blank:supplierName(p); };
+function openStockReq(p){ if(!window.MSConfirm)return; MSConfirm.openStockReq({ productName:p.name, supplierName:stockSupplier(p), qty:p.qty, colours:coloursOf(p), sizes:sizesOf(p), data:p.stockReq||{}, now:NOW,
   onSend:(d)=>{ p.stockReq=d; p.actions[3].st='awaiting'; finishStock(p, `requested stock check from ${(d.contactNames||[]).join(', ')||'production'}`); } }); }
 function openStockReply(p){ if(!window.MSConfirm)return; const v=[(p.stockReq&&p.stockReq.colour),(p.stockReq&&p.stockReq.size)].filter(Boolean).join(' / ');
-  MSConfirm.openStockReply({ productName:p.name, supplierName:supplierName(p), variant:v, now:NOW, suggestUntilISO:(window.MSLead?MSLead.isoDate(MSLead.addWorkingDays(NOW,10))+'T17:00':''),
+  MSConfirm.openStockReply({ productName:p.name, supplierName:stockSupplier(p), variant:v, now:NOW, suggestUntilISO:(window.MSLead?MSLead.isoDate(MSLead.addWorkingDays(NOW,10))+'T17:00':''),
     onReply:(r)=>{ if(r.available){ p.actions[3].st='instock'; p.stockReservedUntilISO=r.reservedUntilISO; p.stockReservedUntilDisplay=r.reservedUntilDisplay; } else { p.actions[3].st='notinstock'; p.stockReservedUntilISO=null; p.stockReservedUntilDisplay=null; } finishStock(p, r.available?`stock reserved until ${r.reservedUntilDisplay}`:'production out of stock'); } }); }
 function finishStock(p, msg){ syncActionSub(p,3,'stock'); if(typeof recomputeProductStatus==='function') recomputeProductStatus(p); if(typeof updateUnderlyingRow==='function') updateUnderlyingRow(p);
   if(window.__currentModalProduct && window.__currentModalProduct()===p) refreshSection(p,'stock');
@@ -2158,6 +2595,8 @@ function syncActionSub(p, ai, tabKey){
 }
 function applyCard(p, tabKey, targetIdx, opts={}){
   const f=FLOWS[tabKey]; const last=f.steps.length-1;
+  // two-supplier locked prices: can't move the price forward while one supplier's quote is still outstanding
+  if(tabKey==='price'&&!opts.setback&&targetIdx>0){ try{ const d=window.MSModal&&MSModal.data?MSModal.data(p):null, lk=d&&d.price&&d.price.locked; if(d&&d.twoSupplier&&lk&&lk.two&&lk.reqState==='partial'){ const q=lk.quote||{}, w=q.product?d.twoSupplier.branding.supplier:d.twoSupplier.product.supplier; if(window.MStoast) MStoast('Waiting for '+w+'’s quote. Both suppliers need to quote before the price can go forward.'); else alert('Waiting for '+w+'’s quote.'); return; } }catch(e){} }
   targetIdx=Math.max(-1,Math.min(last,targetIdx));
   const wasComplete=resolveStep(tabKey,p.actions[f.ai].st).complete;
   let newSt = opts.setback ? (tabKey==='stock'?'notinstock':(tabKey==='design'?'feedback':'notapproved'))
@@ -2228,7 +2667,7 @@ let pmIndex = 0, pmTab = 'design', pmArea = 'design';
 
 function renderModal(){
   const p = ordered[pmIndex];
-  { const t=document.getElementById('pmTitle'); t.textContent = p.name; t.href = 'Merchsmith Store.html#product='+encodeURIComponent(p.name); }
+  { const t=document.getElementById('pmTitle'); t.textContent = p.name; t.title = p.name; t.href = 'Merchsmith Store.html#product='+encodeURIComponent(p.name); }
   document.getElementById('pmSku').textContent = `(Mp${34576 + pmIndex})`;
   updateHeaderStat(p, false);
   { const pmf=document.getElementById('pmFlag'); if(pmf){ pmf.classList.toggle('on', !!p.flag); pmf.title = p.flag ? 'Urgent — click to clear' : 'Mark as urgent'; } }
@@ -2237,14 +2676,47 @@ function renderModal(){
   { const c=document.getElementById('pmCount'); if(c) c.textContent = `${pmIndex+1} / ${ordered.length}`; }
   renderWork(p);
   renderRail(p);
+  syncRowBar(p);
   { const nav=document.getElementById('pmRailNav'); if(nav && !['design','price','sample','stock'].includes(pmArea)) pmArea='design'; }
-  { const pb=document.getElementById('pmPinfoBody'); if(pb) pb.innerHTML = pinfoHTML(p); }
+  { const pb=document.getElementById('pmPinfoBody'); if(pb){ const fill=()=>{ const h=pinfoHTML(p), fr=pb.querySelector('iframe.pm-storefr'), m=h.match(/src="([^"]+)"/); pb.classList.toggle('fr',/pm-storefr/.test(h)); if(fr&&m&&fr.getAttribute('src')===m[1]) return; pb.innerHTML=h; if(window.MSLISTING) MSLISTING.wire(pb,p,()=>{ fill(); if(typeof renderArea==='function') try{ renderArea(p,pmArea); }catch(e){} }); }; fill(); } }
   { const ob=document.getElementById('pmPinfoBtn'), cb=document.getElementById('pmPinfoClose'), pin=document.getElementById('pmPinfo');
     if(pin) pin.classList.remove('open');
     if(ob&&pin) ob.onclick=()=>pin.classList.toggle('open');
     if(cb&&pin) cb.onclick=()=>pin.classList.remove('open'); }
   { const work=document.getElementById('pmWork'); if(work) work.scrollTop=0; }
 }
+// Product details panel lives on <body> so it sits in front of everything, full window height
+setTimeout(()=>{ const pin=document.getElementById('pmPinfo'), pm=document.getElementById('pmodal'); if(!pin) return; if(pin.parentElement!==document.body) document.body.appendChild(pin); if(pm) new MutationObserver(()=>{ if(!pm.classList.contains('open')) pin.classList.remove('open'); }).observe(pm,{attributes:true,attributeFilter:['class']}); },0);
+document.addEventListener('click',e=>{ const b=e.target.closest('#pmodal [data-pdopen]'); if(!b||e.target.closest('#pmRowClone')) return; const pin=document.getElementById('pmPinfo'); if(pin){ if(pin.parentElement!==document.body) document.body.appendChild(pin); requestAnimationFrame(()=>pin.classList.add('open')); } });
+document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; const pin=document.getElementById('pmPinfo'); if(pin&&pin.classList.contains('open')){ e.stopImmediatePropagation(); pin.classList.remove('open'); } },true);
+// the product's own table row, repeated along the top of the modal (same info, same layout)
+(function(){ const side=document.getElementById('pmRowSide'); if(!side||side.dataset.ready) return; side.dataset.ready=1;
+  const facts=document.getElementById('pmRailFacts'), pin=document.getElementById('pmPinfoBtn'), more=document.querySelector('.pm-headright .pm-tools'), nav=document.getElementById('pmRailNav');
+  if(facts) side.appendChild(facts); const tl=document.createElement('div'); tl.className='pm-rowtools'; if(pin) tl.appendChild(pin); if(more) tl.appendChild(more); side.appendChild(tl);
+  if(nav){ nav.hidden=true; side.appendChild(nav); } })();
+let pmRowObs=null;
+function syncRowBar(p){ const host=document.getElementById('pmRowClone'); if(!host) return; const src=document.querySelectorAll('#rows .row')[ordered.indexOf(p)]; if(!src) return;
+  const draw=()=>{ const c=src.cloneNode(true); c.classList.remove('checked'); const rl=document.getElementById('rows'); if(rl) host.className='pm-rowclone '+[...rl.classList].filter(x=>x!=='rows').join(' '); if(!document.documentElement.classList.contains('gview')) c.style.minHeight=Math.round(src.getBoundingClientRect().height)+'px'; else c.style.removeProperty('min-height'); c.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+    const acts=[...c.querySelectorAll('.acts > *')]; acts.forEach((a,k)=>{ const ar=AREAS.find(x=>x.ai===k); if(ar){ a.dataset.pmarea=ar.k; a.classList.toggle('pm-cur',ar.k===pmArea); a.setAttribute('role','button'); a.tabIndex=0; } });
+    host.innerHTML=''; { const th=document.querySelector('main .thead'); if(th){ const h=th.cloneNode(true); h.removeAttribute('id'); h.removeAttribute('data-comment-anchor'); h.classList.add('pm-thead'); h.querySelectorAll('[id]').forEach(x=>x.removeAttribute('id')); h.querySelectorAll('.sortbtn,button').forEach(x=>{ if(!x.closest('.th')||x.classList.contains('sortbtn')) x.remove(); }); host.appendChild(h); } } host.appendChild(c);
+    { const pn0=c.querySelector('.pname'); if(pn0&&!pn0.querySelector('.pm-infoic')){ const b=document.createElement('button'); b.type='button'; b.className='pm-infoic'; b.setAttribute('data-pdopen',''); b.title='Product details'; b.setAttribute('aria-label','Product details'); b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>'; const tn=[...pn0.childNodes].find(n=>n.nodeType===3&&n.textContent.trim()); if(tn){ const w=document.createElement('span'); w.className='pm-pnt'; pn0.insertBefore(w,tn); const t=tn.textContent.trim(), i=t.lastIndexOf(' '); w.appendChild(document.createTextNode(i>0?t.slice(0,i+1):'')); const nw=document.createElement('span'); nw.style.whiteSpace='nowrap'; nw.appendChild(document.createTextNode(i>0?t.slice(i+1):t)); nw.appendChild(b); w.appendChild(nw); tn.remove(); } else { const tag=pn0.querySelector('.suptag'); tag?pn0.insertBefore(b,tag):pn0.appendChild(b); } } }
+    { const tg=c.querySelector('.pname .suptag'), t2=window.MSTWO?MSTWO.get(p.name,'autumn'):null; if(tg&&ROLE!=='cust'){ tg.textContent=t2?t2.blank+' + '+t2.brand:tg.textContent; if(ROLE==='dist'){ tg.classList.add('pm-supedit'); tg.title=t2?'Blank product from '+t2.blank+', branded by '+t2.brand+' · click to change':'Click to add a second (branding) supplier'; tg.onclick=ev=>{ ev.stopPropagation(); MSTWO.editor(p.name,'autumn',()=>draw()); }; } } } };
+  draw();
+  { const tl=document.querySelector('#pmRowSide .pm-rowtools'), grp=document.querySelector('#pmRowSide .rf-group:last-child'); if(tl&&grp){ let cb=tl.querySelector('.pm-collab'); if(!cb){ cb=document.createElement('span'); cb.className='pm-collab'; tl.prepend(cb); } cb.innerHTML=''; grp.querySelectorAll('.collab-av').forEach(a=>cb.appendChild(a.cloneNode(true))); } const pb=document.getElementById('pmPinfoBtn'); if(pb){ pb.title='View product information'; pb.setAttribute('aria-label','View product information'); } }
+  if(pmRowObs) pmRowObs.disconnect(); pmRowObs=__msObserve(()=>{ if(pmodal.classList.contains('open')) draw(); }); window.__pmRowObs=pmRowObs; pmRowObs.observe(src,{subtree:true,childList:true,attributes:true,attributeFilter:['class'],characterData:true});
+  host.onclick=e=>{ if(e.target.closest('[data-pdopen]')){ e.stopPropagation(); const pin=document.getElementById('pmPinfo'); if(pin){ if(pin.parentElement!==document.body) document.body.appendChild(pin); requestAnimationFrame(()=>pin.classList.add('open')); } return; } const a=e.target.closest('[data-pmarea]'); if(a){ e.stopPropagation(); const b=document.querySelector('#pmRailNav [data-area="'+a.dataset.pmarea+'"]'); if(b) b.click(); host.querySelectorAll('[data-pmarea]').forEach(x=>x.classList.toggle('pm-cur',x===a)); return; }
+    if(e.target.closest('.flagbtn')){ e.stopPropagation(); const f=document.getElementById('pmFlag'); if(f) f.click(); return; }
+    if(e.target.closest('.metacell')){ e.stopPropagation(); const c=document.getElementById('pmChat'); if(c) c.click(); return; }
+    const ob=e.target.closest('.orderbtn'); if(ob){ e.stopPropagation(); const o=src.querySelector('.orderbtn'); if(o) o.click(); return; }
+    if(e.target.closest('.pimg-zoom')){ e.stopPropagation(); const z=src.querySelector('.pimg-zoom'); if(z) openLightbox(+z.dataset.zoom); } };
+  host.onkeydown=e=>{ if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.pmarea){ e.preventDefault(); e.target.click(); } }; }
+// list / gallery switch on the same page (so both open the same modal)
+(function(){ const seg=document.getElementById('viewSeg'); if(!seg) return;
+  const EMB=/[?&]embed=1\b/.test(location.search);
+  const set=v=>{ if(EMB) v='list'; document.documentElement.classList.toggle('gview',v==='gallery'); seg.querySelectorAll('[data-view]').forEach(a=>a.classList.toggle('on',a.dataset.view===v)); if(!EMB) try{ localStorage.setItem('ms-proj-view',v); }catch(e){}
+    const u=new URL(location.href); u.searchParams.set('view',v); history.replaceState(null,'',u.pathname+u.search+u.hash); };
+  seg.addEventListener('click',e=>{ const a=e.target.closest('[data-view]'); if(!a) return; e.preventDefault(); set(a.dataset.view); });
+  const q=new URLSearchParams(location.search).get('view'); set(q||localStorage.getItem('ms-proj-view')||'list'); })();
 function openModal(i, tab){
   pmIndex = i; pmTab = tab || 'design'; pmArea = tab || 'design';
   renderModal();
@@ -2255,7 +2727,19 @@ function openModal(i, tab){
     pmodal.querySelector('.pm-body').animate([{transform:'translateY(14px)'},{transform:'none'}],{duration:340,easing:'cubic-bezier(.22,.61,.36,1)'});
   }
 }
-function closeModal(){ pmodal.classList.remove('open'); pmodal.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+// opened from an order page (#…&from=order:<id>, or an amendment #…&amend=<id>:<line> / &review=…): closing goes back to that order
+function pmReturnUrl(){ const h=location.hash; const m=h.match(/[#&]from=order%3A([^&]+)|[#&]from=order:([^&]+)/); const id=m&&decodeURIComponent(m[1]||m[2]);
+  const am=!id&&(h.match(/[#&](?:amend|review)=([^&]+)/)||[])[1]; const oid=id||(am?decodeURIComponent(am).split(':')[0]:'');
+  if(oid) return 'Merchsmith Orders.html#order='+encodeURIComponent(oid);
+  if(/[#&]from=projects\b/.test(h)) return 'Merchsmith Distributor Projects.html';
+  return ''; }
+function closeModal(){ if(!pmodal.classList.contains('open')) return;
+  { const back=pmReturnUrl(); if(back){ location.href=back; return; } }
+  pmodal.classList.remove('open','pm-compact'); pmodal.setAttribute('aria-hidden','true'); document.body.style.overflow='';
+  document.documentElement.classList.remove('pm-isopen');
+  try{ if(window.__pmRowObs) window.__pmRowObs.disconnect(); }catch(e){}
+  const tr=document.querySelector('main .titlerow'); if(tr){ tr.classList.remove('stuck'); requestAnimationFrame(()=>{ const hh=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ms-headh'))||0; tr.classList.toggle('stuck',tr.getBoundingClientRect().top<=hh+0.5&&scrollY>40); }); }
+  if(window.__msLayout) __msLayout.run(); }
 
 document.querySelectorAll('#rows .expand').forEach(ex=>{
   ex.addEventListener('click', e=>{ e.stopPropagation(); openModal(+ex.dataset.i); });
@@ -2269,14 +2753,18 @@ document.querySelectorAll('#rows .pmopen').forEach(el=>{
   if(/modalonly=1/.test(location.search+location.hash)){ document.documentElement.classList.add('modalonly'); }
   openByHash(); })();
 // ---- Order CTA → basket ----
-function addProductToBasket(p, kind){
+function addProductToBasket(p, kind, opt){ opt=opt||{};
   if(!window.MSOrders) return;
   const ch=(window.MSModal&&MSModal.data&&MSModal.data(p)&&MSModal.data(p).branding)?MSModal.data(p).branding.chosen:null;
   const sels = ch&&ch.selections ? ch.selections : [];
   const cols=(typeof coloursOf==='function'?coloursOf(p):[]).map(c=>({c:c.name||c, hex:c.hex||c.swatch||''}));
   const hexOf = n => (cols.find(c=>c.c===n)||{}).hex||'';
   let rows;
-  if(sels.length){
+  // colours chosen in the pop-out (Branding → Product Colour & Variant) win; each gets the chosen variant
+  const picked=(window.PMStock&&PMStock.chosen?PMStock.chosen(p):[])||[], pv=ch&&ch.variant?' · '+ch.variant:'';
+  const hexFor=n=>hexOf(n)||(((window.MSModal&&MSModal.data&&MSModal.data(p)&&MSModal.data(p).colours)||[]).find(c=>c.name===n)||{}).hex||'';
+  if(!sels.length&&picked.length){ const per=kind==='sample'?2:(p.qty||100); rows=picked.map((c,i)=>({c:c+pv,hex:hexFor(c),qty:kind==='sample'?per:(i===0?per:0)})); }
+  else if(sels.length){
     const per = kind==='sample'?2:(p.qty||100);
     rows=[];
     sels.forEach(s=>{
@@ -2288,14 +2776,16 @@ function addProductToBasket(p, kind){
     rows = cols.length ? cols.map((c,i)=>({c:c.c,hex:c.hex,qty:i===0?(kind==='sample'?2:(p.qty||100)):0}))
                        : [{c:p.variant||'Standard',hex:'',qty:kind==='sample'?2:(p.qty||100)}];
   }
-  const unbranded = (ch&&ch.unbranded) || (p.actions && p.actions[0] && p.actions[0].st==='unbranded');
-  const line = { kind, name:p.name, img:p.img, project:'Autumn Giveaways',
+  // samples: the type picked on the Sample tab decides it (unbranded samples are never branded, whatever the design says)
+  const unbranded = kind==='sample'&&opt.sampleType ? opt.sampleType==='unbranded' : ((ch&&ch.unbranded) || (p.actions && p.actions[0] && p.actions[0].st==='unbranded'));
+  if(kind==='sample'&&opt.sampleType==='unbranded'&&opt.colour){ const per=2; rows=[{c:opt.colour+(opt.variant?' · '+opt.variant:''),hex:hexOf(opt.colour),qty:per}]; }
+  const vimg=(p.design&&p.design.visual&&Array.isArray(p.design.visual.images)&&p.design.visual.images[0])||null; const line = { kind, name:p.name, img:p.img, visual:unbranded?null:vimg, project:'Autumn Giveaways',
     proof: unbranded?'unbranded':'approved', each:p.each||p.unit||8.45, additional:0,
     rows };
   if(kind==='product'){ Object.assign(line,{ discountPct:p.discountPct||0, deliveryCost:20, region:'UK',
     deliveryDate:(p.delivery&&p.delivery!=='asap')?p.delivery:'ASAP',
     address:(window.MSOrders.ADDR||null) }); }
-  else { line.lead = (custLeadDays?custLeadDays(p):10)+' working days'; line.address=window.MSOrders.ADDR||null; }
+  else { const sl=window.MSSampleLead&&window.MSModal&&MSModal.data?MSSampleLead(p,MSModal.data(p),unbranded?'unbranded':'branded'):null; line.lead = (sl?sl.cust:(custLeadDays?custLeadDays(p):10))+' working days'; line.address=window.MSOrders.ADDR||null; }
   window.MSOrders.addToBasket(line);
 }
 function rowIndexOf(el){ const row=el.closest('.row'); return [...document.querySelectorAll('#rows .row')].indexOf(row); }
@@ -2350,10 +2840,30 @@ document.querySelectorAll('#rows .alabel').forEach(lbl=>{
   document.addEventListener('click', e=>{ if(!drop.contains(e.target) && e.target!==tog && !tog.contains(e.target)){ drop.classList.remove('open'); tog.classList.remove('active'); } });
   const dl=document.getElementById('ttDownload');
   if(dl) dl.addEventListener('click', ()=>{ window.__sheetMode='summary'; buildProjectSheet(); });
-  const dld=document.getElementById('ttDownloadDetail');
-  if(dld) dld.addEventListener('click', ()=>{ window.__sheetMode='detailed'; buildProjectSheet(); });
 })();
 
+// D01 quote: everything the customer sees on the store product page, plus price breaks around the project quantity.
+function quoteFields(p, sp){
+  const M=(window.MSModal&&MSModal.METHODS)||{}, q=+p.qty||0;
+  let md=null; try{ md=(window.MSModal&&MSModal.data)?MSModal.data(p):null; }catch(e){}
+  let breaks=[];
+  try{ if(window.MSModal&&MSModal.breaksOf&&MSModal.quoteAt){
+    // project qty first, then the next breaks up; a break that holds the same unit price as its neighbour adds nothing, so skip it
+    const all=MSModal.breaksOf(p).filter(b=>b>0&&b!==q), at=x=>{ const r=MSModal.quoteAt(p,x); return r?{qty:x,unit:r.unit,delivery:r.delivery,current:x===q}:null; }, u=b=>b.unit.toFixed(2);
+    const up=[at(q)].filter(Boolean); all.filter(b=>b>q).forEach(x=>{ if(up.length>=4) return; const b=at(x); if(b&&u(b)!==u(up[up.length-1])) up.push(b); });
+    const down=[]; all.filter(b=>b<q).reverse().forEach(x=>{ if(up.length+down.length>=4) return; const b=at(x), nb=down[0]||up[0]; if(b&&u(b)!==u(nb)) down.unshift(b); });
+    breaks=down.concat(up); } }catch(e){}
+  if(!breaks.length&&q) breaks=[{qty:q,unit:+p.each||0,delivery:0,current:true}];
+  const dims=sp?(sp.dimensions||(sp.dims?[sp.dims.w,sp.dims.h,sp.dims.d].filter(x=>x&&x!=='—').join(' × '):'')):(md&&md.dims)||'';
+  const positions=((md&&md.branding&&md.branding.positions)||[]).map(x=>x.name+(x.w&&x.h?' ('+x.w+' × '+x.h+' mm)':''));
+  const chosen=(md&&md.branding&&md.branding.chosen)||{};
+  const chosenTxt=chosen.unbranded?'Unbranded':(chosen.positions||[]).map(pos=>{ const meta=((md.branding.positions)||[]).find(x=>x.code===pos.code)||{}; const m=M[pos.method||chosen.method]||{}; const n=pos.numColours||((pos.colours||[]).length)||1; return (meta.name||pos.code)+': '+(m.name||pos.method||chosen.method||'')+(m.maxColours>1?', '+n+' colour'+(n>1?'s':''):''); }).join(' · ');
+  let notes=[]; try{ if(window.MSWARN&&MSWARN.defaults) notes=MSWARN.defaults(p.name); }catch(e){}
+  return { sku:sp?String(sp.id||'').toUpperCase():'', model:(sp&&sp.model)||'', imgUrl:(sp&&sp.imgUrl)||'',
+    colours:(sp&&sp.colours)||[], sizes:(sp&&sp.sizes)||[], dims, material:(sp&&sp.material)||'', origin:(sp&&sp.origin)||'',
+    certs:(sp&&sp.certifications)||[], methods:((sp&&sp.printMethods)||(md&&md.branding&&md.branding.methods)||[]).map(m=>(M[m]&&M[m].name)||m),
+    positions, area:(sp&&sp.branding&&sp.branding.size)||'', chosen:chosenTxt, additional:((md&&md.price&&md.price.additional)||[]).map(x=>({label:x.label||'',qty:+x.qty||1,unit:+x.unit||0})), lead:(sp&&sp.lead)||'', moq:(sp&&sp.moq)||'', breaks, notes };
+}
 // Build the A3 project status sheet from the live product/status data and open it.
 function buildProjectSheet(){
   const OVERALL={ clock:'progress', missed:'progress', order:'ready', ordered:'ordered', bulb:'idea', pause:'paused', archived:'archived' };
@@ -2391,7 +2901,8 @@ function buildProjectSheet(){
       colours:(typeof coloursOf==='function')?coloursOf(p):[],
       sizes:(typeof sizesOf==='function')?sizesOf(p):[],
       designName:d.designName||'', deco:d.deco||[], proof:d.proof||'', visual:d.visual||'', notes:d.notes||'',
-      blurb:(sp&&sp.blurb)||'', usps, pricing, branding
+      blurb:(sp&&sp.blurb)||'', usps, pricing, branding,
+      quote: quoteFields(p, sp)
     };
   });
   let deliverBy='—'; let maxISO='';
@@ -2403,9 +2914,10 @@ function buildProjectSheet(){
   items.forEach(it=>{ it.validUntil=validUntil; });
   const data={ title, client:'Citrix', distributor:'Mojo Promotions', owner:'Jess Doyle', created:'22 Aug 2025', deliverBy, validUntil, items };
   try{ localStorage.setItem('ms-project-sheet', JSON.stringify(data)); }catch(e){}
-  const file = (window.__sheetMode==='detailed') ? 'Merchsmith Project Sheet (Detailed).html' : 'Merchsmith Project Sheet.html';
-  const w=window.open(file,'_blank');
-  if(!w){ location.href=file; }
+  const file = (window.__sheetMode==='detailed') ? 'Merchsmith Project Sheet (Detailed).html' : 'Merchsmith Quote.dc.html';
+  const url=file+(window.__dlAuto?'#print=1':''); window.__dlAuto=0;
+  const w=window.open(url,'_blank');
+  if(!w){ location.href=url; }
 }
 document.getElementById('pmClose').addEventListener('click', ()=>closeModal());
 document.getElementById('pmScrim').addEventListener('click', ()=>closeModal());
@@ -2418,7 +2930,7 @@ if(EMBED && !OVERLAY){
   window.__msCommentsProxy=function(p){ try{ const i=(window.ordered||[]).indexOf(p);
     parent.postMessage({msOverlay:{pid:EMBED_PID||'autumn',kind:'comments',i:(i<0?'project':i)}},'*'); return true; }catch(e){ return false; } };
   const _openModalEmb=openModal;
-  openModal=function(i,tab){ try{ parent.postMessage({msOverlay:{pid:EMBED_PID||'autumn',kind:'modal',i:i,tab:tab||''}},'*'); }catch(e){ _openModalEmb(i,tab); } };
+  openModal=function(i,tab){ try{ parent.postMessage({msOverlay:{pid:EMBED_PID||'autumn',kind:'modal',i:i,tab:tab||'',name:(window.ordered&&ordered[i]&&ordered[i].name)||''}},'*'); }catch(e){ _openModalEmb(i,tab); } };
 }
 if(OVERLAY){
   const _closeModalOv=closeModal;
@@ -2629,10 +3141,162 @@ window.__currentModalProduct = () => (typeof pmIndex!=='undefined' ? ordered[pmI
 </script>
 <script src="logos.js"></script>
 <script src="identity.js"></script>
-<script src="sidebar.js"></script>
-<script src="chrome.js"></script>
+<script src="sidebar.js?v=26"></script>
+<script src="chrome.js?v=3"></script>
 <script src="avatars.js"></script>
 <script src="comments.js"></script>
-<script src="project-brief.js?v=2"></script>
+<script src="project-brief.js?v=4"></script>
+<script>(function(){ const th=document.querySelector('.thead'); if(!th) return; const s=document.createElement('div'); s.style.cssText='height:1px;margin-bottom:-1px'; th.before(s); new IntersectionObserver(([e])=>th.classList.toggle('stuck',!e.isIntersecting&&e.boundingClientRect.top<innerHeight/2),{rootMargin:'-'+((parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ms-headh'))||0)+1)+'px 0px 0px 0px'}).observe(s); })();</script>
+<script>/* status pill titles */document.querySelectorAll('#rows .status .statchip,#rows .status .orderbtn').forEach(e=>{ if(!e.title) e.title=e.textContent.trim(); });</script>
+<script>/* uipSortOpen */(function(){ document.addEventListener('click',()=>setTimeout(()=>{ const d=document.getElementById('ttMoreDrop'), m=d&&d.closest('.moremenu'); if(m) m.classList.toggle('open',!!(d.offsetParent&&getComputedStyle(d).display!=='none'&&getComputedStyle(d).visibility!=='hidden')); },0)); const s=document.getElementById('sortCtl'); 
+  document.addEventListener('click',e=>{ const sc=document.getElementById('sortCtl'); if(!sc) return; setTimeout(()=>{ const m=document.querySelector('.sortmenu:not([hidden]),.sort-menu:not([hidden]),#sortMenu:not([hidden])'); sc.classList.toggle('open',!!(m&&m.offsetParent)); },0);
+    }); const sb=document.getElementById('searchBox'), st=document.getElementById('searchToggle'), si=sb&&sb.querySelector('.searchinput');
+  if(sb&&st&&si){ st.addEventListener('click',()=>{ const o=!sb.classList.contains('open')||!si.value; sb.classList.toggle('open',o||!!si.value); if(sb.classList.contains('open')) setTimeout(()=>si.focus(),30); });
+    si.addEventListener('blur',()=>{ if(!si.value) setTimeout(()=>{ if(document.activeElement!==si) sb.classList.remove('open'); },150); }); if(si.value) sb.classList.add('open'); } })();</script>
+<style id="dateAlign">
+/* Order by and Delivery Date share one date-pill design: equal columns, same gutter, same pill width + height, same Sup/Cus order */
+:root{--cols:2fr 1.2fr 1.05fr 1.425fr 1.425fr 1.2fr 0.55fr 0.55fr!important;}
+@media(min-width:1101px){:root{--cols:2fr 1.65fr 1fr 1.35fr 1.35fr 0.95fr 0.5fr 0.5fr!important;}}
+:is(#rows,#pmRowClone) .row .obwrap.dl-tidy,:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy{width:100%!important;box-sizing:border-box;padding-left:9px!important;margin:0!important;display:flex;flex-direction:column;gap:4px;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line:has(>.dk){display:grid!important;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:4px;row-gap:1px;min-height:36px;width:100%!important;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line:has(>.dk)>.dk{grid-column:1;grid-row:1;flex:none;width:auto;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line:has(>.dk)>.dv{grid-column:1 / -1;grid-row:2;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line:has(>.dk)>:not(.dk):not(.dv){grid-column:2;grid-row:1;display:inline-flex;align-items:center;gap:3px;justify-self:end;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line:has(>.dk)>:not(.dk):not(.dv)~:not(.dk):not(.dv){grid-column:2;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line:has(>.dk) .dstat{width:16px;height:16px;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line:has(>.dk) .dstat .icn{width:10px;height:10px;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line:has(>.dk)>.dv{overflow:visible!important;white-space:nowrap!important;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line:has(>.dk){position:relative;}
+/* time sits top-right of the pill, where Delivery Date keeps its calendar icon */
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line .dv .dt{position:absolute;top:3px;right:6px;margin:0!important;white-space:nowrap;font-size:10.5px!important;font-weight:600!important;line-height:1.2;color:var(--g500,#6b7080)!important;}
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy.is-crit{padding-left:9px!important;}
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy.is-crit::before{left:0!important;width:2px!important;}
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy.is-crit>.dl-foot,:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy.is-crit>.dl-cal{left:9px!important;}
+</style>
+
+
+<style id="dateAlign2">
+/* both date columns: only the Sup + Cus pills are in flow, so they centre on the same line in both columns;
+   tags (Critical, Deadline missed, lead time) hang underneath, calendar icon stays inside the pill */
+:is(#rows,#pmRowClone) .row .obwrap.dl-tidy,:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy{position:relative!important;overflow:visible!important;}
+:is(#rows,#pmRowClone) .row .obwrap.dl-tidy>.dl-foot,:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy>.dl-foot{position:absolute!important;left:9px!important;right:0!important;top:calc(100% + 4px)!important;bottom:auto!important;}
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy>.dl-cal{position:absolute!important;}
+:is(#rows,#pmRowClone) .row>.cell:has(.dl-tidy){overflow:visible!important;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line{min-height:39px!important;box-sizing:border-box;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line .dk{line-height:1.2;}
+:is(#rows,#pmRowClone) .row .leadcell .lead.dl-tidy.is-crit{padding-left:7px!important;}
+</style>
+
+<style id="c633">
+/* Critical Sup line: request-status button and calendar each get their own slot instead of stacking */
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line:has(>.dk){grid-template-columns:minmax(0,1fr) auto auto!important;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line>.dstat{grid-area:1/2!important;margin:0!important;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line>.daypick{grid-area:1/3!important;}
+:is(#rows,#pmRowClone) .row .dl-tidy>.dl-line>.dv{grid-area:2/1/auto/-1!important;}
+/* title tools line up with the right edge of the toolbar and table */
+#metabar .mb-tools{margin-right:0!important;margin-left:auto;}
+/* headings centred over their columns: the hover sort arrow no longer takes up width */
+.thead>.th{position:relative;justify-content:center!important;text-align:center!important;}
+.thead>.th .sortbtn{position:absolute!important;right:6px;top:50%;margin:0!important;translate:0 -50%;}
+</style>
+
+<style id="c637">
+/* request-confirmation button: crisp icon at small size (thicker stroke, whole-pixel box, slightly larger) */
+:is(#rows,#pmRowClone) .row .dl-tidy .dstat{width:18px!important;height:18px!important;display:grid!important;place-items:center!important;line-height:0!important;}
+:is(#rows,#pmRowClone) .row .dl-tidy .dstat .icn{width:12px!important;height:12px!important;display:block!important;margin:0!important;flex:none;overflow:visible;}
+:is(#rows,#pmRowClone) .row .dl-tidy .dstat.req .icn{stroke-width:2.6;}
+:is(#rows,#pmRowClone) .row .dl-tidy .dstat.req:hover{background:var(--periwinkle-deep);color:#fff;}
+</style>
+<script src="pm-inset.js?v=13"></script>
+<script>
+(function(){ const m=document.getElementById('pmodal'); if(!m) return;
+  // the title row's close button: added back if the title tools re-render, and it closes the pop-out directly
+  const doClose=()=>{ if(typeof closeModal==='function') closeModal(); else m.classList.remove('open'); };
+  const ensure=()=>{ const tt=document.querySelector('.titlerow .titletools'); if(!tt||tt.querySelector('.tt-close')) return;
+    const c=document.createElement('button'); c.className='tt-close'; c.type='button'; c.setAttribute('aria-label','Close product'); c.title='Close'; c.innerHTML='<svg class="icn"><use href="#ic-x"/></svg>'; tt.appendChild(c); };
+  ensure();
+  document.addEventListener('click',e=>{ const b=e.target.closest('.tt-close'); if(!b) return; e.preventDefault(); e.stopPropagation(); doClose(); },true);
+  // re-check the button only when the pop-out opens (watching the title row looped against its own re-render and froze the page)
+  let was=null; const sync=()=>{ const o=m.classList.contains('open'); if(o===was) return; was=o; document.documentElement.classList.toggle('pm-isopen',o); if(o) ensure(); }; new MutationObserver(sync).observe(m,{attributes:true,attributeFilter:['class']}); sync(); })();
+</script>
+<script>
+/* Design pane snap: nothing until you're past half of the first section, then settle on the nearest section start (below the pinned tabs) */
+(function(){ let t=null, busy=false;
+  document.addEventListener('scroll',e=>{ const w=e.target; if(!w||w.id!=='pmWork'||busy) return; clearTimeout(t); t=setTimeout(()=>snap(w),140); },true);
+  function snap(w){ const secs=[...w.querySelectorAll('.dsg-pane .bb-wrap>.bb-step,.dsg-pane .bb-wrap>.bb-pair')]; if(secs.length<2) return;
+    const tabs=w.querySelector('.dsg-tabs'), off=(tabs?tabs.offsetHeight:0)+8, wr=w.getBoundingClientRect();
+    const tops=secs.map(s=>s.getBoundingClientRect().top-wr.top+w.scrollTop-off);
+    if(w.scrollTop<tops[0]+secs[0].offsetHeight/2) return;
+    if(w.scrollTop+w.clientHeight>=w.scrollHeight-4) return;
+    let best=tops[0],d=1e9; tops.forEach(y=>{ const k=Math.abs(y-w.scrollTop); if(k<d){ d=k; best=y; } });
+    if(d<4||d>w.clientHeight*.6) return; busy=true; w.scrollTo({top:best,behavior:'smooth'}); setTimeout(()=>busy=false,500); }
+})();
+</script>
+<script id="pmThumbSync">(function(){
+  // copy the list's Product column width into the pop-out row, keeping the other columns flexible
+  function sync(){ const lp=document.querySelector('#rows .row>.prod'); if(!lp) return; const w=lp.getBoundingClientRect().width; if(!w) return;
+    const cols=getComputedStyle(document.documentElement).getPropertyValue('--cols').trim().split(/\s+(?![^(]*\))/); if(cols.length<2) return;
+    cols[0]=Math.round(w)+'px'; document.documentElement.style.setProperty('--pm-clone-cols',cols.join(' ')); }
+  const go=()=>{ sync(); __msLayout.add(sync); window.addEventListener('resize',sync); };
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',go):go();
+})();</script>
+<script id="pmRowWidth">(function(){
+  // pop-out row bar + its column titles line up with the list exactly: same left edge and width as #rows
+  function sync(){ const bar=document.getElementById('pmRowBar'); const L=document.getElementById('rows'); if(!bar||!L) return;
+    const pm=document.getElementById('pmodal'); if(!pm||!pm.classList.contains('open')) return;
+    const lr=L.getBoundingClientRect(), pr=bar.offsetParent?bar.offsetParent.getBoundingClientRect():{left:0};
+    const cs=getComputedStyle(bar); const padL=parseFloat(cs.paddingLeft)||0, padR=parseFloat(cs.paddingRight)||0;
+    bar.style.setProperty('box-sizing','border-box','important');
+    bar.style.setProperty('margin-left',(lr.left-pr.left-padL)+'px','important');
+    bar.style.setProperty('width',(lr.width+padL+padR)+'px','important');
+    bar.style.setProperty('max-width','none','important');
+    // the list drops the status words when Actions is narrow; do the same in the pop-out row so they don't overlap
+    const la=L.querySelector('.acts .actrow>.asub'), cl=document.getElementById('pmRowClone'); if(cl&&la) cl.classList.toggle('pm-noasub',getComputedStyle(la).display==='none'); }
+  const go=()=>{ const run=()=>requestAnimationFrame(sync); __msLayout.add(sync); window.addEventListener('resize',run); run(); };
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',go):go();
+})();</script>
+<style id="dlSame">
+/* magnify on hover: no dark wash over the photo, just a small white chip with the icon */
+.pimg-zoom{background:none!important;}
+.pimg-zoom .icn{width:34px!important;height:34px!important;padding:8px;box-sizing:border-box;border-radius:50%;background:#fff;color:var(--ink)!important;box-shadow:0 2px 8px rgba(20,22,45,.18);}
+/* Order by + Delivery Date tints are always the same width (set from the narrower of the two cells) */
+/* Sup / Cus tints: one fixed width in Order by and Delivery Date so they always match */
+:root{--dl-fixed:152px;}
+:is(#rows,#pmRowClone) :is(.orderby,.leadcell) .dl-line{width:var(--dl-fixed)!important;min-width:var(--dl-fixed)!important;max-width:var(--dl-fixed)!important;box-sizing:border-box!important;}
+:is(#rows,#pmRowClone) :is(.orderby,.leadcell) .dl-tidy.is-crit{width:auto!important;max-width:none!important;}
+</style>
+<script id="dlSameJs">(function(){ return; /* replaced by fixed --dl-fixed width */
+  function sync(){ ['rows','pmRowClone'].forEach(id=>{ const L=document.getElementById(id); if(!L) return; const r=L.querySelector('.row'); if(!r) return;
+      const a=r.querySelector('.orderby .dl-line'), b=r.querySelector('.leadcell .dl-line'); if(!a||!b) return;
+      L.style.removeProperty('--dlw'); const w=Math.floor(Math.min(a.parentElement.clientWidth,b.parentElement.clientWidth)); if(w>40) L.style.setProperty('--dlw',w+'px'); }); }
+  const run=()=>requestAnimationFrame(sync); const go=()=>{ __msLayout.add(sync); window.addEventListener('resize',run); run(); };
+  document.readyState==='loading'?document.addEventListener('DOMContentLoaded',go):go();
+})();</script>
+<style id="prodNudge">
+/* no outline/shadow on the photo when hovered; photo + name sit a little further right to give the drag handle room */
+.row .pimg.pmopen:hover,:is(#rows,#pmRowClone) .row .pimg:hover{border-color:transparent!important;box-shadow:none!important;outline:0!important;}
+:is(html:not(.gview) #rows,#pmRowClone) .row>.prod{padding-left:30px!important;}
+</style>
+<style>
+/* modal-only (opened from the basket): no copied product row; a simple header with project + product */
+html.modalonly #pmRowBar,html.modalonly .pm-rowbar{display:none!important;}
+.pm-mohd{display:none;}
+html.modalonly .pm-mohd{display:flex;flex-direction:column;gap:2px;padding:22px 28px 16px;border-bottom:1px solid var(--g200,#e4e7ec);background:#fff;flex:none;}
+html.modalonly .pm-mohd span{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--g500,#667085);}
+html.modalonly .pm-mohd b{font-family:var(--serif);font-weight:500;font-size:28px;line-height:1.15;color:var(--g900,var(--ink));}
+html.modalonly .pmodal-panel{display:flex!important;flex-direction:column!important;}
+html.modalonly .pmodal-panel>.pm-body{flex:1;min-height:0;}
+</style>
+<script>if(/modalonly=1/.test(location.search)){
+  const lift=()=>{ const pm=document.getElementById('pmodal'); if(!pm) return; if(pm.parentElement!==document.body) document.body.appendChild(pm);
+    const panel=pm.querySelector('.pmodal-panel'); if(!panel) return; let hd=panel.querySelector('.pm-mohd');
+    if(!hd){ hd=document.createElement('div'); hd.className='pm-mohd'; hd.innerHTML='<span></span><b></b>'; const body=panel.querySelector('.pm-body'); panel.insertBefore(hd,body||panel.firstChild); }
+    const proj=(document.querySelector('main .titlerow .ptitle')||{}).textContent||'Project';
+    const prod=(document.getElementById('pmTitle')||{}).textContent||'';
+    hd.querySelector('span').textContent=proj.trim(); hd.querySelector('b').textContent=prod.trim(); };
+  lift(); document.addEventListener('DOMContentLoaded',lift); addEventListener('load',()=>{ lift(); setTimeout(lift,400); });
+  document.addEventListener('DOMContentLoaded',()=>{ const pm=document.getElementById('pmodal'); if(pm) new MutationObserver(()=>setTimeout(lift,50)).observe(pm,{attributes:true,attributeFilter:['class']}); });
+}</script>
+<script src="order-amend.js?v=9"></script>
 </body>
 </html>

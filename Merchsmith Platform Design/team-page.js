@@ -1,45 +1,23 @@
 /* team-page.js — own Team page (role-aware: customer org OR distributor org) */
 (function(){
   const av = n => n.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
-  const avphoto = u => u.photo || (window.MSAvatar ? MSAvatar.url(u.n) : null);
+  const avphoto = u => (window.MSPEOPLE ? MSPEOPLE.photo(u) : (u.photo || (window.MSAvatar ? MSAvatar.url(u.n) : null)));
   const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const ROLEID = (window.MSID && MSID.current && MSID.current()) || 'customer';
   const IS_DIST = ROLEID==='distributor';
+  const IS_SUP = ROLEID==='supplier';
 
   // ---- distributor's own internal team (Mojo Promotions) ----
   const DIST_ORG = { name:'Mojo Promotions', initials:'MP', since:'2019', standingDiscount:null };
   const DIST_PERMS = {
     Admin:['Manage team &amp; settings','Approve quotes &amp; orders','Set markup &amp; discounts','Manage suppliers &amp; customers','Full financial visibility'],
     'Account Manager':['Own customer accounts','Build &amp; quote projects','Approve proofs','Place orders','Manage own customers'],
-    Studio:['Create &amp; edit designs','Upload visuals &amp; proofs','Manage Brand Assets','Comment on projects']
+    Studio:['Create &amp; edit designs','Upload visuals &amp; proofs','Manage Brand Assets','Comment on projects'],
+    'Production Manager':['Track orders &amp; production','Confirm delivery dates with suppliers','Manage stock &amp; sample requests','Chase proofs &amp; approvals'],
+    Finance:['Invoices &amp; payments','Credit limits &amp; terms','Full financial visibility','Export billing reports']
   };
-  const DIST_SHORTPERM = { Admin:['Manage all','Approve','Finance'], 'Account Manager':['Quote','Order','Accounts'], Studio:['Design','Proof'] };
-  const DIST_TEAMS = [
-    { name:'Leadership', users:[
-      {n:'Jess Doyle', role:'Admin', title:'Managing Director', email:'jess@mojopromotions.co.uk', tel:'+44 7700 800100', last:'Online', status:'active',
-        joined:'2019', site:'Leeds HQ', twofa:true, sso:true, notify:{email:true,sms:true,weekly:true}, costCentre:'—', defaultAddress:'Mojo House, Wellington Street, Leeds LS1 4DL',
-        stats:{accounts:0,projects:48,quotes:120,won:'£1.2M'}}
-    ]},
-    { name:'Account Management', users:[
-      {n:'Cara Lyon', role:'Account Manager', title:'Senior Account Manager', email:'cara@mojopromotions.co.uk', tel:'+44 7700 800140', last:'1h ago', status:'active',
-        joined:'2021', site:'Leeds HQ', twofa:true, sso:true, notify:{email:true,sms:true,weekly:true}, costCentre:'—', defaultAddress:'—',
-        stats:{accounts:14,projects:31,quotes:78,won:'£420k'}},
-      {n:'Ben Shaw', role:'Account Manager', title:'Account Manager', email:'ben@mojopromotions.co.uk', tel:'+44 7700 800160', last:'Today', status:'active',
-        joined:'2022', site:'Remote', twofa:true, sso:true, notify:{email:true,sms:false,weekly:true}, costCentre:'—', defaultAddress:'—',
-        stats:{accounts:11,projects:22,quotes:54,won:'£318k'}},
-      {n:'Will About', role:'Account Manager', title:'New Business', email:'will@mojopromotions.co.uk', tel:'', last:'Invited', status:'invited',
-        joined:'—', site:'Leeds HQ', twofa:false, sso:false, notify:{email:true,sms:false,weekly:false}, costCentre:'—', defaultAddress:'—',
-        stats:{accounts:0,projects:0,quotes:0,won:'£0'}}
-    ]},
-    { name:'Studio', users:[
-      {n:'Raf Price', role:'Studio', title:'Senior Designer', email:'raf@mojopromotions.co.uk', tel:'+44 7700 800120', last:'15m ago', status:'active',
-        joined:'2020', site:'Leeds HQ', twofa:true, sso:true, notify:{email:true,sms:false,weekly:true}, costCentre:'—', defaultAddress:'—',
-        stats:{accounts:0,projects:64,quotes:0,won:'—'}},
-      {n:'Nia Patel', role:'Studio', title:'Junior Designer', email:'nia@mojopromotions.co.uk', tel:'', last:'2d ago', status:'active',
-        joined:'2024', site:'Leeds HQ', twofa:false, sso:true, notify:{email:true,sms:false,weekly:false}, costCentre:'—', defaultAddress:'—',
-        stats:{accounts:0,projects:28,quotes:0,won:'—'}}
-    ]}
-  ];
+  const DIST_SHORTPERM = { Admin:['Manage all','Approve','Finance'], 'Account Manager':['Quote','Order','Accounts'], Studio:['Design','Proof'], 'Production Manager':['Production','Delivery'], Finance:['Invoices','Credit'] };
+
 
   const CUST_ORG = { name:'Citrix', initials:'CX', distributor:'mojo', since:'Mar 2024', standingDiscount:'7.5%' };
   const CUST_PERMS = {
@@ -48,40 +26,29 @@
     Viewer:['View projects &amp; status','Comment on proofs']
   };
   const CUST_SHORTPERM = { Admin:['Manage team','Approve','Order'], Buyer:['Approve','Order'], Viewer:['View only'] };
-  const CUST_TEAMS = [
-    { name:'Marketing', users:[
-      {n:'Sara Kemp', role:'Admin', title:'Head of Brand', email:'sara.kemp@canalrivertrust.org.uk', tel:'+44 7700 900112', last:'2h ago', status:'active', photo:'assets/avatars/av2.jpg',
-        joined:'Mar 2024', site:'Manchester HQ', twofa:true, sso:true, notify:{email:true,sms:false,weekly:true}, costCentre:'MKT-100', defaultAddress:'Northwind House, 14 Quay Street, Manchester M3 4EN',
-        stats:{projects:12,approvals:34,orders:9,spend:'£48,200'}},
-      {n:'Leo Tran', role:'Buyer', title:'Marketing Coordinator', email:'leo.tran@canalrivertrust.org.uk', tel:'+44 7700 900145', last:'Yesterday', status:'active',
-        joined:'Jun 2024', site:'Manchester HQ', twofa:false, sso:true, notify:{email:true,sms:false,weekly:true}, costCentre:'MKT-100', defaultAddress:'Northwind House, 14 Quay Street, Manchester M3 4EN',
-        stats:{projects:6,approvals:11,orders:5,spend:'£17,400'}},
-      {n:'Amy Frost', role:'Viewer', title:'Social Media Exec', email:'amy.frost@canalrivertrust.org.uk', tel:'', last:'3d ago', status:'active',
-        joined:'Jan 2025', site:'Remote', twofa:false, sso:false, notify:{email:true,sms:false,weekly:false}, costCentre:'MKT-100', defaultAddress:'—',
-        stats:{projects:3,approvals:0,orders:0,spend:'£0'}}
-    ]},
-    { name:'HR & People', users:[
-      {n:'Priya Nair', role:'Buyer', title:'People Ops Lead', email:'priya.nair@canalrivertrust.org.uk', tel:'+44 7700 900188', last:'4h ago', status:'active',
-        joined:'Sep 2024', site:'London', twofa:true, sso:true, notify:{email:true,sms:true,weekly:true}, costCentre:'HR-200', defaultAddress:'1 Mission Court, London EC2A 4PT',
-        stats:{projects:4,approvals:8,orders:4,spend:'£12,900'}},
-      {n:'Owen Doyle', role:'Viewer', title:'HR Assistant', email:'owen.doyle@canalrivertrust.org.uk', tel:'', last:'Invited', status:'invited',
-        joined:'—', site:'London', twofa:false, sso:false, notify:{email:true,sms:false,weekly:false}, costCentre:'HR-200', defaultAddress:'—',
-        stats:{projects:0,approvals:0,orders:0,spend:'£0'}}
-    ]},
-    { name:'Events', users:[
-      {n:'Marcus Webb', role:'Buyer', title:'Events Manager', email:'marcus.webb@canalrivertrust.org.uk', tel:'+44 7700 900203', last:'1w ago', status:'active',
-        joined:'Nov 2023', site:'Bristol', twofa:true, sso:true, notify:{email:true,sms:true,weekly:true}, costCentre:'EVT-300', defaultAddress:'Harbourside Studios, Bristol BS1 5TT',
-        stats:{projects:8,approvals:19,orders:7,spend:'£31,600'}}
-    ]}
-  ];
 
+
+  // ONE source of people: seeds live in org-data.js (shared with Organisations + Admin)
+  const OD = window.ORG_DATA || {customers:[],suppliers:[]};
+  const DIST_TEAMS = OD.mojoTeams || [];
+  const CUST_TEAMS = ((OD.customers||[]).find(c=>c.id==='citrix')||{teams:[]}).teams;
+  // supplier's own people (their contact list, one group) — same seed the distributor sees
+  const SUP_REC = (OD.suppliers||[]).find(x=>x.id==='bagworks') || {name:'BagWorks UK',initials:'BW',since:'2022',contacts:[]};
+  const SUP_ORG = { name:SUP_REC.name, initials:SUP_REC.initials, since:SUP_REC.since };
+  const SUP_PERMS = { Admin:['Manage your people','Manage the product feed','Approve Recommended placements','Billing &amp; Direct Debit'],
+    Contact:['Reply to stock / delivery / quote enquiries','Receive orders','Upload proofs'] };
+  const SUP_SHORTPERM = { Admin:['Manage all','Billing'], Contact:['Enquiries','Orders'] };
+  const SUP_TEAMS = [{ name:'Contacts', users:(SUP_REC.contacts=SUP_REC.contacts||[]) }];
   // active dataset by viewer role
-  const ORG = IS_DIST ? DIST_ORG : CUST_ORG;
-  const PERMS = IS_DIST ? DIST_PERMS : CUST_PERMS;
-  const SHORTPERM = IS_DIST ? DIST_SHORTPERM : CUST_SHORTPERM;
-  const TEAMS = IS_DIST ? DIST_TEAMS : CUST_TEAMS;
+  const ORG = IS_DIST ? DIST_ORG : IS_SUP ? SUP_ORG : CUST_ORG;
+  const PERMS = IS_DIST ? DIST_PERMS : IS_SUP ? SUP_PERMS : CUST_PERMS;
+  const SHORTPERM = IS_DIST ? DIST_SHORTPERM : IS_SUP ? SUP_SHORTPERM : CUST_SHORTPERM;
+  const ORGKEY = IS_DIST ? 'mojo' : IS_SUP ? 'bagworks' : 'citrix';
+  const TEAMS = IS_DIST ? DIST_TEAMS : IS_SUP ? SUP_TEAMS : CUST_TEAMS;
+  const ORGTYPE = IS_DIST ? 'distributor' : IS_SUP ? 'supplier' : 'customer';
+  if(window.MSPEOPLE){ MSPEOPLE.hydrate(ORGKEY,TEAMS); MSPEOPLE.hydrateOrg(ORGKEY,ORG); }
   const STATKEYS = IS_DIST ? [['accounts','Accounts'],['projects','Projects'],['quotes','Quotes'],['won','Won']] : [['projects','Projects'],['approvals','Approvals'],['orders','Orders'],['spend','Spend']];
-  const ROLE_OPTS = IS_DIST ? ['Admin','Account Manager','Studio'] : ['Admin','Buyer','Viewer'];
+  const ROLE_OPTS = window.MSPEOPLE ? MSPEOPLE.ROLES[ORGTYPE] : ['Admin'];
 
   const allUsers = ()=>TEAMS.flatMap(t=>t.users);
   const toast=(()=>{ const el=document.getElementById('toast'); let t; return m=>{ el.textContent=m; el.classList.add('on'); clearTimeout(t); t=setTimeout(()=>el.classList.remove('on'),2200); }; })();
@@ -92,42 +59,50 @@
     document.getElementById('stPending').textContent=allUsers().filter(u=>u.status==='invited').length;
     document.getElementById('orgInit').textContent=ORG.initials;
     document.getElementById('orgName').innerHTML=esc(ORG.name);
-    document.getElementById('orgMeta').textContent=`${IS_DIST?'distributor since':'customer since'} ${ORG.since} · ${allUsers().length} members`;
+    document.getElementById('orgMeta').textContent=`${ORGTYPE} since ${ORG.since} · ${allUsers().filter(u=>u.status!=='deactivated').length} active · ${allUsers().length} total`;
     var title=document.querySelector('h1.ptitle'); if(title) title.textContent = IS_DIST ? 'Your Team' : 'Your Team';
-    var crumb=document.querySelector('.crumbband .crumb-org'); if(crumb && IS_DIST) crumb.textContent='Mojo Promotions';
+    var crumb=document.querySelector('.crumbband .crumb-org'); if(crumb) crumb.textContent=ORG.name;
     var ps=document.querySelector('.psub'); if(ps && IS_DIST) ps.textContent='Manage your colleagues — account managers, studio designers and admins — and the teams they work in.';
   }
 
   function urow(u,ti){
     const _ph=avphoto(u); const avi = _ph?`<img src="${_ph}" alt="${esc(u.n)}">`:av(u.n);
     const perms=(SHORTPERM[u.role]||[]).map(p=>`<span class="permchip">${p}</span>`).join('');
-    return `<div class="urow" data-t="${ti}" data-n="${esc(u.n)}"><span class="av">${avi}</span>
+    return `<div class="urow ${u.status==='deactivated'?'u-deact':''}" data-t="${ti}" data-n="${esc(u.n)}"><span class="av">${avi}</span>
       <div class="ui"><b>${esc(u.n)}</b><span>${esc(u.title)} · ${u.email?esc(u.email):'no email'}</span></div>
       <span class="rolechip">${esc(u.role)}</span>
       <div class="perm">${perms}</div>
-      <span class="um ${u.status==='invited'?'inv':''}">${u.status==='invited'?'Invited':esc(u.last)}</span></div>`;
+      <span class="um ${u.status==='invited'?'inv':''}">${u.status==='deactivated'?'<span class="st-deact">Deactivated</span>':u.status==='invited'?'Invited':esc(u.last)}</span></div>`;
   }
+  let FR='', FS='';
   function render(filter){
-    const f=(filter||'').toLowerCase();
+    if(filter!==undefined) render._q=filter;
+    const f=(render._q||'').toLowerCase();
+    const pass=u=>(!FR||u.role===FR)&&(!FS||(FS==='active'?(u.status!=='invited'&&u.status!=='deactivated'):u.status===FS));
     document.getElementById('teams').innerHTML = TEAMS.map((t,ti)=>{
-      const users=t.users.filter(u=>!f || u.n.toLowerCase().includes(f) || (u.title||'').toLowerCase().includes(f));
-      if(f && !users.length) return '';
+      const users=t.users.filter(u=>pass(u)&&(!f || u.n.toLowerCase().includes(f) || (u.title||'').toLowerCase().includes(f) || (u.email||'').toLowerCase().includes(f)));
+      if((f||FR||FS) && !users.length) return '';
       return `<div class="teamblock">
         <div class="tb-head"><span class="tname">${esc(t.name)}</span><span class="tcount">${t.users.length} ${t.users.length===1?'member':'members'}</span>
           <span class="right"><button class="btn ghost sm" data-addto="${ti}"><svg class="icn" style="width:14px;height:14px"><use href="#t-plus"/></svg>Add</button></span></div>
-        ${users.map(u=>urow(u,ti)).join('')}
+        ${users.length?users.map(u=>urow(u,ti)).join(''):`<div class="tm-empty">No one in ${esc(t.name)} yet${canManageTeam()?' — use Add to invite someone':''}.</div>`}
       </div>`;
-    }).join('');
+    }).join('') || '<div class="teams-none">No one matches those filters.</div>';
     stats();
+    if(IS_DIST&&window.MSPEOPLE) MSPEOPLE.recordSeats(ORGKEY,TEAMS);
   }
 
   /* drawer */
   const scrim=document.getElementById('scrim'), drawer=document.getElementById('drawer');
   function close(){ scrim.classList.remove('open'); drawer.classList.remove('open'); document.body.style.overflow=''; }
   scrim.onclick=close;
+  const when=iso=>{ const d=new Date(iso), m=(Date.now()-d)/60000; return m<1?'Just now':m<60?Math.round(m)+'m ago':m<1440?Math.round(m/60)+'h ago':d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); };
+  // recorded history only — no invented activity
   function fakeActivity(u){
-    if(u.status==='invited') return [{t:'Invitation sent',d:'Pending acceptance'}];
-    return [{t:'Approved a proof — Autumn Giveaways',d:'4 hours ago'},{t:'Commented on a visual — Tote bag',d:'2 days ago'},{t:'Added Eco Cable to a project',d:'1 week ago'}];
+    const L=window.MSPEOPLE?MSPEOPLE.activity(ORGKEY,u):[];
+    const out=L.map(e=>({t:(MSPEOPLE.LBL[e.action]||e.action)+(e.detail?' — '+e.detail:''),d:when(e.at)+' · by '+e.actor}));
+    if(u.joined&&u.joined!=='—') out.push({t:'Joined '+ORG.name,d:u.joined});
+    return out.length?out:[{t:'No recorded activity yet',d:'Changes made from now on appear here'}];
   }
   function openProfile(ti,name){
     const u=TEAMS[ti].users.find(x=>x.n===name); if(!u) return;
@@ -159,7 +134,7 @@
           <span class="k">Single sign-on</span><span class="v">${dot(u.sso)}</span>
           <span class="k">Status</span><span class="v">${u.status==='invited'?'Invited — not yet accepted':'Verified'}</span>
         </div></div>
-        ${IS_DIST?'':`<div class="dwr-sec"><h4>Ordering defaults</h4><div class="kv">
+        ${IS_DIST||IS_SUP?'':`<div class="dwr-sec"><h4>Ordering defaults</h4><div class="kv">
           <span class="k">Cost centre</span><span class="v">${esc(u.costCentre||'—')}</span>
           <span class="k">Default delivery</span><span class="v">${esc(u.defaultAddress||'—')}</span>
         </div></div>`}
@@ -168,38 +143,55 @@
           <span class="notifchip ${u.notify&&u.notify.sms?'on':''}">SMS</span>
           <span class="notifchip ${u.notify&&u.notify.weekly?'on':''}">Weekly digest</span>
         </div></div>
-        <div class="dwr-sec"><h4>Recent activity</h4><div class="acts">${acts}</div></div>
+        ${window.MSNOTES?`<div class="dwr-sec" data-entkey="user:${esc(ORGKEY)}:${esc((String(u.email||'').trim().toLowerCase()||String(u.n||'').trim().toLowerCase()))}">${MSNOTES.panelHTML('user:'+ORGKEY+':'+(String(u.email||'').trim().toLowerCase()||String(u.n||'').trim().toLowerCase()))}</div>`:`<div class="dwr-sec"><h4>Recent activity</h4><div class="acts">${acts}</div></div>`}
         <div class="prof-foot">
-          <button class="btn ghost sm" data-x>Edit member</button>
-          ${u.status==='invited'?'<button class="btn ghost sm" data-x>Resend invite</button>':'<button class="btn ghost sm danger" data-rm>Remove</button>'}
+          ${canEditU(u)?'<button class="btn ghost sm" data-edit>Edit member</button>':''}
+          ${canEditU(u)&&!isSelf(u)?(u.status==='invited'?'<button class="btn ghost sm" data-resend>Resend invite</button>'
+            :u.status==='deactivated'?'<button class="btn ghost sm" data-react>Reactivate</button>'
+            :'<button class="btn ghost sm danger" data-deact>Deactivate</button>'):''}
         </div>
       </div>`;
+    if(window.MSNOTES) drawer.querySelectorAll('[data-entkey]').forEach(h=>MSNOTES.wire(h,h.dataset.entkey));
     drawer.querySelectorAll('[data-x]').forEach(b=>b.onclick=close);
-    const rm=drawer.querySelector('[data-rm]'); if(rm) rm.onclick=()=>{ if(confirm('Remove '+u.n+' from the team?')){ const i=TEAMS[ti].users.indexOf(u); TEAMS[ti].users.splice(i,1); close(); render(); toast(u.n+' removed'); } };
+    const ed=drawer.querySelector('[data-edit]'); if(ed) ed.onclick=()=>editMember(ti,u);
+    const de=drawer.querySelector('[data-deact]'); if(de) de.onclick=()=>{ if(!guardLastAdmin(u)) return;
+      if(!confirm('Deactivate '+u.n+'?\n\nTheir history is kept and the seat is freed. You can reactivate them later.')) return;
+      MSPEOPLE.setStatus(ORGKEY,u,'deactivated'); close(); render(); toast(u.n+' deactivated'); };
+    const re=drawer.querySelector('[data-react]'); if(re) re.onclick=()=>{ MSPEOPLE.setStatus(ORGKEY,u,'active'); openProfile(ti,u.n); render(); toast(u.n+' reactivated'); };
+    const rs=drawer.querySelector('[data-resend]'); if(rs) rs.onclick=()=>toast('Invite resent to '+(u.email||u.n));
     scrim.classList.add('open'); drawer.classList.add('open'); document.body.style.overflow='hidden';
+  }
+
+  /* permissions + editing (shared store / editors in people.js) */
+  const KIND = 'team';
+  const isSelf = u => window.MSPEOPLE && MSPEOPLE.viewer().name && u.n.toLowerCase()===MSPEOPLE.viewer().name.toLowerCase();
+  const canEditU = u => !window.MSPEOPLE || MSPEOPLE.canEdit(KIND,u);
+  const canManageTeam = () => !window.MSPEOPLE || MSPEOPLE.canManage(KIND);
+  // never leave an organisation without an active admin
+  function guardLastAdmin(u){ if(u.role!=='Admin') return true;
+    const admins=allUsers().filter(x=>x.role==='Admin'&&x.status!=='deactivated');
+    if(admins.length<=1){ toast('Make someone else an Admin first — every organisation needs one'); return false; } return true; }
+  function editMember(ti,u){
+    const self=isSelf(u), adminEditing=MSPEOPLE.canManage(KIND);
+    MSPEOPLE.userForm({ title:self?'Edit your details':'Edit '+u.n, user:u, kind:KIND, orgType:ORGTYPE, orgKey:ORGKEY,
+      teamNames:TEAMS.map(t=>t.name), team:TEAMS[ti].name, peers:allUsers(), lockRole:self&&!adminEditing, self,
+      onSave:f=>{ if(f.role&&f.role!=='Admin'&&u.role==='Admin'&&!guardLastAdmin(u)) delete f.role;
+        const from=TEAMS[ti]; MSPEOPLE.saveUser(ORGKEY,u,f);
+        if(f.team&&f.team!==from.name){ MSPEOPLE.log(ORGKEY,u,'team',from.name+' → '+f.team); from.users.splice(from.users.indexOf(u),1); TEAMS.find(t=>t.name===f.team).users.push(u); }
+        close(); render(); },
+      onStatus:to=>{ if(to==='deactivated'&&!guardLastAdmin(u)) return; MSPEOPLE.setStatus(ORGKEY,u,to); close(); render(); },
+      onResend:()=>{} });
   }
 
   /* invite form */
   function inviteForm(ti){
-    const opts=TEAMS.map((t,i)=>`<option value="${i}" ${i===ti?'selected':''}>${esc(t.name)}</option>`).join('');
-    const wrap=document.createElement('div'); wrap.className='fm-scrim';
-    wrap.innerHTML=`<div class="fm-modal"><div class="fm-head"><h3>Invite team member</h3><button class="dwr-x" data-fx>×</button></div>
-      <div class="fm-body">
-        <label class="fm-f"><span>Full name</span><input id="iN" placeholder="Full name"></label>
-        <label class="fm-f"><span>Job title</span><input id="iT" placeholder="e.g. Marketing Coordinator"></label>
-        <label class="fm-f"><span>Email</span><input id="iE" type="email" placeholder="name@${IS_DIST?'mojopromotions.co.uk':'canalrivertrust.org.uk'}"></label>
-        <label class="fm-f"><span>Team</span><select id="iTeam">${opts}</select></label>
-        <label class="fm-f"><span>Role</span><select id="iR">${ROLE_OPTS.map((r,i)=>`<option ${i===Math.min(1,ROLE_OPTS.length-1)?'selected':''}>${r}</option>`).join('')}</select></label>
-      </div>
-      <div class="fm-foot"><button class="btn ghost" data-fx>Cancel</button><button class="btn" id="iSave">Send invite</button></div></div>`;
-    document.body.appendChild(wrap); document.body.style.overflow='hidden';
-    const shut=()=>{ wrap.remove(); document.body.style.overflow=''; };
-    wrap.addEventListener('click',e=>{ if(e.target===wrap||e.target.closest('[data-fx]')) shut(); });
-    wrap.querySelector('#iSave').onclick=()=>{ const n=wrap.querySelector('#iN').value.trim(); if(!n){ wrap.querySelector('#iN').focus(); return; }
-      const t=+wrap.querySelector('#iTeam').value;
-      TEAMS[t].users.push({n,role:wrap.querySelector('#iR').value,title:wrap.querySelector('#iT').value.trim()||wrap.querySelector('#iR').value,email:wrap.querySelector('#iE').value.trim(),tel:'',last:'Invited',status:'invited'});
-      shut(); render(); toast('Invite sent to '+n);
-    };
+    if(!canManageTeam()){ toast('Only an Admin can invite people'); return; }
+    const seats=IS_DIST&&window.MSPEOPLE?MSPEOPLE.seatsUsed(TEAMS):null;
+    MSPEOPLE.userForm({ title:'Invite team member', kind:KIND, orgType:ORGTYPE,
+      teamNames:TEAMS.map(t=>t.name), team:TEAMS[ti||0].name, peers:allUsers(),
+      seatNote:seats!=null?'You are using '+seats+' seat'+(seats===1?'':'s')+' today.':'',
+      onSave:f=>{ const t=TEAMS.find(x=>x.name===f.team)||TEAMS[0];
+        t.users.push(MSPEOPLE.addUser(ORGKEY,t.name,Object.assign({title:f.title||f.role},f))); render(); } });
   }
 
   document.getElementById('teams').addEventListener('click',e=>{
@@ -207,8 +199,22 @@
     const row=e.target.closest('.urow'); if(row){ if(e.target.closest('a')) return; openProfile(+row.dataset.t, row.dataset.n); }
   });
   document.getElementById('inviteBtn').onclick=()=>inviteForm(0);
-  document.getElementById('addTeamBtn').onclick=()=>{ const n=prompt('New team / department name:'); if(n){ TEAMS.push({name:n.trim(),users:[]}); render(); toast('Team "'+n.trim()+'" added'); } };
+  document.getElementById('addTeamBtn').onclick=()=>{ if(!canManageTeam()){ toast('Only an Admin can manage teams'); return; }
+    MSPEOPLE.manageTeams(ORGKEY,TEAMS,render,'Team'); };
+  { const b=document.getElementById('addTeamBtn'); if(b&&/Add team/i.test(b.textContent)) b.lastChild.textContent=' Manage teams'; }
+  if(!canManageTeam()){ ['inviteBtn','addTeamBtn'].forEach(id=>{ const b=document.getElementById(id); if(b) b.hidden=true; }); }
   document.getElementById('search').addEventListener('input',e=>render(e.target.value));
+  // role + status filters beside the search
+  { const tb=document.getElementById('search').closest('.toolbar')||document.getElementById('search').parentNode.parentNode;
+    const mk=(id,opts)=>{ const sel=document.createElement('select'); sel.id=id; sel.className='tm-filter';
+      sel.innerHTML=opts.map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join(''); return sel; };
+    const r=mk('fRole',[['','All roles'],...ROLE_OPTS.map(x=>[x,x])]);
+    const st=mk('fStatus',[['','All statuses'],['active','Active'],['invited','Invited'],['deactivated','Deactivated']]);
+    const anchorEl=document.getElementById('addTeamBtn'); tb.insertBefore(r,anchorEl); tb.insertBefore(st,anchorEl);
+    r.onchange=()=>{ FR=r.value; render(); }; st.onchange=()=>{ FS=st.value; render(); };
+    const nm=document.getElementById('teams');
+    const css=document.createElement('style'); css.textContent='.tm-filter{font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);background:#fff;border:1.5px solid var(--line-soft);border-radius:10px;padding:9px 12px;cursor:pointer;}.tm-filter:focus{outline:0;border-color:var(--periwinkle);}.tm-empty{font-size:13px;color:var(--ink-3);padding:14px 18px;}.teams-none{font-size:14px;color:var(--ink-3);padding:26px;text-align:center;background:#fff;border:1px dashed var(--line-soft);border-radius:14px;}';
+    document.head.appendChild(css); }
 
   render();
 })();

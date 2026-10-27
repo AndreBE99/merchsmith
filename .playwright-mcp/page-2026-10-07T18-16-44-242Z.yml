@@ -1,0 +1,342 @@
+- generic [ref=f16e1]:
+  - button "Open Next.js Dev Tools" [ref=f16e13] [cursor=pointer]
+  - alert [ref=f16e17]
+  - generic [ref=f16e19]:
+    - banner [ref=f16e20]:
+      - generic [ref=f16e21]:
+        - heading [level=6] [ref=f16e972]: Test Distributor
+        - generic [ref=f16e28]:
+          - textbox [ref=f16e973]:
+            - /placeholder: Search products, projects, orders…
+          - group [aria-hidden]
+        - generic [ref=f16e34]:
+          - button [ref=f16e974] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f16e40]: "2"
+          - button [expanded] [ref=f16e975] [cursor=pointer]
+    - complementary [ref=f16e976]:
+      - navigation [ref=f16e48]:
+        - link [ref=f16e977] [cursor=pointer]:
+          - /url: /
+        - link [ref=f16e978] [cursor=pointer]:
+          - /url: /store
+        - link [ref=f16e979] [cursor=pointer]:
+          - /url: /projects
+        - link [ref=f16e980] [cursor=pointer]:
+          - /url: /orders
+        - link [ref=f16e981] [cursor=pointer]:
+          - /url: /organisations
+        - button [ref=f16e982] [cursor=pointer]
+        - link [ref=f16e983] [cursor=pointer]:
+          - /url: /users
+        - link [ref=f16e984] [cursor=pointer]:
+          - /url: /chats
+        - link [ref=f16e985] [cursor=pointer]:
+          - /url: /calendar
+        - link [ref=f16e986] [cursor=pointer]:
+          - /url: /calls
+        - link [ref=f16e987] [cursor=pointer]:
+          - /url: /emails
+        - link [ref=f16e988] [cursor=pointer]:
+          - /url: /finance
+        - link [ref=f16e989] [cursor=pointer]:
+          - /url: /settings
+    - main [ref=f16e106]:
+      - generic [ref=f16e107]: Orders
+      - generic [ref=f16e112]:
+        - heading [level=1] [ref=f16e990]: Orders
+        - tablist [ref=f16e114]:
+          - tab [ref=f16e991] [cursor=pointer]: All orders
+          - tab [selected] [ref=f16e992] [cursor=pointer]: Stats
+          - tab [ref=f16e993] [cursor=pointer]: Targets
+        - tabpanel [ref=f16e118]:
+          - generic [ref=f16e119]:
+            - group [ref=f16e994]:
+              - button [ref=f16e995] [cursor=pointer]: This month
+              - button [ref=f16e996] [cursor=pointer]: Last 30 days
+              - button [ref=f16e997] [cursor=pointer]: Last 90 days
+              - button [ref=f16e998] [cursor=pointer]: This quarter
+              - button [ref=f16e999] [cursor=pointer]: Year to date
+            - generic [ref=f16e126]:
+              - generic [ref=f16e127]: Compare with
+              - generic [ref=f16e128]:
+                - combobox [ref=f16e1000] [cursor=pointer]: Previous period
+                - textbox [aria-hidden]: prev
+                - group [aria-hidden]:
+                  - generic: Compare with
+            - paragraph [ref=f16e130]: 9 Jul – 7 Oct
+            - button [ref=f16e1001] [cursor=pointer]: Print / PDF
+          - button [ref=f16e1002] [cursor=pointer]: Targets
+          - generic [ref=f16e134]:
+            - link [ref=f16e1003] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f16e136]:
+                - generic [ref=f16e137]: Order value
+                - generic [ref=f16e138]: £8,726
+                - generic [ref=f16e139]: 19.2% of £45,500 period target
+            - link [ref=f16e1004] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f16e141]:
+                - generic [ref=f16e142]: Gross profit
+                - generic [ref=f16e143]: £2,581
+            - link [ref=f16e1005] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f16e145]:
+                - generic [ref=f16e146]: Margin
+                - generic [ref=f16e147]: 29.6%
+                - generic [ref=f16e148]: Target 28%
+            - link [ref=f16e1006] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f16e150]:
+                - generic [ref=f16e151]: Orders
+                - generic [ref=f16e152]: "8"
+            - link [ref=f16e1007] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f16e154]:
+                - generic [ref=f16e155]: On-time delivery
+                - generic [ref=f16e156]: 100%
+                - generic [ref=f16e157]: Target 95%
+          - generic [ref=f16e158]:
+            - generic [ref=f16e159]:
+              - heading [level=3] [ref=f16e1008]: Needs attention
+              - generic [ref=f16e162]:
+                - link [ref=f16e1009] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e164]: "2"
+                  - generic [ref=f16e165]: Orders to check & send
+                  - generic [ref=f16e166]: →
+                - link [ref=f16e1010] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e168]: "1"
+                  - generic [ref=f16e169]:
+                    - text: Deliveries at risk
+                    - generic [ref=f16e170]: Due in under 5 days and not yet in production
+                  - generic [ref=f16e171]: →
+                - link [ref=f16e1011] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e173]: "3"
+                  - generic [ref=f16e174]: Late items
+                  - generic [ref=f16e175]: →
+                - link [ref=f16e1012] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e177]: "1"
+                  - generic [ref=f16e178]: Samples delivered
+                  - generic [ref=f16e179]: →
+            - generic [ref=f16e180]:
+              - heading [level=3] [ref=f16e1013]: Pipeline · items by step
+              - paragraph [ref=f16e183]: 8 live items, £7,494 in progress. Click a step to see them.
+              - generic [ref=f16e184]:
+                - link [ref=f16e1014] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e186]: "2"
+                  - emphasis [ref=f16e189]: Received
+                - link [ref=f16e1015] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e191]: "0"
+                  - emphasis [ref=f16e194]: Sent
+                - link [ref=f16e1016] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e196]: "0"
+                  - emphasis [ref=f16e199]: Acknowledged
+                - link [ref=f16e1017] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e201]: "1"
+                  - emphasis [ref=f16e204]: Proof
+                - link [ref=f16e1018] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e206]: "0"
+                  - emphasis [ref=f16e209]: Confirmed
+                - link [ref=f16e1019] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e211]: "3"
+                  - emphasis [ref=f16e214]: In production
+                - link [ref=f16e1020] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e216]: "2"
+                  - emphasis [ref=f16e219]: Dispatched
+            - generic [ref=f16e220]:
+              - heading [level=3] [ref=f16e1021]: Delivery performance
+              - generic [ref=f16e223]:
+                - generic [ref=f16e224]:
+                  - generic [ref=f16e225]: On time
+                  - generic [ref=f16e226]: 100%
+                - generic [ref=f16e227]:
+                  - generic [ref=f16e228]: Delivered
+                  - generic [ref=f16e229]: "3"
+                - generic [ref=f16e230]:
+                  - generic [ref=f16e231]: Late
+                  - generic [ref=f16e232]: "3"
+                - generic [ref=f16e233]:
+                  - generic [ref=f16e234]: At risk
+                  - generic [ref=f16e235]: "1"
+                - generic [ref=f16e236]:
+                  - generic [ref=f16e237]: Avg order → delivery
+                  - generic [ref=f16e238]: 13 days
+            - generic [ref=f16e239]:
+              - heading [level=3] [ref=f16e1022]: Order value and profit
+              - img [ref=f16e1023]:
+                - generic [ref=f16e243]: £0
+                - generic [ref=f16e245]: £1,287
+                - generic [ref=f16e247]: £2,574
+                - generic [ref=f16e249]: 9 Jul
+                - generic [ref=f16e251]: 23 Jul
+                - generic [ref=f16e253]: 6 Aug
+                - generic [ref=f16e256]: 20 Aug
+                - generic [ref=f16e258]: 3 Sept
+                - generic [ref=f16e262]: 17 Sept
+                - generic [ref=f16e267]: 1 Oct
+              - generic [ref=f16e285]:
+                - generic [ref=f16e286]: Order value
+                - generic [ref=f16e288]: Gross profit
+            - generic [ref=f16e290]:
+              - generic [ref=f16e291]:
+                - heading [level=3] [ref=f16e1043]: Top customers
+                - link [ref=f16e1044] [cursor=pointer]:
+                  - /url: /organisations
+                  - text: Customers →
+              - generic [ref=f16e295]:
+                - generic [ref=f16e296]: Test Customer
+                - generic [ref=f16e299]: £8,726
+                - emphasis [ref=f16e300]: 29.6% margin
+            - generic [ref=f16e301]:
+              - heading [level=3] [ref=f16e1045]: Top products
+              - generic [ref=f16e304]:
+                - generic [ref=f16e305]:
+                  - generic [ref=f16e306]: "[TEST] Xoopar Pokket Wireless Mouse"
+                  - generic [ref=f16e309]: £1,943
+                  - emphasis [ref=f16e310]: 150 units
+                - generic [ref=f16e311]:
+                  - generic [ref=f16e312]: "[TEST] Cork Cover Notebook"
+                  - generic [ref=f16e315]: £1,543
+                  - emphasis [ref=f16e316]: 370 units
+                - generic [ref=f16e317]:
+                  - generic [ref=f16e318]: "[TEST] Tech Travel Bag"
+                  - generic [ref=f16e321]: £1,470
+                  - emphasis [ref=f16e322]: 60 units
+                - generic [ref=f16e323]:
+                  - generic [ref=f16e324]: "[TEST] Heavy Weight T-Shirt"
+                  - generic [ref=f16e327]: £1,104
+                  - emphasis [ref=f16e328]: 120 units
+                - generic [ref=f16e329]:
+                  - generic [ref=f16e330]: "[TEST] Recycled Cotton Tote"
+                  - generic [ref=f16e333]: £1,020
+                  - emphasis [ref=f16e334]: 300 units
+                - generic [ref=f16e335]:
+                  - generic [ref=f16e336]: "[TEST] Prodir Ds8 True Biotic Pen"
+                  - generic [ref=f16e339]: £891
+                  - emphasis [ref=f16e340]: 550 units
+            - generic [ref=f16e341]:
+              - heading [level=3] [ref=f16e1046]: Top projects
+              - link [ref=f16e1047] [cursor=pointer]:
+                - /url: /projects/6354308d-bf66-4e6b-aefb-402eb8e67465
+                - generic [ref=f16e346]: Customer Table Test 2
+                - generic [ref=f16e349]: £8,726
+            - generic [ref=f16e350]:
+              - heading [level=3] [ref=f16e1048]: Suppliers
+              - paragraph [ref=f16e353]: Cost placed with each
+              - generic [ref=f16e355]:
+                - generic [ref=f16e356]: XD Connects
+                - generic [ref=f16e359]: £6,145
+                - emphasis [ref=f16e360]: 100% on time · 11 items
+            - generic [ref=f16e361]:
+              - heading [level=3] [ref=f16e1049]: Samples
+              - generic [ref=f16e364]:
+                - generic [ref=f16e365]:
+                  - generic [ref=f16e366]: Sent in the period
+                  - generic [ref=f16e367]: "2"
+                - generic [ref=f16e368]:
+                  - generic [ref=f16e369]: Awaiting feedback
+                  - generic [ref=f16e370]: "1"
+      - generic [ref=f16e677]:
+        - generic [ref=f16e678]:
+          - generic [ref=f16e679]:
+            - link [ref=f16e1050] [cursor=pointer]:
+              - /url: /store/pages/contact
+              - text: Let's Talk.
+            - paragraph [ref=f16e681]: Sustainable promotional merchandise, branded in-house and delivered on time.
+          - generic [ref=f16e682]:
+            - heading [level=4] [ref=f16e1051]: Company
+            - link [ref=f16e1052] [cursor=pointer]:
+              - /url: /store/pages/about
+              - text: About us
+            - link [ref=f16e1053] [cursor=pointer]:
+              - /url: /store/pages/environment
+              - text: Environmental footprint
+            - link [ref=f16e1054] [cursor=pointer]:
+              - /url: /store/pages/value-chain
+              - text: Value chain
+            - link [ref=f16e1055] [cursor=pointer]:
+              - /url: /store/pages/people
+              - text: People & culture
+          - generic [ref=f16e688]:
+            - heading [level=4] [ref=f16e1056]: Let us help
+            - link [ref=f16e1057] [cursor=pointer]:
+              - /url: /store/pages/faq
+              - text: FAQ
+            - link [ref=f16e1058] [cursor=pointer]:
+              - /url: /store/pages/terms
+              - text: Terms & conditions
+            - link [ref=f16e1059] [cursor=pointer]:
+              - /url: /store/pages/privacy
+              - text: Privacy
+            - link [ref=f16e1060] [cursor=pointer]:
+              - /url: /store/pages/returns
+              - text: Returns
+            - link [ref=f16e1061] [cursor=pointer]:
+              - /url: /store/pages/contact
+              - text: Contact us
+        - generic [ref=f16e695]:
+          - generic [ref=f16e696]:
+            - heading [level=4] [ref=f16e1062]: Stay in touch
+            - paragraph [ref=f16e698]: Product drops, sustainability news and the occasional good idea. No more than monthly.
+          - generic [ref=f16e699]:
+            - textbox [ref=f16e1063]:
+              - /placeholder: Your work email
+            - button [ref=f16e1064] [cursor=pointer]: Sign up
+        - generic [ref=f16e708]:
+          - generic [ref=f16e709]: Accredited
+          - generic [ref=f16e710]: New accreditation
+        - generic [ref=f16e731]:
+          - generic [ref=f16e732]:
+            - generic [ref=f16e733]: © 2026 Test Distributor
+            - link [ref=f16e1070] [cursor=pointer]:
+              - /url: /store/pages/cookies
+              - text: Cookie policy
+            - link [ref=f16e1071] [cursor=pointer]:
+              - /url: /store/pages/accessibility
+              - text: Accessibility
+            - generic [ref=f16e736]: Powered by Merchsmith
+          - generic [ref=f16e737]: Secured by Stripe
+  - button [aria-hidden] [ref=f16e1075] [cursor=pointer]:
+    - generic [ref=f16e440]: "1"
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f16e441]:
+    - button [ref=f16e443] [cursor=pointer]: ×
+  - menu [ref=f16e1078]:
+    - generic [ref=f16e1084]:
+      - generic [ref=f16e1085]: Distributor Admin (Test)
+      - paragraph [ref=f16e1086]: Distributor Admin · Test Distributor
+    - menuitem "My profile" [active] [ref=f16e1087] [cursor=pointer]
+    - menuitem "Notifications" [ref=f16e1094] [cursor=pointer]
+    - generic "Account settings will be available soon" [ref=f16e1101]:
+      - menuitem "Account settings Soon" [disabled]:
+        - generic: Account settings
+        - generic: Soon
+    - generic [ref=f16e1102]:
+      - paragraph [ref=f16e1104]: Switch profile
+      - menuitem "Platform admin admin@platform.com" [ref=f16e1105] [cursor=pointer]:
+        - generic [ref=f16e1106]:
+          - generic [ref=f16e1107]: Platform admin
+          - paragraph [ref=f16e1108]: admin@platform.com
+      - menuitem "Distributor admin admin@distributor.com" [ref=f16e1109] [cursor=pointer]:
+        - generic [ref=f16e1113]:
+          - generic [ref=f16e1114]: Distributor admin
+          - paragraph [ref=f16e1115]: admin@distributor.com
+      - menuitem "Supplier admin admin@supplier.com" [ref=f16e1116] [cursor=pointer]:
+        - generic [ref=f16e1117]:
+          - generic [ref=f16e1118]: Supplier admin
+          - paragraph [ref=f16e1119]: admin@supplier.com
+      - menuitem "Customer admin admin@customer.com" [ref=f16e1120] [cursor=pointer]:
+        - generic [ref=f16e1121]:
+          - generic [ref=f16e1122]: Customer admin
+          - paragraph [ref=f16e1123]: admin@customer.com
+    - menuitem "Sign out" [ref=f16e1125] [cursor=pointer]

@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
-<script src="theme.js"></script>
+<script src="theme.js?v=10"></script>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
@@ -16,14 +16,15 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .header{min-height:62px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
 .headtools{display:flex;align-items:center;gap:14px;}
 .account .av{width:32px;height:32px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;}
-.crumbband{background:var(--periwinkle);color:#fff;padding:13px 36px;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px var(--page-gutter);}
 .crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
 .crumb .sep{opacity:.6;}
-.main{max-width:860px;margin:0 auto;padding:30px 36px 90px;}
+.main{width:100%;max-width:none;padding:30px var(--page-gutter) 90px;}
 .ptitle{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1;letter-spacing:-.01em;margin:0;}
 .psub{font-size:14.5px;color:var(--text-soft);margin-top:10px;max-width:640px;line-height:1.55;}
-.settabs{display:flex;gap:4px;margin-top:26px;border-bottom:1px solid var(--line-soft);}
-.settab{border:0;background:none;font:inherit;font-size:14.5px;font-weight:700;padding:11px 16px;border-bottom:2.5px solid transparent;margin-bottom:-1px;}
+.settabs{display:flex;gap:4px;margin-top:26px;border-bottom:1px solid var(--line-soft);overflow-x:auto;scrollbar-width:none;}
+.settabs::-webkit-scrollbar{display:none;}
+.settab{white-space:nowrap;flex:none;cursor:pointer;border:0;background:none;font:inherit;font-size:14.5px;font-weight:700;padding:11px 16px;border-bottom:2.5px solid transparent;margin-bottom:-1px;}
 .settab.active{color:var(--periwinkle-deep);border-bottom-color:var(--periwinkle-deep);}
 .card{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:24px 26px;box-shadow:0 1px 3px rgba(20,22,45,.04);margin-top:22px;}
 .card-h{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
@@ -72,6 +73,38 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .disc-in span{font-size:13px;font-weight:700;color:var(--muted);}
 .disc-readout{font-size:13px;font-weight:600;color:var(--muted);font-style:italic;}
 .disc-note{font-size:12.5px;color:var(--muted);margin:0;}
+.cwsets{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.cwset{border:1.5px solid var(--line-soft);border-radius:13px;padding:14px;cursor:pointer;background:#fff;position:relative;transition:border-color .14s,box-shadow .14s;}
+.cwset:hover{border-color:var(--periwinkle);}
+.cwset.on{border-color:var(--periwinkle-deep);box-shadow:0 0 0 1px var(--periwinkle-deep);}
+.cwset-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}.cwset-hd b{font-size:14px;color:var(--ink);}
+.cwset-name{font:inherit;font-size:14px;font-weight:700;color:var(--ink);border:1px solid transparent;border-radius:6px;padding:2px 5px;margin:-2px 0;background:none;max-width:150px;}
+.cwset-name:hover{border-color:var(--line-soft);}
+.cwset-name:focus{outline:0;border-color:var(--periwinkle-deep);background:#fff;}
+.cwset-tick{width:18px;height:18px;border-radius:50%;background:var(--periwinkle-deep);color:#fff;display:none;place-items:center;font-size:11px;font-weight:800;}
+.cwset-tick{position:absolute;bottom:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--periwinkle-deep);color:#fff;display:none;place-items:center;font-size:12px;font-weight:800;}
+.cwset.on .cwset-tick{display:grid;}
+.cwset-sw{display:flex;gap:6px;}
+.cwset-sw i{width:30px;height:30px;border-radius:7px;border:1px solid rgba(0,0,0,.1);}
+.cwset-tag{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:9px;}
+.cwset-del{position:absolute;top:8px;right:8px;border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer;line-height:1;display:none;}
+.cwset.custom .cwset-del{display:block;}
+.cwset-edit{position:absolute;top:7px;right:30px;border:0;background:none;color:var(--ink-3);font-size:18px;font-weight:700;cursor:pointer;line-height:1;}
+.cwset:not(.custom) .cwset-edit{right:9px;}
+.cwset-edit:hover{color:var(--periwinkle-deep);}
+.cwset-del:hover{color:var(--flare);}
+.cwform{margin-top:18px;border-top:1px solid var(--line-soft);padding-top:18px;}
+.cwfrow{display:flex;flex-direction:column;gap:6px;max-width:300px;margin-bottom:14px;}
+.cwfrow label{font-size:12px;font-weight:700;color:var(--ink-3);}
+.cwfrow input{font:inherit;font-size:14px;border:1.5px solid var(--line-soft);border-radius:9px;padding:9px 11px;}
+.cwfields{display:flex;gap:14px;flex-wrap:wrap;}
+.cwfield{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);}
+.cwfield input[type=color]{width:64px;height:40px;border:1px solid var(--line-soft);border-radius:9px;background:none;cursor:pointer;padding:2px;}
+.fcfg-h{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px;}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line-soft);}
+#orgProfileMount.op-nologos .op-logos{display:none;}
+#orgLogosMount.op-onlylogos .op-view,#orgLogosMount.op-onlylogos .op-foot,#orgLogosMount.op-onlylogos .op-hd>.op-ro{display:none;}
+#orgLogosMount.op-onlylogos .op-logos{margin-bottom:0;}
 </style>
 </head>
 <body>
@@ -86,23 +119,18 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 
 <main class="main">
   <h1 class="ptitle">Settings</h1>
-  <p class="psub">Manage how your organisation appears on your branded portal.</p>
-
   <div class="settabs" id="setTabs">
-    <button class="settab active" data-sec="branding">Branding</button>
+    <button class="settab active" data-sec="profile">Organisation profile</button>
+    <button class="settab" data-sec="logos">Platform logos</button>
+    <button class="settab" data-sec="account">Account</button>
     <button class="settab" data-sec="discounts" id="tabDiscounts" hidden>Discounts</button>
   </div>
 
-  <div class="card sec sec-branding">
-    <div class="card-h"><h2>Brand logo</h2><span class="tag">Platform header</span></div>
-    <p class="lede">Upload your organisation's logo. It appears in the header alongside your distributor's mark. Drop a logo, then crop &amp; reposition to frame it.</p>
-    <div class="logoslot">
-      <span class="logoslot-lbl">Header logo</span>
-      <div class="logoslot-drop"><image-slot id="cust-header-logo" shape="rect" fit="contain" data-crop placeholder="Drop your logo (SVG / PNG)"></image-slot></div>
-      <div class="logomono" data-for="cust-header-logo"><span>Tone</span><button type="button" class="logomono-btn on" data-mono="original">Original</button><button type="button" class="logomono-btn" data-mono="white">Mono white</button><button type="button" class="logomono-btn" data-mono="black">Mono black</button><button type="button" class="logodel" data-crop-logo="cust-header-logo">Crop</button><button type="button" class="logodel" data-del-logo="cust-header-logo">Remove logo</button></div>
-      <span class="logoslot-hint">Shown top-left next to your distributor. Transparent PNG or SVG recommended. <b>Recommended: 320 × 80 px</b> (4:1).</span>
-    </div>
-  </div>
+  <div class="card sec sec-logos" hidden style="background:none;border:0;box-shadow:none;padding:0"><div id="orgLogosMount"></div></div>
+
+  <div class="card sec sec-profile" style="background:none;border:0;box-shadow:none;padding:0"><div id="orgProfileMount"></div></div>
+
+  <div class="card sec sec-account" hidden style="background:none;border:0;box-shadow:none;padding:0;margin-top:0"><div id="amMount"></div><div id="custAcctMount"></div><p class="lede" id="cfTermsMoved" style="margin:14px 2px 0">Trading terms, credit and the invoice contact are now under <a href="Merchsmith Customer Finance.html#tab=terms">Finance → Terms &amp; invoicing</a>.</p></div>
 
   <div class="card sec sec-discounts" hidden>
     <div class="card-h"><h2>Distributor discounts</h2><span class="tag">Distributor only</span></div>
@@ -126,8 +154,17 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 <script src="image-slot.js"></script>
 <script src="logos.js"></script>
 <script src="identity.js"></script>
-<script src="sidebar.js"></script>
-<script src="chrome.js"></script>
+<script src="avatars.js"></script>
+<script src="names.js?v=2"></script>
+<script src="address.js?v=1"></script>
+<script src="org-data.js?v=11"></script>
+<script src="cust-account.js?v=5"></script>
+<script src="people.js?v=19"></script>
+<script src="acct-manager.js?v=3"></script>
+<script>(function(){ const go=()=>{ const el=document.getElementById('amMount'); if(!el||!window.MSAM) return; el.innerHTML=MSAM.cardHTML('citrix'); MSAM.wireCard(el,'citrix'); }; document.readyState==='loading'?document.addEventListener('DOMContentLoaded',go):go(); window.addEventListener('ms-am-change',go); window.addEventListener('storage',e=>{ if(e.key==='ms-acct-mgr') go(); }); })();</script>
+<script src="org-profile.js?v=14"></script>
+<script src="sidebar.js?v=26"></script>
+<script src="chrome.js?v=3"></script>
 <script>
 const toast=(()=>{ const el=document.getElementById('toast'); let t; return ()=>{ el.classList.add('show'); clearTimeout(t); t=setTimeout(()=>el.classList.remove('show'),1400); }; })();
 function relock(){ try{ if(window.MSID&&MSID.relock) MSID.relock(); }catch(e){} try{ if(window.MSTheme&&MSTheme.persist) MSTheme.persist(); }catch(e){} }
@@ -199,7 +236,12 @@ function closeCrop(){ if(!cropRoot) return; const s=cropRoot.querySelector('imag
   document.querySelectorAll('#setTabs .settab').forEach(t=>t.onclick=()=>{
     document.querySelectorAll('#setTabs .settab').forEach(x=>x.classList.toggle('active',x===t));
     document.querySelectorAll('.card.sec').forEach(c=>{ c.hidden=!c.classList.contains('sec-'+t.dataset.sec); });
+    history.replaceState(null,'','#tab='+t.dataset.sec);
   });
+  // deep links from the left menu: #tab=profile|account|branding|discounts (legacy #profile / #account still work)
+  function fromHash(){ const h=location.hash, m=(h.match(/tab=(\w+)/)||[])[1]||(/profile/.test(h)?'profile':/account|terms/.test(h)?'account':'');
+    const t=m&&document.querySelector('#setTabs .settab[data-sec="'+m+'"]'); if(t&&!t.hidden) t.click(); }
+  window.addEventListener('hashchange',fromHash); setTimeout(fromHash,0);
   const KEY='ms-discounts';
   function defaults(){ return { sitewide:5, category:{Tech:10}, customer:{Citrix:7.5}, project:{'Autumn Giveaways':10} }; }
   function load(){ try{ const j=JSON.parse(localStorage.getItem(KEY)||'null'); if(j&&typeof j==='object') return Object.assign(defaults(), j); }catch(e){} return defaults(); }
@@ -214,5 +256,22 @@ function closeCrop(){ if(!cropRoot) return; const s=cropRoot.querySelector('imag
   renderReadouts();
 })();
 </script>
+<script>
+(function(){ function mount(){ const el=document.getElementById('orgProfileMount'); if(!el||!window.MSORG) return;
+  // one profile, split across two tabs: details in Organisation profile, logos in Platform logos
+  el.innerHTML=MSORG.panelHTML('customer'); MSORG.wire(el,'customer',mount); el.classList.add('op-nologos');
+  const lg=document.getElementById('orgLogosMount'); if(lg){ lg.innerHTML=MSORG.panelHTML('customer'); MSORG.wire(lg,'customer',mount); lg.classList.add('op-onlylogos'); } }
+  mount(); window.addEventListener('ms-identity-change',mount);
+  document.addEventListener('ms-slot-change',()=>setTimeout(mount,120),true);
+  if(/profile/.test(location.hash)){ const t=document.querySelector('.settab[data-sec="profile"]'); if(t) setTimeout(()=>t.click(),0); } })();
+(function(){ const el=document.getElementById('custAcctMount'); if(!el||!window.MSCUSTACCT||!window.ORG_DATA) return;
+  const draw=()=>{ const who=(window.MSID&&MSID.current&&MSID.current())||(localStorage.getItem('ms-role')==='cust'?'customer':'distributor');
+    const c=(ORG_DATA.customers||[]).find(x=>x.id==='citrix');
+    const tab=document.querySelector('.settab[data-sec="account"]'); if(tab) tab.hidden=(who==='supplier');
+    if(c) MSCUSTACCT.panel(el,c,who==='distributor'||who==='admin','Mojo Promotions',{only:'summary'}); };
+  draw(); window.addEventListener('ms-identity-change',draw);
+  if(/account|terms/.test(location.hash)){ const t=document.querySelector('.settab[data-sec="account"]'); if(t) setTimeout(()=>t.click(),0); } })();
+</script>
+
 </body>
 </html>

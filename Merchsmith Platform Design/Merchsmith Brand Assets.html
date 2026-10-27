@@ -9,11 +9,11 @@
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
 <link rel="stylesheet" href="brand-assets.css">
-<script src="theme.js"></script>
+<script src="theme.js?v=10"></script>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;background:#fff;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
-.main{padding:30px 36px 60px;max-width:1320px;}
+.main{width:100%;max-width:none;padding:30px var(--page-gutter) 60px;}
 .header{min-height:62px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
 .headtools{display:flex;align-items:center;gap:14px;}
 .header .brand{display:flex;align-items:center;gap:10px;flex:0 0 auto;}
@@ -54,9 +54,9 @@ body{margin:0;background:#fff;font-family:var(--sans);color:var(--ink);-webkit-f
 <script src="image-slot.js"></script>
 <script src="logos.js"></script>
 <script src="identity.js"></script>
-<script src="sidebar.js"></script>
-<script src="chrome.js"></script>
-<script src="brand-assets.js"></script>
+<script src="sidebar.js?v=26"></script>
+<script src="chrome.js?v=3"></script>
+<script src="brand-assets.js?v=2"></script>
 <script>
 /* toast .on helper (matches store) */
 (function(){ const s=document.createElement('style'); s.textContent='.toast.on{opacity:1!important;transform:translateX(-50%)!important;}'; document.head.appendChild(s); })();

@@ -4,16 +4,34 @@
     {
       "name": "backend",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["-C", "merchsmith-backend", "start:dev"],
+      "runtimeArgs": [
+        "-C",
+        "merchsmith-backend",
+        "start:dev"
+      ],
       "port": 3001,
       "autoPort": false
     },
     {
       "name": "frontend",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["-C", "merchsmith-frontend", "dev"],
+      "runtimeArgs": [
+        "-C",
+        "merchsmith-frontend",
+        "dev"
+      ],
       "port": 3000,
       "autoPort": false
+    },
+    {
+      "name": "design-docs",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "python3 -m http.server \"${PORT:-8642}\" --directory \"Merchsmith Platform Design\""
+      ],
+      "port": 8642,
+      "autoPort": true
     }
   ]
 }

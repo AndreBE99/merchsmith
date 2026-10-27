@@ -1,0 +1,302 @@
+- generic [ref=f4e1]:
+  - button "Open Next.js Dev Tools" [ref=f4e13] [cursor=pointer]
+  - alert [ref=f4e17]
+  - generic [ref=f4e19]:
+    - banner [ref=f4e20]:
+      - generic [ref=f4e21]:
+        - heading [level=6] [ref=f4e24]: Test Distributor
+        - generic [ref=f4e28]:
+          - textbox [ref=f4e33]:
+            - /placeholder: Search products, projects…
+          - group [aria-hidden]
+        - generic [ref=f4e34]:
+          - button [ref=f4e35] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f4e40]: "2"
+          - button [expanded] [ref=f4e42] [cursor=pointer]
+    - complementary [ref=f4e47]:
+      - navigation [ref=f4e48]:
+        - link [ref=f4e49] [cursor=pointer]:
+          - /url: /
+        - link [ref=f4e55] [cursor=pointer]:
+          - /url: /store
+        - link [ref=f4e60] [cursor=pointer]:
+          - /url: /projects
+        - link [ref=f4e65] [cursor=pointer]:
+          - /url: /orders
+        - link [ref=f4e69] [cursor=pointer]:
+          - /url: /organisations
+        - button [ref=f4e74] [cursor=pointer]
+        - link [ref=f4e79] [cursor=pointer]:
+          - /url: /users
+        - link [ref=f4e85] [cursor=pointer]:
+          - /url: /chats
+        - link [ref=f4e88] [cursor=pointer]:
+          - /url: /calendar
+        - link [ref=f4e91] [cursor=pointer]:
+          - /url: /calls
+        - link [ref=f4e94] [cursor=pointer]:
+          - /url: /emails
+        - link [ref=f4e98] [cursor=pointer]:
+          - /url: /finance
+        - link [ref=f4e102] [cursor=pointer]:
+          - /url: /settings
+    - main [ref=f4e106]:
+      - generic [ref=f4e107]: Orders › MS-1005
+      - generic [ref=f4e112]:
+        - generic [ref=f4e114]:
+          - link [ref=f4e115] [cursor=pointer]:
+            - /url: /orders
+          - generic [ref=f4e118]:
+            - heading [level=1] [ref=f4e119]: MS-1005
+            - paragraph [ref=f4e120]: Test Customer · placed 4 Oct 2026 · PO PO-TEST-1005
+          - generic [ref=f4e121]: Order placed
+          - generic [ref=f4e123]: Payment due · 7 Oct, 21:51
+          - button [ref=f4e125] [cursor=pointer]: ⚐ Flag
+          - button [ref=f4e126] [cursor=pointer]: Comments
+          - generic [ref=f4e127]:
+            - link [ref=f4e128] [cursor=pointer]:
+              - /url: "#line-1"
+            - link [ref=f4e129] [cursor=pointer]:
+              - /url: "#line-2"
+          - paragraph [ref=f4e130]: £3,136.80 inc. VAT
+          - button [ref=f4e131] [cursor=pointer]: Minimise all
+        - generic [ref=f4e132]:
+          - generic [ref=f4e133]:
+            - generic [ref=f4e134]:
+              - generic [ref=f4e135]:
+                - generic [ref=f4e137]:
+                  - generic [ref=f4e138]:
+                    - paragraph [ref=f4e139]: 1. [TEST] Tech Travel Bag
+                    - button [ref=f4e140] [cursor=pointer]: ⚐ Flag
+                    - button [ref=f4e141] [cursor=pointer]: Comments
+                    - generic [ref=f4e142]: Order received
+                  - paragraph [ref=f4e144]: 60 × £24.50 · Front · Embroidery · up to 6 colours · XD Connects
+                  - generic [ref=f4e145]: Black × 60
+                - button [ref=f4e149] [cursor=pointer]
+              - generic [ref=f4e152]:
+                - paragraph [ref=f4e155]: Order received
+                - paragraph [ref=f4e158]: Sent
+                - paragraph [ref=f4e161]: Acknowledged
+                - paragraph [ref=f4e164]: Proof
+                - paragraph [ref=f4e167]: Confirmed
+                - paragraph [ref=f4e170]: In production
+                - paragraph [ref=f4e173]: Dispatched
+                - paragraph [ref=f4e176]: Delivered
+              - generic [ref=f4e179]:
+                - generic [ref=f4e180]:
+                  - paragraph [ref=f4e181]: Check & send to XD Connects
+                  - paragraph [ref=f4e182]: Check the order, then send it with the artwork file, visual and approved proof.
+                  - button [ref=f4e184] [cursor=pointer]: Check & send
+                  - button [ref=f4e185] [cursor=pointer]: Change supplier
+                  - button [ref=f4e186] [cursor=pointer]: Amend order
+                  - button [ref=f4e187] [cursor=pointer]: Cancel item
+                  - generic [ref=f4e188]:
+                    - button [ref=f4e189] [cursor=pointer]: Add invoice
+                    - button [ref=f4e190] [cursor=pointer]: Add credit note
+                    - button [ref=f4e191] [cursor=pointer]: Supplier PO
+                    - button [ref=f4e192] [cursor=pointer]: Supplier credit
+                - generic [ref=f4e193]:
+                  - generic [ref=f4e194]:
+                    - paragraph [ref=f4e195]:
+                      - text: Delivery info
+                      - button [ref=f4e196] [cursor=pointer]: Edit address
+                      - button [ref=f4e197] [cursor=pointer]: Set / Edit dates
+                    - paragraph [ref=f4e198]:
+                      - text: Supplier deadline 18 Oct 2026 Customer delivery 21 Oct 2026 Deliver to Customer Admin (Test), Test Customer, 1 Example Street, Leeds, LS1 1AA
+                      - generic [ref=f4e199]:
+                        - text: Ships direct to the customer
+                        - button [ref=f4e200] [cursor=pointer]: Change
+                      - button [ref=f4e201] [cursor=pointer]: Split delivery
+                  - generic [ref=f4e202]:
+                    - paragraph [ref=f4e203]: Supplier documents
+                    - generic [ref=f4e204]: No acknowledgement yet
+            - generic [ref=f4e206]:
+              - generic [ref=f4e207]:
+                - generic [ref=f4e209]:
+                  - generic [ref=f4e210]:
+                    - paragraph [ref=f4e211]: 2. [TEST] Heavy Weight T-Shirt
+                    - button [ref=f4e212] [cursor=pointer]: ⚐ Flag
+                    - button [ref=f4e213] [cursor=pointer]: Comments
+                    - generic [ref=f4e214]: Order received
+                  - paragraph [ref=f4e216]: 120 × £9.20 · Front · Screen print · 1 colour · XD Connects
+                  - generic [ref=f4e217]:
+                    - generic [ref=f4e218]: Black × 80
+                    - generic [ref=f4e221]: White × 40
+                - button [ref=f4e224] [cursor=pointer]
+              - generic [ref=f4e227]:
+                - paragraph [ref=f4e230]: Order received
+                - paragraph [ref=f4e233]: Sent
+                - paragraph [ref=f4e236]: Acknowledged
+                - paragraph [ref=f4e239]: Proof
+                - paragraph [ref=f4e242]: Confirmed
+                - paragraph [ref=f4e245]: In production
+                - paragraph [ref=f4e248]: Dispatched
+                - paragraph [ref=f4e251]: Delivered
+              - generic [ref=f4e254]:
+                - generic [ref=f4e255]:
+                  - paragraph [ref=f4e256]: Check & send to XD Connects
+                  - paragraph [ref=f4e257]: Check the order, then send it with the artwork file, visual and approved proof.
+                  - button [ref=f4e259] [cursor=pointer]: Check & send
+                  - button [ref=f4e260] [cursor=pointer]: Change supplier
+                  - button [ref=f4e261] [cursor=pointer]: Amend order
+                  - button [ref=f4e262] [cursor=pointer]: Cancel item
+                  - generic [ref=f4e263]:
+                    - button [ref=f4e264] [cursor=pointer]: Add invoice
+                    - button [ref=f4e265] [cursor=pointer]: Add credit note
+                    - button [ref=f4e266] [cursor=pointer]: Supplier PO
+                    - button [ref=f4e267] [cursor=pointer]: Supplier credit
+                - generic [ref=f4e268]:
+                  - generic [ref=f4e269]:
+                    - paragraph [ref=f4e270]:
+                      - text: Delivery info
+                      - button [ref=f4e271] [cursor=pointer]: Edit address
+                      - button [ref=f4e272] [cursor=pointer]: Set / Edit dates
+                    - paragraph [ref=f4e273]:
+                      - text: Supplier deadline 18 Oct 2026 Customer delivery 21 Oct 2026 Deliver to Customer Admin (Test), Test Customer, 1 Example Street, Leeds, LS1 1AA
+                      - generic [ref=f4e274]:
+                        - text: Ships direct to the customer
+                        - button [ref=f4e275] [cursor=pointer]: Change
+                      - button [ref=f4e276] [cursor=pointer]: Split delivery
+                  - generic [ref=f4e277]:
+                    - paragraph [ref=f4e278]: Supplier documents
+                    - generic [ref=f4e279]: No acknowledgement yet
+          - generic [ref=f4e281]:
+            - generic [ref=f4e282]:
+              - paragraph [ref=f4e283]: Order
+              - generic [ref=f4e284]:
+                - generic [ref=f4e285]: Bank transfer · paid before production
+                - generic [ref=f4e286]: Invoices to Customer Admin (Test) · admin@customer.com
+                - button [ref=f4e287] [cursor=pointer]: Bank transfer received
+                - generic [ref=f4e288]:
+                  - text: Net £2,614.00 · VAT £522.80 ·
+                  - generic [ref=f4e289]: Total £3,136.80
+                - generic [ref=f4e290]:
+                  - button [ref=f4e291] [cursor=pointer]: Add invoice to order
+                  - button [ref=f4e292] [cursor=pointer]: Add credit note to order
+                  - button [ref=f4e293] [cursor=pointer]: Supplier PO
+                  - button [ref=f4e294] [cursor=pointer]: Supplier credit
+                - button [ref=f4e295] [cursor=pointer]: Cancel order
+            - generic [ref=f4e296]:
+              - paragraph [ref=f4e297]: People
+              - generic [ref=f4e298]:
+                - generic [ref=f4e299]: Customer · Customer Admin (Test) · admin@customer.com
+                - generic [ref=f4e300]:
+                  - text: Supplier · XD Connects (2 products)
+                  - generic [ref=f4e301]:
+                    - text: Supplier Admin (Test) ·
+                    - link [ref=f4e302] [cursor=pointer]:
+                      - /url: mailto:admin@supplier.com
+                      - text: admin@supplier.com
+            - generic [ref=f4e303]:
+              - paragraph [ref=f4e304]: Documents2
+              - generic [ref=f4e305]:
+                - generic [ref=f4e306]:
+                  - paragraph [ref=f4e307]:
+                    - link [ref=f4e308] [cursor=pointer]:
+                      - /url: /orders/MS-1005/confirmation
+                      - text: Order confirmation ↗
+                  - text: 4 Oct 2026
+                - generic [ref=f4e309]:
+                  - paragraph [ref=f4e310]:
+                    - link [ref=f4e311] [cursor=pointer]:
+                      - /url: /orders/MS-1005/pro-forma
+                      - text: Pro-forma invoice ↗
+                  - text: bank transfer
+            - generic [ref=f4e312]:
+              - paragraph [ref=f4e313]: Activity1
+              - generic [ref=f4e315]:
+                - paragraph [ref=f4e316]: Order placed · Bank transfer · paid before production
+                - text: 4 Oct, 21:51
+      - generic [ref=f4e318]:
+        - generic [ref=f4e319]:
+          - generic [ref=f4e320]:
+            - link [ref=f4e321] [cursor=pointer]:
+              - /url: /store/pages/contact
+              - text: Let's Talk.
+            - paragraph [ref=f4e322]: Sustainable promotional merchandise, branded in-house and delivered on time.
+          - generic [ref=f4e323]:
+            - heading [level=4] [ref=f4e324]: Company
+            - link [ref=f4e325] [cursor=pointer]:
+              - /url: /store/pages/about
+              - text: About us
+            - link [ref=f4e326] [cursor=pointer]:
+              - /url: /store/pages/environment
+              - text: Environmental footprint
+            - link [ref=f4e327] [cursor=pointer]:
+              - /url: /store/pages/value-chain
+              - text: Value chain
+            - link [ref=f4e328] [cursor=pointer]:
+              - /url: /store/pages/people
+              - text: People & culture
+          - generic [ref=f4e329]:
+            - heading [level=4] [ref=f4e330]: Let us help
+            - link [ref=f4e331] [cursor=pointer]:
+              - /url: /store/pages/faq
+              - text: FAQ
+            - link [ref=f4e332] [cursor=pointer]:
+              - /url: /store/pages/terms
+              - text: Terms & conditions
+            - link [ref=f4e333] [cursor=pointer]:
+              - /url: /store/pages/privacy
+              - text: Privacy
+            - link [ref=f4e334] [cursor=pointer]:
+              - /url: /store/pages/returns
+              - text: Returns
+            - link [ref=f4e335] [cursor=pointer]:
+              - /url: /store/pages/contact
+              - text: Contact us
+        - generic [ref=f4e336]:
+          - generic [ref=f4e337]:
+            - heading [level=4] [ref=f4e338]: Stay in touch
+            - paragraph [ref=f4e339]: Product drops, sustainability news and the occasional good idea. No more than monthly.
+          - generic [ref=f4e340]:
+            - textbox [ref=f4e341]:
+              - /placeholder: Your work email
+            - button [ref=f4e342] [cursor=pointer]: Sign up
+        - generic [ref=f4e349]:
+          - generic [ref=f4e350]: Accredited
+          - generic [ref=f4e351]: New accreditation
+        - generic [ref=f4e372]:
+          - generic [ref=f4e373]:
+            - generic [ref=f4e374]: © 2026 Test Distributor
+            - link [ref=f4e375] [cursor=pointer]:
+              - /url: /store/pages/cookies
+              - text: Cookie policy
+            - link [ref=f4e376] [cursor=pointer]:
+              - /url: /store/pages/accessibility
+              - text: Accessibility
+            - generic [ref=f4e377]: Powered by Merchsmith
+          - generic [ref=f4e378]: Secured by Stripe
+  - button [aria-hidden] [ref=f4e383] [cursor=pointer]
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f4e386]:
+    - button [ref=f4e388] [cursor=pointer]: ×
+  - menu [ref=f4e393]:
+    - generic [ref=f4e399]:
+      - generic [ref=f4e400]: Distributor Admin (Test)
+      - paragraph [ref=f4e401]: Distributor Admin · Test Distributor
+    - menuitem "My profile" [active] [ref=f4e402] [cursor=pointer]
+    - menuitem "Notifications" [ref=f4e409] [cursor=pointer]
+    - generic "Account settings will be available soon" [ref=f4e416]:
+      - menuitem "Account settings Soon" [disabled]:
+        - generic: Account settings
+        - generic: Soon
+    - generic [ref=f4e417]:
+      - paragraph [ref=f4e419]: Switch profile
+      - menuitem "Platform admin admin@platform.com" [ref=f4e420] [cursor=pointer]:
+        - generic [ref=f4e421]:
+          - generic [ref=f4e422]: Platform admin
+          - paragraph [ref=f4e423]: admin@platform.com
+      - menuitem "Distributor admin admin@distributor.com" [ref=f4e424] [cursor=pointer]:
+        - generic [ref=f4e428]:
+          - generic [ref=f4e429]: Distributor admin
+          - paragraph [ref=f4e430]: admin@distributor.com
+      - menuitem "Supplier admin admin@supplier.com" [ref=f4e431] [cursor=pointer]:
+        - generic [ref=f4e432]:
+          - generic [ref=f4e433]: Supplier admin
+          - paragraph [ref=f4e434]: admin@supplier.com
+      - menuitem "Customer admin admin@customer.com" [ref=f4e435] [cursor=pointer]:
+        - generic [ref=f4e436]:
+          - generic [ref=f4e437]: Customer admin
+          - paragraph [ref=f4e438]: admin@customer.com
+    - menuitem "Sign out" [ref=f4e440] [cursor=pointer]

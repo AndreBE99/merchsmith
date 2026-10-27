@@ -1,0 +1,266 @@
+[     149ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[     205ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  445461ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[  445461ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[  447464ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  447464ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  451468ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  451468ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  459471ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  459471ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  462621ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  475474ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  475474ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  487739ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  488017ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[  488744ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  492624ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  505480ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  505480ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  522626ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  535483ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  535483ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  548020ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[  548746ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  549749ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  552628ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  565484ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  565485ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  582632ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  595487ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  595487ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  608024ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[  609753ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  610757ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  612634ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  625490ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  625490ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  642640ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  655492ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  655493ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  668028ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[  670761ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  671764ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  672643ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  685498ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  685498ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  702647ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  715501ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  715502ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  728031ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[  731768ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  732652ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  732773ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  741554ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  742426ms] [LOG] [Fast Refresh] done in 974ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  745505ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  745505ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  762656ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  763181ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  763471ms] [LOG] [Fast Refresh] done in 256ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  775510ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  775511ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  777526ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  778197ms] [LOG] [Fast Refresh] done in 745ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  788034ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[  792659ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  792777ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  793783ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  795587ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  795831ms] [ERROR] ./src/features/dashboards/components/OrdersDashboard.tsx:4:10
+the name `useState` is defined multiple times
+  2 |
+  3 | import { useState } from 'react';
+> 4 | import { useState } from 'react';
+    |          ^^^^^^^^
+  5 | import { Button, Dialog, DialogA...
+  6 | import { useToast } from '@/comp...
+  7 | import { normalizeError } from '...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/features/dashboards/components/OrdersDashboard.tsx [Client Component Browser]
+    ./src/features/dashboards/index.ts [Client Component Browser]
+    ./src/features/finance/components/CustomerFinancePage.tsx [Client Component Browser]
+    ./src/features/finance/index.ts [Client Component Browser]
+    ./src/features/basket/components/OrderPlacedPage.tsx [Client Component Browser]
+    ./src/features/basket/index.ts [Client Component Browser]
+    ./src/features/organisations/components/drawer/CustomerDrawerBody.tsx [Client Component Browser]
+    ./src/features/organisations/components/OrganisationDetailDrawer.tsx [Client Component Browser]
+    ./src/features/organisations/components/index.ts [Client Component Browser]
+    ./src/features/organisations/index.ts [Client Component Browser]
+    ./src/app/(protected)/components/DistributorDashboard.tsx [Client Component Browser]
+    ./src/app/(protected)/page.tsx [Client Component Browser]
+    ./src/app/(protected)/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/features/dashboards/components/OrdersDashboard.tsx [Client Component SSR]
+    ./src/features/dashboards/index.ts [Client Component SSR]
+    ./src/features/finance/components/CustomerFinancePage.tsx [Client Component SSR]
+    ./src/features/finance/index.ts [Client Component SSR]
+    ./src/features/basket/components/OrderPlacedPage.tsx [Client Component SSR]
+    ./src/features/basket/index.ts [Client Component SSR]
+    ./src/features/organisations/components/drawer/CustomerDrawerBody.tsx [Client Component SSR]
+    ./src/features/organisations/components/OrganisationDetailDrawer.tsx [Client Component SSR]
+    ./src/features/organisations/components/index.ts [Client Component SSR]
+    ./src/features/organisations/index.ts [Client Component SSR]
+    ./src/app/(protected)/components/DistributorDashboard.tsx [Client Component SSR]
+    ./src/app/(protected)/page.tsx [Client Component SSR]
+    ./src/app/(protected)/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:3318
+[  805518ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  805518ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  821710ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  822003ms] [LOG] [Fast Refresh] done in 386ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  822661ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  835522ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  835522ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  848038ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[  852668ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  853787ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  854792ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  865529ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  865530ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  882671ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  888054ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  888064ms] [LOG] [Fast Refresh] done in 112ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  895534ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  895535ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  908042ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[  912676ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  914795ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  915799ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  925538ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  925538ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  942681ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  955543ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  955543ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  968048ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[  972685ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  975803ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  976807ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[  979357ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/onboarding:0
+[  979357ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects:0
+[  979357ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/organisations?type=customer:0
+[  979357ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/22dcc469-26a2-47ad-96d8-f8cf30b63a91/line-items:0
+[  979357ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e/line-items:0
+[  979357ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/91105616-360c-4449-bd81-ce0742755ee3/line-items:0
+[  979357ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/line-items:0
+[  979357ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/22dcc469-26a2-47ad-96d8-f8cf30b63a91/activity?limit=6:0
+[  979358ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e/activity?limit=6:0
+[  979358ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/91105616-360c-4449-bd81-ce0742755ee3/activity?limit=6:0
+[  979359ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/activity?limit=6:0
+[  980360ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/onboarding:0
+[  980360ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects:0
+[  980361ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/organisations?type=customer:0
+[  980361ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/22dcc469-26a2-47ad-96d8-f8cf30b63a91/line-items:0
+[  980373ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e/line-items:0
+[  980373ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/91105616-360c-4449-bd81-ce0742755ee3/line-items:0
+[  980373ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/line-items:0
+[  980373ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/22dcc469-26a2-47ad-96d8-f8cf30b63a91/activity?limit=6:0
+[  980373ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e/activity?limit=6:0
+[  980373ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/91105616-360c-4449-bd81-ce0742755ee3/activity?limit=6:0
+[  980373ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/activity?limit=6:0
+[  981202ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  981324ms] [LOG] [Fast Refresh] done in 194ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  985550ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  985551ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1002697ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[ 1015556ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1015557ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1018701ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1018813ms] [LOG] [Fast Refresh] done in 200ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1028054ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[ 1032700ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[ 1036809ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[ 1037811ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[ 1045559ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1045559ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1062704ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[ 1075761ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1075761ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1088055ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[ 1092707ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[ 1097816ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[ 1098819ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[ 1105766ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1105766ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1122712ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[ 1135772ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1135773ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1148058ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[ 1152716ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[ 1158830ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[ 1159836ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/unread-count:0
+[ 1165799ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1165799ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1182759ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[ 1195825ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1195826ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1204308ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1204379ms] [LOG] [Fast Refresh] done in 146ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1208107ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/calls/unseen:0
+[ 1247022ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[ 1247023ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[ 1249025ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1249025ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1262244ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[ 1262245ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[ 1264248ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1264249ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1273786ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[ 1273786ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[ 1275081ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[ 1275789ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1275789ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1283903ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1288714ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1289291ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1289367ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1306452ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[ 1306453ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[ 1308459ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[ 1308459ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[ 1416312ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1431497ms] [ERROR] React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ HeaderSearch 1. useContext                 useContext
+2. useState                   useState
+3. useState                   useState
+4. useState                   useState
+5. useState                   useState
+6. useEffect                  useEffect
+7. useContext                 useContext
+8. useContext                 useContext
+9. useContext                 useContext
+10. useEffect                 useEffect
+11. useState                  useState
+12. useCallback               useCallback
+13. useSyncExternalStore      useSyncExternalStore
+14. useEffect                 useEffect
+15. useContext                useContext
+16. useContext                useContext
+17. useContext                useContext
+18. useEffect                 useEffect
+19. useState                  useState
+20. useCallback               useCallback
+21. useSyncExternalStore      useSyncExternalStore
+22. useEffect                 useEffect
+23. undefined                 useContext
+ @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:3318
+[ 1432062ms] [LOG] [Fast Refresh] done in 15845ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1432086ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1432193ms] [LOG] [Fast Refresh] done in 124ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1432760ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1432783ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477

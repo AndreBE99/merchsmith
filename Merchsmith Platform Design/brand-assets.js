@@ -304,6 +304,8 @@
   function closeDetail(){ if(drawer){ drawer.classList.remove('open'); document.body.style.overflow=''; } }
 
   window.addEventListener('hashchange', render);
+  (function(){ let k=(location.hash.split('&')[0]||''); window.addEventListener('hashchange',()=>{
+    const n=(location.hash.split('&')[0]||''); if(n!==k){ k=n; window.scrollTo(0,0); } }); })();
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', render); else render();
   window.MSBrandAssets={ render };
 })();

@@ -1,0 +1,17 @@
+[    1803ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[    2051ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[    2057ms] [LOG] Accessing project with guest authentication: {name: guest, email: guest@thazzit.com} @ http://localhost:4000/main.js:10974
+[    2090ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4001/api/projects/6ac688f2ae1c29f262efedb7/view:0
+[   72618ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[   74527ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[   74595ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[   74825ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[   74830ms] [LOG] Accessing project with guest authentication: {name: guest, email: guest@thazzit.com} @ http://localhost:4000/main.js:10974
+[   74846ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4001/api/projects/6ac688f2ae1c29f262efedb7/view:0
+[  507756ms] [INFO] [webpack-dev-server] Nothing changed. @ http://localhost:4000/polyfills.js:6309
+[  511859ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[  512485ms] [INFO] [webpack-dev-server] Nothing changed. @ http://localhost:4000/polyfills.js:6309
+[  522786ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[  523004ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[  523008ms] [LOG] Accessing project with guest authentication: {name: guest, email: guest@thazzit.com} @ http://localhost:4000/main.js:10974
+[  523023ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4001/api/projects/6ac688f2ae1c29f262efedb7/view:0

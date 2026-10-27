@@ -17,7 +17,8 @@
   function sex(n){ var f=(n||'').trim().toLowerCase().split(/\s+/)[0]; if(F.indexOf(f)>=0) return 'f'; if(M.indexOf(f)>=0) return 'm';
     // fallback: many female names end in a/e/i/y
     return /[aeiy]$/.test(f)?'f':'m'; }
-  function url(n){ if(!n) return null; var h=hash(n); if(h%10>=8) return null; /* ~20% initials */
+  function uploaded(n){ try{ var s=JSON.parse(localStorage.getItem('ms-people')||'null'); return s&&s.photos&&s.photos[(n||'').trim().toLowerCase()]||null; }catch(e){ return null; } }
+  function url(n){ if(!n) return null; var up=uploaded(n); if(up) return up; var h=hash(n); if(h%10>=8) return null; /* ~20% initials */
     var pool = sex(n)==='f'?FEMALE:MALE; return pool[h%pool.length]; }
   function html(n, px){ px=px||32; var u=url(n); var s='width:'+px+'px;height:'+px+'px;';
     if(u) return '<span class="msav" style="'+s+'"><img src="'+u+'" alt="'+(n||'')+'"></span>';

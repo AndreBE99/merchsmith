@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platform Admin footer — options</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script>window.MS_SCOPE='platform';</script>
+<script src="theme.js?v=10"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#eceaf3;font-family:var(--sans);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
+.pwrap{max-width:1180px;margin:0 auto;padding:38px 26px 80px;}
+.ptag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:15px;}
+h1{font-family:var(--serif);font-weight:500;font-size:34px;letter-spacing:-.015em;margin:0 0 9px;}
+.plede{font-size:15px;color:var(--ink-2);max-width:88ch;margin:0 0 4px;}
+.opt{margin-top:40px;}
+.opth{display:flex;align-items:baseline;gap:12px;margin-bottom:5px;flex-wrap:wrap;}
+.optn{font-family:var(--serif);font-weight:500;font-size:24px;}
+.optt{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--tint-peri);border-radius:999px;padding:3px 10px;}
+.optd{font-size:13.5px;color:var(--ink-2);max-width:82ch;margin:0 0 16px;}
+.frame{border:1px solid var(--line-soft);border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(20,22,45,.06);}
+.fakepage{background:var(--paper);height:56px;display:flex;align-items:center;padding:0 26px;font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;border-bottom:1px dashed var(--line-soft);}
+
+/* ---------- shared admin footer language ---------- */
+.af{color:#fff;font-family:var(--sans);background:var(--periwinkle-ink,#3C4279);position:relative;overflow:hidden;}
+.af::before{content:"";position:absolute;inset:0;
+  background:url('assets/merchsmith-outline-art.svg') no-repeat 30% 46%/auto 210%;
+  opacity:.13;pointer-events:none;}
+.af > *{position:relative;z-index:1;}
+.af a{color:#fff;text-decoration:none;}
+.af-in{padding:0 clamp(20px,2.5vw,36px);}
+
+.af-hero{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:40px;padding:38px 0 32px;align-items:start;}
+@media(max-width:1000px){.af-hero{grid-template-columns:1fr 1fr;gap:30px;}}
+@media(max-width:620px){.af-hero{grid-template-columns:1fr;}}
+.af-eyebrow{display:flex;align-items:center;gap:9px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:13px;}
+.af-eyebrow img{height:15px;width:auto;display:block;}
+.af-eyebrow span{padding:2px 7px;border-radius:5px;background:rgba(255,255,255,.18);letter-spacing:.09em;}
+.af-status{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:500;font-size:34px;line-height:1.05;letter-spacing:-.015em;margin:0 0 10px;}
+.af-dot{width:11px;height:11px;border-radius:50%;background:var(--spearmint);flex:none;box-shadow:0 0 0 4px rgba(54,192,160,.25);}
+.af-sub{font-size:13px;line-height:1.6;margin:0 0 16px;max-width:40ch;}
+.af-cline{display:flex;align-items:center;gap:9px;font-size:13.5px;padding:5px 0;}
+.af-cline:hover{text-decoration:underline;}
+.af-cline svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;flex:none;}
+.af-exit{display:inline-flex;align-items:center;gap:9px;margin-top:16px;font-size:13px;font-weight:700;white-space:nowrap;border:1.5px solid rgba(255,255,255,.45);border-radius:999px;padding:9px 17px;}
+.af-exit:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.65);}
+.af-exit svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.9;}
+
+.af-col h4{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin:4px 0 13px;}
+.af-col a{display:block;font-size:13.5px;padding:6px 0;}
+.af-col a:hover{text-decoration:underline;}
+
+/* backup band — the admin counterpart of the newsletter band */
+.af-band{border-top:1px solid rgba(255,255,255,.18);padding:20px 0;display:flex;align-items:center;justify-content:space-between;gap:16px 40px;flex-wrap:wrap;}
+.af-bandtx h4{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin:0 0 6px;}
+.af-bandtx h4 svg{width:14px;height:14px;stroke:var(--zest,#FFEB3D);fill:none;stroke-width:1.9;}
+.af-bandtx p{font-size:13px;line-height:1.55;margin:0;max-width:62ch;}
+.af-bandact{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.af-when{font-size:11.5px;font-weight:700;}
+.af-btn{font-family:var(--sans);font-size:13px;font-weight:800;white-space:nowrap;color:var(--periwinkle-ink,#3C4279);background:#fff;border:0;border-radius:9px;padding:9px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;}
+.af-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.9;}
+.af-btn:hover{opacity:.9;}
+.af-btn.ghost{background:none;color:#fff;border:1.5px solid rgba(255,255,255,.45);}
+.af-btn.ghost:hover{background:rgba(255,255,255,.12);}
+
+/* feed strip — the admin counterpart of the accreditation row */
+.af-strip{border-top:1px solid rgba(255,255,255,.18);padding:17px 0;display:flex;align-items:center;justify-content:space-between;gap:14px 30px;flex-wrap:wrap;}
+.af-feeds{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.af-flabel{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-right:4px;}
+.af-feed{display:flex;align-items:center;gap:9px;padding:6px 13px 6px 10px;border-radius:8px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.16);}
+.af-fdot{width:7px;height:7px;border-radius:50%;flex:none;}
+.af-fdot.ok{background:var(--spearmint);}
+.af-fdot.warn{background:var(--zest,#FFEB3D);}
+.af-ftx{display:flex;flex-direction:column;line-height:1.2;}
+.af-ftx b{font-size:12px;font-weight:700;}
+.af-ftx i{font-size:9.5px;font-style:normal;font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
+
+.af-bot{border-top:1px solid rgba(255,255,255,.18);padding:15px 0 24px;display:flex;align-items:center;justify-content:space-between;gap:10px 24px;flex-wrap:wrap;font-size:12px;}
+.af-legal{display:flex;align-items:center;gap:7px 18px;flex-wrap:wrap;}
+.af-legal a:hover{text-decoration:underline;}
+.af-build{display:flex;align-items:center;gap:9px;font-size:11.5px;}
+.af-env{font-size:9.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--zest,#FFEB3D);color:#3a3000;}
+
+/* ---------- option B: compact operator bar ---------- */
+.afb{color:#fff;font-family:var(--sans);background:var(--periwinkle-ink,#3C4279);}
+.afb a{color:#fff;text-decoration:none;}
+.afb a:hover{text-decoration:underline;}
+.afb-in{padding:0 clamp(20px,2.5vw,36px);}
+.afb-top{display:flex;align-items:center;justify-content:space-between;gap:14px 30px;flex-wrap:wrap;padding:18px 0;}
+.afb-l{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.afb-wm{height:15px;width:auto;display:block;}
+.afb-stat{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;}
+.afb-links{display:flex;align-items:center;gap:7px 20px;flex-wrap:wrap;font-size:13px;}
+.afb-bot{border-top:1px solid rgba(255,255,255,.18);padding:13px 0 20px;display:flex;align-items:center;justify-content:space-between;gap:10px 22px;flex-wrap:wrap;font-size:11.5px;}
+.afb-warn{display:flex;align-items:center;gap:9px;font-size:12px;}
+.afb-warn svg{width:14px;height:14px;stroke:var(--zest,#FFEB3D);fill:none;stroke-width:1.9;flex:none;}
+.afb-warn a{text-decoration:underline;font-weight:700;}
+
+.note{background:#fff;border:1px solid var(--line-soft);border-radius:13px;padding:16px 19px;margin-top:14px;}
+.note h3{font-size:12.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0 0 9px;}
+.note ul{margin:0;padding-left:19px;}
+.note li{font-size:13.5px;color:var(--ink-2);margin-bottom:7px;}
+.note li:last-child{margin-bottom:0;}
+.note li b{color:var(--ink);}
+.rec{border-left:3px solid var(--spearmint);}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="f-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9 6 9-6M3 7h18v10H3z"/></symbol>
+<symbol id="f-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5zM4 5.5v15"/></symbol>
+<symbol id="f-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h5v16h-5M11 8l4 4-4 4M15 12H4"/></symbol>
+<symbol id="f-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M8 11l4 4 4-4M4 19h16"/></symbol>
+<symbol id="f-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3zM12 10v4M12 17v0"/></symbol>
+</defs></svg>
+
+<div class="pwrap">
+  <span class="ptag">Preview only · not yet integrated</span>
+  <h1>A footer for Platform Admin</h1>
+  <p class="plede">The distributor footer sells: brand statement, marketing links, newsletter, accreditations, payment marks. Admin has no shopfront to sell, so each slot is re-pointed at what an operator actually needs — system status, reference documentation, and the data-backup warning that currently only lives in a settings tab. Same colour, type and geometry, so the two read as one family.</p>
+
+  <!-- ============ OPTION A ============ -->
+  <div class="opt">
+    <div class="opth"><span class="optn">Option A — System footer</span><span class="optt">Recommended</span></div>
+    <p class="optd">A direct counterpart to the distributor footer, slot for slot. Live platform status replaces the brand statement, reference docs replace the marketing links, the data-backup prompt replaces the newsletter, and feed-sync health replaces the accreditation row.</p>
+    <div class="frame">
+      <div class="fakepage">↑ page content ends here</div>
+      <footer class="af">
+        <div class="af-in">
+          <div class="af-hero">
+            <div>
+              <div class="af-eyebrow"><img src="assets/merchsmith-wordmark-white.png" alt="Merchsmith"><span>Platform Admin</span></div>
+              <div class="af-status"><i class="af-dot"></i>All systems operational</div>
+              <p class="af-sub">3 supplier feeds connected · 2,662 products · 4 distributors live. No failed jobs in the last 24 hours.</p>
+              <a class="af-cline" href="#"><svg><use href="#f-mail"/></svg>ops@merchsmith.com</a>
+              <a class="af-cline" href="#"><svg><use href="#f-book"/></svg>Developer index &amp; change history</a>
+              <a class="af-exit" href="#">Open the live store<svg><use href="#f-exit"/></svg></a>
+            </div>
+            <div class="af-col">
+              <h4>Manage</h4>
+              <a href="#">Suppliers</a><a href="#">Product database</a><a href="#">Curated range</a><a href="#">Store layout</a><a href="#">Platform branding</a>
+            </div>
+            <div class="af-col">
+              <h4>Reference</h4>
+              <a href="#">Field mapping</a><a href="#">Status reference</a><a href="#">Product feed spec</a><a href="#">Brand guide</a><a href="#">Platform brief</a>
+            </div>
+          </div>
+
+          <div class="af-band">
+            <div class="af-bandtx">
+              <h4><svg><use href="#f-warn"/></svg>Data backup</h4>
+              <p>Every platform record lives in this browser only. Clearing site data erases it, and no web page can prevent that — a downloaded backup is the only safeguard.</p>
+            </div>
+            <div class="af-bandact">
+              <span class="af-when">Last backup: 3 days ago</span>
+              <button class="af-btn"><svg><use href="#f-down"/></svg>Download backup</button>
+              <button class="af-btn ghost">Restore</button>
+            </div>
+          </div>
+
+          <div class="af-strip">
+            <div class="af-feeds">
+              <span class="af-flabel">Feeds</span>
+              <span class="af-feed"><i class="af-fdot ok"></i><span class="af-ftx"><b>PF Concept</b><i>Synced 2h ago</i></span></span>
+              <span class="af-feed"><i class="af-fdot ok"></i><span class="af-ftx"><b>Xoopar</b><i>Synced 5h ago</i></span></span>
+              <span class="af-feed"><i class="af-fdot warn"></i><span class="af-ftx"><b>Bio Labs</b><i>Manual · 12 days</i></span></span>
+            </div>
+            <div class="af-build"><span class="af-env">Prototype</span><span>localStorage data layer · no backend</span></div>
+          </div>
+
+          <div class="af-bot">
+            <div class="af-legal">
+              <span>© 2026 Merchsmith</span><a href="#">Platform terms</a><a href="#">Operator privacy</a><a href="#">Support</a>
+            </div>
+            <span>Build 2026.09.21</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <div class="note rec">
+      <h3>Why this one</h3>
+      <ul>
+        <li><b>It surfaces the backup warning platform-wide.</b> Right now that only appears if you go looking in Settings → Data backup. On a prototype with no backend, that is the single highest-consequence thing an operator can forget.</li>
+        <li><b>Feed health earns its place.</b> Stale supplier data is the most common cause of wrong prices in the store, and nothing on the platform currently shows it at a glance.</li>
+        <li><b>Reference docs stop being invisible.</b> Field mapping, status reference and the feed spec exist but are only reachable from the Developer Index.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ OPTION B ============ -->
+  <div class="opt">
+    <div class="opth"><span class="optn">Option B — Compact operator bar</span></div>
+    <p class="optd">Two rows, no hero. The same information priorities, condensed to roughly a fifth of the height — on the assumption that an admin console is a workspace and a tall footer is dead weight below every table.</p>
+    <div class="frame">
+      <div class="fakepage">↑ page content ends here</div>
+      <footer class="afb">
+        <div class="afb-in">
+          <div class="afb-top">
+            <div class="afb-l">
+              <img class="afb-wm" src="assets/merchsmith-wordmark-white.png" alt="Merchsmith">
+              <span class="afb-stat"><i class="af-dot" style="width:9px;height:9px;box-shadow:0 0 0 3px rgba(54,192,160,.25)"></i>All systems operational · 3 feeds · 2,662 products</span>
+            </div>
+            <nav class="afb-links">
+              <a href="#">Field mapping</a><a href="#">Status reference</a><a href="#">Feed spec</a><a href="#">Brand guide</a><a href="#">Developer index</a><a href="#">Open store ↗</a>
+            </nav>
+          </div>
+          <div class="afb-bot">
+            <span class="afb-warn"><svg><use href="#f-warn"/></svg>Data lives in this browser only. Last backup 3 days ago — <a href="#">download a backup</a>.</span>
+            <span>© 2026 Merchsmith · Prototype · Build 2026.09.21</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <div class="note">
+      <h3>Trade-off</h3>
+      <ul>
+        <li>Keeps every screen's working area intact, which matters on the product database and curated range.</li>
+        <li>Loses the feed-by-feed status, the restore action, and the grouped navigation — the backup warning survives as a single line.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:34px">
+    <h3>Open questions before I build it</h3>
+    <ul>
+      <li><b>Which option</b> — or A on the Overview and B everywhere else, which gets the full picture on the landing screen without taxing the working pages.</li>
+      <li><b>Is the status line real or decorative?</b> I can wire it to genuine counts (products, suppliers, distributors) and real feed timestamps, or leave it indicative for now.</li>
+      <li><b>Editable?</b> The distributor footer is configurable because distributors brand themselves. Admin is Merchsmith's own console, so I would hard-code it unless you want the links managed.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

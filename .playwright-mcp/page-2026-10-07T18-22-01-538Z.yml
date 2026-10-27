@@ -1,0 +1,199 @@
+- generic [ref=f23e1]:
+  - button "Open Next.js Dev Tools" [ref=f23e13] [cursor=pointer]
+  - alert [ref=f23e17]
+  - generic [ref=f23e19]:
+    - banner [ref=f23e20]:
+      - generic [ref=f23e21]:
+        - heading [level=6] [ref=f23e243]: XD Connects
+        - generic [ref=f23e28]:
+          - textbox [ref=f23e244]:
+            - /placeholder: Search products, projects, orders…
+          - group [aria-hidden]
+        - generic [ref=f23e34]:
+          - button [ref=f23e245] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f23e40]: "4"
+          - button [expanded] [ref=f23e246] [cursor=pointer]
+    - complementary [ref=f23e247]:
+      - navigation [ref=f23e48]:
+        - link [ref=f23e248] [cursor=pointer]:
+          - /url: /
+        - link [ref=f23e249] [cursor=pointer]:
+          - /url: /supplier/products
+        - link [ref=f23e250] [cursor=pointer]:
+          - /url: /orders
+        - button [ref=f23e251] [cursor=pointer]
+        - link [ref=f23e252] [cursor=pointer]:
+          - /url: /supplier/connection-requests
+        - link [ref=f23e253] [cursor=pointer]:
+          - /url: /chats
+        - link [ref=f23e254] [cursor=pointer]:
+          - /url: /calendar
+        - link [ref=f23e255] [cursor=pointer]:
+          - /url: /finance
+        - link [ref=f23e256] [cursor=pointer]:
+          - /url: /supplier/settings
+    - main [ref=f23e87]:
+      - generic [ref=f23e88]: Finance
+      - generic [ref=f23e93]:
+        - heading [level=1] [ref=f23e257]: Finance
+        - generic [ref=f23e95]:
+          - group [ref=f23e258]:
+            - button [ref=f23e259] [cursor=pointer]: This month
+            - button [ref=f23e260] [cursor=pointer]: Last 30 days
+            - button [ref=f23e261] [cursor=pointer]: Last 90 days
+            - button [ref=f23e262] [cursor=pointer]: This quarter
+            - button [ref=f23e263] [cursor=pointer]: Year to date
+          - generic [ref=f23e102]:
+            - generic [ref=f23e103]: Compare with
+            - generic [ref=f23e104]:
+              - combobox [ref=f23e264] [cursor=pointer]: Previous period
+              - textbox [aria-hidden]: prev
+              - group [aria-hidden]:
+                - generic: Compare with
+          - button [ref=f23e265] [cursor=pointer]: Print / PDF
+        - generic [ref=f23e107]:
+          - generic [ref=f23e108]:
+            - generic [ref=f23e109]: Invoiced
+            - generic [ref=f23e110]: £0
+            - generic [ref=f23e241]:
+              - emphasis [ref=f23e242]: ▼ 100%
+              - text: vs comparison
+          - generic [ref=f23e111]:
+            - generic [ref=f23e112]: Invoiced this year
+            - generic [ref=f23e113]: £855
+          - generic [ref=f23e114]:
+            - generic [ref=f23e115]: Paid
+            - generic [ref=f23e116]: £0
+          - generic [ref=f23e117]:
+            - generic [ref=f23e118]: Paid this year
+            - generic [ref=f23e119]: £0
+          - generic [ref=f23e120]:
+            - generic [ref=f23e121]: Awaiting payment
+            - generic [ref=f23e122]: £855
+            - text: 1 invoices
+          - generic [ref=f23e123]:
+            - generic [ref=f23e124]: Overdue
+            - generic [ref=f23e125]: £855
+            - text: 1 invoices
+          - generic [ref=f23e126]:
+            - generic [ref=f23e127]: Avg days to be paid
+            - generic [ref=f23e128]: 0 days
+        - generic [ref=f23e129]:
+          - generic [ref=f23e130]:
+            - heading [level=3] [ref=f23e266]: Needs attention
+            - link [ref=f23e267] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f23e135]: "5"
+              - generic [ref=f23e136]: POs not yet invoiced
+              - generic [ref=f23e137]: →
+          - generic [ref=f23e138]:
+            - heading [level=3] [ref=f23e268]: POs not yet invoiced
+            - generic [ref=f23e141]:
+              - generic [ref=f23e142]:
+                - generic [ref=f23e143]: PO-1002-1
+                - generic [ref=f23e146]: £1,020
+              - generic [ref=f23e147]:
+                - generic [ref=f23e148]: PO-1003-1
+                - generic [ref=f23e151]: £717
+              - generic [ref=f23e152]:
+                - generic [ref=f23e153]: PO-1004-1
+                - generic [ref=f23e156]: £1,368
+              - generic [ref=f23e157]:
+                - generic [ref=f23e158]: PO-1006-1
+                - generic [ref=f23e161]: £20
+              - generic [ref=f23e162]:
+                - generic [ref=f23e163]: PO-1007-1
+                - generic [ref=f23e166]: £353
+      - generic [ref=f23e168]:
+        - generic [ref=f23e169]:
+          - generic [ref=f23e170]:
+            - link [ref=f23e269] [cursor=pointer]:
+              - /url: /store/pages/contact
+              - text: Let's Talk.
+            - paragraph [ref=f23e172]: Sustainable promotional merchandise, branded in-house and delivered on time.
+          - generic [ref=f23e173]:
+            - heading [level=4] [ref=f23e270]: Company
+            - link [ref=f23e271] [cursor=pointer]:
+              - /url: /store/pages/about
+              - text: About us
+            - link [ref=f23e272] [cursor=pointer]:
+              - /url: /store/pages/environment
+              - text: Environmental footprint
+            - link [ref=f23e273] [cursor=pointer]:
+              - /url: /store/pages/value-chain
+              - text: Value chain
+            - link [ref=f23e274] [cursor=pointer]:
+              - /url: /store/pages/people
+              - text: People & culture
+          - generic [ref=f23e179]:
+            - heading [level=4] [ref=f23e275]: Let us help
+            - link [ref=f23e276] [cursor=pointer]:
+              - /url: /store/pages/faq
+              - text: FAQ
+            - link [ref=f23e277] [cursor=pointer]:
+              - /url: /store/pages/terms
+              - text: Terms & conditions
+            - link [ref=f23e278] [cursor=pointer]:
+              - /url: /store/pages/privacy
+              - text: Privacy
+            - link [ref=f23e279] [cursor=pointer]:
+              - /url: /store/pages/returns
+              - text: Returns
+            - link [ref=f23e280] [cursor=pointer]:
+              - /url: /store/pages/contact
+              - text: Contact us
+        - generic [ref=f23e186]:
+          - generic [ref=f23e187]:
+            - heading [level=4] [ref=f23e281]: Stay in touch
+            - paragraph [ref=f23e189]: Product drops, sustainability news and the occasional good idea. No more than monthly.
+          - generic [ref=f23e190]:
+            - textbox [ref=f23e282]:
+              - /placeholder: Your work email
+            - button [ref=f23e283] [cursor=pointer]: Sign up
+        - generic [ref=f23e199]:
+          - generic [ref=f23e200]: Accredited
+          - generic [ref=f23e201]: New accreditation
+        - generic [ref=f23e222]:
+          - generic [ref=f23e223]:
+            - generic [ref=f23e224]: © 2026 Test Distributor
+            - link [ref=f23e289] [cursor=pointer]:
+              - /url: /store/pages/cookies
+              - text: Cookie policy
+            - link [ref=f23e290] [cursor=pointer]:
+              - /url: /store/pages/accessibility
+              - text: Accessibility
+            - generic [ref=f23e227]: Powered by Merchsmith
+          - generic [ref=f23e228]: Secured by Stripe
+  - button [aria-hidden] [ref=f23e294] [cursor=pointer]
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f23e236]:
+    - button [ref=f23e238] [cursor=pointer]: ×
+  - menu [ref=f23e297]:
+    - generic [ref=f23e303]:
+      - generic [ref=f23e304]: Supplier Admin (Test)
+      - paragraph [ref=f23e305]: Supplier Admin · XD Connects
+    - menuitem "My profile" [active] [ref=f23e306] [cursor=pointer]
+    - menuitem "Notifications" [ref=f23e313] [cursor=pointer]
+    - generic "Account settings will be available soon" [ref=f23e320]:
+      - menuitem "Account settings Soon" [disabled]:
+        - generic: Account settings
+        - generic: Soon
+    - generic [ref=f23e321]:
+      - paragraph [ref=f23e323]: Switch profile
+      - menuitem "Platform admin admin@platform.com" [ref=f23e324] [cursor=pointer]:
+        - generic [ref=f23e325]:
+          - generic [ref=f23e326]: Platform admin
+          - paragraph [ref=f23e327]: admin@platform.com
+      - menuitem "Distributor admin admin@distributor.com" [ref=f23e328] [cursor=pointer]:
+        - generic [ref=f23e329]:
+          - generic [ref=f23e330]: Distributor admin
+          - paragraph [ref=f23e331]: admin@distributor.com
+      - menuitem "Supplier admin admin@supplier.com" [ref=f23e332] [cursor=pointer]:
+        - generic [ref=f23e336]:
+          - generic [ref=f23e337]: Supplier admin
+          - paragraph [ref=f23e338]: admin@supplier.com
+      - menuitem "Customer admin admin@customer.com" [ref=f23e339] [cursor=pointer]:
+        - generic [ref=f23e340]:
+          - generic [ref=f23e341]: Customer admin
+          - paragraph [ref=f23e342]: admin@customer.com
+    - menuitem "Sign out" [ref=f23e344] [cursor=pointer]

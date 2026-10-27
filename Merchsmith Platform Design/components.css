@@ -20,28 +20,85 @@
 .ms-pill.bad{background:var(--tint-red);color:var(--flare);}
 .ms-pill.muted{background:var(--paper-2);color:var(--muted);}
 
-/* shared footer (injected by chrome.js) */
-.ms-footer{background:var(--periwinkle-deep,#4a4ac2);color:#fff;margin-top:48px;padding:14px 36px;font-family:var(--sans);display:flex;flex-direction:column;justify-content:center;position:relative;min-height:0;border-top:1px solid var(--line-soft,rgba(20,22,45,.12));}
-.ms-footer .powered{margin-top:auto;text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;opacity:.62;letter-spacing:.02em;}
-.ms-footer .powered .pwlogo{height:18px;width:auto;color:#fff;opacity:1;}
-.ms-footer .flinks{max-width:1280px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px 28px;flex-wrap:wrap;font-size:12.5px;}
-.ms-footer .flinks a{color:#fff;opacity:.82;text-decoration:none;}
-.ms-footer .flinks a:hover{opacity:1;text-decoration:underline;}
-.ms-footer .fcol{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px 22px;align-items:center;justify-content:flex-end;}
-.ms-footer .fsocial a{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);opacity:1;transition:background .15s;}
-.ms-footer .fsocial a:hover{background:rgba(255,255,255,.24);}
-.ms-footer .fsocial svg{width:17px;height:17px;color:#fff;}
-.ms-footer .cobr{display:flex;align-items:center;justify-content:center;gap:16px;}
-.ms-footer .cobr .cust{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:14px;opacity:.95;}
-.ms-footer .cobr .cdot{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:10px;font-weight:800;}
-.ms-footer .cobr .x{opacity:.5;}
-.ms-footer .cobr .mojo{font-family:var(--serif,"EB Garamond",Georgia,serif);font-weight:500;font-size:26px;letter-spacing:-.01em;color:#fff;}
-.ms-footer .flinks-dup-removed{display:none;}
-.ms-footer .flinks a{color:#fff;opacity:.82;text-decoration:none;}
-.ms-footer .flinks a:hover{opacity:1;text-decoration:underline;}
-.ms-footer .fcol{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px 22px;justify-content:flex-end;}
-.ms-footer .fcol.r{text-align:right;}
-.ms-footer .fsocial{display:flex;gap:12px;align-items:center;}
+/* ===== shared footer (injected by chrome.js) — brand-led editorial =====
+   "Let's Talk." leads at display size; everything else is arranged quietly
+   around it on hairline rules. The newsletter sits in its own band so it does
+   not compete with that headline. Distributor-editable: Settings → Footer.
+   Colour follows --periwinkle-deep, so it tracks the chosen colourway. */
+.ms-footer{color:#fff;margin-top:48px;font-family:var(--sans);
+  /* the palette's own darkest brand tone — themed per colourway alongside the accent,
+     and dark enough to host white body text at full opacity on every theme */
+  background:var(--periwinkle-ink,#3C4279);}
+.ms-footer{--msf-onlight:var(--periwinkle-ink,#3C4279);}
+.ms-footer a{color:#fff;text-decoration:none;}
+/* One footer width everywhere: no cap, sharing the page's gutter (matching .main's
+   clamp), so the footer reads identically on every page regardless of how the content
+   above it is capped. */
+.msf-in{width:100%;max-width:none;margin:0;padding:0 var(--page-gutter,clamp(20px,2.5vw,36px));}
+
+/* hero: lead block + link columns */
+.msf-hero{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:40px;padding:42px 0 38px;align-items:start;}
+@media(max-width:1000px){.msf-hero{grid-template-columns:1fr 1fr;gap:34px;}}
+@media(max-width:620px){.msf-hero{grid-template-columns:1fr;gap:30px;}}
+.msf-eyebrow{display:block;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;}
+.msf-talkbig{display:block;font-family:var(--serif,"EB Garamond",Georgia,serif);font-weight:500;font-size:46px;line-height:1.02;letter-spacing:-.015em;margin:-6px 0 14px;}
+.msf-col h4{margin-top:0;}
+@media(max-width:620px){.msf-talkbig{font-size:36px;}}
+.msf-blurb{font-size:13px;line-height:1.6;margin:0 0 16px;max-width:36ch;}
+.msf-contact{display:flex;flex-direction:column;gap:2px;}
+.msf-cline{display:flex;align-items:center;gap:9px;font-size:13.5px;padding:5px 0;}
+.msf-cline:hover{text-decoration:underline;}
+.msf-cline svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;flex:none;}
+.msf-exit{display:inline-flex;align-items:center;gap:9px;white-space:nowrap;margin-top:17px;font-size:13px;font-weight:700;border:1.5px solid rgba(255,255,255,.45);border-radius:999px;padding:9px 17px;transition:background .15s,border-color .15s;}
+.msf-exit:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.6);}
+.msf-exit svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.9;}
+
+.msf-col h4{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin:8px 0 14px;}
+.msf-col a{display:block;font-size:13.5px;padding:6px 0;}
+.msf-col a:hover{text-decoration:underline;}
+
+/* newsletter band */
+.msf-newsband{border-top:1px solid rgba(255,255,255,.18);padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:16px 40px;flex-wrap:wrap;}
+.msf-newstext h4{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin:0 0 6px;}
+.msf-newstext p{font-size:13px;line-height:1.55;margin:0;max-width:56ch;}
+.msf-form{display:flex;gap:8px;flex-wrap:wrap;}
+.msf-form input{width:230px;font-family:var(--sans);font-size:13px;color:#fff;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.26);border-radius:9px;padding:9px 12px;}
+.msf-form input::placeholder{color:rgba(255,255,255,.6);}
+.msf-form input:focus{outline:0;border-color:#fff;background:rgba(255,255,255,.18);}
+.msf-form button{font-family:var(--sans);font-size:13px;font-weight:800;white-space:nowrap;flex:none;color:var(--msf-onlight);background:#fff;border:0;border-radius:9px;padding:9px 18px;cursor:pointer;}
+.msf-form button:hover{opacity:.9;}
+.msf-newsok{font-size:13.5px;font-weight:700;margin:0;}
+
+/* accreditations + social */
+.msf-strip{border-top:1px solid rgba(255,255,255,.18);padding:20px 0;display:flex;align-items:center;justify-content:space-between;gap:18px 34px;flex-wrap:wrap;}
+.msf-accred{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+/* placeholder accreditation lockups: emblem + two-line name, so the row reads as real
+   certification marks. Replaced wholesale by artwork when a logo file is uploaded. */
+.msf-acc{display:flex;align-items:center;gap:9px;padding:7px 13px 7px 10px;border-radius:8px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.16);}
+.msf-mark{width:26px;height:26px;flex:none;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.msf-acctx{display:flex;flex-direction:column;line-height:1.15;text-align:left;}
+.msf-acctx b{font-size:8.5px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;}
+.msf-acctx i{font-size:12px;font-style:normal;font-weight:700;letter-spacing:-.005em;}
+/* real logo artwork: no plate, per-logo height set inline (aspect ratios vary 0.6–3.1) */
+.msf-acc.has{background:none;border:0;padding:0;}
+.msf-acc img{height:38px;width:auto;max-width:170px;object-fit:contain;display:block;}
+.msf-accred:has(.has){gap:26px;}
+.msf-social{display:flex;gap:8px;}
+.msf-social a{width:31px;height:31px;border-radius:50%;background:rgba(255,255,255,.13);display:grid;place-items:center;transition:background .15s;}
+.msf-social a:hover{background:rgba(255,255,255,.26);}
+.msf-social svg{width:14px;height:14px;}
+
+/* bottom rule */
+.msf-bot{border-top:1px solid rgba(255,255,255,.18);padding:16px 0 26px;display:flex;align-items:center;justify-content:space-between;gap:12px 26px;flex-wrap:wrap;font-size:12px;}
+.msf-bot a:hover{text-decoration:underline;}
+.msf-legal{display:flex;align-items:center;gap:7px 18px;flex-wrap:wrap;}
+.msf-pay{display:flex;align-items:center;gap:7px;}
+.msf-stripe{font-size:11.5px;font-weight:800;margin-right:2px;}
+.msf-card{height:20px;padding:0 7px;border-radius:3px;background:#fff;color:#1a2340;font-size:7.5px;font-weight:800;display:grid;place-items:center;text-transform:uppercase;}
+/* real card marks, white-on-transparent; height per mark since aspects differ */
+.msf-cardimg{height:22px;width:auto;object-fit:contain;display:block;}
+.msf-pay{gap:11px;}
+@media print{.ms-footer{display:none;}}
 
 /* toast (shared) */
 .ms-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink,#23231f);color:#fff;

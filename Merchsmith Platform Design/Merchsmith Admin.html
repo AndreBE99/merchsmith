@@ -27,10 +27,12 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .login .row{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;margin:4px 0 20px;}
 .login .row label{display:flex;align-items:center;gap:7px;color:var(--ink-2);}
 .login .row a{color:var(--periwinkle-deep);text-decoration:none;font-weight:600;}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:11px;padding:12px 18px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;width:100%;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--periwinkle);color:#fff;border:0;border-radius:11px;padding:12px 18px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;width:auto;}
+.login .btn{width:100%;}   /* the stacked sign-in buttons are the only ones that fill */
 .btn:hover{filter:brightness(1.06);}
-.btn.ghost{background:#fff;color:var(--periwinkle-deep);border:1.5px solid var(--line-soft);width:auto;}
-.btn.sm{padding:8px 13px;font-size:13px;border-radius:9px;width:auto;}
+.btn.ghost{background:#fff;color:var(--periwinkle-deep);border:1.5px solid var(--line-soft);}
+.btn.ghost:hover{border-color:var(--periwinkle);}
+.btn.sm{padding:8px 13px;font-size:13px;border-radius:9px;}
 .sso{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:12px;}
 .sso::before,.sso::after{content:"";flex:1;height:1px;background:var(--line-soft);}
 .btn.sso-btn{background:#fff;color:var(--ink);border:1.5px solid var(--line-soft);}
@@ -56,7 +58,7 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .ghostbar .icn{width:17px;height:17px;}
 .ghostbar .exit{margin-left:auto;background:#fff;color:var(--flare);border:0;border-radius:8px;padding:6px 13px;font:inherit;font-weight:700;font-size:12.5px;cursor:pointer;}
 
-.main{max-width:1240px;margin:0 auto;padding:28px 36px 90px;}
+.main{width:100%;max-width:none;padding:28px var(--page-gutter) 90px;}
 .ptitle{font-family:var(--serif);font-weight:500;font-size:34px;margin:0;}
 .psub{font-size:14px;color:var(--text-soft);margin-top:8px;}
 .statbar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:24px 0 6px;}
@@ -82,26 +84,62 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .fbtn.on{background:var(--ink);color:#fff;border-color:var(--ink);}
 
 /* directory table */
+/* Wide tables (8 columns since the seat columns arrived) scroll inside their own
+   container rather than pushing the page sideways — same pattern as .prodtbl-wrap
+   in the supplier portal. min-width stops the columns crushing before it kicks in. */
+.tblscroll{overflow-x:auto;border-radius:14px;}
+.tblscroll>.dirtable{min-width:860px;}
+.tblscroll>.dtbl{min-width:1580px;}
+.tblscroll>.stbl{min-width:1500px;}
+.stype{font-size:11px;font-weight:800;border-radius:999px;padding:3px 9px;white-space:nowrap;background:var(--paper-2);color:var(--ink);}
+.stype.st-both{background:var(--tint-peri);color:var(--periwinkle-ink);}
+.stype.st-prod{background:var(--tint-green);color:var(--green-deep);}
+.stype.st-brand{background:#fdeef0;color:#a33f43;}
+.dfilters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:-4px 0 14px;}
+.dfilters select{font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-2);background:#fff;border:1.5px solid var(--line-soft);border-radius:999px;padding:6px 12px;cursor:pointer;}
+.dfilters select.on{border-color:var(--ink);color:var(--ink);}
+.dfilters .dfclear{font:inherit;font-size:12.5px;font-weight:700;color:var(--periwinkle-deep);background:none;border:0;cursor:pointer;padding:6px 4px;}
+.dtbl th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap;}
+.dtbl th[data-sort]:hover{color:var(--ink);}
+.dtbl th .sarr{display:inline-block;width:10px;margin-left:3px;color:var(--ink);}
+.dtbl td.dsub,.dtbl div.dsub{font-size:12.5px;color:var(--text-soft);white-space:nowrap;}
+.dtbl td.dsub b,.dtbl div.dsub b{display:block;font-size:13.5px;color:var(--ink);font-weight:600;}
+.dtbl td.dsub.warn b{color:#b4232c;}
+.dtbl b.dname{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;}
+.dtbl b.dname .dtag{margin-left:0;}
+.dtag{display:inline-block;white-space:nowrap;font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:1px;background:var(--paper-2);color:var(--ink-3);}
+.dtag.unread{background:var(--periwinkle-deep);color:#fff;text-transform:none;letter-spacing:0;}
+.drange{display:block;font-size:12px;color:var(--text-soft);margin-top:4px;white-space:nowrap;}
+.dmenu-btn{min-width:34px;justify-content:center;}
+.dmenu{position:fixed;z-index:400;background:#fff;border:1px solid var(--line-soft);border-radius:12px;box-shadow:0 12px 32px rgba(20,24,60,.16);padding:6px;min-width:230px;display:flex;flex-direction:column;}
+.dmenu button{font:inherit;font-size:13.5px;text-align:left;background:none;border:0;border-radius:8px;padding:9px 11px;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;gap:1px;}
+.dmenu button:hover:not(:disabled){background:var(--paper);}
+.dmenu button:disabled{color:var(--muted);cursor:default;}
+.dmenu button span{font-size:11.5px;color:var(--muted);}
+.dmenu button.danger{color:#b4232c;}
+.dmenu hr{border:0;border-top:1px solid var(--paper-2);margin:4px 2px;}
 .dirtable{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line-soft);border-radius:14px;overflow:hidden;}
 .dirtable thead th{text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:13px 16px;border-bottom:1px solid var(--line-soft);background:var(--paper-2);}
 .dirtable tbody td{padding:13px 16px;border-bottom:1px solid var(--paper-2);font-size:13.5px;vertical-align:middle;}
 .dirtable tbody tr:last-child td{border-bottom:0;}
 .dirtable tbody tr{cursor:pointer;}
-.dirtable tbody tr:hover{background:var(--paper);}
+.dirtable tbody tr:hover{background:rgba(255,235,61,.08);}
 .orgcell{display:flex;align-items:center;gap:12px;}
 .orglogo{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px;flex:none;background:var(--periwinkle-deep);}
 .orglogo.prod{background:#8246af;} .orglogo.brand{background:var(--periwinkle-deep);} .orglogo.both{background:var(--spearmint-deep,#2f8f5b);} .orglogo.dist{background:var(--slate,#51768c);}
 .orgcell b{font-size:14px;display:block;}
 .orgcell span{font-size:12px;color:var(--muted);}
 .scell{font-weight:700;}
-.plan{font-size:11px;font-weight:800;border-radius:999px;padding:3px 9px;background:var(--tint-peri);color:var(--periwinkle-ink);}
+.plan{font-size:11px;font-weight:800;border-radius:999px;padding:3px 9px;background:var(--pc,var(--paper-2));color:var(--ink);}
+.pl-starter{--pc:var(--blossom);}
+.pl-growth{--pc:var(--sky);}
+.pl-scale{--pc:var(--spearmint);}
 .stbadge{font-size:10.5px;font-weight:800;border-radius:999px;padding:3px 9px;}
 .st-active{background:var(--tint-green);color:var(--green-deep);}
-.st-trial{background:#e6e9fb;color:var(--periwinkle-deep);}
 .st-past_due{background:#fbeccd;color:#9a6b1f;}
 .st-suspended{background:var(--tint-red);color:var(--flare);}
 .st-pending{background:#fbeccd;color:#9a6b1f;}
-.st-invited{background:#e6e9fb;color:var(--periwinkle-deep);}
+.st-invited{background:#ffe8e9;color:#a33f43;}
 .st-needs_attention{background:#fbeccd;color:#9a6b1f;}
 .map-ok{color:var(--green-deep);font-weight:700;}
 .map-warn{color:#9a6b1f;font-weight:700;}
@@ -136,8 +174,8 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 /* detail drawer */
 .scrim{position:fixed;inset:0;background:rgba(22,24,28,.5);backdrop-filter:blur(3px);display:none;z-index:80;}
 .scrim.open{display:block;}
-.drawer{position:fixed;top:0;right:0;height:100vh;width:min(540px,100%);background:var(--paper);box-shadow:-20px 0 60px rgba(20,22,45,.3);transform:translateX(100%);transition:transform .28s cubic-bezier(.22,.61,.36,1);z-index:90;overflow-y:auto;}
-.drawer.open{transform:translateX(0);}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:min(540px,100%);background:var(--paper);transform:translateX(100%);transition:transform .28s cubic-bezier(.22,.61,.36,1);z-index:90;overflow-y:auto;}
+.drawer.open{transform:translateX(0);box-shadow:-20px 0 60px rgba(20,22,45,.3);}
 .dwr-head{background:#fff;border-bottom:1px solid var(--line-soft);padding:22px 26px;display:flex;align-items:flex-start;gap:15px;position:sticky;top:0;z-index:2;}
 .dwr-x{margin-left:auto;border:0;background:none;font-size:24px;color:var(--muted);cursor:pointer;line-height:1;}
 .dwr-body{padding:22px 26px 60px;}
@@ -160,36 +198,113 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:12px 20px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:200;opacity:0;transition:opacity .25s,transform .25s;}
 .toast.on{opacity:1;transform:translateX(-50%);}
 
-/* ===== Admin home — sidebar + overview (Merchsmith brand) ===== */
-.app.on{display:flex;min-height:100vh;}
-.aside{width:248px;flex:none;background:linear-gradient(180deg,#16172a,#1f2140);color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
-.aside-brand{display:flex;align-items:center;gap:11px;padding:22px 22px 18px;}
-.aside-mark{width:30px;height:30px;color:#fff;}
-.aside-wm{font-family:var(--serif);font-weight:600;font-size:23px;letter-spacing:-.01em;}
-.aside-nav{display:flex;flex-direction:column;gap:3px;padding:8px 12px;flex:1;}
-.anav{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;color:rgba(255,255,255,.66);font:inherit;font-size:14px;font-weight:600;padding:11px 13px;border-radius:11px;cursor:pointer;text-align:left;transition:background .15s,color .15s;position:relative;}
-.anav .icn{width:19px;height:19px;flex:none;}
-.anav:hover{background:rgba(255,255,255,.07);color:#fff;}
-.anav.active{background:rgba(255,255,255,.12);color:#fff;}
-.anav.active::before{content:"";position:absolute;left:-12px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--periwinkle);}
-.anav .navct{margin-left:auto;font-size:11px;font-weight:800;background:rgba(255,255,255,.16);border-radius:999px;padding:1px 8px;}
-.aside-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.1);}
-.aside-op{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.aside-op .av{width:34px;height:34px;border-radius:50%;background:var(--periwinkle);display:grid;place-items:center;font-weight:800;font-size:12px;flex:none;}
-.aside-op b{display:block;font-size:13.5px;}
-.aside-op span{font-size:11.5px;color:rgba(255,255,255,.55);}
-.aside-foot .logout{color:rgba(255,255,255,.6);font-size:12.5px;font-weight:600;cursor:pointer;}
-.aside-foot .logout:hover{color:#fff;}
-.appmain{flex:1;min-width:0;}
+/* ===== Admin shell — full-width top bar + hover rail =====
+   Mirrors the distributor view: same header anatomy (logo · search · account)
+   and the same permanent 68px icon rail with hover flyouts, so operators moving
+   between the two consoles meet one navigation model. */
+.app.on{display:block;min-height:100vh;}
+/* The top bar IS the distributor header — built by chrome.js (.ms-hsearch centred,
+   .ms-htools right, periwinkle-deep ground) so the two consoles cannot drift apart.
+   Only the brand mark differs: Merchsmith's wordmark instead of the distributor lockup. */
+/* Admin alone runs the lighter --periwinkle (the brand's primary, per styles.css
+   .btn--primary); chrome.js keeps the distributor on --periwinkle-deep. */
+.app .header{display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:11px var(--page-gutter);background:var(--periwinkle)!important;}
+.adm-brand{flex:none;display:flex;align-items:center;}
+.adm-wmimg{height:22px;width:auto;display:block;}
 
-.panel{display:none;padding:30px 40px 90px;max-width:1180px;animation:fadeUp .4s ease both;}
+
+.appbody{display:flex;align-items:stretch;}
+/* rail — same geometry and behaviour as the distributor rail (sidebar.js) */
+.app{--adm-footh:51px;}   /* divider + 12px padding + the 38px sign-out button */
+.aside{width:68px;flex:none;background:#fff;border-right:1px solid var(--line-soft);
+  position:sticky;top:var(--adm-headh,57px);height:calc(100vh - var(--adm-headh,57px));
+  display:flex;flex-direction:column;padding:14px 0 0;z-index:40;overflow-y:auto;}
+.aside-nav{display:flex;flex-direction:column;gap:4px;padding:0 12px;}
+.anav{position:relative;width:44px;height:44px;border:0;background:none;border-radius:12px;cursor:pointer;
+  display:grid;place-items:center;color:var(--ink-3,#6b6b76);transition:background .14s,color .14s;}
+.anav .icn{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.anav > span{display:none;}
+.anav:hover,.anav.hot{background:var(--paper);color:var(--periwinkle-deep);}
+.anav.active{background:var(--tint-peri,#eceefb);color:var(--periwinkle-deep);}
+.anav.active::before{content:"";position:absolute;left:-12px;top:11px;bottom:11px;width:3px;
+  border-radius:0 3px 3px 0;background:var(--periwinkle-deep);}
+/* count becomes a dot on the rail; the number itself lives in the flyout */
+.anav .navct{position:absolute;top:7px;right:7px;font-size:0;width:7px;height:7px;border-radius:50%;
+  background:var(--periwinkle);border:1.5px solid #fff;padding:0;}
+.anav .navct:empty{display:none;}
+.aside-foot{margin-top:auto;position:sticky;bottom:0;background:#fff;box-sizing:border-box;
+  height:var(--adm-footh);padding:12px 12px 0;border-top:1px solid var(--line-soft);
+  display:flex;justify-content:center;flex:none;}
+.aside-foot .logout{color:var(--muted);cursor:pointer;display:grid;place-items:center;width:38px;height:38px;border-radius:10px;}
+.aside-foot .logout:hover{background:var(--paper);color:var(--flare);}
+.aside-foot .logout svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+
+.adm-bar{position:fixed;left:68px;right:0;bottom:0;z-index:38;
+  height:var(--adm-footh);display:flex;align-items:center;
+  background:var(--blossom,#FFA2A5);color:#fff;font-size:12px;}
+.adm-bar-in{width:100%;display:flex;align-items:center;justify-content:space-between;
+  gap:6px 26px;flex-wrap:wrap;padding:0 var(--page-gutter);}
+.adm-bar-g{display:flex;align-items:center;gap:8px 22px;flex-wrap:wrap;}
+.adm-bar a{color:#fff;text-decoration:none;font-weight:700;}
+.adm-bar a:hover{text-decoration:underline;}
+.adm-bar-b{font-weight:700;}
+/* Platform settings: one sub-section at a time behind a tab row, as in Distributor Settings */
+#panel-settings .settabs{display:flex;gap:4px;margin:22px 0 24px;border-bottom:1px solid var(--line-soft);overflow-x:auto;scrollbar-width:none;}
+#panel-settings .settabs::-webkit-scrollbar{display:none;}
+#panel-settings .settab{flex:none;white-space:nowrap;border:0;background:none;font:inherit;font-size:14.5px;font-weight:700;color:var(--ink-3);padding:11px 16px;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;}
+#panel-settings .settab:hover{color:var(--ink);}
+#panel-settings .settab.active{color:var(--periwinkle-deep);border-bottom-color:var(--periwinkle-deep);}
+#panel-settings .setsec[hidden]{display:none;}
+#panel-settings .setsec>h2:first-child{display:none;}
+/* clear the fixed bar: page content, and the two floating widgets that would
+   otherwise sit on top of it (identity switcher, chat button) */
+.app.on .panel{padding-bottom:96px;}
+body:has(.adm-bar) .msid-switch{bottom:calc(var(--adm-footh,51px) + 14px);}
+body:has(.adm-bar) .chat-fab{bottom:calc(var(--adm-footh,51px) + 18px);}
+@media print{.adm-bar{display:none;}}
+
+.adm-fly{position:fixed;left:68px;z-index:55;min-width:214px;background:#fff;border:1px solid var(--line-soft);
+  border-radius:14px;box-shadow:0 18px 46px rgba(20,22,45,.17);padding:12px;
+  opacity:0;transform:translateX(-6px);pointer-events:none;transition:opacity .15s,transform .15s;}
+.adm-fly.on{opacity:1;transform:none;pointer-events:auto;}
+.adm-fly::before{content:"";position:absolute;left:-14px;top:0;width:14px;height:100%;}
+.adm-fly h4{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  margin:2px 0 8px;padding:0 10px;}
+.adm-fly button{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;
+  border:0;background:none;font:inherit;font-size:14px;font-weight:600;color:var(--ink-2);text-align:left;
+  padding:9px 10px;border-radius:9px;cursor:pointer;white-space:nowrap;}
+.adm-fly button:hover{background:var(--paper);color:var(--periwinkle-deep);}
+.adm-fly button.active{background:var(--paper);color:var(--periwinkle-deep);font-weight:700;}
+.adm-fly .cnt{font-size:11px;font-weight:800;color:var(--muted);}
+.adm-fly button.active .cnt{color:var(--periwinkle-deep);}
+.appmain{flex:1;min-width:0;}
+/* The multi-colour outlined wordmark from the brand guide, used as a cropped signature
+   rather than a decorative tint: it bleeds off the top-right of the Overview so only a
+   fragment of the letterforms shows. Stroke-only art, so it stays light at full size. */
+/* min-height keeps the crop running to the bottom of the window even when the
+   Overview's content is short, so the pattern never stops mid-screen */
+#panel-overview{position:relative;overflow:hidden;min-height:calc(100vh - var(--hh,64px));}
+#panel-overview::before{content:"";position:absolute;inset:0;
+  background:url('assets/merchsmith-outline-art.svg') no-repeat 34% 46%/auto 190%;
+  opacity:.26;pointer-events:none;z-index:0;}
+#panel-overview > *{position:relative;z-index:1;}
+@media(max-width:1100px){#panel-overview::before{background-size:auto 150%;}}
+/* and again in the attention panel's empty state, where there is room for it to read */
+.attn-empty{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:6px 0 2px;}
+.attn-empty img{width:190px;max-width:70%;height:auto;opacity:.85;}
+.attn-empty p{margin:0;font-size:13.5px;color:var(--ink-2);}
+.attn-empty b{font-family:var(--serif);font-weight:500;font-size:19px;color:var(--ink);display:block;margin-bottom:2px;}
+
+.panel{display:none;padding:30px var(--page-gutter) 90px;max-width:none;animation:fadeUp .4s ease both;}
 #panel-products{max-width:none;}
 .panel.active{display:block;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
 .phead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;}
 
 /* overview hero */
-.ovhero{position:relative;border-radius:22px;overflow:hidden;background:linear-gradient(120deg,var(--periwinkle-deep),#6b6bd6 60%,var(--periwinkle));color:#fff;padding:34px 36px;margin-bottom:8px;}
+.ovhero{position:relative;border-radius:22px;overflow:hidden;color:#fff;padding:34px 36px;margin-bottom:8px;
+  background:linear-gradient(118deg,var(--periwinkle-ink) 0%,var(--periwinkle-deep) 46%,var(--sky) 100%);}
 .ovhero-bg{position:absolute;inset:0;opacity:.16;background-image:radial-gradient(circle at 1px 1px,#fff 1.4px,transparent 0);background-size:22px 22px;}
 .ovhero-in{position:relative;}
 .ovhello{font-size:14px;font-weight:700;opacity:.85;margin-bottom:6px;}
@@ -199,12 +314,27 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .btn.ghost.light{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3);}
 .btn.ghost.light:hover{background:rgba(255,255,255,.22);}
 
-.statbar{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:22px 0 6px;}
-@media(max-width:1000px){.statbar{grid-template-columns:repeat(2,1fr);}.aside{width:212px;}}
-.sb{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:17px 18px;animation:fadeUp .5s ease both;}
-.sb b{display:block;font-family:var(--serif);font-weight:500;font-size:28px;line-height:1;}
-.sb span{font-size:12px;color:var(--muted);font-weight:600;}
-.sb .delta{font-size:11.5px;font-weight:800;margin-top:6px;display:inline-block;}
+.statbar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin:22px 0 6px;}
+@media(max-width:1200px){.statbar{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:1000px){.statbar{grid-template-columns:repeat(2,1fr);}}
+/* each stat takes one colour from the brand palette, so the row reads as five
+   distinct measures rather than five identical white cards */
+.sb{position:relative;background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:20px 20px 18px;
+  overflow:hidden;animation:fadeUp .5s ease both;}
+.sb::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--sb-accent,var(--periwinkle));}
+a.sblink{display:block;text-decoration:none;color:inherit;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;}
+a.sblink:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(40,44,80,.1);border-color:var(--sb-accent,var(--periwinkle));}
+.sb b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(34px,2.7vw,48px);
+  line-height:.98;letter-spacing:-.02em;color:var(--ink);}
+.sb:nth-child(1){--sb-accent:var(--periwinkle-deep);}
+.sb:nth-child(2){--sb-accent:var(--spearmint);}
+.sb:nth-child(3){--sb-accent:var(--sky);}
+.sb:nth-child(4){--sb-accent:var(--blossom);}
+.sb:nth-child(5){--sb-accent:var(--sprout);}
+.sb:nth-child(6){--sb-accent:var(--zest);}
+.sb span{display:block;margin-top:8px;font-size:11px;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);}
+.sb .delta{font-size:11.5px;font-weight:800;margin-top:6px;display:inline-block;letter-spacing:0;text-transform:none;}
 .sb .delta.up{color:var(--green-deep);}.sb .delta.flat{color:var(--muted);}
 
 .ovgrid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:22px;}
@@ -215,25 +345,46 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .ovcard-h h3{font-family:var(--serif);font-weight:500;font-size:18px;margin:0;}
 .ovlink,.ovtrend{font-size:12.5px;font-weight:700;color:var(--periwinkle-deep);cursor:pointer;}
 .ovtrend{color:var(--green-deep);}
-.spark{height:120px;}
+.spark{height:auto;}
+.mrrc{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;row-gap:8px;}
+.mrrc-y{display:flex;flex-direction:column;justify-content:space-between;height:200px;margin:-7px 0;font-size:11.5px;color:var(--muted);font-weight:600;text-align:right;}
+.mrrc-plot{position:relative;height:200px;}
+.mrrc-plot svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+.mrrc-grid{position:absolute;left:0;right:0;height:0;border-top:1px dashed var(--paper-2);}
+.mrrc-grid:first-child{border-top:1px solid var(--track);}
+.mrrc-pt{position:absolute;z-index:1;width:8px;height:8px;margin:0 0 -4px -4px;border-radius:50%;background:#fff;border:2px solid var(--spearmint);box-sizing:border-box;cursor:pointer;transition:transform .12s;}
+.mrrc-pt::before{content:"";position:absolute;inset:-10px;border-radius:50%;}
+.mrrc-pt:hover{transform:scale(1.35);z-index:3;background:var(--spearmint);}
+.mrrc-pt.last{width:11px;height:11px;margin:0 0 -5.5px -5.5px;background:var(--spearmint);}
+.mrrc-pt em{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:none;flex-direction:column;align-items:center;font-style:normal;font-size:12px;font-weight:800;color:var(--ink);background:#fff;border:1px solid var(--line-soft);box-shadow:0 6px 16px rgba(40,44,80,.12);border-radius:7px;padding:3px 8px;white-space:nowrap;pointer-events:none;}
+.mrrc-pt em small{font-size:10.5px;font-weight:700;color:var(--muted);}
+.mrrc-pt:hover em{display:flex;}
+.mrrc-pt:hover em{transform:translateX(-50%) scale(.74);transform-origin:bottom center;}
+.mrrc-pt.last em{display:flex;left:auto;right:-4px;transform:none;}
+.mrrc-pt.last em small{display:none;}
+.mrrc-pt.last:hover em small{display:block;}
+.mrrc-pt.last:hover em{transform:scale(.74);transform-origin:bottom right;}
+.mrrc-plot:has(.mrrc-pt:not(.last):hover) .mrrc-pt.last em{display:none;}
+.mrrc-x{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));font-size:11.5px;color:var(--muted);font-weight:600;text-align:center;}
+.mrrc-x span{white-space:nowrap;}
 .spark svg{width:100%;height:100%;overflow:visible;}
 .spark .area{fill:url(#sparkgrad);}
-.spark .line{fill:none;stroke:var(--periwinkle-deep);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 1.3s ease forwards;}
+.spark .line{fill:none;stroke:var(--spearmint);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;animation:draw 1.3s ease forwards;}
 @keyframes draw{to{stroke-dashoffset:0;}}
-.spark .dot{fill:var(--periwinkle-deep);}
+.spark .dot{fill:var(--spearmint);}
 .attn{display:flex;flex-direction:column;gap:9px;}
 .attn-row{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;background:var(--paper-2);cursor:pointer;}
 .attn-row:hover{background:var(--tint-peri);}
 .attn-ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:none;}
 .attn-ic .icn{width:15px;height:15px;color:#fff;}
-.ai-red{background:var(--flare);}.ai-amber{background:#d8943a;}.ai-grey{background:var(--muted);}
+.ai-red{background:var(--flare);}.ai-amber{background:#c79000;}.ai-grey{background:var(--slate);}
 .attn-row b{font-size:13.5px;display:block;}
 .attn-row span{font-size:12px;color:var(--text-soft);}
 .feed{display:flex;flex-direction:column;}
 .feed-row{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--paper-2);}
 .feed-row:first-child{border-top:0;}
 .feed-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex:none;}
-.fd-up{background:var(--green-deep);}.fd-trial{background:var(--periwinkle);}.fd-alert{background:var(--flare);}.fd-info{background:var(--muted);}
+.fd-up{background:var(--green-deep);}.fd-alert{background:var(--flare);}.fd-info{background:var(--muted);}
 .feed-row b{font-size:13.5px;}.feed-row .ft{font-size:13px;color:var(--ink-2);}
 .feed-row .fw{font-size:11.5px;color:var(--muted);margin-left:auto;white-space:nowrap;}
 .planmix{display:flex;flex-direction:column;gap:14px;}
@@ -247,16 +398,46 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 @media(max-width:900px){.plans{grid-template-columns:1fr;}}
 .plan-card{background:#fff;border:1.5px solid var(--line-soft);border-radius:18px;padding:24px 22px;position:relative;transition:transform .15s,box-shadow .15s,border-color .15s;}
 .plan-card:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(40,44,80,.1);}
-.plan-card.pop{border-color:var(--periwinkle);}
+.plan-card{border-top:6px solid var(--pc,var(--line-soft));}
+.plan-card.pop{border-color:var(--pc,var(--periwinkle));}
+.plan-card.pop .plan-pop{background:var(--pc,var(--periwinkle));color:var(--ink);}
 .plan-pop{position:absolute;top:-11px;left:22px;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--periwinkle);border-radius:999px;padding:4px 11px;}
 .plan-name{font-family:var(--serif);font-weight:500;font-size:22px;}
 .plan-tag{font-size:12.5px;color:var(--muted);margin:2px 0 14px;}
 .plan-price{font-family:var(--serif);font-weight:500;font-size:34px;}
 .plan-price span{font-size:14px;color:var(--muted);font-weight:400;font-family:var(--sans);}
-.plan-ct{font-size:12px;font-weight:700;color:var(--periwinkle-deep);background:var(--tint-peri);border-radius:999px;padding:3px 10px;display:inline-block;margin:12px 0;}
+.plan-ct{font-size:12px;font-weight:700;color:var(--ink);background:var(--pc,var(--tint-peri));border-radius:999px;padding:3px 10px;display:inline-block;margin:12px 0;}
 .plan-feats{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:9px;}
 .plan-feats li{font-size:13px;color:var(--ink-2);padding-left:24px;position:relative;}
 .plan-feats li::before{content:"";position:absolute;left:2px;top:5px;width:11px;height:7px;border-left:2px solid var(--green-deep);border-bottom:2px solid var(--green-deep);transform:rotate(-45deg);}
+/* seat-based plan cards: base price, included seats, per-seat overage — nothing else */
+.plan-seats{display:flex;flex-direction:column;gap:2px;margin:16px 0 0;padding-top:15px;border-top:1px solid var(--line-soft);}
+.plan-seats b{font-family:var(--serif);font-weight:500;font-size:26px;line-height:1.05;}
+.plan-seats span{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);}
+.plan-over{display:flex;align-items:baseline;gap:7px;margin-top:13px;padding-top:13px;border-top:1px solid var(--line-soft);}
+.plan-over b{font-size:17px;font-weight:800;}
+.plan-over span{font-size:12px;color:var(--ink-3);font-weight:600;}
+.incl-card{margin-top:16px;}
+.incl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:9px 22px;margin-top:4px;}
+.incl-grid li{list-style:none;font-size:13px;color:var(--ink-2);padding-left:24px;position:relative;}
+.incl-grid li::before{content:"";position:absolute;left:2px;top:5px;width:11px;height:7px;border-left:2px solid var(--green-deep);border-bottom:2px solid var(--green-deep);transform:rotate(-45deg);}
+.incl-note{font-size:13px;color:var(--ink-2);margin:0 0 14px;max-width:88ch;}
+.seatcell{display:flex;align-items:center;gap:9px;white-space:nowrap;}
+.seatbar{width:38px;height:5px;border-radius:99px;background:var(--paper-2);overflow:hidden;flex:none;}
+.seatbar i{display:block;height:100%;background:var(--periwinkle-deep);}
+.seatbar.over i{background:var(--flare);}
+.seatnum{font-weight:700;color:var(--ink);font-size:12.5px;}
+.seatnum.over{color:var(--flare);}
+.ovnote{font-size:12px;font-weight:700;color:var(--ink-3);}
+.overcell{font-size:12.5px;font-weight:700;color:var(--flare);white-space:nowrap;}
+.overcell.none{color:var(--ink-3);font-weight:600;}
+.seatbox{border:1px solid var(--line-soft);border-radius:13px;padding:15px 17px;}
+.seatbox.over{border-color:var(--flare);background:#fff6f4;}
+.seatbox-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+.seatbox-h b{font-size:15px;}
+.seatbar.big{width:100%;height:8px;}
+.seatbox-l{font-size:13px;color:var(--ink-2);margin:11px 0 0;}
+.seatbox-n{font-size:11.5px;color:var(--ink-3);margin:8px 0 0;}
 .dirtable.bare{border:0;border-radius:0;}
 .teamgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:8px;}
 @media(max-width:760px){.teamgrid{grid-template-columns:1fr;}}
@@ -266,6 +447,27 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .tm-card span{font-size:12.5px;color:var(--text-soft);}
 .tm-role{margin-left:auto;font-size:11px;font-weight:800;color:var(--periwinkle-deep);background:var(--tint-peri);border-radius:999px;padding:3px 10px;}
 .tm-card.inv{opacity:.7;}
+.tm-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0 16px;}
+.tm-stats>div{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:14px 16px;}
+.tm-stats b{display:block;font-family:var(--serif);font-weight:500;font-size:30px;line-height:1;}
+.tm-stats span{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);}
+@media(max-width:760px){.tm-stats{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.tm-av{width:36px;height:36px;border-radius:50%;overflow:hidden;flex:none;display:grid;place-items:center;background:var(--tint-peri);color:var(--periwinkle-ink);font-size:12px;font-weight:800;}
+.tm-you{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:var(--paper-2);color:var(--ink-3);border-radius:5px;padding:2px 6px;margin-left:4px;vertical-align:2px;}
+.tm-role{margin-left:0;display:inline-block;} .tm-role.r-owner{background:var(--periwinkle-deep);color:#fff;} .tm-role.r-billing{background:#fbeccd;color:#9a6b1f;} .tm-role.r-support{background:var(--tint-green);color:var(--green-deep);}
+.tm-mfa{font-size:11px;font-weight:800;color:var(--green-deep);} .tm-mfa.off{color:#b4232c;}
+tr.u-deact td{opacity:.55;}
+.tm-grid2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;margin-top:22px;}
+@media(max-width:1000px){.tm-grid2{grid-template-columns:1fr;}}
+.tm-card2{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:20px 22px;}
+.tm-card2 h3{font-family:var(--serif);font-weight:500;font-size:20px;margin:0 0 4px;} .tm-card2>p{font-size:13px;color:var(--text-soft);margin:0 0 14px;}
+.tm-ph,.tm-pr{display:grid;grid-template-columns:minmax(0,2.2fr) repeat(4,minmax(0,.7fr));gap:8px;align-items:center;padding:8px 0;font-size:13px;}
+.tm-ph{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line-soft);}
+.tm-ph span:not(:first-child),.tm-pr span:not(:first-child){text-align:center;}
+.tm-pr{border-bottom:1px solid var(--paper-2);} .tm-pr i{font-style:normal;} .tm-pr i.yes{color:var(--green-deep);font-weight:800;} .tm-pr i.no{color:var(--line);}
+.tm-rdesc{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--ink-2);} .tm-rdesc b{display:inline-block;min-width:62px;}
+.tm-log{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;} .tm-log li{font-size:13px;color:var(--ink-2);padding:9px 0;border-bottom:1px solid var(--paper-2);display:flex;flex-wrap:wrap;gap:4px;align-items:baseline;}
+.tm-log li em{font-style:normal;color:var(--muted);} .tm-log li span{margin-left:auto;font-size:11.5px;color:var(--muted);}
 .setcard{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:16px 20px;margin-top:12px;max-width:640px;}
 .setcard b{font-size:14.5px;display:block;}.setcard span{font-size:12.5px;color:var(--muted);}
 .toggle{width:42px;height:24px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;flex:none;transition:background .18s;}
@@ -298,22 +500,33 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<symbol id="a-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
-<symbol id="a-ghost" viewBox="0 0 24 24"><path d="M5 21V10a7 7 0 0 1 14 0v11l-2.3-1.6L14.4 21 12 19.4 9.6 21l-2.3-1.6z"/><circle cx="9.5" cy="11" r="1"/><circle cx="14.5" cy="11" r="1"/></symbol>
-<symbol id="a-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
-<symbol id="a-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/></symbol>
-<symbol id="a-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
-<symbol id="a-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h12l-2 4 2 4H5"/></symbol>
-<symbol id="a-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-<symbol id="a-bolt" viewBox="0 0 24 24"><path d="M13 3 4 14h7l-1 7 9-11h-7z"/></symbol>
-<symbol id="a-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.4"/><rect x="13" y="4" width="7" height="7" rx="1.4"/><rect x="4" y="13" width="7" height="7" rx="1.4"/><rect x="13" y="13" width="7" height="7" rx="1.4"/></symbol>
-<symbol id="a-store" viewBox="0 0 24 24"><path d="M4 9h16l-1-4H5zM4 9v10h16V9M9 19v-5h6v5"/></symbol>
-<symbol id="a-box" viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
-<symbol id="a-card" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
-<symbol id="a-people" viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5"/><path d="M16 6.5a3 3 0 0 1 0 5.8M21 20c0-3-1.8-4.6-4-4.9"/></symbol>
-<symbol id="a-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M21.5 12h-3M5.5 12h-3M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1M18.4 18.4l-2.1-2.1M7.7 7.7 5.6 5.6"/></symbol>
-<symbol id="a-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-<symbol id="a-up" viewBox="0 0 24 24"><path d="M5 17 11 9l4 4 5-7M14 6h6v6"/></symbol>
+<symbol id="a-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+<symbol id="a-ghost" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V10a7 7 0 0 1 14 0v11l-2.3-1.6L14.4 21 12 19.4 9.6 21l-2.3-1.6z"/><circle cx="9.5" cy="11" r="1"/><circle cx="14.5" cy="11" r="1"/></symbol>
+<symbol id="a-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="a-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5h5v5M19 5l-8 8M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/></symbol>
+<symbol id="a-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="a-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4M5 4h12l-2 4 2 4H5"/></symbol>
+<symbol id="a-arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="a-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3 4 14h7l-1 7 9-11h-7z"/></symbol>
+<symbol id="a-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.4"/><rect x="13" y="4" width="7" height="7" rx="1.4"/><rect x="4" y="13" width="7" height="7" rx="1.4"/><rect x="13" y="13" width="7" height="7" rx="1.4"/></symbol>
+<symbol id="a-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12.8V4h8.8l8.7 8.7a1.9 1.9 0 0 1 0 2.7l-6.1 6.1a1.9 1.9 0 0 1-2.7 0z"/><circle cx="7.6" cy="7.6" r="1.4"/></symbol>
+<symbol id="a-layout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M3.5 9.5h17M9.5 9.5V20M15.5 9.5V20"/></symbol>
+<symbol id="a-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3.6 2.6 5.3 5.9.85-4.25 4.15 1 5.85L12 17l-5.25 2.75 1-5.85L3.5 9.75l5.9-.85z"/></symbol>
+<symbol id="a-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16l-1-4H5zM4 9v10h16V9M9 19v-5h6v5"/></symbol>
+<symbol id="a-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
+<symbol id="a-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
+<symbol id="a-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.2"/><path d="M5.8 16.2c.6-1.6 1.8-2.4 3.2-2.4s2.6.8 3.2 2.4M14.5 10h3.5M14.5 13.5h2.5"/></symbol>
+<symbol id="a-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3"/><path d="M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5"/><path d="M16 6.5a3 3 0 0 1 0 5.8M21 20c0-3-1.8-4.6-4-4.9"/></symbol>
+<symbol id="a-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 0 1-11.8 7L4 20l1.5-5.2A8 8 0 1 1 21 11.5z"/></symbol>
+<symbol id="a-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h2M12 14h2M8 17h2"/></symbol>
+<symbol id="a-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+<symbol id="a-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></symbol>
+<symbol id="a-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M21.5 12h-3M5.5 12h-3M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1M18.4 18.4l-2.1-2.1M7.7 7.7 5.6 5.6"/></symbol>
+<symbol id="a-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 20v-6M12 20V9M17 20v-10"/></symbol>
+<symbol id="a-org" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V6l6-2.5V21M10 21V8.5L20 6v15M4 21h17M8 8H6m4 0H8m-2 3.5H6m4 0H8M6 15h2m6-4.5h2m-2 4h2"/></symbol>
+<symbol id="a-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v9H3zM14 9h4l3 3v3h-7M7 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></symbol>
+<symbol id="a-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="a-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17 11 9l4 4 5-7M14 6h6v6"/></symbol>
 </defs></svg>
 
 <!-- LOGIN -->
@@ -342,26 +555,32 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 
 <!-- APP -->
 <div class="app" id="app">
+  <header class="header">
+    <div class="brand adm-brand"><img class="adm-wmimg" src="assets/merchsmith-wordmark-white.png" alt="Merchsmith"></div>
+  </header>
+
+  <div class="appbody">
   <aside class="aside" id="aside">
-    <div class="aside-brand">
-      <svg class="aside-mark" viewBox="143.4 251.4 89.1 91.4"><path fill="currentColor" d="M194.66 336.80 C191.83 336.80 189.16 335.66 187.15 333.59 C185.15 331.54 184.04 328.79 184.03 325.87 L184.03 308.30 L190.95 308.30 L190.95 325.86 C190.95 326.88 191.34 327.84 192.04 328.56 C193.45 330.00 195.88 329.99 197.28 328.56 L217.53 307.71 C218.98 306.22 218.98 303.80 217.53 302.31 C216.83 301.59 215.90 301.19 214.91 301.19 L160.07 301.19 C157.23 301.18 154.56 300.04 152.56 297.98 C150.55 295.91 149.44 293.17 149.44 290.24 C149.44 287.33 150.55 284.58 152.56 282.51 L172.81 261.66 C176.95 257.39 183.69 257.40 187.83 261.66 C189.84 263.73 190.94 266.47 190.95 269.38 L190.95 286.95 L184.03 286.95 L184.03 269.39 C184.03 268.38 183.64 267.42 182.94 266.69 C181.54 265.26 179.10 265.25 177.70 266.70 L157.45 287.55 C156.75 288.27 156.36 289.23 156.36 290.24 C156.36 291.26 156.75 292.22 157.45 292.94 C158.15 293.66 159.09 294.07 160.08 294.07 L214.92 294.07 C217.76 294.07 220.42 295.22 222.43 297.28 C226.57 301.54 226.57 308.48 222.42 312.74 L202.17 333.59 C200.17 335.66 197.50 336.80 194.66 336.80"></path></svg>
-      <span class="aside-wm">merchsmith</span>
-    </div>
     <nav class="aside-nav" id="asideNav">
-      <button class="anav active" data-nav="overview"><svg class="icn"><use href="#a-grid"/></svg><span>Overview</span></button>
-      <button class="anav" data-nav="distributors"><svg class="icn"><use href="#a-store"/></svg><span>Distributors</span><b class="navct" id="navDist"></b></button>
-      <button class="anav" data-nav="suppliers"><svg class="icn"><use href="#a-box"/></svg><span>Suppliers</span><b class="navct" id="navSup"></b></button>
-      <button class="anav" data-nav="products"><svg class="icn"><use href="#a-grid"/></svg><span>Products</span><b class="navct" id="navProd"></b></button>
-      <button class="anav" data-nav="curated"><svg class="icn"><use href="#a-card"/></svg><span>Curated range</span><b class="navct" id="navCur"></b></button>
-      <button class="anav" data-nav="storestructure"><svg class="icn"><use href="#a-grid"/></svg><span>Store layout</span></button>
-      <button class="anav" data-nav="subscriptions"><svg class="icn"><use href="#a-card"/></svg><span>Subscriptions</span></button>
-      <button class="anav" data-nav="team"><svg class="icn"><use href="#a-people"/></svg><span>Team</span></button>
-      <button class="anav" data-nav="settings"><svg class="icn"><use href="#a-gear"/></svg><span>Settings</span></button>
+      <button class="anav active" data-nav="overview" aria-label="Dashboard" title="Dashboard"><svg class="icn"><use href="#a-dash"/></svg><span>Dashboard</span></button>
+      <button class="anav" data-nav="distributors" aria-label="Distributors" title="Distributors"><svg class="icn"><use href="#a-org"/></svg><span>Distributors</span><b class="navct" id="navDist"></b></button>
+      <button class="anav" data-nav="suppliers" aria-label="Suppliers" title="Suppliers"><svg class="icn"><use href="#a-truck"/></svg><span>Suppliers</span><b class="navct" id="navSup"></b></button>
+      <button class="anav" data-nav="users" aria-label="Users" title="Users"><svg class="icn"><use href="#a-users"/></svg><span>Users</span></button>
+      <button class="anav" data-nav="products" aria-label="Products" title="Products"><svg class="icn"><use href="#a-tag"/></svg><span>Products</span><b class="navct" id="navProd"></b></button>
+      <button class="anav" data-nav="curated" aria-label="Recommended range" title="Recommended range"><svg class="icn"><use href="#a-star"/></svg><span>Recommended range</span><b class="navct" id="navCur"></b></button>
+      <button class="anav" data-nav="storestructure" aria-label="Store layout" title="Store layout"><svg class="icn"><use href="#a-layout"/></svg><span>Store layout</span></button>
+      <button class="anav" data-nav="subscriptions" aria-label="Subscriptions" title="Subscriptions"><svg class="icn"><use href="#a-card"/></svg><span>Subscriptions</span></button>
+      <button class="anav" data-nav="team" aria-label="Team" title="Team"><svg class="icn"><use href="#a-people"/></svg><span>Team</span></button>
+      <a class="anav" data-fly="chats" href="Merchsmith Chats.html?scope=platform" aria-label="Chats" title="Chats"><svg class="icn"><use href="#a-chat"/></svg><span>Chats</span><b class="navct" id="navChat"></b></a>
+      <a class="anav" data-fly="calendar" href="Merchsmith Calendar.html?scope=platform" aria-label="Calendar" title="Calendar"><svg class="icn"><use href="#a-cal"/></svg><span>Calendar</span></a>
+      <a class="anav" data-fly="calls" href="Merchsmith Calls.html?scope=platform" aria-label="Calls" title="Calls"><svg class="icn"><use href="#a-phone"/></svg><span>Calls</span></a>
+      <a class="anav" data-fly="emails" href="Merchsmith Emails.html?scope=platform" aria-label="Emails" title="Emails"><svg class="icn"><use href="#a-mail"/></svg><span>Emails</span></a>
+      <button class="anav" data-nav="settings" aria-label="Settings" title="Settings"><svg class="icn"><use href="#a-gear"/></svg><span>Settings</span></button>
     </nav>
     <div class="aside-foot">
-      <div class="aside-op"><span class="av">MS</span><div><b>Morgan Slade</b><span>Operator</span></div></div>
-      <a class="logout" id="logout">Sign out</a>
+      <a class="logout" id="logout" title="Sign out" aria-label="Sign out"><svg viewBox="0 0 24 24"><path d="M15 17l5-5-5-5M20 12H9M11 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/></svg></a>
     </div>
+    <div class="adm-fly" id="admFly" role="menu"></div>
   </aside>
 
   <div class="appmain">
@@ -373,25 +592,13 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 
   <!-- OVERVIEW -->
   <div class="panel active" id="panel-overview">
-    <div class="ovhero">
-      <div class="ovhero-bg" data-pat></div>
-      <div class="ovhero-in">
-        <div class="ovhello">Good afternoon, Morgan 👋</div>
-        <h1 class="ovtitle">Platform overview</h1>
-        <p class="ovsub">Everything across Merchsmith — distributors, suppliers, revenue and what needs your attention today.</p>
-        <div class="ovquick">
-          <button class="btn" id="qInvite"><svg class="icn"><use href="#a-plus"/></svg>Invite organisation</button>
-          <button class="btn ghost light" data-nav="subscriptions"><svg class="icn"><use href="#a-card"/></svg>Manage plans</button>
-          <button class="btn ghost light" data-nav="team"><svg class="icn"><use href="#a-people"/></svg>Invite team</button>
-        </div>
-      </div>
-    </div>
-
+    <div class="phead"><h1 class="ptitle">Dashboard</h1><button class="btn" id="qInvite"><svg class="icn"><use href="#a-plus"/></svg>Invite organisation</button></div>
     <div class="statbar" id="statbar"></div>
 
     <div class="ovgrid">
       <div class="ovcard ovchart">
         <div class="ovcard-h"><h3>Monthly recurring revenue</h3><span class="ovtrend" id="mrrTrend"></span></div>
+        <p class="incl-note" style="margin:-2px 0 10px;font-size:12.5px">Base subscription plus seat overage, per distributor. <span id="mrrSplit"></span></p>
         <div class="spark" id="mrrSpark"></div>
       </div>
       <div class="ovcard">
@@ -410,31 +617,33 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
         <div class="planmix" id="planMix"></div>
       </div>
     </div>
+  
+    <h2 class="ptitle" style="font-size:22px;margin:30px 0 4px">Orders across the platform</h2><div id="admDashO"></div>
+    <h2 class="ptitle" style="font-size:22px;margin:30px 0 4px">Subscription finance</h2><div id="admDash"></div>
   </div>
 
   <!-- DISTRIBUTORS -->
   <div class="panel" id="panel-distributors">
     <div class="phead"><h1 class="ptitle">Distributors</h1><button class="btn" id="qInvite2"><svg class="icn"><use href="#a-plus"/></svg>Invite distributor</button></div>
-    <p class="psub">Your direct customers — the merch businesses running on Merchsmith.</p>
     <div class="toolbar">
       <div class="search"><svg class="icn"><use href="#a-search"/></svg><input id="distSearch" placeholder="Search distributors by name, owner, domain…"></div>
       <div class="fbtns" id="distFilters">
         <button class="fbtn on" data-st="">All <span class="ct" id="ctDist"></span></button>
         <button class="fbtn" data-st="active">Active</button>
-        <button class="fbtn" data-st="trial">Trial</button>
         <button class="fbtn" data-st="past_due">Past due</button>
         <button class="fbtn" data-st="suspended">Suspended</button>
+        <button class="fbtn" data-st="invited">Invited</button>
       </div>
     </div>
-    <table class="dirtable"><thead><tr><th>Distributor</th><th>Plan</th><th>Customers</th><th>GMV</th><th>MRR</th><th>Status</th><th></th></tr></thead><tbody id="distRows"></tbody></table>
+    <div class="dfilters" id="distMore"></div>
+    <div class="tblscroll"><table class="dirtable dtbl"><thead><tr id="distHead"></tr></thead><tbody id="distRows"></tbody></table></div>
   </div>
 
   <!-- SUPPLIERS -->
   <div class="panel" id="panel-suppliers">
     <div class="phead"><h1 class="ptitle">Suppliers</h1><button class="btn" id="qInviteSup"><svg class="icn"><use href="#a-plus"/></svg>Add supplier</button></div>
-    <p class="psub">The shared supplier directory available to every distributor.</p>
     <div class="toolbar">
-      <div class="search"><svg class="icn"><use href="#a-search"/></svg><input id="supSearch" placeholder="Search suppliers by name, domain, region…"></div>
+      <div class="search"><svg class="icn"><use href="#a-search"/></svg><input id="supSearch" placeholder="Search suppliers by name, contact, domain, region…"></div>
       <div class="fbtns" id="supFilters">
         <button class="fbtn on" data-k="">All <span class="ct" id="ctSup"></span></button>
         <button class="fbtn" data-k="both">Product + Branding</button>
@@ -442,7 +651,8 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
         <button class="fbtn" data-k="branding">Branding only</button>
       </div>
     </div>
-    <table class="dirtable"><thead><tr><th>Supplier</th><th>Type</th><th>Feed</th><th>Products</th><th>Used by</th><th>Status</th><th></th></tr></thead><tbody id="supRows"></tbody></table>
+    <div class="dfilters" id="supMore"></div>
+    <div class="tblscroll"><table class="dirtable dtbl stbl"><thead><tr id="supHead"></tr></thead><tbody id="supRows"></tbody></table></div>
   </div>
 
   <!-- PRODUCTS (master database) -->
@@ -460,33 +670,32 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
   <!-- SUBSCRIPTIONS -->
   <div class="panel" id="panel-subscriptions">
     <h1 class="ptitle">Subscriptions</h1>
-    <p class="psub">Plan tiers, pricing and what each distributor is on. Adjust a distributor's tier from their profile.</p>
+    <p class="psub" style="max-width:86ch">Every plan includes the whole platform. Tiers differ only by base price, how many distributor seats are included, and the rate for each seat beyond that.</p>
     <div class="plans" id="plansGrid"></div>
-    <div class="ovcard" style="margin-top:22px">
-      <div class="ovcard-h"><h3>Distributor plans</h3></div>
-      <table class="dirtable bare"><thead><tr><th>Distributor</th><th>Plan</th><th>MRR</th><th>Status</th><th></th></tr></thead><tbody id="subRows"></tbody></table>
+    <div class="ovcard incl-card" id="planIncl"></div>
+    <div class="ovcard" style="margin-top:16px">
+      <div class="ovcard-h"><h3>Distributor plans</h3><span class="ovnote" id="subTot"></span></div>
+      <div class="tblscroll"><table class="dirtable bare"><thead><tr><th>Distributor</th><th>Plan</th><th>Seats</th><th>Base</th><th>Overage</th><th>MRR</th><th>Status</th><th></th></tr></thead><tbody id="subRows"></tbody></table></div>
     </div>
   </div>
 
+  <!-- USERS (every person, every org) -->
+  <div class="panel" id="panel-users"></div>
+
   <!-- TEAM -->
   <div class="panel" id="panel-team">
-    <div class="phead"><h1 class="ptitle">Platform team</h1><button class="btn" id="qInviteTeam"><svg class="icn"><use href="#a-plus"/></svg>Invite team member</button></div>
-    <p class="psub">Merchsmith operators with access to this admin console.</p>
+    <div class="phead"><div><h1 class="ptitle">Platform team</h1><p class="psub">Merchsmith staff who operate the platform. Everyone here can see every distributor, supplier and customer.</p></div><button class="btn" id="qInviteTeam"><svg class="icn"><use href="#a-plus"/></svg>Invite team member</button></div>
     <div class="teamgrid" id="teamGrid"></div>
   </div>
 
-  <!-- SETTINGS -->
+  <!-- SETTINGS (sections are split into tabs by the script after this panel) -->
   <div class="panel" id="panel-settings">
-    <h1 class="ptitle">Platform settings</h1>
-    <p class="psub">Operator-level configuration.</p>
-    <div class="setcard"><div><b>Two-factor authentication</b><span>Required for all operators</span></div><span class="toggle on"></span></div>
-    <div class="setcard"><div><b>New trial sign-ups</b><span>Allow self-serve 14-day trials</span></div><span class="toggle on"></span></div>
-    <div class="setcard"><div><b>Supplier feed auto-sync</b><span>Pull API feeds every 15 minutes</span></div><span class="toggle on"></span></div>
-    <div class="setcard"><div><b>Maintenance mode</b><span>Take the platform offline for updates</span></div><span class="toggle"></span></div>
-    <div class="setcard"><div><b>Sustainability filtering <span style="display:inline-block;background:#eceef9;color:#2b2e57;font-size:10px;font-weight:800;border-radius:5px;padding:2px 6px;margin-left:4px">Phase 2</span></b><span>Let projects set a minimum sustainability score in the brief and filter the store by it</span></div><span class="toggle" id="setSus" data-pset="sustainabilityFilter"></span></div>
-
-    <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Platform colourway</h2>
-    <p class="psub">Choose the colour set used across the platform. Built-in sets show first — add your own brand colours and switch between them. Changes apply live.</p>
+    <h1 class="ptitle">Settings</h1>
+    <div class="settabs" id="admSetTabs" role="tablist"></div>
+    <h2 class="ptitle" style="font-size:22px;margin:18px 0 10px">Merchsmith profile</h2>
+    <div id="msOrgProfile" style="margin-bottom:30px"></div>
+    <div id="admCw" style="border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);margin:22px 0;padding:22px 0">
+    <h3 class="ptitle" style="font-size:20px;margin:0 0 4px">Platform colourway</h3>
     <div class="cwsets" id="cwSets"></div>
     <div style="margin-top:16px"><button class="btn ghost" id="cwAdd">+ Add colour set</button></div>
     <div class="cwform" id="cwForm" hidden>
@@ -500,39 +709,151 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
       </div>
       <div style="margin-top:14px;display:flex;gap:10px"><button class="btn" id="cwSave">Save &amp; apply</button><button class="btn ghost" id="cwCancel">Cancel</button></div>
     </div>
-
-    <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Logos</h2>
-    <p class="psub">Upload the logos used across the platform. The <b>header logo</b> appears top-left in the app; the <b>PDF logo</b> is used on downloadable documents (proofs, quotes).</p>
-    <div class="logogrid">
-      <div class="logoslot"><span class="logoslot-lbl">Platform header logo</span><div class="logoslot-drop"><image-slot id="ms-admin-header-logo" shape="rect" fit="contain" data-crop placeholder="Drop header logo (SVG / PNG)"></image-slot></div><div class="logomono" data-for="ms-admin-header-logo"><span>Tone</span><button type="button" class="logomono-btn on" data-mono="original">Original</button><button type="button" class="logomono-btn" data-mono="white">Mono white</button><button type="button" class="logomono-btn" data-mono="black">Mono black</button><button type="button" class="logodel" data-crop-logo="ms-admin-header-logo">Crop</button><button type="button" class="logodel" data-del-logo="ms-admin-header-logo">Remove logo</button></div><span class="logoslot-hint">Shown top-left. Transparent PNG or SVG recommended. <b>Recommended: 320 × 80 px</b> (4:1), max 512 px wide. Double-click to crop &amp; reposition.</span></div>
-      <div class="logoslot"><span class="logoslot-lbl">PDF / document logo</span><div class="logoslot-drop"><image-slot id="ms-admin-pdf-logo" shape="rect" fit="contain" data-crop placeholder="Drop PDF logo (PNG / SVG)"></image-slot></div><div class="logomono" data-for="ms-admin-pdf-logo"><span>Tone</span><button type="button" class="logomono-btn on" data-mono="original">Original</button><button type="button" class="logomono-btn" data-mono="white">Mono white</button><button type="button" class="logomono-btn" data-mono="black">Mono black</button><button type="button" class="logodel" data-crop-logo="ms-admin-pdf-logo">Crop</button><button type="button" class="logodel" data-del-logo="ms-admin-pdf-logo">Remove logo</button></div><span class="logoslot-hint">Used on proofs, quotes &amp; order docs. <b>Recommended: 600 × 200 px</b> (3:1) or vector SVG, transparent background. Double-click to crop &amp; reposition.</span></div>
     </div>
 
+    <h2 class="ptitle" style="font-size:22px;margin:0 0 4px">Platform</h2>
+    <div class="setcard"><div><b>Two-factor authentication</b><span>Required for all operators</span></div><span class="toggle on"></span></div>
+    <div class="setcard"><div><b>Supplier feed auto-sync</b><span>Pull API feeds every 15 minutes</span></div><span class="toggle on"></span></div>
+    <div class="setcard"><div><b>Maintenance mode</b><span>Take the platform offline for updates</span></div><span class="toggle"></span></div>
+    <div class="setcard"><div><b>Sustainability filtering <span style="display:inline-block;background:#eceef9;color:#2b2e57;font-size:10px;font-weight:800;border-radius:5px;padding:2px 6px;margin-left:4px">Phase 2</span></b><span>Let projects set a minimum sustainability score in the brief and filter the store by it</span></div><span class="toggle" id="setSus" data-pset="sustainabilityFilter"></span></div>
+
     <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Product fields</h2>
-    <p class="psub">The canonical fields every supplier feed maps into and the store displays. Review them all, or add a custom field the platform doesn't have yet.</p>
     <div class="setcard"><div><b>Field registry</b><span id="fldCount">Manage the platform's product fields & add custom ones</span></div><button class="btn ghost" id="openFields">Manage fields</button></div>
 
     <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Platform data — go live</h2>
-    <p class="psub">Switch the whole platform to a <b>blank slate</b> to build it up with real data from scratch, or restore the built-in demo data. Reversible — the sample data is suppressed, never deleted. <b>Download a backup first</b> if you've added real data.</p>
     <div id="modeCard"></div>
 
     <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Catalogue data</h2>
-    <p class="psub">Run the product database, store and curated range on <b>real imported feeds only</b>, or include the built-in sample data. Switching is reversible. <b>Back up before clearing imports.</b></p>
     <div id="catDataCard"></div>
 
     <h2 class="ptitle" style="font-size:22px;margin:34px 0 4px">Data backup</h2>
-    <p class="psub">This prototype stores everything in your browser. Back it up to a file so a “clear site data” can be recovered — and to hand a fully-configured copy to someone else.</p>
-    <div class="setcard"><div><b>Download backup</b><span id="bkInfo">All store layout, products, curated range &amp; settings → one .json file</span></div><button class="btn sm" id="bkDownload">Download</button></div>
+    <div class="setcard"><div><b>Download backup</b><span id="bkInfo">All store layout, products, recommended range &amp; settings → one .json file. Everything lives in this browser only — back up before clearing site data or switching device.</span></div><button class="btn sm" id="bkDownload">Download</button></div>
     <div class="setcard"><div><b>Restore from backup</b><span>Load a .json backup — overwrites current data in this browser</span></div><button class="btn ghost sm" id="bkRestore">Choose file…</button></div>
     <div class="setcard"><div><b>Copy data for sharing</b><span>Copies an embed snippet — paste into a shared/exported HTML so it opens with your current data</span></div><button class="btn ghost sm" id="bkEmbed">Copy embed</button></div>
   </div>
   </div>
-</div>
-
+  <script>
+  (function(){ const P=document.getElementById('panel-settings'), bar=document.getElementById('admSetTabs'); if(!P||!bar) return;
+    const SHORT={'Merchsmith profile':'Your Profile','Platform data — go live':'Go live','Platform colourway':'Colourway'};
+    const secs=[...P.querySelectorAll(':scope > h2')].map(h=>{ const s=document.createElement('section'); s.className='setsec'; h.before(s);
+      let n=h; while(n&&!(n!==h&&n.nodeType===1&&n.tagName==='H2')&&!(n.nodeType===1&&n.tagName==='SCRIPT')){ const nx=n.nextSibling; s.appendChild(n); n=nx; }
+      const t=h.textContent.trim(); s.dataset.label=SHORT[t]||t; s.dataset.full=t; return s; });
+    bar.innerHTML=secs.map((s,i)=>'<button class="settab" role="tab" data-si="'+i+'">'+s.dataset.label+'</button>').join('');
+    function show(i){ i=Math.max(0,Math.min(secs.length-1,i)); secs.forEach((s,k)=>s.hidden=k!==i); bar.querySelectorAll('.settab').forEach((b,k)=>{ b.classList.toggle('active',k===i); b.setAttribute('aria-selected',k===i); });
+      const ab=bar.querySelectorAll('.settab')[i]; if(ab&&(ab.offsetLeft<bar.scrollLeft||ab.offsetLeft+ab.offsetWidth>bar.scrollLeft+bar.clientWidth)) bar.scrollLeft=ab.offsetLeft-16;
+      try{ sessionStorage.setItem('ms-adm-settab',i); }catch(e){} }
+    bar.addEventListener('click',e=>{ const b=e.target.closest('[data-si]'); if(b) show(+b.dataset.si); });
+    // left-menu flyout links pick a tab by its heading
+    window.MSAdmSetTab=txt=>{ const i=secs.findIndex(s=>s.dataset.full.startsWith(txt)||s.dataset.label.startsWith(txt)); show(i<0?0:i); window.scrollTo({top:0,behavior:'smooth'}); };
+    let st=0; try{ st=+sessionStorage.getItem('ms-adm-settab')||0; }catch(e){} show(st);
+  })();
+  </script>
+</div><!-- /appbody -->
+</div><!-- /app -->
 
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer"></aside>
 <div class="toast" id="toast"></div>
+
+<script>
+/* rail flyouts — same interaction as the distributor rail, wired to the panel switcher
+   rather than to hrefs (the admin console is a single page of panels). */
+(function(){
+  // flyout entries: [label, nav, countId, action→element to click, hash]
+  const q=s=>()=>document.querySelector(s);
+  const toH2=txt=>()=>({click(){ if(window.MSAdmSetTab) MSAdmSetTab(txt); }});
+  const _oldToH2=txt=>()=>({click(){ const h=[...document.querySelectorAll('#panel-settings h2')].find(x=>x.textContent.trim().startsWith(txt)); if(h) window.scrollTo({top:h.getBoundingClientRect().top+scrollY-(headH()+16),behavior:'smooth'}); }});
+  const tmSt=v=>()=>({click(){ const s=document.getElementById('tmSt'); if(s){ s.value=v; s.dispatchEvent(new Event('change')); } }});
+  const SECT={
+    overview:      {t:'Dashboard',      links:[['Platform overview','overview']]},
+    distributors:  {t:'Distributors',  links:[['All distributors','distributors','navDist',q('#distFilters [data-st=""]')],['Active','distributors',null,q('#distFilters [data-st="active"]')],['Past due','distributors',null,q('#distFilters [data-st="past_due"]')],['Suspended','distributors',null,q('#distFilters [data-st="suspended"]')],['Invited','distributors',null,q('#distFilters [data-st="invited"]')],['Invite distributor','distributors',null,q('#qInvite2')]]},
+    suppliers:     {t:'Suppliers',     links:[['All suppliers','suppliers','navSup',q('#supFilters [data-k=""]')],['Product + Branding','suppliers',null,q('#supFilters [data-k="both"]')],['Product only','suppliers',null,q('#supFilters [data-k="product"]')],['Branding only','suppliers',null,q('#supFilters [data-k="branding"]')],['Add supplier','suppliers',null,q('#qInviteSup')]]},
+    products:      {t:'Products',      links:[['Product database','products','navProd']]},
+    curated:       {t:'Recommended range', links:[['Recommended products','curated','navCur']]},
+    storestructure:{t:'Store layout',  links:[['Sections & departments','storestructure']]},
+    subscriptions: {t:'Subscriptions', links:[['Plans & billing','subscriptions']]},
+    users:         {t:'Users',         links:[['All users & audit log','users']]},
+    team:          {t:'Team',          links:[['All team members','team',null,tmSt('')],['Invited','team',null,tmSt('invited')],['Deactivated','team',null,tmSt('deactivated')],['Invite team member','team',null,q('#qInviteTeam')]]},
+    chats:         {t:'Chats', href:'Merchsmith Chats.html?scope=platform', links:[['All conversations','chats','navChat'],['New conversation','chats',null,null,'#new']]},
+    calendar:      {t:'Calendar', href:'Merchsmith Calendar.html?scope=platform', links:[['My calendar','calendar',null,null,'#tab=cal'],['Invitations','calendar',null,null,'#tab=invites'],['Working hours & availability','calendar',null,null,'#tab=avail'],['Booking link','calendar',null,null,'#tab=booking'],['Connected calendars','calendar',null,null,'#tab=connect']]},
+    calls:         {t:'Calls', href:'Merchsmith Calls.html?scope=platform', links:[['Make a call','calls',null,null,'#tab=history'],['Call history','calls',null,null,'#tab=history'],['Voicemail','calls',null,null,'#tab=voicemail'],['Call settings & recording policy','calls',null,null,'#tab=settings']]},
+    emails:        {t:'Emails', href:'Merchsmith Emails.html?scope=platform', links:[['New email','emails',null,null,'#tab=sent&compose'],['Sent','emails',null,null,'#tab=sent'],['Drafts','emails',null,null,'#tab=drafts'],['Saved replies','emails',null,null,'#tab=snips'],['Templates','emails',null,null,'#tab=templates'],['Sending domain','emails',null,null,'#tab=domain'],['Reply by email','emails',null,null,'#tab=reply'],['My emails','emails',null,null,'#tab=mine']]},
+    settings:      {t:'Settings',      links:[['Your Profile','settings',null,toH2('Merchsmith profile')],['Platform','settings',null,toH2('Platform')],['Product fields','settings',null,toH2('Product fields')],['Platform data','settings',null,toH2('Platform data')],['Catalogue data','settings',null,toH2('Catalogue data')],['Data backup','settings',null,toH2('Data backup')]]}
+  };
+  const nav=document.getElementById('asideNav'), fly=document.getElementById('admFly'), head=document.querySelector('.header');
+  if(!nav||!fly) return;
+
+  function headH(){ return head?Math.round(head.getBoundingClientRect().height):57; }
+  function syncHead(){ document.documentElement.style.setProperty('--adm-headh',headH()+'px'); }
+  syncHead();
+  if(window.ResizeObserver&&head) new ResizeObserver(syncHead).observe(head);
+  window.addEventListener('resize',syncHead);
+  window.addEventListener('load',syncHead);
+  const app=document.getElementById('app');
+  if(app&&window.MutationObserver) new MutationObserver(()=>syncHead()).observe(app,{attributes:true,attributeFilter:['class']});
+
+  let openK=null,tOpen=null,tShut=null;
+  function panel(k,btn){
+    const s=SECT[k]; if(!s) return;
+    const cur=(document.querySelector('.anav.active')||{}).dataset;
+    fly.innerHTML='<h4>'+s.t+'</h4>'+s.links.map((l,i)=>{
+      const cEl=l[2]?document.getElementById(l[2]):null;
+      const c=cEl?cEl.textContent.trim():'';
+      const active=(!l[3]&&cur&&cur.nav===k&&i===0)?' active':'';
+      return '<button type="button" role="menuitem" data-go="'+k+'" data-i="'+i+'" class="'+active.trim()+'">'+l[0]+(c?'<span class="cnt">'+c+'</span>':'')+'</button>';
+    }).join('');
+    const r=btn.getBoundingClientRect(), floor=headH()+8;
+    fly.style.top='0px'; fly.classList.add('on');
+    const fh=fly.getBoundingClientRect().height;
+    fly.style.top=Math.round(Math.max(floor,Math.min(r.top-6,window.innerHeight-fh-14)))+'px';
+    openK=k;
+    nav.querySelectorAll('.anav').forEach(x=>x.classList.toggle('hot',x.dataset.nav===k));
+  }
+  function show(k,btn){ clearTimeout(tShut); if(openK===k){ fly.classList.add('on'); return; }
+    clearTimeout(tOpen); tOpen=setTimeout(()=>panel(k,btn), openK?40:150); }
+  function hide(){ clearTimeout(tOpen); tShut=setTimeout(()=>{ fly.classList.remove('on'); openK=null;
+    nav.querySelectorAll('.anav').forEach(x=>x.classList.remove('hot')); },180); }
+
+  nav.addEventListener('mouseover',e=>{ const b=e.target.closest('.anav'); if(b) show(b.dataset.nav||b.dataset.fly,b); });
+  nav.addEventListener('mouseleave',hide);
+  nav.addEventListener('focusin',e=>{ const b=e.target.closest('.anav'); if(b){ clearTimeout(tOpen); panel(b.dataset.nav||b.dataset.fly,b); } });
+  fly.addEventListener('mouseenter',()=>clearTimeout(tShut));
+  fly.addEventListener('mouseleave',hide);
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ clearTimeout(tOpen); fly.classList.remove('on'); openK=null; } });
+  window.addEventListener('resize',()=>{ fly.classList.remove('on'); openK=null; });
+
+  // a flyout entry switches panel, then fires the entry's own action if it has one
+  fly.addEventListener('click',e=>{
+    const b=e.target.closest('button[data-go]'); if(!b) return;
+    const k=b.dataset.go, entry=SECT[k].links[+b.dataset.i];
+    if(SECT[k].href){ location.href=SECT[k].href+((entry&&entry[4])||''); return; }
+    const railBtn=nav.querySelector('.anav[data-nav="'+k+'"]'); if(railBtn) railBtn.click();
+    fly.classList.remove('on'); openK=null;
+    if(entry&&entry[3]) setTimeout(()=>{ const t=entry[3](); if(t) t.click(); },60);
+  });
+
+  if(matchMedia('(hover:none)').matches){
+    nav.addEventListener('click',e=>{ const b=e.target.closest('.anav'); if(!b) return;
+      if(openK!==b.dataset.nav){ e.preventDefault(); e.stopPropagation(); clearTimeout(tOpen); panel(b.dataset.nav,b); } },true);
+    document.addEventListener('click',e=>{ if(!e.target.closest('.anav')&&!e.target.closest('.adm-fly')){ fly.classList.remove('on'); openK=null; } });
+  }
+
+  // unread chat badge on the rail — chat.js loads via chrome.js
+  (function chatBadge(n){ const el=document.getElementById('navChat'); if(!el) return;
+    if(!window.MSChat||!MSChat.unread){ if(n<40) setTimeout(()=>chatBadge(n+1),150); return; }
+    const upd=()=>{ const u=MSChat.unread(); el.textContent=u?String(u):''; };
+    upd(); window.addEventListener('storage',upd); setInterval(upd,4000);
+  })(0);
+
+  // chrome.js injects the search after us — bind once it exists
+  (function wireSearch(n){
+    const sr=document.querySelector('.ms-hsearch input');
+    if(!sr){ if(n<40) return setTimeout(()=>wireSearch(n+1),100); return; }
+    sr.placeholder='Search distributors, suppliers, products…';
+    // Enter / results are handled by search.js (platform search)
+  })(0);
+})();
+</script>
 
 <script>
 /* platform settings persistence (read by project-brief.js + store) */
@@ -569,7 +890,7 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
     </div>`;
     const b=document.getElementById('modeBlank');
     if(b) b.onclick=()=>{
-      if(!confirm('Switch to a BLANK platform?\n\nThis suppresses all built-in demo data (distributors, suppliers, products, team) so you can add real data from scratch. It is reversible — nothing is deleted.\n\nYour imported products, curated range and supplier teams WILL be cleared. Download a backup first if unsure.')) return;
+      if(!confirm('Switch to a BLANK platform?\n\nThis suppresses all built-in demo data (distributors, suppliers, products, team) so you can add real data from scratch. It is reversible — nothing is deleted.\n\nYour imported products, recommended range and supplier teams WILL be cleared. Download a backup first if unsure.')) return;
       if(window.MSDATA) MSDATA.download('merchsmith-backup-before-blank');
       (MSMODE.RUNTIME_KEYS||[]).forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
       MSMODE.set('blank'); toast('Switched to blank slate — reloading…'); setTimeout(()=>location.reload(),900);
@@ -623,17 +944,61 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 <script src="ms-mode.js?v=1"></script>
 <script src="store-feed.js?v=2"></script>
 <script src="ms-data.js"></script>
-<script src="catalogue-data.js?v=10"></script>
+<script src="catalogue-data.js?v=12"></script>
 <script src="field-registry.js?v=1"></script>
 <script src="store-structure.js?v=5"></script>
-<script src="admin-data.js?v=2"></script>
-<script src="admin-page.js?v=7"></script>
-<script src="admin-home.js"></script>
-<script src="admin-supplier.js?v=3"></script>
+<script src="names.js?v=2"></script>
+<script src="address.js?v=1"></script>
+<script src="admin-data.js?v=8"></script>
+<script src="store-domain.js?v=3"></script>
+<script src="billing.js?v=3"></script>
+<script src="admin-panels.js?v=3"></script>
+<script src="admin-page.js?v=47"></script>
+<script src="dist-invite.js?v=9"></script>
+<script src="sup-invite.js?v=3"></script>
+<script src="org-map.js?v=3"></script>
+<script>
+/* Platform Admin → Distributors / Suppliers: Table / Map. The map shows exactly the rows the table has rendered (search + filters). */
+(function(){ if(!window.MSMAP) return; const A=window.ADMIN, esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const num=s=>+String(s||'').replace(/[^0-9.]/g,'')||0;
+  const flagOf=o=>{ const k='org:'+o.id; if(window.MSFLAG){ return MSFLAG.on(k,o.flag)?(MSFLAG.get(k,o.flag).level||'amber'):'none'; } return o.flag?o.flag.level:'none'; };
+  const FL={none:['No flag','#5b5fc7'],amber:['Warning','#e0a526'],red:['Action needed','#d6453d'],grey:['Note','#9aa0a6']};
+  const CFG={
+    dist:{rows:'distRows',attr:'dist',list:()=>A.distributors,sizeLabel:'Size by MRR',
+      colours:[{k:'flag',label:'Flag',of:i=>i.flag,legend:FL},{k:'status',label:'Status',of:i=>i.status,legend:{active:['Active','#1d9a7c'],invited:['Invited','#0a84c6'],past_due:['Past due','#e0a526'],suspended:['Suspended','#d6453d']}},{k:'plan',label:'Plan',of:i=>i.plan,legend:{Starter:['Starter','#0a84c6'],Growth:['Growth','#1d9a7c'],Scale:['Scale','#5b5fc7']}}],
+      item:d=>({id:d.id,geoKey:'d:'+d.id,name:d.name,sub:d.domain,logo:'<span class="orglogo dist" style="width:30px;height:30px;font-size:11px;flex:none">'+esc(d.initials)+'</span>',status:d.status,plan:d.plan,flag:flagOf(d),size:num(d.mrr),
+        rows:[['Owner',esc(d.owner||'')],['Plan',esc(d.plan||'')],['MRR',esc(d.mrr||'')],['Customers',esc(d.customers)],['Status',esc(String(d.status||'').replace('_',' '))],['Flag',d.flag&&d.flag.note?esc(d.flag.note):'']]})},
+    sup:{rows:'supRows',attr:'sup',list:()=>A.suppliers,sizeLabel:'Size by products',
+      colours:[{k:'flag',label:'Flag',of:i=>i.flag,legend:FL},{k:'status',label:'Status',of:i=>i.status,legend:{active:['Active','#1d9a7c'],pending:['Pending','#0a84c6'],paused:['Paused','#e0a526'],inactive:['Inactive','#9aa0a6']}},{k:'kind',label:'Type',of:i=>i.kind,legend:{product:['Product','#0a84c6'],branding:['Branding','#b0478f'],both:['Product + branding','#5b5fc7']}}],
+      item:s=>({id:s.id,geoKey:'s:'+s.id,name:s.name,sub:s.domain,logo:'<span class="orglogo" style="width:30px;height:30px;font-size:11px;flex:none">'+esc(s.initials)+'</span>',status:s.status,kind:s.kind,flag:flagOf(s),size:s.products||0,
+        rows:[['Type',esc({product:'Product',branding:'Branding',both:'Product + branding'}[s.kind]||'')],['Feed',esc(s.feed||'')],['Products',s.products?Number(s.products).toLocaleString('en-GB'):''],['Used by',s.usedBy?esc(s.usedBy)+' distributors':''],['Status',esc(s.status||'')]]})}};
+  const view={dist:localStorage.getItem('ms-adm-map-dist')||'table',sup:localStorage.getItem('ms-adm-map-sup')||'table'}, maps={};
+  function setup(kind){ const c=CFG[kind], tb=document.getElementById(c.rows); if(!tb) return; const scroll=tb.closest('.tblscroll'), panel=scroll.closest('.panel'), bar=panel.querySelector('.toolbar');
+    const t=document.createElement('div'); t.innerHTML=MSMAP.TOGGLE(view[kind]); const tg=t.firstChild; tg.style.marginLeft='auto'; bar.appendChild(tg);
+    const mh=document.createElement('div'); mh.className='adm-maphost'; scroll.after(mh);
+    const items=()=>[...tb.querySelectorAll('tr[data-'+c.attr+']')].map(r=>c.list().find(o=>o.id===r.dataset[c.attr])).filter(Boolean).map(c.item);
+    const apply=()=>{ const m=view[kind]==='map'; scroll.hidden=m; mh.hidden=!m; tg.querySelectorAll('[data-mapv]').forEach(b=>b.classList.toggle('on',b.dataset.mapv===view[kind]));
+      if(!m) return; if(maps[kind]) maps[kind].update(items()); else maps[kind]=MSMAP.mount(mh,{ctx:'adm-'+kind,items:items(),colours:c.colours,sizeLabel:c.sizeLabel,onOpen:id=>{ const r=tb.querySelector('tr[data-'+c.attr+'="'+id+'"]'); if(r) r.click(); }}); };
+    tg.addEventListener('click',e=>{ const b=e.target.closest('[data-mapv]'); if(!b) return; view[kind]=b.dataset.mapv; localStorage.setItem('ms-adm-map-'+kind,view[kind]); apply(); });
+    new MutationObserver(()=>{ if(view[kind]==='map'&&maps[kind]) maps[kind].update(items()); }).observe(tb,{childList:true});
+    apply(); }
+  const go=()=>{ setup('dist'); setup('sup'); }; document.readyState==='loading'?document.addEventListener('DOMContentLoaded',go):setTimeout(go,0);
+})();
+</script>
+<script src="avatars.js"></script>
+<script src="org-data.js?v=10"></script>
+<script src="people.js?v=19"></script>
+<script src="admin-home.js?v=17"></script>
+<script src="admin-supplier-team.js?v=4"></script>
+<script src="admin-orgs.js?v=28"></script>
+<script src="admin-users.js?v=7"></script>
+<script src="admin-supplier.js?v=6"></script>
 <script src="admin-product.js"></script>
-<script src="admin-supplier-team.js?v=2"></script>
+<script src="colour-map.js?v=1"></script>
 <script src="ms-brands.js?v=2"></script>
-<script src="admin-products.js?v=28"></script>
+<script src="ms-tags.js?v=3"></script>
+<script src="product-notes.js?v=5"></script>
+<script src="admin-products.js?v=72"></script>
 <script src="feed-adapters.js?v=9"></script>
 <script src="field-manager.js?v=1"></script>
 <script src="admin-import.js?v=14"></script>
@@ -641,10 +1006,47 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 <script src="admin-storelayout.js?v=4"></script>
 <script src="logos.js"></script>
 <script>window.MS_SCOPE='platform';</script>
-<script src="theme.js?v=2"></script>
+<script src="theme.js?v=10"></script>
 <script src="image-slot.js"></script>
 <script src="admin-logos.js?v=8"></script>
-<script src="avatars.js"></script>
 <script src="identity.js"></script>
+<script src="org-profile.js?v=14"></script>
+<script src="chrome.js?v=3"></script>
+<script src="calls.js?v=6"></script>
+<script src="emails.js?v=8"></script>
+<script>
+/* The operator console has no use for the customer-facing footer chrome.js appends —
+   strip it and drop in a single slim blossom bar instead: legal identity and
+   reference links only, at the height of a standard button row. */
+(function(){
+  const BAR='<footer class="adm-bar"><div class="adm-bar-in">'+
+    '<div class="adm-bar-g"><span>Merchsmith Ltd · Company no. 14827391</span><span>© 2026 Merchsmith</span></div>'+
+    '<div class="adm-bar-g"><a href="Merchsmith Page.html?p=terms">Platform terms</a>'+
+    '<a href="Merchsmith Page.html?p=privacy">Operator privacy</a>'+
+    '<a href="mailto:ops@merchsmith.com">Support</a>'+
+    '<span class="adm-bar-b">Build 2026.09.21</span></div>'+
+    '</div></footer>';
+  function sync(){
+    document.querySelectorAll('.ms-footer').forEach(f=>f.remove());
+    const app=document.getElementById('app');
+    if(!app||!app.classList.contains('on')) return;          // still on the login screen
+    if(document.querySelector('.adm-bar')) return;
+    app.insertAdjacentHTML('beforeend',BAR);
+  }
+  sync(); new MutationObserver(sync).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+<script>
+(function(){ const el=document.getElementById('msOrgProfile'); if(!el||!window.MSORG) return;
+  // the colourway editor lives inside the profile card, under the logos; park it outside while the card re-renders
+  const mount=()=>{ const cw=document.getElementById('admCw'); if(cw) el.after(cw); el.innerHTML=MSORG.panelHTML('merchsmith'); MSORG.wire(el,'merchsmith');
+    const lg=el.querySelector('.op-logos'); if(cw&&lg) lg.after(cw);
+    const hd=t=>{ const h=document.createElement('h3'); h.className='ptitle'; h.style.cssText='font-size:20px;margin:0 0 12px'; h.textContent=t; return h; };
+    if(lg) lg.before(hd('Your Logos'));
+    const dv=el.querySelector('.op-view,.op-grid'); if(dv) dv.before(hd('Your Details')); };
+  mount(); document.addEventListener('ms-slot-change',()=>setTimeout(mount,120),true); window.addEventListener('ms-org-updated',()=>setTimeout(mount,60)); })();
+</script>
+<script src="dashboards.js?v=9"></script>
+<script>setTimeout(()=>{ if(window.MSDASH){ MSDASH.mount(document.getElementById('admDashO'),{page:'orders',role:'admin'}); MSDASH.mount(document.getElementById('admDash'),{page:'finance',role:'admin'}); } },300);</script>
 </body>
 </html>

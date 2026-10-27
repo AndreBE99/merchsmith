@@ -1,0 +1,351 @@
+- generic [ref=f16e1]:
+  - button "Open Next.js Dev Tools" [ref=f16e13] [cursor=pointer]
+  - alert [ref=f16e17]
+  - generic [ref=f16e19]:
+    - banner [ref=f16e20]:
+      - generic [ref=f16e21]:
+        - heading "Test Distributor" [level=6] [ref=f16e572]
+        - generic [ref=f16e28]:
+          - textbox "Search" [ref=f16e573]:
+            - /placeholder: Search products, projects, orders…
+          - group [aria-hidden]
+        - generic [ref=f16e34]:
+          - button "notifications" [ref=f16e574] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f16e40]: "2"
+          - button "user menu" [ref=f16e575] [cursor=pointer]
+    - complementary "Main navigation" [ref=f16e576]:
+      - navigation [ref=f16e48]:
+        - link "Dashboard" [ref=f16e577] [cursor=pointer]:
+          - /url: /
+        - link "Store" [ref=f16e578] [cursor=pointer]:
+          - /url: /store
+        - link "Projects" [ref=f16e579] [cursor=pointer]:
+          - /url: /projects
+        - link "Orders" [ref=f16e580] [cursor=pointer]:
+          - /url: /orders
+        - link "Organisations" [ref=f16e581] [cursor=pointer]:
+          - /url: /organisations
+        - button "Users" [ref=f16e582] [cursor=pointer]
+        - link "Team" [ref=f16e583] [cursor=pointer]:
+          - /url: /users
+        - link "Chats" [ref=f16e584] [cursor=pointer]:
+          - /url: /chats
+        - link "Calendar" [ref=f16e585] [cursor=pointer]:
+          - /url: /calendar
+        - link "Calls" [ref=f16e586] [cursor=pointer]:
+          - /url: /calls
+        - link "Emails" [ref=f16e587] [cursor=pointer]:
+          - /url: /emails
+        - link "Finance" [ref=f16e588] [cursor=pointer]:
+          - /url: /finance
+        - link "Settings" [ref=f16e589] [cursor=pointer]:
+          - /url: /settings
+    - main [ref=f16e106]:
+      - generic [ref=f16e107]: Orders
+      - generic [ref=f16e112]:
+        - heading "Orders" [level=1] [ref=f16e590]
+        - tablist [ref=f16e114]:
+          - tab "All orders" [ref=f16e591] [cursor=pointer]
+          - tab "Stats" [selected] [ref=f16e592] [cursor=pointer]
+          - tab "Targets" [ref=f16e593] [cursor=pointer]
+        - tabpanel [ref=f16e118]:
+          - generic [ref=f16e119]:
+            - group "Period" [ref=f16e594]:
+              - button "This month" [ref=f16e595] [cursor=pointer]
+              - button "Last 30 days" [ref=f16e596] [cursor=pointer]
+              - button "Last 90 days" [ref=f16e597] [cursor=pointer]
+              - button "This quarter" [ref=f16e598] [cursor=pointer]
+              - button "Year to date" [ref=f16e599] [cursor=pointer]
+            - generic [ref=f16e126]:
+              - generic [ref=f16e127]: Compare with
+              - generic [ref=f16e128]:
+                - combobox "Compare with" [ref=f16e600] [cursor=pointer]: Previous period
+                - textbox [aria-hidden]: prev
+                - group [aria-hidden]:
+                  - generic: Compare with
+            - paragraph [ref=f16e130]: 9 Jul – 7 Oct
+            - button "Print / PDF" [ref=f16e601] [cursor=pointer]
+          - button "Targets" [active] [ref=f16e602] [cursor=pointer]
+          - generic [ref=f16e134]:
+            - link "Order value £8,726 19.2% of £45,500 period target" [ref=f16e603] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f16e136]:
+                - generic [ref=f16e137]: Order value
+                - generic [ref=f16e138]: £8,726
+                - generic [ref=f16e139]: 19.2% of £45,500 period target
+            - link "Gross profit £2,581" [ref=f16e604] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f16e141]:
+                - generic [ref=f16e142]: Gross profit
+                - generic [ref=f16e143]: £2,581
+            - link "Margin 29.6% Target 28%" [ref=f16e605] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f16e145]:
+                - generic [ref=f16e146]: Margin
+                - generic [ref=f16e147]: 29.6%
+                - generic [ref=f16e148]: Target 28%
+            - link "Orders 8" [ref=f16e606] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f16e150]:
+                - generic [ref=f16e151]: Orders
+                - generic [ref=f16e152]: "8"
+            - link "On-time delivery 100% Target 95%" [ref=f16e607] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f16e154]:
+                - generic [ref=f16e155]: On-time delivery
+                - generic [ref=f16e156]: 100%
+                - generic [ref=f16e157]: Target 95%
+          - generic [ref=f16e158]:
+            - generic [ref=f16e159]:
+              - heading "Needs attention" [level=3] [ref=f16e608]
+              - generic [ref=f16e162]:
+                - link "2 Orders to check & send →" [ref=f16e609] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e164]: "2"
+                  - generic [ref=f16e165]: Orders to check & send
+                  - generic [ref=f16e166]: →
+                - link "1 Deliveries at risk Due in under 5 days and not yet in production →" [ref=f16e610] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e168]: "1"
+                  - generic [ref=f16e169]:
+                    - text: Deliveries at risk
+                    - generic [ref=f16e170]: Due in under 5 days and not yet in production
+                  - generic [ref=f16e171]: →
+                - link "3 Late items →" [ref=f16e611] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e173]: "3"
+                  - generic [ref=f16e174]: Late items
+                  - generic [ref=f16e175]: →
+                - link "1 Samples delivered →" [ref=f16e612] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e177]: "1"
+                  - generic [ref=f16e178]: Samples delivered
+                  - generic [ref=f16e179]: →
+            - generic [ref=f16e180]:
+              - heading "Pipeline · items by step" [level=3] [ref=f16e613]
+              - paragraph [ref=f16e183]: 8 live items, £7,494 in progress. Click a step to see them.
+              - generic [ref=f16e184]:
+                - link "2 Received" [ref=f16e614] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e186]: "2"
+                  - emphasis [ref=f16e189]: Received
+                - link "0 Sent" [ref=f16e615] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e191]: "0"
+                  - emphasis [ref=f16e194]: Sent
+                - link "0 Acknowledged" [ref=f16e616] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e196]: "0"
+                  - emphasis [ref=f16e199]: Acknowledged
+                - link "1 Proof" [ref=f16e617] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e201]: "1"
+                  - emphasis [ref=f16e204]: Proof
+                - link "0 Confirmed" [ref=f16e618] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e206]: "0"
+                  - emphasis [ref=f16e209]: Confirmed
+                - link "3 In production" [ref=f16e619] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e211]: "3"
+                  - emphasis [ref=f16e214]: In production
+                - link "2 Dispatched" [ref=f16e620] [cursor=pointer]:
+                  - /url: /orders
+                  - generic [ref=f16e216]: "2"
+                  - emphasis [ref=f16e219]: Dispatched
+            - generic [ref=f16e220]:
+              - heading "Delivery performance" [level=3] [ref=f16e621]
+              - generic [ref=f16e223]:
+                - generic [ref=f16e224]:
+                  - generic [ref=f16e225]: On time
+                  - generic [ref=f16e226]: 100%
+                - generic [ref=f16e227]:
+                  - generic [ref=f16e228]: Delivered
+                  - generic [ref=f16e229]: "3"
+                - generic [ref=f16e230]:
+                  - generic [ref=f16e231]: Late
+                  - generic [ref=f16e232]: "3"
+                - generic [ref=f16e233]:
+                  - generic [ref=f16e234]: At risk
+                  - generic [ref=f16e235]: "1"
+                - generic [ref=f16e236]:
+                  - generic [ref=f16e237]: Avg order → delivery
+                  - generic [ref=f16e238]: 13 days
+            - generic [ref=f16e239]:
+              - heading "Order value and profit" [level=3] [ref=f16e622]
+              - img "Order value and profit over time" [ref=f16e623]:
+                - generic [ref=f16e243]: £0
+                - generic [ref=f16e245]: £1,287
+                - generic [ref=f16e247]: £2,574
+                - generic [ref=f16e249]:
+                  - generic "9 Jul · £0"
+                  - generic [ref=f16e250]: 9 Jul
+                - generic:
+                  - generic "16 Jul · £0"
+                - generic [ref=f16e251]:
+                  - generic "23 Jul · £0"
+                  - generic [ref=f16e252]: 23 Jul
+                - generic:
+                  - generic "30 Jul · £0"
+                - generic [ref=f16e253]:
+                  - generic "6 Aug · £1,214" [ref=f16e624]
+                  - generic [ref=f16e255]: 6 Aug
+                - generic:
+                  - generic "13 Aug · £0"
+                - generic [ref=f16e256]:
+                  - generic "20 Aug · £0"
+                  - generic [ref=f16e257]: 20 Aug
+                - generic:
+                  - generic "27 Aug · £0"
+                - generic [ref=f16e258]:
+                  - generic "3 Sept · £0"
+                  - generic [ref=f16e259]: 3 Sept
+                - generic "10 Sept · £1,448" [ref=f16e625]
+                - generic [ref=f16e262]:
+                  - generic "17 Sept · £1,548" [ref=f16e626]
+                  - generic [ref=f16e264]: 17 Sept
+                - generic "24 Sept · £1,943" [ref=f16e627]
+                - generic [ref=f16e267]:
+                  - generic "1 Oct · £2,574" [ref=f16e628]
+                  - generic [ref=f16e269]: 1 Oct
+                - generic:
+                  - generic "8 Oct · £0"
+                - generic "9 Jul · profit £0" [ref=f16e629]
+                - generic "16 Jul · profit £0" [ref=f16e630]
+                - generic "23 Jul · profit £0" [ref=f16e631]
+                - generic "30 Jul · profit £0" [ref=f16e632]
+                - generic "6 Aug · profit £359" [ref=f16e633]
+                - generic "13 Aug · profit £0" [ref=f16e634]
+                - generic "20 Aug · profit £0" [ref=f16e635]
+                - generic "27 Aug · profit £0" [ref=f16e636]
+                - generic "3 Sept · profit £0" [ref=f16e637]
+                - generic "10 Sept · profit £428" [ref=f16e638]
+                - generic "17 Sept · profit £459" [ref=f16e639]
+                - generic "24 Sept · profit £575" [ref=f16e640]
+                - generic "1 Oct · profit £761" [ref=f16e641]
+                - generic "8 Oct · profit £0" [ref=f16e642]
+              - generic [ref=f16e285]:
+                - generic [ref=f16e286]: Order value
+                - generic [ref=f16e288]: Gross profit
+            - generic [ref=f16e290]:
+              - generic [ref=f16e291]:
+                - heading "Top customers" [level=3] [ref=f16e643]
+                - link "Customers →" [ref=f16e644] [cursor=pointer]:
+                  - /url: /organisations
+              - generic [ref=f16e295]:
+                - generic [ref=f16e296]: Test Customer
+                - generic [ref=f16e299]: £8,726
+                - emphasis [ref=f16e300]: 29.6% margin
+            - generic [ref=f16e301]:
+              - heading "Top products" [level=3] [ref=f16e645]
+              - generic [ref=f16e304]:
+                - generic [ref=f16e305]:
+                  - generic [ref=f16e306]: "[TEST] Xoopar Pokket Wireless Mouse"
+                  - generic [ref=f16e309]: £1,943
+                  - emphasis [ref=f16e310]: 150 units
+                - generic [ref=f16e311]:
+                  - generic [ref=f16e312]: "[TEST] Cork Cover Notebook"
+                  - generic [ref=f16e315]: £1,543
+                  - emphasis [ref=f16e316]: 370 units
+                - generic [ref=f16e317]:
+                  - generic [ref=f16e318]: "[TEST] Tech Travel Bag"
+                  - generic [ref=f16e321]: £1,470
+                  - emphasis [ref=f16e322]: 60 units
+                - generic [ref=f16e323]:
+                  - generic [ref=f16e324]: "[TEST] Heavy Weight T-Shirt"
+                  - generic [ref=f16e327]: £1,104
+                  - emphasis [ref=f16e328]: 120 units
+                - generic [ref=f16e329]:
+                  - generic [ref=f16e330]: "[TEST] Recycled Cotton Tote"
+                  - generic [ref=f16e333]: £1,020
+                  - emphasis [ref=f16e334]: 300 units
+                - generic [ref=f16e335]:
+                  - generic [ref=f16e336]: "[TEST] Prodir Ds8 True Biotic Pen"
+                  - generic [ref=f16e339]: £891
+                  - emphasis [ref=f16e340]: 550 units
+            - generic [ref=f16e341]:
+              - heading "Top projects" [level=3] [ref=f16e646]
+              - link "Customer Table Test 2 £8,726" [ref=f16e647] [cursor=pointer]:
+                - /url: /projects/6354308d-bf66-4e6b-aefb-402eb8e67465
+                - generic [ref=f16e346]: Customer Table Test 2
+                - generic [ref=f16e349]: £8,726
+            - generic [ref=f16e350]:
+              - heading "Suppliers" [level=3] [ref=f16e648]
+              - paragraph [ref=f16e353]: Cost placed with each
+              - generic [ref=f16e355]:
+                - generic [ref=f16e356]: XD Connects
+                - generic [ref=f16e359]: £6,145
+                - emphasis [ref=f16e360]: 100% on time · 11 items
+            - generic [ref=f16e361]:
+              - heading "Samples" [level=3] [ref=f16e649]
+              - generic [ref=f16e364]:
+                - generic [ref=f16e365]:
+                  - generic [ref=f16e366]: Sent in the period
+                  - generic [ref=f16e367]: "2"
+                - generic [ref=f16e368]:
+                  - generic [ref=f16e369]: Awaiting feedback
+                  - generic [ref=f16e370]: "1"
+      - generic [ref=f16e372]:
+        - generic [ref=f16e373]:
+          - generic [ref=f16e374]:
+            - link "Let's Talk." [ref=f16e650] [cursor=pointer]:
+              - /url: /store/pages/contact
+            - paragraph [ref=f16e376]: Sustainable promotional merchandise, branded in-house and delivered on time.
+          - generic [ref=f16e377]:
+            - heading "Company" [level=4] [ref=f16e651]
+            - link "About us" [ref=f16e652] [cursor=pointer]:
+              - /url: /store/pages/about
+            - link "Environmental footprint" [ref=f16e653] [cursor=pointer]:
+              - /url: /store/pages/environment
+            - link "Value chain" [ref=f16e654] [cursor=pointer]:
+              - /url: /store/pages/value-chain
+            - link "People & culture" [ref=f16e655] [cursor=pointer]:
+              - /url: /store/pages/people
+          - generic [ref=f16e383]:
+            - heading "Let us help" [level=4] [ref=f16e656]
+            - link "FAQ" [ref=f16e657] [cursor=pointer]:
+              - /url: /store/pages/faq
+            - link "Terms & conditions" [ref=f16e658] [cursor=pointer]:
+              - /url: /store/pages/terms
+            - link "Privacy" [ref=f16e659] [cursor=pointer]:
+              - /url: /store/pages/privacy
+            - link "Returns" [ref=f16e660] [cursor=pointer]:
+              - /url: /store/pages/returns
+            - link "Contact us" [ref=f16e661] [cursor=pointer]:
+              - /url: /store/pages/contact
+        - generic [ref=f16e390]:
+          - generic [ref=f16e391]:
+            - heading "Stay in touch" [level=4] [ref=f16e662]
+            - paragraph [ref=f16e393]: Product drops, sustainability news and the occasional good idea. No more than monthly.
+          - generic [ref=f16e394]:
+            - textbox "Email address" [ref=f16e663]:
+              - /placeholder: Your work email
+            - button "Sign up" [ref=f16e664] [cursor=pointer]
+        - generic [ref=f16e397]:
+          - generic [ref=f16e403]:
+            - generic [ref=f16e404]: Accredited
+            - generic [ref=f16e405]: New accreditation
+          - generic [ref=f16e406]:
+            - generic "X" [ref=f16e665]
+            - generic "Facebook" [ref=f16e666]
+            - generic "Instagram" [ref=f16e667]
+            - generic "LinkedIn" [ref=f16e668]
+            - generic "YouTube" [ref=f16e669]
+        - generic [ref=f16e426]:
+          - generic [ref=f16e427]:
+            - generic [ref=f16e428]: © 2026 Test Distributor
+            - link "Cookie policy" [ref=f16e670] [cursor=pointer]:
+              - /url: /store/pages/cookies
+            - link "Accessibility" [ref=f16e671] [cursor=pointer]:
+              - /url: /store/pages/accessibility
+            - generic [ref=f16e431]: Powered by Merchsmith
+          - generic [ref=f16e432]:
+            - generic [ref=f16e433]: Secured by Stripe
+            - img "Visa" [ref=f16e672]
+            - img "Mastercard" [ref=f16e673]
+            - img "American Express" [ref=f16e674]
+  - button "Messages, 1 unread" [ref=f16e675] [cursor=pointer]:
+    - generic [ref=f16e440]: "1"
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f16e441]:
+    - button [ref=f16e443] [cursor=pointer]: ×

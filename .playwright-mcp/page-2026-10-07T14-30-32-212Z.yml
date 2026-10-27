@@ -1,0 +1,74 @@
+- generic [active] [ref=f5e1]:
+  - button "Open Next.js Dev Tools" [ref=f5e7] [cursor=pointer]
+  - alert [ref=f5e11]
+  - generic [ref=f5e13]:
+    - banner [ref=f5e14]:
+      - generic [ref=f5e15]:
+        - heading "XD Connects" [level=6] [ref=f5e18]
+        - generic [ref=f5e22]:
+          - textbox "Search" [ref=f5e27]:
+            - /placeholder: Search products, projects…
+          - group [aria-hidden]
+        - generic [ref=f5e28]:
+          - button "notifications" [ref=f5e29] [cursor=pointer]
+          - button "user menu" [ref=f5e35] [cursor=pointer]
+    - complementary "Main navigation" [ref=f5e40]:
+      - navigation [ref=f5e41]:
+        - link "Dashboard" [ref=f5e42] [cursor=pointer]:
+          - /url: /
+        - link "Products" [ref=f5e48] [cursor=pointer]:
+          - /url: /supplier/products
+        - link "Orders" [ref=f5e52] [cursor=pointer]:
+          - /url: /orders
+        - button "Distributors" [ref=f5e56] [cursor=pointer]
+        - link "Requests" [ref=f5e61] [cursor=pointer]:
+          - /url: /supplier/connection-requests
+        - link "Chats" [ref=f5e66] [cursor=pointer]:
+          - /url: /chats
+        - link "Calendar" [ref=f5e69] [cursor=pointer]:
+          - /url: /calendar
+        - link "Finance" [ref=f5e72] [cursor=pointer]:
+          - /url: /supplier/billing
+        - link "Settings" [ref=f5e76] [cursor=pointer]:
+          - /url: /supplier/settings
+    - main [ref=f5e80]:
+      - generic [ref=f5e82]:
+        - generic [ref=f5e83]: XD Connects
+        - generic [ref=f5e84]: ›
+        - generic [ref=f5e85]: Dashboard
+      - generic [ref=f5e87]:
+        - generic [ref=f5e89]:
+          - paragraph [ref=f5e90]: Good morning, Supplier Admin (Test)
+          - paragraph [ref=f5e91]: You're all caught up
+        - generic [ref=f5e92]:
+          - generic [ref=f5e93]:
+            - generic [ref=f5e94]: Connection requests
+            - generic [ref=f5e95]: —
+            - generic [ref=f5e96]: None pending
+          - generic [ref=f5e99]:
+            - generic [ref=f5e100]: Delivery confirmations
+            - generic [ref=f5e101]: —
+            - generic [ref=f5e102]: All confirmed
+          - generic [ref=f5e105]:
+            - generic [ref=f5e106]: Sample quotes
+            - generic [ref=f5e107]: —
+            - generic [ref=f5e108]: All quoted
+          - generic [ref=f5e111]:
+            - generic [ref=f5e112]: Stock checks
+            - generic [ref=f5e113]: —
+            - generic [ref=f5e114]: All answered
+        - generic [ref=f5e117]:
+          - generic [ref=f5e119]:
+            - paragraph [ref=f5e120]: Needs your response
+            - paragraph [ref=f5e121]: Loading…
+          - generic [ref=f5e123]:
+            - paragraph [ref=f5e124]: Quick links
+            - generic [ref=f5e125]:
+              - button [ref=f5e126] [cursor=pointer]
+              - button [ref=f5e130] [cursor=pointer]
+              - button [ref=f5e134] [cursor=pointer]
+              - button [ref=f5e138] [cursor=pointer]
+  - button "Messages" [ref=f5e142] [cursor=pointer]
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f5e145]:
+    - button [ref=f5e147] [cursor=pointer]: ×

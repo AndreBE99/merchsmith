@@ -1,0 +1,39 @@
+# Summary 10-orgs-users (frontend)
+
+Auditoría de `ref/10-orgs-users.md` contra las rutas y componentes reales del frontend. El sistema contiene páginas/features de Organisations, Users, Team y Profile. No se localizó ruta de Accept Invite en el árbol de `src/app`; la ficha sí documenta el destino de invitaciones. Las diferencias indicadas como no verificadas necesitan comparación visual/funcional de los componentes concretos.
+
+| # | Referencia | Estado actual (archivo) | Diferencia | Cambio requerido | Prioridad | Estado |
+|---|---|---|---|---|---|---|
+| 1 | Organisations: tabs Customers/Suppliers, búsqueda, filtros, tabla y acciones | `src/app/(protected)/organisations/page.tsx`; `src/features/organisations/components/OrganisationListTable.tsx`, `OrganisationFilters.tsx`; `src/app/(protected)/organisations/components/OrganisationTabs.tsx`, `OrganisationResults.tsx` | Superficie equivalente identificada; mapa y columnas/contadores de la ficha no confirmados | Comparar tabla, filtros, vacíos y acciones con §§1.1–1.4; registrar faltantes concretos | alta | todo |
+| 2 | Drawer customer: métricas, contactos/AM, onboarding, overview, equipos, notas | `src/features/organisations/components/OrganisationDetailDrawer.tsx`, `drawer/CustomerDrawerBody.tsx`, `drawer/CustomerOrdersSummary.tsx`, `drawer/AccountManagersBlock.tsx`, `drawer/PeopleBlock.tsx`, `drawer/NotesPanel.tsx` | Drawer y bloques reales identificados; orden y métricas completas frente a referencia pendientes de cotejo | Auditar secciones, jerarquía y estados del drawer de customer | alta | todo |
+| 3 | Drawer supplier: details, relación, feed, people, órdenes y rendimiento | `src/features/organisations/components/OrganisationDetailDrawer.tsx`, `drawer/SupplierDrawerBody.tsx`, `drawer/SupplierOrdersSummary.tsx`, `drawer/PeopleBlock.tsx` | Drawer identificado; todos los paneles y estados de feed de referencia no confirmados | Auditar el drawer supplier y señalar componentes/faltantes por sección | alta | todo |
+| 4 | Add customer / conectar e invitar supplier | `src/features/organisations/components/AddOrganisationModal.tsx`, `CustomerInviteForm.tsx`, `AddSupplierWizard.tsx`, `SupplierInviteForm.tsx`, `src/app/(protected)/organisations/components/ConnectSupplierModal.tsx` | Wizards presentes; pasos/textos/preview y revisión comparativa no verificados | Comparar pasos, validaciones y estados con §1.6 y ficha 14 | alta | todo |
+| 5 | Users: stats, filtros, tabla y perfil/drawer | `src/app/(protected)/users/page.tsx`, `src/features/users/components/UsersPage.tsx`, `UsersListTable.tsx`, `UserDetailModal.tsx`, `UserUpdateModal.tsx`; Admin: `src/features/platform/user-directory/components/UsersPageClient.tsx` | Hay superficies tenant y platform; contenido de métricas, columnas y actividad de referencia requiere cotejo | Auditar variantes por rol y tabla/detalle contra §§2 y 13 | alta | todo |
+| 6 | Team: banda de organización, agrupación por equipos, filtros y drawer miembro | `src/app/(protected)/team/page.tsx`, `src/features/users/components/team/TeamPage.tsx`, `TeamOrgBand.tsx`, `TeamMembersList.tsx`, `team/OrganisationPeople.tsx`, `team/MemberDrawer.tsx`, `team/TeamDialogs.tsx` | Página/componentes presentes; diferencias por rol, permisos y estados no comparadas | Cotejar equipos, permisos, drawer, vacíos y responsive contra §3 | alta | todo |
+| 7 | My profile: datos, foto, notificaciones y seguridad | `src/app/(protected)/profile/page.tsx`, `src/features/profile/components/ProfilePage.tsx` | Página identificada; campos, switches y tratamiento visual de seguridad no verificados | Comparar secciones/campos/estados de §4; reflejar como fuera de alcance solo la integración auth real | media | todo |
+| 8 | Accept Invite: pantalla pública de invitación y estados válido/inválido | `src/app/(auth)/accept-invitation/page.tsx`, `AcceptInvitationViews.tsx`, `useAcceptInvitationFlow.ts` | flujo público implementado con estados de comprobación, error, éxito y formulario; cotejo visual detallado pendiente | comparar copy/layout con la ficha; conservar la ruta real `/accept-invitation` | alta | todo (cotejo visual pendiente) |
+| 9 | Account manager: selector, tarjeta y acciones de contacto | `src/features/organisations/components/drawer/AccountManagersBlock.tsx`; no se identificó componente MSAM equivalente en Profile/Customer Settings durante este barrido | Bloque de AM existe en organizaciones; selector/tarjeta dedicada y ubicación exacta no confirmados | Seguir el uso del bloque y cotejar selector, tarjeta y navegación | media | todo |
+
+## Fuera de alcance
+- Mapa con Leaflet/geocoding externo y consentimiento/auditoría real de ghosting requieren servicios o backend; no ampliar UI por supuestos.
+- Auth real, 2FA/SSO y envío efectivo de invitaciones dependen de servicios de identidad/email. Los estados visuales sí deben cotejarse.
+
+## Huecos de auditoría
+- No se identificó la ruta de Accept Invite en el árbol inspeccionado.
+- La ficha documenta métricas seed y preferencias que pueden diferir de datos actuales; esta summary no asume paridad de datos, solo UI.
+
+## Backend
+Contraste con `organisations`, `organisation-profile`, `users`, `team`, `invitations`, `subject-notes`, `activity-logs`, `me` y los controladores platform.
+
+| Superficie | Endpoint / campos existentes | Cobertura backend |
+|---|---|---|
+| Organisations/lista y drawer | `GET /api/organisations` (query paginada/filtrable), `GET /organisations/:id`, `GET /:id/profile`, `GET /:id/activity`; profile incluye organización, personas y hechos de cliente/proveedor. `PATCH /:id` campos permitidos; archive/unarchive. | Cubiertos datos de org y perfiles soportados. La ficha no convierte métricas ficticias/derivadas (servicio, spend por usuario, last seen seed) en agregados garantizados. |
+| Invitación/conexión | `POST /organisations/customer/invite`, `/supplier/invite`; `GET /organisations/suppliers/search`, `POST /organisations/suppliers/:id/connect`; `/api/invitations` listar/crear, aceptar (`POST /accept`, `GET /check`), revocar, reenviar. | Cubiertos flujos base, búsqueda privada por coincidencia y aceptación por token; envío depende de email/configuración y private mode. |
+| Usuarios/roles | `/api/users` list/detail/update/status/roles/approve-registration; `GET /team`, CRUD `/team/teams`, asignación `/team/members/:membershipId/team`, perfil; `/api/me/profile` PATCH propio y foto upload/complete. `platform/users` y `/platform/activity-logs` para operaciones globales. | Cubiertos perfiles disponibles, roles, equipos, estados y actividad/audit según permisos. Email de login es identidad; MFA/SSO y notificaciones SMS no son preferencias de estos endpoints. |
+| Account manager | `PATCH /api/organisations/:id/account-managers` (asignación primaria o a usuario), profile/drawer expone datos asociados. | Cubierto; respetar autorización y alcance organizativo. |
+| Branding/ficheros | `GET/PATCH /api/organisations/:id/profile`/organización y `/api/me/environment/settings`; `/api/files` presign/complete; almacenamiento de assets de organización y signed URLs. | Perfil, logos/archivos y campos ya expuestos cubiertos donde el modelo existente los soporte. |
+
+### Fuera de alcance (backend)
+- Mapas/geocoding externos; consentimientos y operaciones ghost sí tienen endpoints auditados (`POST /organisations/:id/ghost-sessions` y platform ghost), pero proveedor de mapas externo queda fuera.
+- Auth Identity Platform gestiona contraseña, 2FA/SSO; no se añaden campos de seguridad ni credenciales para replicar switches demo. Envío real de invitaciones/email está sujeto a `private_mode_enabled`.
+- Métricas/columnas seed no expuestas (rendimiento de servicio, gastos/órdenes por persona, actividad ficticia, algunos datos de perfil) requerirían agregados nuevos; no añadir tablas/campos/migraciones.

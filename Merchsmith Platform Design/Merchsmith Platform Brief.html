@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
-<script src="theme.js"></script>
+<script src="theme.js?v=10"></script>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;background:#eceaf3;font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;}
@@ -97,9 +97,9 @@ ul.clean li b{color:var(--ink);}
   <p class="sub">Merchsmith operates the platform; one distributor account sits at the hub of each install. Customers and suppliers live underneath it and never see each other. Role drives what every screen shows — switched in the prototype via the floating "Viewing as" pill.</p>
   <div class="cols2">
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-doc"/></svg></span>Platform Admin <span class="role r-adm">Operator</span></div>
-      <p class="k">Merchsmith's console: onboards distributors and suppliers, imports and normalises supplier feeds, curates the master product database into the <b>curated range</b> (with listing/promotion fees and supplier invoicing), and manages store layout, platform branding and data backup.</p></div>
+      <p class="k">Merchsmith's console: onboards distributors and suppliers, imports and normalises supplier feeds, curates the master product database into the <b>recommended range</b> (with listing/promotion fees and supplier invoicing), and manages store layout, platform branding and data backup.</p></div>
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-org"/></svg></span>Distributor <span class="role r-dist">Hub</span></div>
-      <p class="k">Runs the platform under their own co-brand and colourway. Manages customers, suppliers, pricing/markup, lead times, their store range (curated / edited / bespoke), the store homepage content, and every project via the master Projects table. Sees cost, margin &amp; profit.</p></div>
+      <p class="k">Runs the platform under their own co-brand and colourway. Manages customers, suppliers, pricing/markup, lead times, their store range (recommended / edited / bespoke), the store homepage content, and every project via the master Projects table. Sees cost, margin &amp; profit.</p></div>
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-bag"/></svg></span>Customer <span class="role r-cust">Buyer</span></div>
       <p class="k">Browses the store, builds projects (Create Project wizard + brief), approves visuals/proofs &amp; prices, orders samples, picks delivery dates, reviews products for their organisation. Sees sell price only. Can have teams (Marketing, HR…) ordering separately.</p></div>
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-merch"/></svg></span>Supplier <span class="role r-sup">Producer</span></div>
@@ -115,9 +115,9 @@ ul.clean li b{color:var(--ink);}
     <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
     <div class="fstep"><span class="n">NORMALISE</span><b>Import &amp; map</b><span>Adapters, field + value mapping, custom fields</span></div>
     <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
-    <div class="fstep"><span class="n">CURATE</span><b>Product database</b><span>Curated range, tiers + fees, supplier invoicing</span></div>
+    <div class="fstep"><span class="n">CURATE</span><b>Product database</b><span>Recommended range, tiers + fees, supplier invoicing</span></div>
     <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
-    <div class="fstep"><span class="n">RANGE</span><b>Distributor range</b><span>Curated / edited / bespoke; promoted products</span></div>
+    <div class="fstep"><span class="n">RANGE</span><b>Distributor range</b><span>Recommended / edited / bespoke; promoted products</span></div>
     <div class="farrow"><svg class="icn"><use href="#b-arr"/></svg></div>
     <div class="fstep"><span class="n">SELL</span><b>Store</b><span>The customer-facing shop</span></div>
   </div>
@@ -141,14 +141,14 @@ ul.clean li b{color:var(--ink);}
   <div class="cols2">
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-store"/></svg></span>Store <span class="built">Built</span></div>
       <p class="k">Reads the shared catalogue (real imported feeds), filtered by the distributor's range. Data-driven top nav and departments with faceted filters (sub-category, price, colour, brand, eco).</p>
-      <ul class="clean"><li><b>Homepage is distributor-editable</b> (Store Settings): show/hide/duplicate/reorder sections, curated Best Sellers, trust badges, brand marquee, discover tiles, customer quotes, sustainability band.</li><li>Product page: gallery with zoom + swatch-linked images, USP story blocks, org-only reviews, "You might also like", price breaks &amp; lead time, <b>Add to Project</b>. Distributor sees the full canonical data pane + price matrix.</li></ul>
+      <ul class="clean"><li><b>Homepage is distributor-editable</b> (Store Settings): show/hide/duplicate/reorder sections, hand-picked Best Sellers, trust badges, brand marquee, discover tiles, customer quotes, sustainability band.</li><li>Product page: gallery with zoom + swatch-linked images, USP story blocks, org-only reviews, "You might also like", price breaks &amp; lead time, <b>Add to Project</b>. Distributor sees the full canonical data pane + price matrix.</li></ul>
     </div>
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-merch"/></svg></span>Projects <span class="built">Built</span></div>
       <p class="k">The heart of the workflow, at two levels:</p>
       <ul class="clean"><li><b>Project workspace</b> — product table with the four-stage modal, brief control panel, comments, supplier tags, dual Supplier/Customer delivery + order-by dates, PDF project sheets.</li><li><b>Master Projects table</b> (distributor) — every project for every customer with expandable product rows (the same engine embedded), KPI cards, and combinable filters: project status, product status, order-by windows (Overdue / Today / Tomorrow / This week), stage breakdown (who owes the next action), collaborator + supplier.</li></ul>
     </div>
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-doc"/></svg></span>Platform Admin console <span class="built">Built</span></div>
-      <p class="k">Supplier onboarding (guided wizard / invite / quick add) with connect-time field mapping; the multi-feed import wizard (adapter framework, value mapping, preview-in-store); master product database (sortable, bulk actions, sub-category + brand tagging); curated range with placement tiers, fees and supplier invoicing; store layout manager; platform branding; data backup + blank go-live mode.</p></div>
+      <p class="k">Supplier onboarding (guided wizard / invite / quick add) with connect-time field mapping; the multi-feed import wizard (adapter framework, value mapping, preview-in-store); master product database (sortable, bulk actions, sub-category + brand tagging); recommended range with placement tiers, fees and supplier invoicing; store layout manager; platform branding; data backup + blank go-live mode.</p></div>
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-brand"/></svg></span>Brand Assets <span class="built">Built</span></div>
       <p class="k">The customer's DAM: guidelines, logos, colours (Pantone refs), fonts, images, product artwork. Selections flow into the project brief and the branding builder; uploaded artwork surfaces against matching brief lines.</p></div>
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-bag"/></svg></span>Basket &amp; Orders <span class="built">Built</span></div>
@@ -185,7 +185,7 @@ ul.clean li b{color:var(--ink);}
   <h2><span class="num">5</span>Cross-cutting threads</h2>
   <div class="cols3">
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-leaf"/></svg></span>Sustainability</div><p class="k">Phase 1 ships a <b>USP strip</b> on product pages; the full scored breakdown (Origin, Materials, Longevity, End of Life, Certifications) is Phase 2, gated behind a platform flag. Eco scores already import from real feeds and filter in store.</p></div>
-    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-card"/></svg></span>Money &amp; terms</div><p class="k">Distributor markup bands, per-customer discounts &amp; credit limits, VAT throughout, PO handling. Plus the <b>platform's own commercial model</b>: curated-range listing + promotion fees invoiced to suppliers monthly.</p></div>
+    <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-card"/></svg></span>Money &amp; terms</div><p class="k">Distributor markup bands, per-customer discounts &amp; credit limits, VAT throughout, PO handling. Plus the <b>platform's own commercial model</b>: recommended-range listing + promotion fees invoiced to suppliers monthly.</p></div>
     <div class="card"><div class="mini-h"><span class="ic"><svg class="icn"><use href="#b-doc"/></svg></span>Roles &amp; visibility</div><p class="k">Cost/margin/profit is distributor-only; the customer sees sell price &amp; savings. Data overrides and supplier agreements are distributor-only. Every surface flips by role, including the two project tables.</p></div>
   </div>
 
@@ -207,7 +207,7 @@ ul.clean li b{color:var(--ink);}
   <p class="sub">The original open question ("can the store run on a real feed?") is answered: yes, end to end, minus only the live pull.</p>
   <div class="card">
     <ul class="clean">
-      <li><b>Real feeds imported:</b> PF Concept (2,000+ products across 4 joined JSON feeds — price, print, stock, product), Xoopar (223 products from an Akeneo PIM export, EUR→GBP), Bio Labs (411-row WooCommerce CSV). All flow through the adapter framework → field/value mapping → product database → curated range → store.</li>
+      <li><b>Real feeds imported:</b> PF Concept (2,000+ products across 4 joined JSON feeds — price, print, stock, product), Xoopar (223 products from an Akeneo PIM export, EUR→GBP), Bio Labs (411-row WooCommerce CSV). All flow through the adapter framework → field/value mapping → product database → recommended range → store.</li>
       <li><b>The data contract is proven:</b> decoration cost books, price breaks, stock, variants, images, certifications and custom fields all round-trip from feed to store product page.</li>
       <li><b>The remaining gap is infrastructure, not design:</b> this prototype can't make live authenticated API calls — production points the same import pipeline at the real endpoints on a schedule. That's part of the going-live backend phase.</li>
     </ul>

@@ -1,0 +1,59 @@
+[      93ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[     101ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[   75693ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[   75713ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  168692ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[  168692ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[  169530ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  170698ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  170699ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  472849ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[  472850ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[  474853ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  474853ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  476165ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  487819ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[  487819ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[  489823ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  489824ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  524885ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[  524885ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[  526889ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  526889ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  530892ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  530892ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  546338ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[  546338ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[  548341ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  548341ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  755847ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[  755847ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[  757851ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  757851ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  785863ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  787159ms] [LOG] [Fast Refresh] done in 1373ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  816907ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  817068ms] [LOG] [Fast Refresh] done in 239ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  835290ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  837800ms] [LOG] [Fast Refresh] done in 2605ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  838097ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  838108ms] [LOG] [Fast Refresh] done in 112ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  838216ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  838563ms] [LOG] [Fast Refresh] done in 449ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  847470ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[  847471ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[  849475ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  849475ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  853478ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  853478ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  888908ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  888913ms] [LOG] [Fast Refresh] done in 107ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  901699ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  901731ms] [LOG] [Fast Refresh] done in 116ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  902467ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/notifications/stream:0
+[  902468ms] [ERROR] Failed to load resource: net::ERR_INCOMPLETE_CHUNKED_ENCODING @ http://localhost:3001/api/messaging/stream:0
+[  904472ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  904472ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0
+[  905541ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/announcement-bars/current:0
+[  908478ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/notifications/stream:0
+[  908478ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/messaging/stream:0

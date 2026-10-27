@@ -3,218 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Merchsmith — Organisation &amp; User Model (for developer)</title>
+<title>Merchsmith — Organisations &amp; users: data model</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
+<script>window.MS_SCOPE='platform';</script>
+<script src="theme.js?v=10"></script>
 <style>
 *{box-sizing:border-box;}
-body{margin:0;background:#eef0f6;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55;}
-.wrap{max-width:1100px;margin:0 auto;padding:44px 30px 110px;}
-.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:16px;box-shadow:0 1px 4px rgba(20,22,45,.06);}
-h1{font-family:var(--serif);font-weight:500;font-size:38px;letter-spacing:-.015em;margin:0 0 10px;}
-.lede{font-size:16px;color:var(--ink-2);max-width:80ch;margin:0;}
-.note{font-size:13px;color:var(--periwinkle-deep);font-weight:600;background:#fff;border-left:3px solid var(--periwinkle);border-radius:8px;padding:11px 15px;margin-top:18px;max-width:82ch;}
-h2{font-family:var(--serif);font-weight:500;font-size:25px;margin:54px 0 6px;}
-h2 .num{color:var(--periwinkle-deep);font-size:18px;font-weight:700;font-family:var(--sans);margin-right:10px;}
-.sub{font-size:14.5px;color:var(--ink-2);max-width:82ch;margin:0 0 22px;}
-.card{background:#fff;border:1px solid rgba(20,22,45,.08);border-radius:16px;padding:22px 26px;box-shadow:0 2px 10px rgba(20,22,45,.04);}
-code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:var(--paper);border:1px solid var(--line-soft);border-radius:5px;padding:1px 6px;color:var(--periwinkle-ink);}
-
-/* ERD tree */
-.erd{display:flex;flex-direction:column;align-items:center;gap:0;}
-.enode{border-radius:13px;padding:13px 18px;color:#fff;text-align:center;min-width:230px;}
-.enode .et{font-weight:800;font-size:15px;}
-.enode .ef{font-size:11px;opacity:.85;margin-top:3px;font-family:ui-monospace,Menlo,monospace;}
-.e-platform{background:#23231f;}
-.e-dist{background:var(--periwinkle-deep);}
-.e-cust{background:var(--slate,#51768c);}
-.e-sup{background:#2f8f5b;}
-.e-sub{background:#6b6bd6;}
-.e-user{background:var(--ink-2,#44443e);}
-.vline{width:2px;height:22px;background:rgba(20,22,45,.18);}
-.erow{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
-.ecol{display:flex;flex-direction:column;align-items:center;}
-.elabel{font-size:11px;font-weight:700;color:var(--muted);margin:6px 0;}
-.fan{display:flex;align-items:center;gap:8px;}
-
-/* entity field cards */
-.ents{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
-@media(max-width:820px){.ents{grid-template-columns:1fr;}}
-.ent{border:1px solid var(--line-soft);border-radius:13px;padding:0;overflow:hidden;background:#fff;}
-.ent h4{margin:0;font-size:14px;padding:11px 15px;color:#fff;display:flex;align-items:center;gap:8px;}
-.ent ul{margin:0;padding:12px 15px 14px;list-style:none;font-size:12.5px;}
-.ent li{padding:4px 0;color:var(--ink-2);display:flex;gap:8px;}
-.ent li code{font-size:11.5px;flex:none;}
-.ent .pk{color:var(--periwinkle-deep);font-weight:700;}
-
-/* relationships */
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;}
+.wrap{max-width:1180px;margin:0 auto;padding:44px clamp(20px,3vw,40px) 90px;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep);background:#fff;border-radius:999px;padding:6px 14px;margin-bottom:16px;}
+h1{font-family:var(--serif);font-weight:500;font-size:40px;letter-spacing:-.015em;margin:0 0 10px;}
+.lede{font-size:16px;color:var(--ink-2);max-width:78ch;margin:0;}
+h2{font-family:var(--serif);font-weight:500;font-size:26px;margin:46px 0 8px;}
+h2 .n{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--periwinkle-deep);color:#fff;font:700 14px var(--sans);margin-right:10px;vertical-align:3px;}
+.sub{font-size:14.5px;color:var(--ink-2);max-width:82ch;margin:0 0 18px;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:20px 22px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;}
+.ent h3{display:flex;align-items:center;gap:9px;font-size:16px;margin:0 0 4px;}
+.ent h3 code{font-size:11px;font-weight:700;background:var(--paper);border-radius:6px;padding:2px 7px;color:var(--ink-3);}
+.ent p{font-size:13px;color:var(--ink-2);margin:0 0 12px;}
+.fl{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:12.5px;}
+.fl code{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--periwinkle-deep);font-weight:700;}
+.fl span{color:var(--ink-2);}
 table{width:100%;border-collapse:collapse;font-size:13px;}
-th{text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:0 12px 9px 0;border-bottom:1.5px solid var(--line-soft);}
-td{padding:10px 12px 10px 0;border-bottom:1px solid var(--paper-2);color:var(--ink-2);vertical-align:top;}
-td b,td code{color:var(--ink);}
-.card2{overflow-x:auto;}
-
-/* perms matrix */
-.matrix th{text-align:center;}
-.matrix th:first-child,.matrix td:first-child{text-align:left;}
-.matrix td{text-align:center;font-size:13px;}
-.matrix td:first-child{color:var(--ink);font-weight:600;}
-.y{color:var(--green-deep);font-weight:800;}
-.p{color:#9a6b1f;font-weight:800;}
-.n{color:var(--line);}
-.rolehd{font-size:10px;font-weight:800;letter-spacing:.02em;text-transform:uppercase;}
-
-ul.clean{margin:0;padding-left:20px;}
-ul.clean li{font-size:14px;color:var(--ink-2);margin-bottom:8px;}
-ul.clean b{color:var(--ink);}
-.q{font-size:14px;color:var(--ink-2);background:#fff;border:1px solid var(--line-soft);border-left:3px solid var(--periwinkle);border-radius:8px;padding:12px 15px;margin-bottom:10px;}
-.q b{color:var(--ink);}
-.foot-note{font-size:12.5px;color:var(--muted);margin-top:50px;text-align:center;}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-2);margin-top:14px;}
-.legend span{display:flex;align-items:center;gap:6px;}
-.lg{width:13px;height:13px;border-radius:4px;}
+th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:800;padding:10px 10px 9px 0;border-bottom:1px solid var(--line-soft);white-space:nowrap;}
+td{padding:9px 10px 9px 0;border-bottom:1px solid var(--paper-2);color:var(--ink-2);}
+td.act{font-weight:700;color:var(--ink);}
+.y{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--tint-green);color:var(--green-deep);font-weight:800;font-size:12px;}
+.x{color:var(--line);font-weight:700;}
+.mx{overflow-x:auto;}
+.mx + .mx{margin-top:14px;}
+.mxh{font-size:13px;font-weight:800;margin:0 0 6px;}
+ul.rules{margin:0;padding-left:20px;display:grid;gap:9px;}
+ul.rules li{font-size:14px;color:var(--ink-2);}
+ul.rules b{color:var(--ink);}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.st{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:5px 12px;}
+.st.i{background:#fbeccd;color:#8a5a12;}.st.a{background:var(--tint-green);color:var(--green-deep);}.st.d{background:var(--paper-2);color:var(--ink-3);}
+.arr{color:var(--ink-3);font-weight:700;}
+code.k{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:var(--paper);border-radius:5px;padding:1px 6px;}
+.foot{margin-top:56px;font-size:12.5px;color:var(--ink-3);text-align:center;}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <span class="tag">Developer spec · for discussion</span>
-  <h1>Organisation &amp; user model</h1>
-  <p class="lede">The data structure behind who exists on the platform and who can see what. This is what the <b>site map</b> can't show — it covers navigation; this covers <b>entities, relationships, roles/permissions and multi-tenant data isolation</b>. Build the database and auth from this.</p>
-  <div class="note">Pairs with the Site Map (navigation) and the Product Feed Spec (data). Use all three together for the build.<br><b>Note:</b> entities/fields shown are the <b>core</b> set — not exhaustive. Every entity can take additional fields (e.g. a User also has timezone, last-login, notification prefs, 2FA, permissions overrides). Treat these as the spine, extend freely.</div>
+  <span class="tag">Developer reference · Sep 2026</span>
+  <h1>Organisations &amp; users</h1>
+  <p class="lede">How organisations, teams, people and roles fit together, who can do what, and how a person moves from invitation to deactivation. The permissions tables below are rendered live from the same matrix the app enforces, so this page cannot drift from the code.</p>
 
-  <h2><span class="num">1</span>Entity hierarchy</h2>
-  <p class="sub">Merchsmith (the platform) has many <b>Distributors</b> — each Distributor is a <b>tenant</b>: an isolated world. Under a Distributor sit their Customers, Suppliers and internal Team. <b>Every organisation type — including the Merchsmith Platform itself and Suppliers — has its own Users/Team</b> (with role-appropriate access).</p>
-  <div class="card">
-    <div class="erd">
-      <div class="enode e-platform"><div class="et">Merchsmith Platform</div><div class="ef">operated by Merchsmith staff · has Operator users/team</div></div>
-      <div class="vline"></div>
-      <div class="enode e-dist"><div class="et">Distributor &nbsp;·&nbsp; TENANT boundary</div><div class="ef">e.g. Mojo Promotions · own domain &amp; branding</div></div>
-      <div class="vline"></div>
-      <div class="elabel">each distributor has many ↓</div>
-      <div class="erow">
-        <div class="ecol"><div class="enode e-cust"><div class="et">Customer org</div><div class="ef">buys merch · e.g. Canal &amp; River Trust</div></div>
-          <div class="vline"></div><div class="elabel">sub-teams</div>
-          <div class="enode e-sub"><div class="et">Team / Dept</div><div class="ef">Marketing · HR · Events</div></div>
-          <div class="vline"></div>
-          <div class="enode e-user"><div class="et">Customer Users</div><div class="ef">Admin · Buyer</div></div>
-        </div>
-        <div class="ecol"><div class="enode e-sup"><div class="et">Supplier org</div><div class="ef">product / branding / both</div></div>
-          <div class="vline"></div><div class="elabel">users / team</div>
-          <div class="enode e-user"><div class="et">Supplier Users</div><div class="ef">Production · Sales · Admin</div></div>
-        </div>
-        <div class="ecol"><div class="enode e-dist" style="background:var(--slate,#51768c)"><div class="et">Distributor Team</div><div class="ef">internal staff</div></div>
-          <div class="vline"></div><div class="elabel">members</div>
-          <div class="enode e-user"><div class="et">Team Users</div><div class="ef">Admin · Account Mgr · Studio</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="legend">
-      <span><span class="lg" style="background:#23231f"></span>Platform</span>
-      <span><span class="lg" style="background:var(--periwinkle-deep)"></span>Distributor (tenant)</span>
-      <span><span class="lg" style="background:var(--slate,#51768c)"></span>Customer</span>
-      <span><span class="lg" style="background:#2f8f5b"></span>Supplier</span>
-    </div>
+  <h2><span class="n">1</span>Organisation types</h2>
+  <p class="sub">Every person belongs to exactly one organisation. Merchsmith operates the platform; each distributor runs an install for its customers; suppliers feed products. Customers and suppliers never see each other.</p>
+  <div class="grid" id="types"></div>
+
+  <h2><span class="n">2</span>Entities</h2>
+  <p class="sub">The shape the backend needs. In the prototype these live in <code class="k">org-data.js</code> (seeds) plus <code class="k">localStorage('ms-people')</code> (every edit), read through <code class="k">window.MSPEOPLE</code>.</p>
+  <div class="grid">
+    <div class="card ent"><h3>Organisation <code>org</code></h3><p>A company on the platform.</p><div class="fl">
+      <code>id</code><span>Stable key — <code class="k">mojo</code>, <code class="k">citrix</code>, a supplier id…</span>
+      <code>type</code><span>merchsmith · distributor · customer · supplier</span>
+      <code>name, domain, address</code><span>Editable by the org's admins</span>
+      <code>logo</code><span>Uploaded image (PNG, shape kept)</span>
+      <code>distributorId</code><span>Customers only — the distributor that serves them</span>
+      <code>status</code><span>active · pending</span></div></div>
+    <div class="card ent"><h3>Team <code>team</code></h3><p>A named group inside an organisation — Marketing, Studio, Contacts.</p><div class="fl">
+      <code>orgId</code><span>Owning organisation</span>
+      <code>name</code><span>Unique within the org; renamable</span>
+      <code>members</code><span>Users; a user is in exactly one team</span></div>
+      <p style="margin:12px 0 0">Deleting is only allowed when a team is empty.</p></div>
+    <div class="card ent"><h3>User <code>user</code></h3><p>One person. Keyed by email, so renames never break references.</p><div class="fl">
+      <code>email</code><span>Unique within the org; the identity key</span>
+      <code>name, title, phone</code><span>Editable by the user and their org admins</span>
+      <code>photo</code><span>Square-cropped JPEG, shown everywhere the person appears</span>
+      <code>role</code><span>One role from the org type's list</span>
+      <code>teamId</code><span>Current team</span>
+      <code>status</code><span>invited · active · deactivated</span>
+      <code>notify, twofa</code><span>Personal preferences (My profile)</span></div></div>
+    <div class="card ent"><h3>Invitation <code>invite</code></h3><p>A pending user record with a single-use link.</p><div class="fl">
+      <code>userId</code><span>The invited user (status invited)</span>
+      <code>invitedBy, at</code><span>Who sent it and when</span>
+      <code>token</code><span>Link token; revoking invalidates it</span></div></div>
+    <div class="card ent"><h3>Audit event <code>event</code></h3><p>Append-only record of every change to people, teams and organisations.</p><div class="fl">
+      <code>at, orgId</code><span>When and where</span>
+      <code>actor</code><span>Who made the change</span>
+      <code>userId</code><span>Who it was about (if a person)</span>
+      <code>action</code><span id="actions"></span>
+      <code>detail</code><span>e.g. "Buyer → Admin"</span></div></div>
+    <div class="card ent"><h3>Seat <code>derived</code></h3><p>Not stored. A distributor's seat count is the number of its users in a billable role whose status is <b>active or invited</b>.</p><div class="fl">
+      <code>billable roles</code><span id="billable"></span>
+      <code>not billed</code><span>Customer and supplier users, deactivated users</span></div></div>
   </div>
 
-  <h2><span class="num">2</span>Core entities &amp; key fields</h2>
-  <div class="ents">
-    <div class="ent"><h4 style="background:var(--periwinkle-deep)">Organisation</h4><ul>
-      <li><code class="pk">id</code> primary key</li>
-      <li><code>type</code> distributor · customer · supplier</li>
-      <li><code>parentDistributorId</code> tenant owner (null for distributor)</li>
-      <li><code>name, domain, logo, address</code></li>
-      <li><code>status</code> active · pending · suspended</li>
-      <li><code>settings</code> JSON (markup, discounts, lieu, colourway…)</li>
+  <h2><span class="n">3</span>A person's lifecycle</h2>
+  <div class="card"><div class="flow"><span class="st i">Invited</span><span class="arr">→ accepts link →</span><span class="st a">Active</span><span class="arr">→ admin deactivates →</span><span class="st d">Deactivated</span><span class="arr">→ admin reactivates →</span><span class="st a">Active</span></div>
+    <ul class="rules" style="margin-top:16px">
+      <li><b>No deletion.</b> People are deactivated, never removed. Their history, comments and project work stay attributed to them; the seat is freed and they cannot sign in.</li>
+      <li><b>Revoking an invitation</b> moves the pending user to deactivated, so the link stops working and the attempt stays on record.</li>
+      <li><b>Every organisation keeps at least one active Admin</b> (Owner on the Merchsmith team). Deactivating or demoting the last one is blocked.</li>
+      <li><b>Email is unique within an organisation.</b> The same person may exist in two organisations with separate records.</li>
     </ul></div>
-    <div class="ent"><h4 style="background:var(--ink-2,#44443e)">User</h4><ul>
-      <li><code class="pk">id</code> primary key</li>
-      <li><code>orgId</code> → Organisation</li>
-      <li><code>teamId</code> → Team (customer users)</li>
-      <li><code>name, email, phone, jobTitle, avatar</code></li>
-      <li><code>role</code> see §3</li>
-      <li><code>status</code> active · invited</li>
-    </ul></div>
-    <div class="ent"><h4 style="background:#6b6bd6">Team / Department</h4><ul>
-      <li><code class="pk">id</code></li>
-      <li><code>customerOrgId</code> → Organisation</li>
-      <li><code>name</code> Marketing · HR …</li>
-      <li>projects &amp; orders can scope to a team</li>
-    </ul></div>
-    <div class="ent"><h4 style="background:#2f8f5b">Supplier link</h4><ul>
-      <li><code class="pk">id</code></li>
-      <li><code>distributorId</code> + <code>supplierOrgId</code></li>
-      <li><code>kind</code> product · branding · both</li>
-      <li><code>leadDays, daysInLieu</code> (override)</li>
-      <li><code>paymentTerms</code></li>
-    </ul></div>
-  </div>
-  <div class="note">A <b>Supplier</b> can serve more than one distributor, but each distributor only sees <b>their own link</b> to that supplier (their lead times, terms, contacts). The supplier record's shared catalogue is platform-level; the relationship is per-tenant.</div>
 
-  <h2><span class="num">3</span>Roles &amp; permissions</h2>
-  <p class="sub">Roles are scoped to an organisation. The same person is never two roles at once — they log in as one identity in one org.</p>
-  <div class="card card2">
-    <table class="matrix">
-      <thead><tr>
-        <th>Capability</th>
-        <th class="rolehd">Platform<br>Operator</th>
-        <th class="rolehd">Dist.<br>Admin</th>
-        <th class="rolehd">Account<br>Mgr</th>
-        <th class="rolehd">Studio</th>
-        <th class="rolehd">Cust.<br>Admin</th>
-        <th class="rolehd">Cust.<br>Buyer</th>
-        <th class="rolehd">Supplier<br>Contact</th>
-      </tr></thead>
-      <tbody>
-        <tr><td>Manage distributors / platform</td><td class="y">●</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
-        <tr><td>Ghost into an org</td><td class="y">●</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
-        <tr><td>Manage customers &amp; suppliers</td><td class="n">–</td><td class="y">●</td><td class="p">◐</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
-        <tr><td>Set markup / pricing / discounts</td><td class="n">–</td><td class="y">●</td><td class="p">◐</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
-        <tr><td>Build branding / upload proofs</td><td class="n">–</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">–</td><td class="n">–</td><td class="p">◐</td></tr>
-        <tr><td>Promote workflow stages</td><td class="n">–</td><td class="y">●</td><td class="y">●</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
-        <tr><td>Approve design / price</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="y">●</td><td class="y">●</td><td class="n">–</td></tr>
-        <tr><td>Place orders</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="y">●</td><td class="y">●</td><td class="n">–</td></tr>
-        <tr><td>Manage own org users</td><td class="y">●</td><td class="y">●</td><td class="n">–</td><td class="n">–</td><td class="y">●</td><td class="n">–</td><td class="n">–</td></tr>
-        <tr><td>Reply to enquiries / receive orders</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="y">●</td></tr>
-        <tr><td>See cost &amp; margin</td><td class="y">●</td><td class="y">●</td><td class="y">●</td><td class="n">–</td><td class="n">–</td><td class="n">–</td><td class="n">–</td></tr>
-      </tbody>
-    </table>
-    <div class="legend"><span><span class="y">●</span> full</span><span><span class="p">◐</span> partial / configurable</span><span><span class="n">–</span> none</span></div>
-  </div>
+  <h2><span class="n">4</span>Who can do what</h2>
+  <p class="sub">Rendered from <code class="k">MSPEOPLE.PERMS</code>. Everyone can always edit their own profile (name, title, contact, photo, preferences) but not their own role. Merchsmith operators act across every organisation.</p>
+  <div class="card" id="matrix"></div>
 
-  <h2><span class="num">4</span>Multi-tenancy &amp; data isolation</h2>
-  <div class="card">
-    <ul class="clean">
-      <li><b>The Distributor is the tenant boundary.</b> Every row (customer, supplier link, project, order, product price, comment) carries a <code>distributorId</code>; every query is scoped to it.</li>
-      <li><b>Customers never see each other.</b> A customer user only sees their own org's projects/orders — and, where scoped, only their <b>team's</b>.</li>
-      <li><b>Suppliers never see other suppliers</b> or the end customer's identity beyond what an enquiry exposes.</li>
-      <li><b>A customer using two distributors</b> has <b>two separate accounts</b> — no shared data, separate logins (as agreed).</li>
-      <li><b>Platform Operators</b> sit above tenants and only enter one via <b>ghosting</b>, which is audit-logged.</li>
-      <li><b>Identity lockup</b> follows context: Customer × Distributor when a customer logs in; Customer × Distributor when the distributor opens that customer; Distributor alone on their own dashboard; Merchsmith for the operator.</li>
-    </ul>
-  </div>
+  <h2><span class="n">5</span>Where each piece lives in the prototype</h2>
+  <div class="card"><table><thead><tr><th>Screen</th><th>File</th><th>What it does</th></tr></thead><tbody>
+    <tr><td class="act">Your team</td><td><code class="k">Merchsmith Team.html</code></td><td>An organisation's own people — distributor, customer or supplier depending on who is signed in. Invite, edit, deactivate, manage teams, filter by role and status.</td></tr>
+    <tr><td class="act">Organisations</td><td><code class="k">Merchsmith Organisations.html</code></td><td>A distributor's customers and suppliers, their people, and organisation details and logos.</td></tr>
+    <tr><td class="act">Users (Platform Admin)</td><td><code class="k">Merchsmith Admin.html → Users</code></td><td>Every person in every organisation, searchable and editable, plus the platform-wide audit log.</td></tr>
+    <tr><td class="act">My profile</td><td><code class="k">Merchsmith Profile.html</code></td><td>The signed-in person's own details, photo and preferences.</td></tr>
+    <tr><td class="act">Accept invitation</td><td><code class="k">Merchsmith Accept Invite.html</code></td><td>What an invited person sees: confirm details, add a photo, set a password.</td></tr>
+    <tr><td class="act">Store &amp; editors</td><td><code class="k">people.js</code></td><td>The shared store, permissions matrix, audit log and all the editing dialogs.</td></tr>
+  </tbody></table></div>
 
-  <h2><span class="num">5</span>Login contexts (who lands where)</h2>
-  <div class="card card2">
-    <table>
-      <thead><tr><th>Logs in as</th><th>Lands on</th><th>Must select…</th><th>Sees</th></tr></thead>
-      <tbody>
-        <tr><td><b>Platform Operator</b></td><td>Platform overview</td><td>Ghost a distributor/supplier to go in</td><td>All tenants, billing, suppliers — no project data until ghosting</td></tr>
-        <tr><td><b>Distributor</b></td><td>Distributor dashboard</td><td>A customer, to view their projects</td><td>Their customers, suppliers, team, pricing, margin</td></tr>
-        <tr><td><b>Customer</b></td><td>Their dashboard</td><td>—</td><td>Own org's projects/orders; sell prices only (no cost)</td></tr>
-        <tr><td><b>Supplier</b></td><td>Supplier dashboard</td><td>—</td><td>Products, orders, enquiries, their distributor customers. No Store / Your Merch.</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h2><span class="num">6</span>Open questions for the developer</h2>
-  <div class="q"><b>Auth model</b> — one global identity that can belong to multiple orgs (with an org-switcher), or strictly one-account-per-org (as the customer-with-two-distributors rule implies)? This shapes the whole auth schema.</div>
-  <div class="q"><b>Role granularity</b> — fixed roles (as in §3) or configurable per-permission? Recommend fixed roles for v1, custom later.</div>
-  <div class="q"><b>Supplier ↔ customer permission</b> — still open from earlier: can a customer ever add/see a supplier contact? Currently no.</div>
-  <div class="q"><b>Team scoping</b> — are budgets/credit limits set per customer org, or also per team?</div>
-  <div class="q"><b>Audit trail</b> — confirm what's logged (ghosting, approvals, price changes, status promotions) and retention.</div>
-
-  <p class="foot-note">Working spec for discussion — pairs with the Site Map and the Product Feed Spec.</p>
+  <p class="foot">Merchsmith Platform · Organisations &amp; users</p>
 </div>
+<script src="identity.js"></script>
+<script src="product-notes.js?v=5"></script>
+<script src="names.js?v=2"></script>
+<script src="address.js?v=1"></script>
+<script src="people.js?v=11"></script>
+<script>
+(function(){
+  const P=window.MSPEOPLE;
+  const TYPES=[['merchsmith','Merchsmith','Operates the platform, curates the product database, bills distributors.'],
+    ['distributor','Distributor','Runs a store for its customers under its own brand. Every user is a billable seat.'],
+    ['customer','Customer','Buys from one distributor. Teams order and approve separately. Never billed per user.'],
+    ['supplier','Supplier','Feeds products, answers enquiries, receives orders. Never billed per user.']];
+  document.getElementById('types').innerHTML=TYPES.map(([k,l,d])=>`<div class="card ent"><h3>${l}</h3><p>${d}</p><div class="fl"><code>roles</code><span>${P.ROLES[k].join(' · ')}</span></div></div>`).join('');
+  document.getElementById('billable').textContent=P.BILLABLE.join(', ');
+  document.getElementById('actions').textContent=Object.values(P.LBL).join(' · ');
+  const LBLT={merchsmith:'Merchsmith',distributor:'Distributor',customer:'Customer',supplier:'Supplier'};
+  document.getElementById('matrix').innerHTML=Object.keys(LBLT).map(t=>{
+    const roles=P.ROLES[t], perm=P.PERMS[t]||{};
+    const acts=P.ACTIONS.filter(([a])=>perm[a]);
+    return `<div class="mx"><p class="mxh">${LBLT[t]}</p><table><thead><tr><th>Action</th>${roles.map(r=>`<th>${r}</th>`).join('')}</tr></thead>
+      <tbody>${acts.map(([a,l])=>`<tr><td class="act">${l}</td>${roles.map(r=>`<td>${perm[a].includes(r)?'<span class="y">✓</span>':'<span class="x">—</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  }).join('');
+})();
+</script>
 </body>
 </html>

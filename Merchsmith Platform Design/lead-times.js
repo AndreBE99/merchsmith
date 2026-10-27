@@ -85,6 +85,14 @@ window.MSLead = (function(){
   // Date -> "YYYY-MM-DD" for <input type=date>
   function isoDate(d){ d=new Date(d); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 
-  return { NOW, globalLieu, setGlobalLieu, supplier, all, lieuFor, setSupplierLieu, contacts, addContact,
+  // sample lead times: supplier side per supplier (defaults 1 unbranded / 7 branded),
+  // customer side account-wide (defaults 3 / 10 working days, Distributor Settings → Lead times)
+  const SMP_SUP={unbranded:1,branded:7}, SMP_CUST={unbranded:3,branded:10};
+  function supSampleLead(name,type){ const s=data.suppliers[name], k=type==='branded'?'smpB':'smpU'; return (s&&s[k]!=null)?s[k]:SMP_SUP[type==='branded'?'branded':'unbranded']; }
+  function supSampleIsDefault(name,type){ const s=data.suppliers[name]; return !(s&&s[type==='branded'?'smpB':'smpU']!=null); }
+  function setSupSampleLead(name,type,n){ data.suppliers[name]=data.suppliers[name]||{lieu:null,contacts:[]}; data.suppliers[name][type==='branded'?'smpB':'smpU']=(n==null?null:Math.max(0,n|0)); save(); }
+  function custSampleLead(type){ const c=data.custSample||{}; const k=type==='branded'?'branded':'unbranded'; return c[k]!=null?c[k]:SMP_CUST[k]; }
+  function setCustSampleLead(type,n){ data.custSample=data.custSample||{}; data.custSample[type==='branded'?'branded':'unbranded']=Math.max(0,n|0); save(); }
+  return { NOW, globalLieu, supSampleLead, supSampleIsDefault, setSupSampleLead, custSampleLead, setCustSampleLead, SMP_SUP, SMP_CUST, setGlobalLieu, supplier, all, lieuFor, setSupplierLieu, contacts, addContact,
            custLead, addWorkingDays, subWorkingDays, subWorkingHours, fmtDate, fmtDateTime, isoDate, save, reload:()=>{data=load();} };
 })();

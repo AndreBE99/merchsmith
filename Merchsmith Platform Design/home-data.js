@@ -3,10 +3,10 @@ window.HOME = {
   admin: {
     who:'Morgan Slade', role:'Platform Operator', org:'Merchsmith',
     kpis:[
-      {label:'Platform MRR', value:'£6,840', delta:'+8.2%', up:true},
+      {label:'Platform MRR', value:'£6,880', delta:'+8.2%', up:true, note:'Base subscriptions + seat overage'},
       {label:'GMV (30d)', value:'£512k', delta:'+12%', up:true},
-      {label:'Active distributors', value:'7', delta:'+1', up:true},
-      {label:'Trials ending', value:'1', delta:'2 days', up:false, warn:true}
+      {label:'Active distributors', value:'8', delta:'+1', up:true},
+      {label:'Seat overage', value:'£530', delta:'4 distributors', up:true}
     ],
     trend:[38,42,40,48,52,49,58,61,57,64,68,72],
     leaderboard:[
@@ -19,7 +19,7 @@ window.HOME = {
     tasks:[
       {t:'Pinnacle Swag — payment failed, 2 retries left', tag:'Billing', warn:true},
       {t:'Cobalt Brand Studio — suspended, review account', tag:'Risk', warn:true},
-      {t:'Limelight Gifts — trial ends in 2 days', tag:'Trial'},
+      {t:'Limelight Gifts — finish store setup with Aoife', tag:'Onboarding'},
       {t:'Approve Inkwell Print supplier onboarding', tag:'Supplier'}
     ],
     activity:[

@@ -1,0 +1,384 @@
+- generic [active] [ref=f11e1]:
+  - button "Open Next.js Dev Tools" [ref=f11e13] [cursor=pointer]
+  - alert [ref=f11e17]
+  - generic [ref=f11e19]:
+    - banner [ref=f11e20]:
+      - generic [ref=f11e21]:
+        - heading "Test Distributor" [level=6] [ref=f11e24]
+        - generic [ref=f11e28]:
+          - textbox "Search" [ref=f11e33]:
+            - /placeholder: Search products, projects…
+          - group [aria-hidden]
+        - generic [ref=f11e34]:
+          - button "notifications" [ref=f11e35] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f11e40]: "2"
+          - button "user menu" [ref=f11e42] [cursor=pointer]
+    - complementary "Main navigation" [ref=f11e47]:
+      - navigation [ref=f11e48]:
+        - link "Dashboard" [ref=f11e49] [cursor=pointer]:
+          - /url: /
+        - link "Store" [ref=f11e55] [cursor=pointer]:
+          - /url: /store
+        - link "Projects" [ref=f11e60] [cursor=pointer]:
+          - /url: /projects
+        - link "Orders" [ref=f11e65] [cursor=pointer]:
+          - /url: /orders
+        - link "Organisations" [ref=f11e69] [cursor=pointer]:
+          - /url: /organisations
+        - button "Users" [ref=f11e74] [cursor=pointer]
+        - link "Team" [ref=f11e79] [cursor=pointer]:
+          - /url: /users
+        - link "Chats" [ref=f11e85] [cursor=pointer]:
+          - /url: /chats
+        - link "Calendar" [ref=f11e88] [cursor=pointer]:
+          - /url: /calendar
+        - link "Calls" [ref=f11e91] [cursor=pointer]:
+          - /url: /calls
+        - link "Emails" [ref=f11e94] [cursor=pointer]:
+          - /url: /emails
+        - link "Finance" [ref=f11e98] [cursor=pointer]:
+          - /url: /finance
+        - link "Settings" [ref=f11e102] [cursor=pointer]:
+          - /url: /settings
+    - main [ref=f11e106]:
+      - generic [ref=f11e107]: Orders
+      - generic [ref=f11e112]:
+        - heading "Orders" [level=1] [ref=f11e113]
+        - tablist [ref=f11e114]:
+          - tab "All orders" [selected] [ref=f11e115] [cursor=pointer]
+          - tab "Stats" [ref=f11e116] [cursor=pointer]
+          - tab "Targets" [ref=f11e117] [cursor=pointer]
+        - tabpanel [ref=f11e118]:
+          - generic [ref=f11e119]:
+            - generic [ref=f11e120]:
+              - button "6 Open" [ref=f11e121] [cursor=pointer]:
+                - generic [ref=f11e122]: "6"
+                - text: Open
+              - button "2 Need action" [ref=f11e123] [cursor=pointer]:
+                - generic [ref=f11e124]: "2"
+                - text: Need action
+              - button "4 Waiting on suppliers" [ref=f11e125] [cursor=pointer]:
+                - generic [ref=f11e126]: "4"
+                - text: Waiting on suppliers
+              - button "1 Due in 7 days" [ref=f11e127] [cursor=pointer]:
+                - generic [ref=f11e128]: "1"
+                - text: Due in 7 days
+              - button "3 Overdue" [ref=f11e129] [cursor=pointer]:
+                - generic [ref=f11e130]: "3"
+                - text: Overdue
+              - button "£9,350.52 Open value" [ref=f11e131] [cursor=pointer]:
+                - generic [ref=f11e132]: £9,350.52
+                - text: Open value
+            - generic [ref=f11e133]:
+              - button "All" [ref=f11e134] [cursor=pointer]
+              - button "On its way to us 1" [ref=f11e136] [cursor=pointer]
+              - button "Order received 1" [ref=f11e138] [cursor=pointer]
+              - button "Proof stage 1" [ref=f11e140] [cursor=pointer]
+              - button "In production 1" [ref=f11e142] [cursor=pointer]
+              - button "Part dispatched 1" [ref=f11e144] [cursor=pointer]
+              - button "Dispatched 1" [ref=f11e146] [cursor=pointer]
+              - button "Delivered 1" [ref=f11e148] [cursor=pointer]
+              - button "Cancelled 1" [ref=f11e150] [cursor=pointer]
+            - generic [ref=f11e152]:
+              - generic [ref=f11e154]:
+                - textbox "Search orders" [ref=f11e155]:
+                  - /placeholder: Search order, customer, project, person, PO or product
+                - group [aria-hidden]
+              - generic [ref=f11e157]:
+                - combobox "Payment" [ref=f11e158] [cursor=pointer]: "Payment: all"
+                - textbox [aria-hidden]
+                - group [aria-hidden]
+              - generic [ref=f11e159]:
+                - generic [ref=f11e160]: Placed from
+                - generic [ref=f11e161]:
+                  - textbox "Placed from" [ref=f11e162]
+                  - group [aria-hidden]:
+                    - generic: Placed from
+              - generic [ref=f11e163]:
+                - generic [ref=f11e164]: to
+                - generic [ref=f11e165]:
+                  - textbox "to" [ref=f11e166]
+                  - group [aria-hidden]:
+                    - generic: to
+              - button "Flagged" [ref=f11e167] [cursor=pointer]
+              - button "More filters" [ref=f11e169] [cursor=pointer]
+              - button "Export CSV" [ref=f11e170] [cursor=pointer]
+              - button "Expand all" [ref=f11e171] [cursor=pointer]
+            - table [ref=f11e173]:
+              - rowgroup [ref=f11e174]:
+                - row [ref=f11e175]:
+                  - columnheader [ref=f11e176]:
+                    - checkbox "Select all orders" [ref=f11e178] [cursor=pointer]
+                  - columnheader [ref=f11e181]
+                  - columnheader "Flag" [ref=f11e182]
+                  - columnheader [ref=f11e183]:
+                    - button "Order" [ref=f11e184] [cursor=pointer]
+                  - columnheader [ref=f11e185]:
+                    - button "Customer" [ref=f11e186] [cursor=pointer]
+                  - columnheader "Project" [ref=f11e187]
+                  - columnheader [ref=f11e188]:
+                    - button "Placed ▼" [ref=f11e189] [cursor=pointer]
+                  - columnheader [ref=f11e190]:
+                    - button "Products" [ref=f11e191] [cursor=pointer]
+                  - columnheader [ref=f11e192]:
+                    - button "Stage" [ref=f11e193] [cursor=pointer]
+                  - columnheader "Payment" [ref=f11e194]
+                  - columnheader [ref=f11e195]:
+                    - button "Value" [ref=f11e196] [cursor=pointer]
+                  - columnheader [ref=f11e197]:
+                    - button "Profit" [ref=f11e198] [cursor=pointer]
+              - rowgroup [ref=f11e199]:
+                - row [ref=f11e200]:
+                  - cell [ref=f11e201]:
+                    - checkbox "Select MS-1005" [ref=f11e203] [cursor=pointer]
+                  - cell [ref=f11e206]:
+                    - button "Expand MS-1005" [ref=f11e207] [cursor=pointer]: ▸
+                  - cell [ref=f11e208]
+                  - cell "MS-1005 PO PO-TEST-1005" [ref=f11e209]:
+                    - link "MS-1005" [ref=f11e210] [cursor=pointer]:
+                      - /url: /orders/MS-1005
+                    - generic [ref=f11e211]: PO PO-TEST-1005
+                  - cell "Test Customer" [ref=f11e212]
+                  - cell [ref=f11e213]:
+                    - paragraph [ref=f11e214]: Customer Table Test 2
+                  - cell "4 Oct 2026" [ref=f11e215]
+                  - cell "Order received Order received 2" [ref=f11e216]:
+                    - generic [ref=f11e217]:
+                      - generic "Order received" [ref=f11e218]
+                      - generic "Order received" [ref=f11e219]
+                      - generic [ref=f11e220]: "2"
+                  - cell "Order received" [ref=f11e221]
+                  - cell "Payment due · 7 Oct, 21:51" [ref=f11e224]
+                  - cell "£3,136.80" [ref=f11e227]
+                  - cell "£761.40" [ref=f11e228]
+                - row [ref=f11e229]:
+                  - cell [ref=f11e230]:
+                    - checkbox "Select MS-1004" [ref=f11e232] [cursor=pointer]
+                  - cell [ref=f11e235]:
+                    - button "Expand MS-1004" [ref=f11e236] [cursor=pointer]: ▸
+                  - cell [ref=f11e237]
+                  - cell "MS-1004 PO PO-TEST-1004" [ref=f11e238]:
+                    - link "MS-1004" [ref=f11e239] [cursor=pointer]:
+                      - /url: /orders/MS-1004
+                    - generic [ref=f11e240]: PO PO-TEST-1004
+                  - cell "Test Customer" [ref=f11e241]
+                  - cell [ref=f11e242]:
+                    - paragraph [ref=f11e243]: Customer Table Test 2
+                  - cell "24 Sept 2026" [ref=f11e244]
+                  - cell "Proof received 1" [ref=f11e245]:
+                    - generic [ref=f11e246]:
+                      - generic "Proof received" [ref=f11e247]
+                      - generic [ref=f11e248]: "1"
+                  - cell "Proof stage" [ref=f11e249]
+                  - cell "Paid" [ref=f11e252]
+                  - cell "£2,355.00" [ref=f11e255]
+                  - cell "£574.50" [ref=f11e256]
+                - row [ref=f11e257]:
+                  - cell [ref=f11e258]:
+                    - checkbox "Select MS-1007" [ref=f11e260] [cursor=pointer]
+                  - cell [ref=f11e263]:
+                    - button "Expand MS-1007" [ref=f11e264] [cursor=pointer]: ▸
+                  - cell [ref=f11e265]
+                  - cell "MS-1007 PO PO-TEST-1007" [ref=f11e266]:
+                    - link "MS-1007" [ref=f11e267] [cursor=pointer]:
+                      - /url: /orders/MS-1007
+                    - generic [ref=f11e268]: PO PO-TEST-1007
+                  - cell "Test Customer" [ref=f11e269]
+                  - cell [ref=f11e270]:
+                    - paragraph [ref=f11e271]: Customer Table Test 2
+                  - cell "22 Sept 2026" [ref=f11e272]
+                  - cell "In production 1" [ref=f11e273]:
+                    - generic [ref=f11e274]:
+                      - generic "In production" [ref=f11e275]
+                      - generic [ref=f11e276]: "1"
+                  - cell "On its way to us" [ref=f11e277]
+                  - cell "On account" [ref=f11e280]
+                  - cell "£624.48" [ref=f11e283]
+                  - cell "£147.60" [ref=f11e284]
+                - row [ref=f11e285]:
+                  - cell [ref=f11e286]:
+                    - checkbox "Select MS-1006" [ref=f11e288] [cursor=pointer]
+                  - cell [ref=f11e291]:
+                    - button "Expand MS-1006" [ref=f11e292] [cursor=pointer]: ▸
+                  - cell [ref=f11e293]
+                  - cell "MS-1006 PO PO-TEST-1006" [ref=f11e294]:
+                    - link "MS-1006" [ref=f11e295] [cursor=pointer]:
+                      - /url: /orders/MS-1006
+                    - generic [ref=f11e296]: PO PO-TEST-1006
+                  - cell "Test Customer" [ref=f11e297]
+                  - cell [ref=f11e298]:
+                    - paragraph [ref=f11e299]: Customer Table Test 2
+                  - cell "21 Sept 2026" [ref=f11e300]
+                  - cell "Delivered In production 2" [ref=f11e301]:
+                    - generic [ref=f11e302]:
+                      - generic "Delivered" [ref=f11e303]
+                      - generic "In production" [ref=f11e304]
+                      - generic [ref=f11e305]: "2"
+                  - cell "Part dispatched" [ref=f11e306]
+                  - cell "On account" [ref=f11e309]
+                  - cell "£33.24" [ref=f11e312]
+                  - cell "£8.18" [ref=f11e313]
+                - row [ref=f11e314]:
+                  - cell [ref=f11e315]:
+                    - checkbox "Select MS-1003" [ref=f11e317] [cursor=pointer]
+                  - cell [ref=f11e320]:
+                    - button "Expand MS-1003" [ref=f11e321] [cursor=pointer]: ▸
+                  - cell [ref=f11e322]
+                  - cell "MS-1003 PO PO-TEST-1003" [ref=f11e323]:
+                    - link "MS-1003" [ref=f11e324] [cursor=pointer]:
+                      - /url: /orders/MS-1003
+                    - generic [ref=f11e325]: PO PO-TEST-1003
+                  - cell "Test Customer" [ref=f11e326]
+                  - cell [ref=f11e327]:
+                    - paragraph [ref=f11e328]: Customer Table Test 2
+                  - cell "18 Sept 2026" [ref=f11e329]
+                  - cell "In production 1" [ref=f11e330]:
+                    - generic [ref=f11e331]:
+                      - generic "In production" [ref=f11e332]
+                      - generic [ref=f11e333]: "1"
+                  - cell "In production" [ref=f11e334]
+                  - cell "On account" [ref=f11e337]
+                  - cell "£1,248.00" [ref=f11e340]
+                  - cell "£303.00" [ref=f11e341]
+                - row [ref=f11e342]:
+                  - cell [ref=f11e343]:
+                    - checkbox "Select MS-1002" [ref=f11e345] [cursor=pointer]
+                  - cell [ref=f11e348]:
+                    - button "Expand MS-1002" [ref=f11e349] [cursor=pointer]: ▸
+                  - cell [ref=f11e350]
+                  - cell "MS-1002 PO PO-TEST-1002" [ref=f11e351]:
+                    - link "MS-1002" [ref=f11e352] [cursor=pointer]:
+                      - /url: /orders/MS-1002
+                    - generic [ref=f11e353]: PO PO-TEST-1002
+                  - cell "Test Customer" [ref=f11e354]
+                  - cell [ref=f11e355]:
+                    - paragraph [ref=f11e356]: Customer Table Test 2
+                  - cell "11 Sept 2026" [ref=f11e357]
+                  - cell "Dispatched Dispatched 2" [ref=f11e358]:
+                    - generic [ref=f11e359]:
+                      - generic "Dispatched" [ref=f11e360]
+                      - generic "Dispatched" [ref=f11e361]
+                      - generic [ref=f11e362]: "2"
+                  - cell "Dispatched" [ref=f11e363]
+                  - cell "On account" [ref=f11e366]
+                  - cell "£1,953.00 was £1,809.00" [ref=f11e369]:
+                    - text: £1,953.00
+                    - generic [ref=f11e370]: was £1,809.00
+                  - cell "£427.50" [ref=f11e371]
+                - row [ref=f11e372]:
+                  - cell [ref=f11e373]:
+                    - checkbox "Select MS-1008" [ref=f11e375] [cursor=pointer]
+                  - cell [ref=f11e378]:
+                    - button "Expand MS-1008" [ref=f11e379] [cursor=pointer]: ▸
+                  - cell [ref=f11e380]
+                  - cell "MS-1008 PO PO-TEST-1008" [ref=f11e381]:
+                    - link "MS-1008" [ref=f11e382] [cursor=pointer]:
+                      - /url: /orders/MS-1008
+                    - generic [ref=f11e383]: PO PO-TEST-1008
+                  - cell "Test Customer" [ref=f11e384]
+                  - cell [ref=f11e385]:
+                    - paragraph [ref=f11e386]: Customer Table Test 2
+                  - cell "6 Sept 2026" [ref=f11e387]
+                  - cell "Cancelled 1" [ref=f11e388]:
+                    - generic [ref=f11e389]:
+                      - generic "Cancelled" [ref=f11e390]
+                      - generic [ref=f11e391]: "1"
+                  - cell "Cancelled" [ref=f11e392]
+                  - cell "Refund due" [ref=f11e395]
+                  - cell "£24.00 was £956.40" [ref=f11e398]:
+                    - text: £24.00
+                    - generic [ref=f11e399]: was £956.40
+                  - cell "£0.00" [ref=f11e400]
+                - row [ref=f11e401]:
+                  - cell [ref=f11e402]:
+                    - checkbox "Select MS-1001" [ref=f11e404] [cursor=pointer]
+                  - cell [ref=f11e407]:
+                    - button "Expand MS-1001" [ref=f11e408] [cursor=pointer]: ▸
+                  - cell [ref=f11e409]
+                  - cell "MS-1001 PO PO-TEST-1001" [ref=f11e410]:
+                    - link "MS-1001" [ref=f11e411] [cursor=pointer]:
+                      - /url: /orders/MS-1001
+                    - generic [ref=f11e412]: PO PO-TEST-1001
+                  - cell "Test Customer" [ref=f11e413]
+                  - cell [ref=f11e414]:
+                    - paragraph [ref=f11e415]: Customer Table Test 2
+                  - cell "7 Aug 2026" [ref=f11e416]
+                  - cell "Delivered Delivered 2" [ref=f11e417]:
+                    - generic [ref=f11e418]:
+                      - generic "Delivered" [ref=f11e419]
+                      - generic "Delivered" [ref=f11e420]
+                      - generic [ref=f11e421]: "2"
+                  - cell "Delivered" [ref=f11e422]
+                  - cell "Paid" [ref=f11e425]
+                  - cell "£1,504.20" [ref=f11e428]
+                  - cell "£358.50" [ref=f11e429]
+              - rowgroup [ref=f11e430]:
+                - row [ref=f11e431]:
+                  - cell [ref=f11e432]
+                  - cell [ref=f11e433]
+                  - cell "8 of 8 orders" [ref=f11e434]
+                  - cell "£10,878.72" [ref=f11e435]
+                  - cell "£2,580.68" [ref=f11e436]
+      - generic [ref=f11e438]:
+        - generic [ref=f11e439]:
+          - generic [ref=f11e440]:
+            - link "Let's Talk." [ref=f11e441] [cursor=pointer]:
+              - /url: /store/pages/contact
+            - paragraph [ref=f11e442]: Sustainable promotional merchandise, branded in-house and delivered on time.
+          - generic [ref=f11e443]:
+            - heading "Company" [level=4] [ref=f11e444]
+            - link "About us" [ref=f11e445] [cursor=pointer]:
+              - /url: /store/pages/about
+            - link "Environmental footprint" [ref=f11e446] [cursor=pointer]:
+              - /url: /store/pages/environment
+            - link "Value chain" [ref=f11e447] [cursor=pointer]:
+              - /url: /store/pages/value-chain
+            - link "People & culture" [ref=f11e448] [cursor=pointer]:
+              - /url: /store/pages/people
+          - generic [ref=f11e449]:
+            - heading "Let us help" [level=4] [ref=f11e450]
+            - link "FAQ" [ref=f11e451] [cursor=pointer]:
+              - /url: /store/pages/faq
+            - link "Terms & conditions" [ref=f11e452] [cursor=pointer]:
+              - /url: /store/pages/terms
+            - link "Privacy" [ref=f11e453] [cursor=pointer]:
+              - /url: /store/pages/privacy
+            - link "Returns" [ref=f11e454] [cursor=pointer]:
+              - /url: /store/pages/returns
+            - link "Contact us" [ref=f11e455] [cursor=pointer]:
+              - /url: /store/pages/contact
+        - generic [ref=f11e456]:
+          - generic [ref=f11e457]:
+            - heading "Stay in touch" [level=4] [ref=f11e458]
+            - paragraph [ref=f11e459]: Product drops, sustainability news and the occasional good idea. No more than monthly.
+          - generic [ref=f11e460]:
+            - textbox "Email address" [ref=f11e461]:
+              - /placeholder: Your work email
+            - button "Sign up" [ref=f11e462] [cursor=pointer]
+        - generic [ref=f11e463]:
+          - generic [ref=f11e469]:
+            - generic [ref=f11e470]: Accredited
+            - generic [ref=f11e471]: New accreditation
+          - generic [ref=f11e472]:
+            - generic "X" [ref=f11e473]
+            - generic "Facebook" [ref=f11e476]
+            - generic "Instagram" [ref=f11e479]
+            - generic "LinkedIn" [ref=f11e484]
+            - generic "YouTube" [ref=f11e488]
+        - generic [ref=f11e492]:
+          - generic [ref=f11e493]:
+            - generic [ref=f11e494]: © 2026 Test Distributor
+            - link "Cookie policy" [ref=f11e495] [cursor=pointer]:
+              - /url: /store/pages/cookies
+            - link "Accessibility" [ref=f11e496] [cursor=pointer]:
+              - /url: /store/pages/accessibility
+            - generic [ref=f11e497]: Powered by Merchsmith
+          - generic [ref=f11e498]:
+            - generic [ref=f11e499]: Secured by Stripe
+            - img "Visa" [ref=f11e500]
+            - img "Mastercard" [ref=f11e501]
+            - img "American Express" [ref=f11e502]
+  - button "Messages" [ref=f11e503] [cursor=pointer]
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f11e506]:
+    - button [ref=f11e508] [cursor=pointer]: ×

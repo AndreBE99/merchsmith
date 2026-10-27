@@ -1,0 +1,40 @@
+# Summary 13-admin (frontend)
+
+Auditoría de `ref/13-admin.md` contra rutas/components reales de `merchsmith-frontend/src`. La consola se reparte actualmente entre `/admin` (funciones tenant) y `/platform` (operación de plataforma); no es el shell de prototipo descrito por la referencia. Las rutas reales identificadas no permiten asumir paridad de la consola completa sin una auditoría visual por página.
+
+| # | Referencia | Estado actual (archivo) | Diferencia | Cambio requerido | Prioridad | Estado |
+|---|---|---|---|---|---|---|
+| 1 | Shell Platform Admin: login, rail/flyouts, dashboard y footer operador | `src/app/(protected)/admin/page.tsx`, `admin/overview/page.tsx`; `src/features/platform/components/AdminUi.tsx` | Rutas/shell de admin presentes; login de dos factores demo, rail/flyouts y barra inferior de referencia no identificados como equivalentes | Comparar shell real con §§1–5; consolidar gaps visibles de navegación y dashboard | alta | todo |
+| 2 | Dashboard: KPIs, MRR, needs attention, actividad y plan mix | `src/app/(protected)/admin/overview/page.tsx`; `src/app/(protected)/components/DistributorDashboard.tsx` (dashboard distribuidor, no sustituye Admin) | No se encontró componente de overview platform con nombre/estructura de la ficha en la inspección | Localizar montaje efectivo y auditar contenido/layout de dashboard | alta | todo |
+| 3 | Distributors: tabla, filtros, mapa, acciones y drawer | `src/app/(protected)/platform/distributors/page.tsx`; `src/features/platform/distributor-environments/components/EnvironmentList.tsx`, `DistributorDetailDrawer.tsx`, `DistributorActions.tsx`, `EnvironmentDetail.tsx` | Lista/drawer platform existen; columnas, mapa, ghost y menú de acciones frente a referencia sin validar | Comparar toolbar, tabla, acciones y drawer con §6/§9 | alta | todo |
+| 4 | Suppliers: tabla, filtros, mapa, feed, contactos y drawer | `src/app/(protected)/admin/suppliers/page.tsx`; `src/features/platform/distributor-environments/components/AdminSuppliersList.tsx`, `SupplierListTable.tsx`, `SupplierDetailDrawer.tsx`, `SupplierActionsSection.tsx`, `SupplierContactsSection.tsx` | Gestión de proveedores presente; estados completos de feed/import y mapa no confirmados | Comparar tabla/drawer/estados con §§7, 9 y 12 | alta | todo |
+| 5 | Users + audit log de plataforma | `src/app/(protected)/admin/users/page.tsx`; `src/features/platform/user-directory/components/UsersPageClient.tsx`, `EditPersonModal.tsx`; `src/features/platform/activity/` | Directorio y edición identificados; stats, acciones por fila y audit log no cotejados | Verificar estructura, filtros, columnas, drawer y log contra §8 | alta | todo |
+| 6 | Team de Merchsmith | `src/app/(protected)/admin/team/page.tsx`; `src/features/platform/user-directory/components/PlatformTeamPageClient.tsx` | Página identificada; edición/permisos y estados visuales requieren comparación | Cotejar filas, invitación, edición y vacíos | media | todo |
+| 7 | Subscriptions y cambio de plan | `src/app/(protected)/admin/subscriptions/page.tsx`; `src/features/platform/plans/components/SubscriptionsPageClient.tsx`, `MrrChart.tsx`, `SeatCell.tsx` | Suscripciones, gráfica y asientos identificados; modal/valores/tabla exactos sin validar | Comparar con §11 y panel dashboard de §5 | alta | todo |
+| 8 | Settings: perfil, plataforma, product fields, data/backup, logos y colourway | `src/app/(protected)/admin/settings/page.tsx`; `src/features/platform/components/AdminSettingsPage.tsx`, `SettingsMerchsmithProfileSection.tsx`, `SettingsColourwaySection.tsx`, `SettingsLogosSection.tsx`, `SettingsProductFieldsSection.tsx`, `SettingsDataSections.tsx`, `ProductFieldManagerModal.tsx` | Secciones y edición reales presentes; orden, copy, backup/reset y estados contra referencia no auditados | Cotejar pestañas/controles/confirmaciones con §16 (settings en ficha) | media | todo |
+| 9 | Invitar distributor/supplier, wizard supplier y edición de organizaciones | `src/features/platform/distributor-environments/components/InviteOrganisationModal.tsx`, `InviteDistributorForm.tsx`, `InviteSupplierForm.tsx`, `AddSupplierDialog.tsx`, `SupplierRegistrationRequestForm.tsx`, `EnvironmentForm.tsx` | Flujos de invitación existen; longitud de wizard, colourway, revisión y validaciones requieren cotejo | Auditar los flujos contra §§11–12, distinguiendo modal corto y alta completa | alta | todo |
+| 10 | Products, import, curated range y store layout de plataforma | `src/app/(protected)/platform/products/page.tsx`, `platform/curated-range/page.tsx`, `platform/store-layout/page.tsx`; `src/app/(protected)/platform/subcategory-mappings/page.tsx` | Páginas de catálogo/range/layout presentes; importador multi-feed descrito en referencia no localizado en el inventario | Comparar superficies disponibles y localizar/registrar flujo de importación frontend | alta | todo |
+
+## Fuera de alcance
+- Login/SSO/2FA real, cobros, importación/sync de feeds de proveedores y acceso de ghost con auditoría requieren servicios/backend. La paridad de sus pantallas y estados simulados sí permanece auditable.
+- La opción Footer A/B está marcada como preview no integrada en la ficha de referencia; no replicarla.
+
+## Huecos de auditoría
+- La ficha describe un único shell Admin prototipo; el código real divide admin/platform. Debe confirmarse la ruta/rol objetivo por página antes de tratar diferencias de navegación como faltantes.
+- El componente/ruta efectiva del dashboard Platform no quedó identificada con certeza en el inventario consultado.
+
+## Backend
+Contrastado con controladores `platform-*`, `users`, `invitations`, `dashboards`, `platform-plans`, `activity-logs`, `curated-range`, `supplier-registration-requests`, `product-imports` y settings.
+
+| Superficie | Endpoint / campos existentes | Cobertura backend |
+|---|---|---|
+| Directorio/organizaciones | `/api/platform/distributor-environments` (list/detail/update/invite/status/domain); `/api/platform/organisations` listado y CRUD/status/ghost; `/api/platform/suppliers` + contactos/relaciones/invitaciones; `/api/platform/users` detalle/edición/activación; `/api/platform/invitations`; `/api/platform/activity-logs`. | Cubiertos operaciones y auditoría de plataforma soportadas. No todas las columnas seed (GMV, respuesta/servicio o Last import) son atributos de un endpoint único. |
+| Dashboard/planes | `/api/platform/dashboards`; `/api/platform/plans`, `/subscriptions`, `/mrr-history`; `GET /api/dashboards/finance`; datos de distributors, seats, MRR y planes. | Cubiertos KPIs de plan/MRR expuestos; las tarjetas de actividad/needs-attention deben usar solo agregados disponibles. |
+| Suppliers/feed | `/api/platform/supplier-registration-requests`, supplier profiles, `/api/supplier-feed-configs`, `/api/supplier-product-imports`, product imports/feed sync y catálogo; estado/mapeo e historial disponibles por módulos específicos. | Parcial/cubierto para CRUD de registro, mapeo/imports y feeds implementados; un endpoint de agregación completo para cada columna de prototipo no se presume. |
+| Productos/range/settings | `/api/products`, `/api/platform/product-fields`, `/api/curated-range`, `/api/platform/store-layout`/catálogo y `/api/me/environment/settings`; `/api/platform/settings` datos/configuración. | Cubiertos catálogo, range, campos y settings implementados. |
+| Invitaciones | `/api/invitations` create/check/accept/revoke/resend; platform invites `/api/platform/invitations`; perfiles de onboarding y registro supplier. | Cubiertas invitaciones/token y estados base; correo real condicionado por `private_mode_enabled`. |
+
+### Fuera de alcance (backend)
+- Login demo, SSO/2FA real y telefonía/llamadas dependen de auth/proveedor externo; no duplicar autenticación con campos propios.
+- Ghost sí tiene endpoint auditado para customer/supplier y acciones de plataforma, pero cualquier simulación que evite consentimiento/auditoría no se considera cubierta.
+- Sincronización/ejecución de feeds no se dispara en esta auditoría; credenciales/feed provider quedan fuera de acción. Sin nuevos campos/tablas/migraciones para columnas agregadas demo.

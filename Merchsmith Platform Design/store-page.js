@@ -207,6 +207,8 @@
     return homeView();
   }
   window.addEventListener('hashchange', route);
+  (function(){ let k=(location.hash.split('&')[0]||''); window.addEventListener('hashchange',()=>{
+    const n=(location.hash.split('&')[0]||''); if(n!==k){ k=n; window.scrollTo(0,0); } }); })();
 
   function crumb(parts){
     document.getElementById('crumb').innerHTML = parts.map((x,i)=> i===parts.length-1
@@ -227,7 +229,7 @@
     const on  = id => H ? H.isOn(id) : true;
     const ord = H ? H.order() : ['hero','usps','marquee','statement','bestsellers','ecoband','discover','brands','quotes','recent','steps','faq','newsletter'];
     const all=storeProducts();
-    // Featured/Spotlight products are eligible for best-sellers even without usage history
+    // Featured products are eligible for best-sellers even without usage history
     const best=all.filter(p=>(p.usage&&p.usage.units)||p._tier).sort((a,b)=>(tierRank(a)-tierRank(b))||(((b.usage&&b.usage.units)||0)-((a.usage&&a.usage.units)||0))).slice(0,10);
     const bestRow=(best.length?best:all.slice(0,10));
     const recent=all.slice().reverse().slice(0,3);
@@ -267,29 +269,11 @@
         <div class="list">${items.map((it,i)=>`<details${i===0?' open':''}><summary>${esc(it.q)}</summary><div class="ans">${esc(it.a)}</div></details>`).join('')}</div>
       </div></section>`; },
       newsletter(c){ c=c||{}; return `<section class="hm-sec"><div class="hm-news"><h2>${esc(c.heading||'')}</h2><form class="hm-newsform" onsubmit="return false"><input type="email" placeholder="you@company.com"><button type="submit">Subscribe</button></form></div></section>`; },
-      spotlight(c){ c=c||{}; const sp=all.filter(p=>p._tier==='spotlight').slice(0,4); if(!sp.length) return '';
-        return `<section class="hm-sec"><div class="hm-spot" data-spot>
-        ${sp.map((p,i)=>`<div class="hm-spotslide${i===0?' on':''}">
-          <div class="hm-spotimg">${p.imgUrl||p.image?`<img src="${esc(p.imgUrl||p.image)}" alt="" loading="lazy">`:imgEl(p.img,'',p.name)}</div>
-          <div class="hm-spotcopy"><span class="hm-spottag">${esc(c.heading||'In the spotlight')}</span>
-            <h2>${esc(p.name)}</h2><p>${esc(p.blurb||'')}</p>
-            <div class="hm-spotrow"><b>From ${gbp(p.priceGuide||p.priceFrom||0)}</b><a class="hm-btn solid" href="#product=${encodeURIComponent(p.id)}">View product</a></div>
-          </div>
-        </div>`).join('')}
-        ${sp.length>1?`<div class="hm-qdots hm-spotdots">${sp.map((_,i)=>`<i class="${i===0?'on':''}" data-sdot="${i}"></i>`).join('')}</div>`:''}
-      </div></section>`; }
     };
 
     view.innerHTML = ord.map(id=>{ if(!on(id)) return ''; const sec=H?H.section(id):null; const type=(sec&&sec.type)||id; return build[type]?build[type](sec||{}):''; }).join('\n');
     view.querySelectorAll('.hm-pc').forEach(c=>c.onclick=()=>{ location.hash='product='+c.dataset.id; });
     view.querySelectorAll('.pcard').forEach(c=>c.onclick=()=>{ if(c.dataset.id) location.hash='product='+c.dataset.id; });
-    view.querySelectorAll('[data-spot]').forEach(box=>{
-      const slides=[...box.querySelectorAll('.hm-spotslide')]; const dots=[...box.querySelectorAll('[data-sdot]')];
-      if(slides.length<2) return;
-      let idx=0,t; const show=n=>{ idx=(n+slides.length)%slides.length; slides.forEach((s,i)=>s.classList.toggle('on',i===idx)); dots.forEach((d,i)=>d.classList.toggle('on',i===idx)); };
-      const restart=()=>{ clearInterval(t); t=setInterval(()=>show(idx+1),6000); };
-      dots.forEach((d,i)=>d.onclick=()=>{ show(i); restart(); }); restart();
-    });
     view.querySelectorAll('[data-quotes]').forEach(box=>{
       const slides=[...box.querySelectorAll('.hm-qslide')]; const dots=[...box.querySelectorAll('[data-qdot]')];
       if(slides.length<2) return;
@@ -338,19 +322,32 @@
       ean:p.ean||'', hsCode:p.hsCode||'', video:p.video||'', gender:p.gender||'', subcat:p.subcat||p.cat||'', custom:p.custom||{}, _cat:p };
   }
   // the products the store should show — distributor range from MSCAT, mapped + merged with store-feed
+  /* Merchsmith default store (?store=merchsmith): the Recommended range exactly as a
+     distributor on "Recommended range" mode receives it — no distributor edits, no
+     distributor overrides. Opened from Platform Admin, where the product page swaps
+     the "In your range" bar for the product's Recommended / Featured status. */
+  const MSDEF=/[?&]store=merchsmith\b/.test(location.search);
   function storeProducts(){
     let list;
+    if(MSDEF && window.MSCAT && MSCAT.curated){
+      const live=MSCAT.curated().filter(c=>!c.curation||c.curation.approval!=='pending');
+      if(live.length) list=live.map(catToStore);
+      list=list||S.products;
+      list.forEach(p=>{ const c=MSCAT.get(p.id); p._tier=(c&&c.promoted&&c.curation)?c.curation.tier:''; });
+      if(window.MSHOME && MSHOME.getPref && MSHOME.getPref('imgOnly')) list=list.filter(hasImg);
+      return list;
+    }
     if(window.MSCAT && MSCAT.distRange){ const range=MSCAT.distRange(); if(range.length) list=range.map(catToStore); }
     if(!list) list=S.products;
-    // Promoted placement (Featured/Spotlight) applies whenever the range is built on the
-    // Merchsmith curated baseline ('curated' or 'edited'). Fully bespoke ranges carry none.
+    // Promoted placement (Featured) applies whenever the range is built on the
+    // Merchsmith recommended baseline ('curated' or 'edited'). Fully bespoke ranges carry none.
     const promoOn = window.MSCAT && MSCAT.distConfig && MSCAT.distConfig().mode!=='bespoke';
     list.forEach(p=>{ const c=(promoOn&&MSCAT.get)?MSCAT.get(p.id):null; p._tier=(c&&c.promoted&&c.curation)?c.curation.tier:''; });
     if(window.MSOV) list.forEach(p=>MSOV.apply(p)); // distributor per-field overrides (feed untouched)
     if(window.MSHOME && MSHOME.getPref && MSHOME.getPref('imgOnly')) list=list.filter(hasImg);
     return list;
   }
-  const tierRank=p=>p._tier==='spotlight'?0:p._tier==='featured'?1:2;
+  const tierRank=p=>p._tier==='featured'?0:1;
   let LISTVIEW = (function(){ try{ return localStorage.getItem('ms-store-listview')||'grid'; }catch(e){ return 'grid'; } })();
   let SORTBY='featured';
   const SORTS={
@@ -494,7 +491,7 @@
         (p.sustainability>=FILT.sus));
       out.sort(SORTS[SORTBY]||SORTS.featured);
       if(SORTBY!=='featured') out.sort((a,b)=>{ const s=(SORTS[SORTBY])(a,b); return s; }); // chosen sort wins outright
-      else out.sort((a,b)=>tierRank(a)-tierRank(b)); // featured: Spotlight, then Featured, float above the rest
+      else out.sort((a,b)=>tierRank(a)-tierRank(b)); // featured: promoted products float above the rest
       document.getElementById('cnt').textContent=out.length+' product'+(out.length===1?'':'s');
       const grid=document.getElementById('pgrid');
       grid.classList.toggle('listview', LISTVIEW==='list');
@@ -582,7 +579,7 @@
   function card(p){
     const added = briefAddedIds().includes(String(p.id));
     return `<div class="pcard ${added?'bc-added':''}" data-id="${p.id}">
-      <div class="pimg">${added?'<span class="ptag bc-tag">✓ Added</span>':(p._tier?`<span class="ptag promo">${p._tier==='spotlight'?'Spotlight':'Featured'}</span>`:(p.new?'<span class="ptag">New</span>':(p.recommended?'<span class="ptag">Recommended</span>':'')))}${imgEl(p.img,'',p.name,heroImg(p))}${altImg(p,heroImg(p))}</div>
+      <div class="pimg">${added?'<span class="ptag bc-tag">✓ Added</span>':(p._tier?'<span class="ptag promo">Featured</span>':(p.new?'<span class="ptag">New</span>':(p.recommended?'<span class="ptag">Recommended</span>':'')))}${imgEl(p.img,'',p.name,heroImg(p))}${altImg(p,heroImg(p))}</div>
       <h3>${esc(p.name)}</h3>
       <p class="pdesc">${esc(p.blurb)}</p>
       <div class="pmeta"><b>${p.priceGuide?gbp(p.priceGuide):'POA'}</b></div>
@@ -599,7 +596,7 @@
         <div class="pmeta"><b>${p.priceGuide?gbp(p.priceGuide):'POA'}</b></div>
       </div>
       <div class="prow-side">
-        ${added?'<span class="ptag bc-tag" style="position:static">✓ Added</span>':(p._tier?`<span class="ptag promo" style="position:static">${p._tier==='spotlight'?'Spotlight':'Featured'}</span>`:'')}
+        ${added?'<span class="ptag bc-tag" style="position:static">✓ Added</span>':(p._tier?'<span class="ptag promo" style="position:static">Featured</span>':'')}
       </div>
     </div>`;
   }
@@ -694,12 +691,19 @@
     if(!rel.length) return '';
     return `<div class="pp-also"><div class="hm-hd"><h2>You might also like</h2><a href="#dept=${esc(p.dept)}">More in this range →</a></div><div class="pgrid pgrid4">${rel.map(card).join('')}</div></div>`;
   }
+  function defaultStoreBanner(){
+    if(!MSDEF||document.getElementById('msdefBanner')) return;
+    const b=document.createElement('div'); b.id='msdefBanner'; b.className='msdef-banner';
+    b.innerHTML='<a href="Merchsmith Admin.html">← Back to Platform Admin</a>';
+    view.parentNode.insertBefore(b,view);
+  }
   function productView(id){
     // ----- staged store preview (a not-yet-imported feed product, opened from the import wizard) -----
     const hp=new URLSearchParams(location.hash.slice(1));
     let previewMode=false, p=null;
     if(hp.get('preview')){ try{ const raw=JSON.parse(localStorage.getItem('ms-store-preview')||'null'); if(raw){ p=catToStore(raw); previewMode=true; } }catch(e){} }
     if(!p) p=storeProducts().find(x=>x.id===id);
+    if(!p&&MSDEF&&window.MSCAT&&MSCAT.get){ const c=MSCAT.get(id); if(c) p=catToStore(c); }
     if(!p) p=S.products.find(x=>x.id===id);
     if(!p){ const q=decodeURIComponent(id); p=storeProducts().find(x=>x.name===q) || storeProducts().find(x=>x.name.toLowerCase().includes(q.toLowerCase().split(' ')[0])); }
     // fall back to ANY catalogue product (e.g. imported POA products not in the distributor range)
@@ -769,7 +773,13 @@
     wireReviews(p);
     view.querySelectorAll('.pp-also .pcard').forEach(c=>c.onclick=()=>{ if(c.dataset.id){ location.hash='product='+c.dataset.id; window.scrollTo(0,0); } });
     { const fb=document.getElementById('fulfilBrief'); if(fb) fb.onclick=()=>{ const ctx=briefCtx(); if(!ctx)return; const isAdded=briefAddedIds().includes(String(p.id)); if(isAdded){ removeFromBrief(p); toast(`Removed “${p.name}” from the ${ctx.it.type} line`); } else { addToBrief(p); toast(`Added “${p.name}” to the ${ctx.it.type} line — add more or click Done`); } productView(p.id); }; }
-    if(isDist()||previewMode){ view.insertAdjacentHTML('beforeend', distributorPanel(p)); wireAccordions(p); }
+    if(isDist()||previewMode){ view.insertAdjacentHTML('beforeend', distributorPanel(p)); wireAccordions(p);
+      // two-supplier default for this product (store level; projects can override)
+      if(window.MSTWO&&!previewMode){ const box=document.createElement('div'); box.className='pp-twosup'; const paint=()=>{ const t=MSTWO.get(p.name,'__store__');
+          box.innerHTML='<div><span>Suppliers</span><b>'+(t?esc(t.blank)+' (blank product) → '+esc(t.brand)+' (branding)':esc(p.supplier||'One supplier')+' supplies and brands this product')+'</b><small>'+(t?'Blank lead '+t.blankLead+' days · overs '+t.overs+'% · '+t.transit+' days transit · decorator lead '+t.brandLead+' days. Projects can use a different decorator.':'Make this a two-supplier product if another supplier does the branding.')+'</small></div><button type="button" class="btn ghost sm">'+(t?'Change':'Set up two suppliers')+'</button>';
+          box.querySelector('button').onclick=()=>MSTWO.editor(p.name,null,paint); };
+        paint(); const dp=view.querySelector('.dv-panel,.dvp,[data-dvpanel]')||view.lastElementChild; dp.parentNode.insertBefore(box,dp);
+        if(window.MSWARN){ const wc=document.createElement('div'); const wp=()=>{ wc.innerHTML=MSWARN.storeCardHTML(p.name); wc.querySelector('[data-wnmgr2]').onclick=()=>MSWARN.manager(p.name,wp); }; wp(); box.after(wc); } } }
     const ap=document.getElementById('addproj');
     ap.querySelector('.btn').onclick=e=>{ e.stopPropagation(); ap.classList.toggle('open'); };
     document.addEventListener('click',()=>ap.classList.remove('open'));
@@ -943,6 +953,42 @@
     return acc('extra','Additional attributes',rows.length+' custom field'+(rows.length===1?'':'s'),kvRows(rows));
   }
   (function(){ if(!document.getElementById('dv-extra-style')){ const st=document.createElement('style'); st.id='dv-extra-style'; st.textContent='.dv-thumbs{display:flex;flex-wrap:wrap;gap:8px}.dv-thumb{width:74px;height:74px;border:1px solid var(--line-soft,#e5e3dd);border-radius:9px;overflow:hidden;background:var(--paper-2,#f6f6fb);display:block;flex:none}.dv-thumb img{width:100%;height:100%;object-fit:contain;display:block}.dv-thumb.bad img{opacity:0}.dv-thumb.bad{position:relative}.dv-thumb.bad::after{content:"no img";position:absolute;inset:0;display:grid;place-items:center;font-size:9px;color:var(--muted,#9a9a9f)}.dv-desc{font-size:13px;line-height:1.6;color:var(--ink-2,#444);margin:0 0 10px}.dv-deco-list{display:flex;flex-direction:column;gap:0}.dv-deco-row{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:8px 0;border-bottom:1px solid var(--line-soft,#eee)}.dv-deco-row:last-child{border-bottom:0}'; document.head.appendChild(st); } })();
+  // In-store range toggle (distributor only). Mirrors the add/remove action in
+  // Settings → Store range; both write through MSCAT.distToggle, so the two stay in step.
+  function recommendBar(p){
+    const c=MSCAT.get(p.id)||{}, m=c.curation, pend=m&&m.approval==='pending';
+    const st=!m?'none':pend?'pend':m.tier==='featured'?'feat':'rec';
+    const T={none:['Not recommended','Not in the Merchsmith Recommended range — distributors on the Recommended range will not receive it.'],
+      pend:['Awaiting supplier approval','Proposed as '+(m&&m.tier==='featured'?'Featured':'Recommended')+'. It goes live once the supplier accepts the terms.'],
+      rec:['Recommended','Live in the Recommended range — every distributor on the Recommended range stocks it.'],
+      feat:['Featured','Live and featured — promoted placement in every Recommended-range store.']}[st];
+    const rates=MSCAT.curRates?MSCAT.curRates():{standard:5,featured:60};
+    return `<div class="dv-range rec-${st} ${st!=='none'?'in':''}">
+      <span class="dv-rdot"></span>
+      <div class="dv-rtx"><b>${T[0]}</b><span>${T[1]}</span></div>
+      <div class="dv-racts">${st==='none'
+        ?`<button class="dv-rbtn" data-recadd="standard">＋ Recommend</button><button class="dv-rbtn ghost" data-recadd="featured">＋ Feature</button>`
+        :`<select class="dv-rsel" data-rectier aria-label="Placement tier">
+            <option value="standard" ${m.tier!=='featured'?'selected':''}>Recommended</option>
+            <option value="featured" ${m.tier==='featured'?'selected':''}>Featured</option></select>
+          <button class="dv-rbtn ghost" data-recrm>Remove</button>`}</div>
+    </div>`;
+  }
+  function rangeToggle(p){
+    if(MSDEF&&window.MSCAT&&MSCAT.curRates) return recommendBar(p);
+    if(!window.MSCAT||!MSCAT.distInRange) return '';
+    const cfg=MSCAT.distConfig?MSCAT.distConfig():{mode:'curated'};
+    const inR=MSCAT.distInRange(p.id), locked=cfg.mode==='curated';
+    const why=locked
+      ? 'Your store mirrors the Merchsmith Recommended range, so products can\'t be added or removed individually. Change this in Settings → Store range.'
+      : (inR?'This product is live in your store.':'This product is not in your store yet.');
+    return `<div class="dv-range ${inR?'in':''} ${locked?'locked':''}">
+      <span class="dv-rdot"></span>
+      <div class="dv-rtx"><b>${inR?'In your range':'Not in your range'}</b><span>${why}</span></div>
+      ${locked?'<a class="dv-rlink" href="Merchsmith Distributor Settings.html#tab=storerange">Store range settings →</a>'
+        :`<button class="dv-rbtn ${inR?'on':''}" data-rangetog="${esc(p.id)}">${inR?'✓ In your range':'＋ Add to your range'}</button>`}
+    </div>`;
+  }
   function distributorPanel(p){
     const M={screenprint:'Screenprint',transfer:'Transfer',dtf:'DTF transfer',embroidery:'Embroidery',pad:'Pad print',laser:'Laser engrave'};
     const c=p._cat||{};
@@ -970,7 +1016,8 @@
     const wt=p.weightGr||c.weightGr;
     const _extras=(function(){ try{ return JSON.parse(localStorage.getItem('ms-dv-extra-fields')||'[]')||[]; }catch(e){ return []; } })();
     const extrasAcc=_extras.length?acc('queuefields','Build-queue fields','Added from Field Mapping',kvRows(_extras.map(x=>[esc(x.label)+(x.group?` <small style="color:var(--muted)">(${esc(x.group)})</small>`:''), _dvExtraVal(x.label,p,c)]))):'';
-    return `<div class="dv-panel">
+    return `${rangeToggle(p)}
+    <div class="dv-panel collapsed">
       <button class="dv-head" data-dvtoggle><svg class="icn"><use href="#s-store"/></svg><div><b>Distributor view</b><span>Full product data &amp; cost/sell pricing — not shown to customers.</span></div><svg class="icn dv-pchev"><use href="#s-arr"/></svg></button>
       <div class="dv-acclist">
       ${acc('override','Your product data',(p._ovCount?`${p._ovCount} field${p._ovCount===1?'':'s'} overridden`:'Override any feed field — feed stays untouched'),ovBody(p),window.__ovOpen===p.id)}
@@ -1019,10 +1066,36 @@
       ]))}
       ${extrasAcc}
       ${customAttrAcc(p)}
-    </div></div>`;
+    </div></div>
+    ${window.MSNOTES?`<div class="dv-notes"><div class="dv-nhd"><svg class="icn"><use href="#s-chat"/></svg><b>Notes, comments &amp; history</b></div><div id="dvNotes">${MSNOTES.panelHTML(p.id)}</div></div>`:''}`;
   }
   function wireAccordions(p){
+    if(window.MSNOTES) MSNOTES.wire(document.getElementById('dvNotes'),p.id);
     const tog=document.querySelector('.dv-panel [data-dvtoggle]'); if(tog) tog.onclick=()=>tog.closest('.dv-panel').classList.toggle('collapsed');
+    if(MSDEF&&p){
+      const redraw=()=>{ const old=document.querySelector('.dv-range'); if(old) old.outerHTML=recommendBar(p); wireAccordions(p); };
+      document.querySelectorAll('[data-recadd]').forEach(b=>b.onclick=()=>{
+        MSCAT.setCurated(p.id,{tier:b.dataset.recadd});
+        if(window.MSNOTES) MSNOTES.log(p.id,'range','proposed it as '+(b.dataset.recadd==='featured'?'Featured':'Recommended'));
+        redraw(); });
+      const ts=document.querySelector('[data-rectier]');
+      if(ts) ts.onchange=()=>{ MSCAT.setCurated(p.id,{tier:ts.value});
+        if(window.MSNOTES) MSNOTES.log(p.id,'range','moved it to '+(ts.value==='featured'?'Featured':'Recommended'));
+        redraw(); };
+      const rm=document.querySelector('[data-recrm]');
+      if(rm) rm.onclick=()=>{ if(!confirm('Remove “'+p.name+'” from the Recommended range?\n\nDistributors on the Recommended range will lose it from their stores and be notified.')) return;
+        MSCAT.removeCurated(p.id); redraw(); };
+    }
+    const rt=document.querySelector('[data-rangetog]');
+    if(rt) rt.onclick=()=>{ const id=rt.dataset.rangetog, was=MSCAT.distInRange(id);
+      MSCAT.distToggle(id);
+      const box=rt.closest('.dv-range');
+      box.classList.toggle('in',!was);
+      rt.classList.toggle('on',!was);
+      rt.textContent=was?'＋ Add to your range':'✓ In your range';
+      box.querySelector('.dv-rtx b').textContent=was?'Not in your range':'In your range';
+      box.querySelector('.dv-rtx span').textContent=was?'This product is not in your store yet.':'This product is live in your store.';
+    };
     document.querySelectorAll('.dv-acc .dv-h').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
     if(p) wireOverrides(p);
     // price-matrix tabs + cost/sell toggle

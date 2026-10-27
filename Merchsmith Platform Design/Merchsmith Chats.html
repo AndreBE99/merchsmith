@@ -8,15 +8,16 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
-<script src="theme.js"></script>
+<script>if(/[?&]scope=platform\b/.test(location.search)) window.MS_SCOPE='platform';</script>
+<script src="theme.js?v=10"></script>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
 .icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
 a{color:inherit;text-decoration:none;}
 .header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
-.main{max-width:1180px;margin:0 auto;padding:28px 32px 90px;}
-.crumbband{background:var(--periwinkle);color:#fff;padding:13px 36px;}
+.main{width:100%;max-width:none;padding:28px var(--page-gutter) 90px;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px var(--page-gutter);}
 .crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
 .crumb .sep{opacity:.6;}
 .ptitle{font-family:var(--serif);font-weight:500;font-size:36px;line-height:1;margin:0;}
@@ -27,11 +28,13 @@ a{color:inherit;text-decoration:none;}
 .panel{display:none;padding-top:24px;}
 .panel.on{display:block;}
 /* overview */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
 @media(max-width:880px){.stats{grid-template-columns:repeat(2,1fr);}}
-.stat{background:#fff;border:1px solid var(--line-soft);border-radius:15px;padding:18px 20px;}
+.stat{background:#fff;border:1px solid var(--line-soft);border-radius:15px;padding:18px 20px;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:border-color .15s,box-shadow .15s;}
+.stat:hover{border-color:var(--periwinkle);}
+.stat.on{border-color:var(--periwinkle-deep);box-shadow:0 0 0 1px var(--periwinkle-deep) inset;}
 .stat b{display:block;font-family:var(--serif);font-weight:500;font-size:30px;line-height:1;}
-.stat span{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:6px;display:block;}
+.stat span{font-size:12.5px;color:var(--ink-3);font-weight:600;margin-top:6px;display:block;}
 .cols{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;}
 @media(max-width:880px){.cols{grid-template-columns:1fr;}}
 .card{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:6px 20px;}
@@ -90,11 +93,8 @@ a{color:inherit;text-decoration:none;}
 
 <div class="main">
   <h1 class="ptitle">Chats</h1>
-  <p class="psub">Message anyone connected to your organisation — your team, your customers and your suppliers — without leaving the platform. Conversations follow each order and project.</p>
-
   <div class="tabs">
-    <button class="tab on" data-t="overview">Overview</button>
-    <button class="tab" data-t="history">History</button>
+    <button class="tab on" data-t="overview">Messages</button>
     <button class="tab" data-t="comments">Comments &amp; mentions</button>
     <button class="tab" data-t="settings">Settings</button>
   </div>
@@ -102,23 +102,12 @@ a{color:inherit;text-decoration:none;}
   <!-- OVERVIEW -->
   <div class="panel on" id="p-overview">
     <div class="stats">
-      <div class="stat"><b id="sUnread">—</b><span>Unread messages</span></div>
-      <div class="stat"><b id="sActive">—</b><span>Active conversations</span></div>
-      <div class="stat"><b id="sOnline">—</b><span>People online now</span></div>
-      <div class="stat"><b id="sConn">—</b><span>Connected contacts</span></div>
+      <button class="stat" data-stat="unread"><b id="sUnread">—</b><span>Unread messages</span></button>
+      <button class="stat" data-stat="all"><b id="sActive">—</b><span>Conversations</span></button>
+      <button class="stat" data-stat="online"><b id="sOnline">—</b><span>Contacts online now</span></button>
+      <button class="stat" data-stat="contacts"><b id="sConn">—</b><span>People you can message</span></button>
     </div>
-    <div class="cols">
-      <div class="card"><div class="card-h">Recent conversations</div><div id="recent"></div></div>
-      <div>
-        <div class="card pad"><div class="card-h" style="padding-top:0">Online now</div><div class="online-list" id="online"></div>
-          <button class="startbtn" id="startBtn"><svg class="icn" style="width:16px;height:16px"><use href="#i-chat"/></svg>New message</button></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- HISTORY -->
-  <div class="panel" id="p-history">
-    <div class="card"><div class="card-h">All conversations</div><div id="history"></div></div>
+    <div id="mcFull"></div>
   </div>
 
   <!-- COMMENTS & MENTIONS -->
@@ -143,7 +132,7 @@ a{color:inherit;text-decoration:none;}
 </div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8 8 0 0 1-11.8 7L4 20l1.5-5.2A8 8 0 1 1 21 11.5z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 0 1-11.8 7L4 20l1.5-5.2A8 8 0 1 1 21 11.5z"/></symbol>
 </svg>
 
 <script src="logos.js"></script>
@@ -151,26 +140,30 @@ a{color:inherit;text-decoration:none;}
 <script src="ms-comments.js"></script>
 <script src="identity.js"></script>
 <script>(function(){var o={distributor:'Mojo Promotions',customer:'Citrix',supplier:'BagWorks UK',admin:'Merchsmith'};var id=(window.MSID&&MSID.current&&MSID.current())||'distributor';document.querySelectorAll('.crumb-org').forEach(function(e){e.textContent=o[id]||o.distributor;});})();</script>
-<script src="sidebar.js"></script>
-<script src="chrome.js"></script>
+<script src="sidebar.js?v=26"></script>
+<script src="chrome.js?v=3"></script>
 <script>
 (function(){
   function start(){
-    const P=(window.MSChat&&MSChat.people)||[];
-    const av=n=>{ const u=window.MSAvatar&&MSAvatar.url(n); return u?`<img src="${u}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:n.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase(); };
-    const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
-    const unread=P.reduce((a,p)=>a+(p.unread||0),0);
-    const online=P.filter(p=>p.online).length;
-    document.getElementById('sUnread').textContent=unread;
-    document.getElementById('sActive').textContent=P.length;
-    document.getElementById('sOnline').textContent=online;
-    document.getElementById('sConn').textContent=P.length;
-    const row=p=>`<div class="crow" data-open="${p.id}"><span class="cav" style="background:${p.accent}">${av(p.name)}<span class="dot ${p.online?'on':''}"></span></span><span class="cmeta"><b>${esc(p.name)}</b><span class="last">${esc(p.last)}</span></span><span class="cside"><span class="when">${p.when}</span>${p.unread?`<span class="unread">${p.unread}</span>`:''}</span></div>`;
-    document.getElementById('recent').innerHTML=P.slice(0,4).map(row).join('');
-    document.getElementById('history').innerHTML=P.map(row).join('');
-    document.getElementById('online').innerHTML=P.filter(p=>p.online).map(p=>`<span class="chiprow" data-open="${p.id}"><span class="mini" style="background:${p.accent}">${av(p.name)}</span>${esc(p.name.split(' ')[0])}</span>`).join('')||'<span style="font-size:13px;color:var(--muted)">No one online.</span>';
-    document.querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>window.MSChat&&MSChat.openPerson(el.dataset.open));
-    document.getElementById('startBtn').onclick=()=>window.MSChat&&MSChat.open();
+    const M=window.MSChat; if(!M) return;
+    const V=M.mount(document.getElementById('mcFull'));
+    document.addEventListener('mc-filter-cleared',()=>document.querySelectorAll('[data-stat]').forEach(x=>x.classList.remove('on')));
+    // tiles drive the conversation view below — same for every user type, since the page is shared
+    document.querySelectorAll('[data-stat]').forEach(b=>b.onclick=()=>{
+      const k=b.dataset.stat;
+      document.querySelectorAll('[data-stat]').forEach(x=>x.classList.toggle('on',x===b&&k!=='all'));
+      if(V&&V.show) V.show(k);
+      const t=document.getElementById('mcFull'); if(t) window.scrollTo({top:t.getBoundingClientRect().top+scrollY-80,behavior:'smooth'});
+    });
+    const stats=()=>{ const cs=M.contacts();
+      document.getElementById('sUnread').textContent=M.unread();
+      document.getElementById('sActive').textContent=M.convs().length;
+      document.getElementById('sOnline').textContent=cs.filter(p=>p.online).length;
+      document.getElementById('sConn').textContent=cs.length; };
+    stats(); setInterval(stats,2000);
+    // deep link: Merchsmith Chats.html#person=cara  or  #conv=prj-autumn
+    const m=location.hash.match(/(person|conv)=([\w-]+)/);
+    if(m){ if(m[1]==='person') M.openPerson(m[2]); else M.openConv(m[2]); }
   }
   document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t)); document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='p-'+t.dataset.t)); });
   document.querySelectorAll('[data-sw]').forEach(s=>s.onclick=()=>s.classList.toggle('on'));

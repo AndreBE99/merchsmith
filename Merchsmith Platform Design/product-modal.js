@@ -82,7 +82,7 @@
 
   // ---- per-product modal data ----
   // chosen.positions: [{code, method, colours:[names]}]
-  const PD = {};
+  const PD = {}; window.__PD=PD;
   function def(name, o){
     const colours=o.colours.map(c=> typeof c==='string'?{name:c,pms:''}:c);
     PD[name]=Object.assign({
@@ -98,6 +98,9 @@
       productNotes:o.productNotes||'', warnings:o.warnings||'',
       twoSupplier:o.twoSupplier||null
     }, {});
+    // live from the two-supplier registry (store default + project override), keeping the seeded wording
+    { const seed=PD[name].twoSupplier; Object.defineProperty(PD[name],'twoSupplier',{configurable:true,enumerable:true,get(){ const t=window.MSTWO&&MSTWO.get(name,'autumn'); if(!window.MSTWO) return seed; if(!t) return null;
+      return {product:Object.assign({role:'Product only',detail:'Supplies the blank product, dispatched to the decorator (not the customer).',lead:6},seed&&seed.product,{supplier:t.blank,lead:t.blankLead}),branding:Object.assign({role:'Branding only',detail:'Receives the blank stock, brands it to the approved proof, then dispatches finished goods.'},seed&&seed.branding,{supplier:t.brand,lead:t.brandLead}),overs:t.overs,transit:t.transit}; }}); }
   }
 
   const PB_STD=[{q:0,unit:9.40},{q:250,unit:7.95},{q:500,unit:5.20},{q:1000,unit:3.85},{q:2000,unit:3.15},{q:3750,unit:2.78},{q:5000,unit:2.45}];
@@ -254,15 +257,18 @@
     q=Math.max(1,q);
     const blank=breakFor(d.price.breaks, q).unit;
     const dec=decoPerUnit(d, q);
-    const totalCost=(blank+dec.run)*q + dec.setupTotal;
+    // two-supplier lines also pay carriage for the blanks from the product supplier to the decorator
+    const carriage=d.twoSupplier?r2c(deliverySupplier(d,q,1)*0.6):0;
+    const totalCost=(blank+dec.run)*q + dec.setupTotal + carriage;
     const markup=markupFor(totalCost);
     let totalSell=totalCost*markup;
     if(totalSell-totalCost < 60) totalSell=totalCost+60;
     let unit=totalSell/q;
     const disc=discountPctOf(d);
     if(disc){ unit=unit*(1-disc/100); totalSell=unit*q; }
-    return { unit, blank, dec, totalCost, totalSell, markup, profit:totalSell-totalCost, delivery:deliveryCharge(d,q) };
+    return { unit, blank, dec, carriage, totalCost, totalSell, markup, profit:totalSell-totalCost, delivery:deliveryCharge(d,q) };
   }
+  function r2c(v){ return Math.round((+v||0)*100)/100; }
   function unitSell(d, q){ const c=priceCalc(d,q); return { unit:c.unit, blank:c.blank, dec:c.dec, calc:c }; }
   // ---- break-hold pricing: the unit sell price holds across a tier and only steps at the next break ----
   function repQty(d,q){ const breaks=d.price.breaks; const bi=fullIdxForQ(d,q); const t=breaks[bi].q; if(t>0) return t; const firstReal=breaks.find(b=>b.q>0); return firstReal?firstReal.q:Math.max(1,Math.round(q)); }
@@ -303,6 +309,18 @@
     const ov=sampleOverride(p.name); const m=(b,o)=>Object.assign({}, b||{}, o||{});
     return { unbranded:m(d.sample.unbranded, ov.unbranded), branded:m(d.sample.branded, ov.branded) };
   }
+  // sample lead times: supplier side (1 per supplier; 2 on a two-supplier branded sample) + customer side
+  function sampleLeads(p,d,type){ const ML=window.MSLead, ov=(sampleOverride(p.name)[type])||{}, t=d&&d.twoSupplier;
+    const sup=(typeof supplierName==='function'&&supplierName(p))||p.supplier||'';
+    const two=t&&t.product&&t.product.supplier;
+    const sups=two
+      ? (type==='branded'
+          ? [{k:'supLead',who:t.product.supplier,role:'Blank sample',days:ov.supLead!=null?ov.supLead:(ML?ML.supSampleLead(t.product.supplier,'unbranded'):1)},{k:'supLead2',who:t.branding.supplier,role:'Branding',days:ov.supLead2!=null?ov.supLead2:(ML?ML.supSampleLead(t.branding.supplier,'branded'):7)}]
+          : [{k:'supLead',who:t.product.supplier,role:'Supplier',days:ov.supLead!=null?ov.supLead:(ML?ML.supSampleLead(t.product.supplier,'unbranded'):1)}])
+      : [{k:'supLead',who:sup,role:'Supplier',days:ov.supLead!=null?ov.supLead:(ML?ML.supSampleLead(sup,type):(type==='branded'?7:1))}];
+    const cust=ov.custLead!=null?ov.custLead:(ML?ML.custSampleLead(type):(type==='branded'?10:3));
+    return {sups,cust,supTotal:sups.reduce((a,s)=>a+(+s.days||0),0)}; }
+  window.MSSampleLead=(p,d,type)=>{ try{ return sampleLeads(p,d,type); }catch(e){ return null; } };
   function sampleSet(name, type, patch){ const o=sampleStoreLoad(); o[name]=o[name]||{}; o[name][type]=Object.assign({}, o[name][type]||{}, patch); sampleStoreSave(o); }
   window.MSSampleCost = { calc:sampleCalc, markupSell:sampleMarkupSell, load:sampleStoreLoad, set:sampleSet, override:sampleOverride, MARKUP:SAMPLE_MARKUP, MIN_UPLIFT:SAMPLE_MIN_UPLIFT };
   // sell unit for a specific method + colour count at qty (customer full matrix)
@@ -337,7 +355,8 @@
   /* =========================================================
      TAB BODIES
      ========================================================= */
-  function ts(where,d){
+  // two-supplier lines are now shown under the product name in the modal's product row, not as a banner in each section
+  function ts(where,d){ return '';
     const t=d.twoSupplier; if(!t) return '';
     const lines={ design:'This line uses two suppliers — the blank product from one, the branding from another. The proof below is produced by the branding supplier.',
       stock:'Stock shown is held by the product supplier, who dispatches blanks to the decorator — not direct to the customer.',
@@ -444,9 +463,40 @@
     return '';
   }
 
-  function designBody(p,d,ctx,role){
+  // colour for stock photos: Product Builder choice once made, otherwise the project default
+  function designColour(p,d){ const ch=d.branding.chosen||{}; const names=(d.colours||[]).map(c=>c.name);
+    if(ch._colourSet&&names.includes(ch.productColour)) return {name:ch.productColour,src:'Product Builder'};
+    let pref=[]; try{ pref=(window.MSBrief&&MSBrief.defaultsFor().productColours)||[]; }catch(e){}
+    const base=n=>(window.MSCOLOUR&&MSCOLOUR.base)?MSCOLOUR.base(n):n;
+    for(const want of pref){ const hit=names.find(n=>n.toLowerCase()===String(want).toLowerCase())||names.find(n=>base(n)===want); if(hit) return {name:hit,src:'project defaults'}; }
+    return {name:ch.productColour||names[0]||'',src:ch._colourSet?'Product Builder':'first'}; }
+  // Stock images tab: the supplier's own photos, same behaviour as the store product page (thumbnails swap the main image, click or ⤢ to enlarge)
+  // Product Builder: icon + short sentence-case title per step (polished UI)
+  const BB_STEPS={0:['Project colours & variants','<path d="M12 3 3 8l9 5 9-5z"/><path d="m3 13 9 5 9-5"/>'],1:['Product Colour & Variant','<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>'],
+    2:['Branding: Position, Method, Colours','<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h6v6H9z"/>'],3:['Artwork','<path d="M18.4 2.6a2 2 0 0 1 2.9 2.9L12 14.8 9.2 12z"/><path d="M9.2 12c-2 0-3.7 1.6-3.7 3.6 0 1.6-1.1 2.9-2.5 3.4 1 1 2.5 1.6 4 1.6 3 0 5-2.2 5-4.8z"/>'], 4:['Other','<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>'],6:['Sample','<path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/>'],5:['Unbranded','<circle cx="12" cy="12" r="9"/><path d="m5.7 5.7 12.6 12.6"/>']};
+  const _bbRaw=brandingBuilderHTML;
+  brandingBuilderHTML=function(p,d){ return _bbRaw(p,d).replace(/<span class="bb-n">(\d+)<\/span>([^<]*)/g,(m,n,t)=>{ const x=BB_STEPS[n]; return x?`<span class="bb-ic" aria-hidden="true"><svg viewBox="0 0 24 24">${x[1]}</svg></span><span class="bb-ttl">${(t||'').trim()||x[0]}</span><span class="bb-stepno">Step ${n}</span>`:m; }); };
+  function stockImages(p){ const a=(p.images||[]).filter(u=>/^(https?:|data:image\/|assets\/)/.test(u)); const own=p.imgUrl||(p.img?'assets/products/'+p.img+'.png':''); return [...new Set((own?[own]:[]).concat(a))].slice(0,8); }
+  function stockImagesHTML(p,imgs){ if(!imgs.length) return '<div class="dsv-full"><p class="pm-viscap">No stock images from the supplier for this product.</p></div>';
+    return `<div class="dsv-full pm-simg" data-simg>
+      <div class="pm-simg-stage" data-simg-stage title="Click to enlarge"><img src="${imgs[0]}" alt="${p.name}"><button type="button" class="pm-simg-zoom" data-simg-zoom title="Enlarge image" aria-label="Enlarge image">⤢</button></div>
+      ${imgs.length>1?`<div class="pm-simg-row">${imgs.map((u,i)=>`<button type="button" class="pm-simg-th${i?'':' on'}" data-simg-th="${u}" aria-label="Image ${i+1}"><img src="${u}" alt="" loading="lazy"></button>`).join('')}</div>`:''}
+      <p class="pm-viscap">Supplier photos of the product as supplied, not your design.</p></div>`; }
+  if(!window.__pmSimgWired){ window.__pmSimgWired=1;
+    document.addEventListener('click',e=>{ const th=e.target.closest('[data-simg-th]'); if(th){ const w=th.closest('[data-simg]'); w.querySelector('[data-simg-stage] img').src=th.dataset.simgTh; w.querySelectorAll('[data-simg-th]').forEach(b=>b.classList.toggle('on',b===th)); return; }
+      const st=e.target.closest('[data-simg-stage]'); if(!st) return; const src=st.querySelector('img').src;
+      const lb=document.createElement('div'); lb.className='pm-simg-lb'; lb.innerHTML=`<img src="${src}" alt=""><button type="button" aria-label="Close">×</button>`; document.body.appendChild(lb);
+      const close=()=>{ lb.remove(); document.removeEventListener('keydown',k); }; const k=ev=>{ if(ev.key==='Escape') close(); }; lb.onclick=close; document.addEventListener('keydown',k); }); }
+  function stockHero(p,d,note){ const c=designColour(p,d), src='assets/products/'+p.img+'.png', h=hex(c.name);
+    const rgb=(String(h).match(/^#?([0-9a-f]{6})$/i)||[])[1], L=rgb?(0.2126*parseInt(rgb.slice(0,2),16)+0.7152*parseInt(rgb.slice(2,4),16)+0.0722*parseInt(rgb.slice(4,6),16))/255:0.5, br=L<0.22?0.42:L>0.85?1.35:L<0.45?0.8:1.05;
+    return `<div class="pm-vis-stage pm-stock"><span class="pm-stock-badge"><svg class="icn"><use href="#ic-image"/></svg>Stock photo</span>
+      <div class="pm-stock-img"><img src="${src}" alt="Stock photo of ${p.name} in ${c.name}" style="filter:grayscale(1) brightness(${br})"><span class="pm-stock-tint" style="background:${h};-webkit-mask-image:url('${src}');mask-image:url('${src}')"></span></div>
+      <span class="pm-stock-col"><i style="background:${h}"></i>${c.name}</span></div>
+      <p class="pm-viscap pm-stockcap" data-stockcap>This is a stock photo, not your design. Colour: <b>${c.name}</b> (${c.src==='first'?'the product’s first colour, as none of the project default colours are available':'from '+c.src}). ${note}</p>`; }
+  function designBody_(p,d,ctx,role){
     seedDesign(p);
     const dz=p.design;
+    { const ch=d.branding.chosen; if(ch&&!ch._colourSet){ const c=designColour(p,d); if(c.name) ch.productColour=c.name; } }
     const card=(stage)=>{
       const s=dz[stage]; const meta=D_META[s.st]||D_META.notstarted;
       const unbr = d.branding.chosen && d.branding.chosen.unbranded;
@@ -468,13 +518,25 @@
         <div class="ds-foot">${foot}</div>
       </div>`;
     };
+    // status / action for a stage, shown at the right end of the Branding / Visual / Proof tab row
+    const esc=x=>String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const tabAct=(stage)=>{ if(d.branding.chosen&&d.branding.chosen.unbranded) return ''; const act=stageAction(p,stage,role), wait=stageWait(p,stage,role);
+      if(stage==='visual'&&role!=='cust'&&!brandingSet(d)&&act&&act!=='View') return `<span class="ds-wait"><svg class="icn"><use href="#ic-lock"/></svg>Set branding first</span>`;
+      const extra=role==='cust'?'':`<button type="button" class="pm-cta-sec sm dsg-save" data-dsave="${stage}" title="Save" aria-label="Save"><svg class="icn"><use href="#ic-check"/></svg><span>Save</span></button>${stage==='proof'?`<button type="button" class="pm-cta-sec sm pf-dl" data-pfdl title="Download the A3 proof PDF" aria-label="Download proof PDF"><svg class="icn"><use href="#ic-download"/></svg><span>Download PDF</span></button>`:`<button type="button" class="pm-cta-sec sm dsg-dl" data-ddl="${stage}" title="Download" aria-label="Download"><svg class="icn"><use href="#ic-download"/></svg><span>Download</span></button>`}`;
+      if(stage==='proof'&&role==='cust'&&p.design.proof&&p.design.proof.st==='awaiting') return `<button type="button" class="pm-cta sm" data-pfappr><svg class="icn"><use href="#ic-check"/></svg><span>Approve Proof</span></button><button type="button" class="pm-cta-sec sm pf-reject" data-pfreject><span>Do Not Approve</span></button><button type="button" class="pm-cta-sec sm pf-dl" data-pfdl><svg class="icn"><use href="#ic-download"/></svg><span>Download</span></button>`;
+      if(stage==='proof'&&role==='cust'&&p.design.proof&&['approved','changes'].includes(p.design.proof.st)&&act) return `<button type="button" class="pm-cta-sec sm pf-dl" data-pfdl><svg class="icn"><use href="#ic-download"/></svg><span>Download</span></button>`;
+      if(act==='View') return extra; if(act) return extra+`<button class="pm-cta sm ds-open" data-stage="${stage}"><span>${act}</span><svg class="icn"><use href="#ic-arrow"/></svg></button>`;
+      return wait?`<span class="ds-wait"><svg class="icn"><use href="#ic-clock"/></svg>${esc(wait)}</span>`:''; };
+    // customer Visual: short status/button in the tab row; the approval / info forms stay under the image
+    const custForm=['awaiting','infoneeded'].includes(dz.visual.st);
+    const custVisAct=()=>{ if(custForm) return `<button type="button" class="pm-cta sm" data-dsvgo><span>${dz.visual.st==='infoneeded'?'Reply to studio':'Review visual'}</span><svg class="icn"><use href="#ic-arrow"/></svg></button>`; return visualApproveInline(p); };
     const __slug=p.name.replace(/[^a-z0-9]/gi,'-').toLowerCase();
     const unbr = d.branding.chosen && d.branding.chosen.unbranded;
     const vSt=dz.visual.st;
     const vReady=['awaiting','changes','approved'].includes(vSt) && !unbr;
     let hero;
     if(unbr){
-      hero = `<div class="pm-vis-stage"><div class="pm-vis-notstart unbr"><svg class="icn"><use href="#ic-ban"/></svg><span>Unbranded product</span><small>No artwork or proof — supplied plain. Untick “unbranded” in the builder to restore.</small></div></div>`;
+      hero = stockHero(p,d,'Supplied unbranded, so there’s no visual or proof. Untick “unbranded” in the Product Builder to restore them.');
     } else if(vReady){
       hero = `<div class="pm-vis-stage has-visual" id="pmVisStage" data-slug="${__slug}" data-img="${p.img}">
         <button class="pm-vis-magnify" id="pmVisMag" title="Magnify"><svg class="icn"><use href="#ic-magnify"/></svg><span>Magnify</span></button>
@@ -486,27 +548,40 @@
       </div>
       <p class="pm-viscap">Indicative visual — not an exact match for colour, scale or finish.</p>`;
     } else {
-      hero = `<div class="pm-vis-stage"><div class="pm-vis-notstart"><svg class="icn"><use href="#ic-image"/></svg><span>Visual not started</span><small>Studio will share visuals once the brief is ready.</small></div></div>`;
+      hero = stockHero(p,d,'The studio’s visual will replace it when it’s ready.');
     }
     const vv=dz.visual.ver;
     const visualHd=`<div class="dsv-mini-hd"><b>Visual</b>${(!unbr&&vv&&['awaiting','approved','changes'].includes(vSt))?`<span class="ds-ver">v${vv}</span>`:(unbr?'<span class="ds-ver">Stock image</span>':'')}</div>`;
-    if(role==='cust'){
-      return ts('design',d) + `<div class="pm-designwrap"><div class="dsv-split">
-        <div class="dsv-col">${visualHd}${hero}<div class="dsv-colfoot">${visualApproveInline(p)}</div></div>
-        <div class="dsv-col">${proofMiniPanel(p,d)}</div>
-      </div></div>`;
-    }
-    const builder = brandingBuilderHTML(p,d);
-    return ts('design',d) + `<div class="pm-designwrap"><div class="dsv-split">
-        <div class="dsv-col">${visualHd}${hero}<div class="dsv-colfoot">${card('visual')}</div></div>
-        <div class="dsv-col">${proofMiniPanel(p,d)}</div>
-      </div>${builder}</div>`;
+    const stLbl=k=>{ if(unbr) return 'Unbranded'; const st=dz[k].st; if(k==='visual'&&!vReady) return 'Stock photo'; return (D_META[st]||D_META.notstarted).lbl; };
+    const simgs=stockImages(p);
+    const tabs=(role==='cust'?[]:[['builder','Branding','']]).concat([['visual','Visual',stLbl('visual')],['proof','Proof',stLbl('proof')]]);
+    let cur=window.__pmDTab; if(!tabs.some(t=>t[0]===cur)) cur=tabs[0][0];
+    const tabBar=`<div class="dsg-tabs" role="tablist" aria-label="Design">${tabs.map(([k,l,sub])=>`<button type="button" role="tab" class="dsg-tab${k===cur?' on':''}" data-dtab="${k}" aria-selected="${k===cur}"><span>${l}</span>${sub?`<em>${sub}</em>`:''}</button>`).join('')}${['visual','proof'].map(k=>{ const h=(role==='cust'&&k==='visual')?custVisAct():tabAct(k); return h?`<div class="dsg-tabact" data-dact="${k}"${k===cur?'':' hidden'}>${h}</div>`:''; }).join('')}</div>`;
+    const pane=(k,html)=>`<div class="dsg-pane" data-dpane="${k}"${k===cur?'':' hidden'}>${html}</div>`;
+    const builder=role==='cust'?'':brandingBuilderHTML(p,d), dist=role!=='cust'&&!unbr;
+    const visual=`<div class="dsv-split"><div class="dsv-col dsv-full">${visualHd}${hero}${role==='cust'&&custForm?`<div class="dsv-colfoot" id="dsvCustForm">${visualApproveInline(p)}</div>`:''}</div><div class="dsv-side">${brandSummaryHTML(p,d,role)}${window.MSLISTING?'':productDetailsHTML(p)}${dist?`<div class="pm-section bb-wrap bb-moved">${d.__visStep}</div>`:''}</div></div>`;
+    const proof=`<div class="dsv-full">${proofMiniPanel(p,d)}</div>${dist?`<div class="pm-section bb-wrap bb-moved">${d.__proofStep}</div>`:''}`;
+    return ts('design',d) + `<div class="pm-designwrap dsg">${tabBar}${role==='cust'?'':pane('builder',builder)}${pane('visual',visual)}${pane('proof',proof)}</div>`;
   }
+  // product details, as shown to the right of the image on the store product page
+  // stock photos next to the colour swatches: one large image, thumbnails beneath (as on the store)
+  function colourGalleryHTML(p){ const imgs=stockImages(p); if(!imgs.length) return '';
+    return `<div class="bb-gal" data-bbgal><div class="bb-galmain"><img src="${imgs[0]}" alt=""></div>${imgs.length>1?`<div class="bb-galrow">${imgs.map((u,i)=>`<button type="button" class="bb-galth${i?'':' on'}" data-bbgalth="${u}" aria-label="Image ${i+1}"><img src="${u}" alt="" loading="lazy"></button>`).join('')}</div>`:''}</div>`; }
+  document.addEventListener('click',e=>{ const t=e.target.closest('[data-bbgalth]'); if(!t) return; const g=t.closest('[data-bbgal]'); g.querySelector('.bb-galmain img').src=t.dataset.bbgalth; g.querySelectorAll('.bb-galth').forEach(x=>x.classList.toggle('on',x===t)); });
+  function productDetailsHTML(p){ const E=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    const cat=(window.STORE&&(window.STORE.products||[]).find(x=>x.id===p.catId||x.name===p.name))||{};
+    const g=(...k)=>{ for(const x of k){ const v=p[x]!=null&&p[x]!==''?p[x]:cat[x]; if(v!=null&&v!==''&&!(Array.isArray(v)&&!v.length)) return v; } return ''; };
+    const cols=g('colours'); const colNames=Array.isArray(cols)?cols.map(c=>typeof c==='string'?c:c.name).filter(Boolean):[];
+    const dims=g('dimensions')||(cat.dims?[cat.dims.w,cat.dims.h,cat.dims.d].filter(v=>v&&v!=='—').join(' × '):'');
+    const MN={screenprint:'Screenprint',pad:'Pad print',dtf:'DTF transfer',screen:'Screen print',emb:'Embroidery',embroidery:'Embroidery',laser:'Laser engrave',digital:'Digital print',uv:'UV print',deboss:'Deboss',emboss:'Emboss',sub:'Sublimation',sublimation:'Sublimation',transfer:'Transfer',foil:'Foil block',doming:'Doming',etch:'Etching',engrave:'Engraving',dtg:'DTG print',print:'Print'}; const meth0=g('printMethods'); const meth=Array.isArray(meth0)?meth0.map(m=>MN[String(m).toLowerCase()]||(window.METHOD_NAMES&&METHOD_NAMES[m])||m):meth0; const pos=(cat.branding&&cat.branding.location)||'';
+    const rows=[['Supplier',g('supplier')],['SKU',g('sku','code')||(cat.id?String(cat.id).toUpperCase():'')],['Product colours',colNames.join(', ')],['Sizes',Array.isArray(g('sizes'))?g('sizes').join(', '):g('sizes')],['Dimensions',dims],['Material',g('material')],['Country of origin',g('origin')],['Branding methods',Array.isArray(meth)?meth.join(', '):meth],['Positions',pos],['Branding area',cat.branding&&cat.branding.size]].filter(r=>r[1]&&typeof r[1]!=='object');
+    const blurb=g('blurb','description');
+    return `<aside class="dsv-details"><h4>Product info</h4>${blurb?`<p>${E(blurb)}</p>`:''}<dl>${rows.map(([k,v])=>`<dt>${k}</dt><dd>${E(v)}</dd>`).join('')}</dl>${!rows.length&&!blurb?'<p class="pm-viscap">No product details from the supplier yet.</p>':''}</aside>`; }
   function visualApproveInline(p){
     const st=p.design.visual.st, ver=p.design.visual.ver;
-    if(st==='approved') return `<div class="dsv-approve"><div class="pv-done approved" style="flex:1"><svg class="icn"><use href="#ic-check"/></svg>Visual approved</div><button class="pm-cta-sec sm" id="dsvVisUnappr">Request changes</button></div>`;
-    if(st==='changes') return `<div class="pv-done"><svg class="icn"><use href="#ic-clock"/></svg>Changes requested — the studio is reworking the visual.</div>`;
-    if(st==='withstudio'||st==='notstarted') return `<div class="pv-done"><svg class="icn"><use href="#ic-clock"/></svg>Visual with studio.</div>`;
+    if(st==='approved') return `<div class="dsv-approve"><div class="pv-done approved" style="flex:1"><svg class="icn"><use href="#ic-check"/></svg>Visual approved</div>${pmRole()==='cust'?'':'<button class="pm-cta-sec sm" id="dsvVisUnappr">Request changes</button>'}</div>`;
+    if(st==='changes') return `<div class="pv-done"><svg class="icn"><use href="#ic-clock"/></svg>Changes requested</div>`;
+    if(st==='withstudio'||st==='notstarted') return `<div class="pv-done"><svg class="icn"><use href="#ic-clock"/></svg>Visual with studio</div>`;
     if(st==='infoneeded') return `<div class="dsv-approve"><p class="pv-prompt">The studio needs information from you before producing the visual.</p><div class="pv-resp show"><textarea id="dsvResp" placeholder="Provide the details the studio asked for…"></textarea></div><button class="pm-cta" id="dsvSend"><span>Send to studio</span><svg class="icn"><use href="#ic-arrow"/></svg></button></div>`;
     return `<div class="dsv-approve">
       <div class="dsv-aphd"><b>Approve visual</b><span class="ds-ver">Visual v${ver||1}</span></div>
@@ -516,7 +591,92 @@
       <button class="pm-cta" id="dsvSubmit" disabled><span>Submit</span><svg class="icn"><use href="#ic-arrow"/></svg></button>
     </div>`;
   }
-  function proofMiniPanel(p,d){
+  /* A3 landscape proof sheet: same content as the Proof panel plus project, product ref, logos and approval status.
+     Opens the browser print dialog on a 420 × 297 mm page ("Save as PDF" to download). */
+  function proofA3(p,d){
+    const e=v=>String(v==null?'':v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const pr=p.design.proof||{}, ver=pr.ver||1, ch=d.branding.chosen||{}, pc=d.colours.find(c=>c.name===ch.productColour)||d.colours[0];
+    const imgs=visualImgs(p); const rel=imgs?imgs[0]:('assets/products/'+p.img+'.png');
+    const pv=[...new Set((ch.positions||[]).flatMap(po=>{ try{ return proofPos(p,po.code).visuals||[]; }catch(x){ return []; } }).filter(Boolean))]; const pages=pv.length?pv:[rel]; const abs=u=>{ try{ return new URL(u,location.href).href; }catch(x){ return u; } };
+    const project=((document.querySelector('main .titlerow .ptitle')||document.querySelector('.ptitle')||{}).textContent||'Project').trim();
+    const ref=p.ref||d.ref||('MS-'+p.name.split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,4)+'-'+String([...p.name].reduce((h,c)=>(h*31+c.charCodeAt(0))%9000,7)+1000));
+    const cust=((document.querySelector('.crumb-org')||{}).textContent||'Citrix').trim();
+    const lg=(key,name)=>{ let u=''; try{ u=localStorage.getItem(key)||''; }catch(x){} if(u) return '<img src="'+u+'" alt="'+e(name)+'">'; if(window.MSLOGOS&&MSLOGOS.svg){ try{ return MSLOGOS.svg(name,40); }catch(x){} } return '<b>'+e(name)+'</b>'; };
+    const fmt=iso=>{ const t=new Date(iso); return t.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})+' at '+t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); };
+    const status=pr.st==='approved'?{cls:'ok',lbl:'Approved',sub:pr.approvedAt?('Approved by '+e(pr.approvedBy||'customer')+' on '+fmt(pr.approvedAt)):'Approved'}
+      :{cls:'no',lbl:'Not approved',sub:pr.st==='changes'?('Changes requested'+(pr.changesBy?' by '+e(pr.changesBy):'')+(pr.changesAt?' on '+fmt(pr.changesAt):'')):'Awaiting customer approval'};
+    const pos=(ch.positions||[]).map((po,j)=>{ const meta=(d.branding.positions||[]).find(x=>x.code===po.code)||{name:po.code}; const m=METHODS[po.method]||{}; const pal=(typeof paletteFor==='function'?paletteFor(po):[])||[]; const pp=proofPos(p,po.code);
+      const sz=(pp.size&&pp.size.w&&pp.size.h)?pp.size.w+' × '+pp.size.h+' mm':''; const area=(meta.w&&meta.h&&meta.w!=='—')?meta.w+' × '+meta.h+' mm':'';
+      return '<div class="card"><span class="k">Position '+(j+1)+'</span><b>'+e(meta.name)+'</b><span class="v">'+e(m.name||po.method||'')+' · '+e(decoLabel(m,po.numColours||pal.length))+'</span>'
+        +(pal.length?'<span class="sub">Branding colours</span>'+pal.map(c=>'<span class="col"><i style="background:'+hex(c.name)+'"></i><b>'+e(c.name)+'</b><em>'+e(c.pms||pmsOf(c)||'')+'</em></span>').join(''):'')
+        +((sz||area)?'<span class="sub">Branding size</span><div class="tags">'+(sz?'<span>'+e(sz)+'</span>':'')+(area?'<span><em>Max area</em>'+e(area)+'</span>':'')+'</div>':'')+'</div>'; }).join('');
+    const nv=pNotes(p,d), wv=pWarn(p,d);
+    const left='<div class="card"><span class="k">Product colour</span><div class="pc"><i style="background:'+hex(pc.name)+'"></i><div><b>'+e(pc.name)+'</b><span>'+e(pmsOf(pc))+'</span></div></div></div>'
+      +(d.dims?'<div class="card"><span class="k">Dimensions</span><div class="tags"><span><em>W</em>'+e(d.dims.w)+'</span><span><em>H</em>'+e(d.dims.h)+'</span><span><em>D</em>'+e(d.dims.d)+'</span></div></div>':'')
+      +(nv?'<div class="card"><span class="k">Notes</span><p>'+e(nv)+'</p></div>':'')+(wv?'<div class="card warn"><span class="k">Warnings</span><p>'+e(wv)+'</p></div>':'');
+    const bodyFont=getComputedStyle(document.body).fontFamily, serif=getComputedStyle(document.documentElement).getPropertyValue('--serif')||'Georgia,serif';
+    const accent=getComputedStyle(document.documentElement).getPropertyValue('--periwinkle-deep').trim()||'#4e5ba6';
+    const html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+e(project+' – '+p.name+' – Proof v'+ver)+'</title>'
+      +[...document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis"]')].map(l=>l.outerHTML).join('')
+      +'<style>@page{size:420mm 297mm;margin:0}*{box-sizing:border-box}html,body{margin:0;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+      +'body{font-family:'+bodyFont+';color:#1d2939}.sheet{width:420mm;height:297mm;padding:13mm 15mm 11mm;display:grid;grid-template-rows:auto auto 1fr auto;gap:6mm;overflow:hidden}.page{display:block;width:420mm;height:296.5mm;overflow:hidden;break-after:page;page-break-after:always;break-inside:avoid;page-break-inside:avoid}.page:last-child{break-after:auto;page-break-after:auto}.page>.sheet{height:296.5mm}.pg{display:inline-block;margin-top:2mm;font-size:3.4mm;font-weight:700;color:#fff;background:'+accent+';border-radius:1.5mm;padding:.8mm 2.6mm}'
+      +'.top{display:flex;align-items:center;justify-content:space-between;gap:10mm;padding-bottom:5mm;border-bottom:.5mm solid '+accent+'}'
+      +'.logos{display:flex;align-items:center;gap:5mm}.logos img,.logos svg{height:13mm;width:auto;max-width:60mm;object-fit:contain;display:block}.logos .x{font-size:7mm;color:#98a2b3;font-weight:300}'
+      +'.ttl{text-align:right}.ttl h1{margin:0;font-family:'+serif+';font-weight:500;font-size:10mm;line-height:1;letter-spacing:-.02em;color:#101828}.ttl span{display:block;margin-top:1.5mm;font-size:3.4mm;color:#667085}'
+      +'.info{display:grid;grid-template-columns:1.2fr 1.6fr 1fr 2.4fr;gap:4mm;align-items:stretch}.info>div{background:#f9fafb;border:.3mm solid #e4e7ec;border-radius:2.5mm;padding:3mm 4mm;min-width:0}'
+      +'.info .k,.card .k,.sub{display:block;font-size:2.5mm;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#667085}.info b{display:block;margin-top:1mm;font-size:4.2mm;font-weight:600;color:#101828;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+      +'.st{display:flex;align-items:center;gap:3mm}.st .dot{width:7mm;height:7mm;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:800;font-size:4mm}.st.ok{background:#ecfdf3!important;border-color:#abefc6!important}.st.ok .dot{background:#079455}.st.ok b{color:#067647}.st.no{background:#fef3f2!important;border-color:#fecdca!important}.st.no .dot{background:#d92d20}.st.no b{color:#b42318}.st small{display:block;font-size:2.9mm;color:#475467;margin-top:.6mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st>div{min-width:0}'
+      +'.main{display:grid;grid-template-columns:72mm 1fr 80mm;gap:5mm;min-height:0}.side{display:flex;flex-direction:column;gap:3mm;min-height:0;overflow:hidden}'
+      +'.card{border:.3mm solid #e4e7ec;border-radius:2.5mm;padding:3mm 3.5mm;display:flex;flex-direction:column;gap:1mm;break-inside:avoid}.card>b{font-size:4mm;font-weight:600;color:#101828}.card .v{font-size:3.2mm;color:#475467}.card p{margin:0;font-size:3.2mm;line-height:1.45;color:#344054}'
+      +'.card.warn{background:#fffaeb;border-color:#fedf89}.card.warn .k{color:#b54708}.card.warn p{color:#93370d}.sub{margin-top:1.5mm;color:#98a2b3}'
+      +'.pc{display:flex;align-items:center;gap:3mm}.pc i{width:9mm;height:9mm;border-radius:2mm;border:.3mm solid rgba(0,0,0,.12)}.pc b{font-size:4mm;font-weight:600}.pc span{display:block;font-size:3mm;color:#667085}'
+      +'.tags{display:flex;gap:1.5mm;flex-wrap:wrap}.tags span{font-size:3.1mm;font-weight:600;background:#f2f4f7;border-radius:1.5mm;padding:.8mm 2mm}.tags em{font-style:normal;color:#667085;margin-right:1.2mm}'
+      +'.col{display:flex;align-items:center;gap:2mm;background:#f2f4f7;border-radius:1.8mm;padding:1mm 2mm 1mm 1mm}.col i{width:5mm;height:5mm;border-radius:1.2mm;border:.3mm solid rgba(0,0,0,.12)}.col b{font-size:3.1mm;font-weight:600}.col em{margin-left:auto;font-style:normal;font-size:2.8mm;color:#667085;white-space:nowrap;padding-left:2mm}'
+      +'.img{position:relative;border:.3mm solid #e4e7ec;border-radius:3mm;background:#fff;min-height:0;overflow:hidden}.img img{position:absolute;inset:12mm 8mm 8mm;width:calc(100% - 16mm);height:calc(100% - 20mm);object-fit:contain;display:block}.main{grid-template-rows:minmax(0,1fr)}.img .ver{position:absolute;left:3mm;top:3mm;font-size:3mm;font-weight:700;border:.3mm solid #e4e7ec;border-radius:1.5mm;padding:.6mm 2mm;background:#fff}'
+      +'.foot{display:grid;grid-template-columns:1fr 64mm;gap:6mm;align-items:end;border-top:.3mm solid #e4e7ec;padding-top:4mm}.read{font-size:2.9mm;line-height:1.45;color:#475467}.read b{color:#101828;font-size:3mm;letter-spacing:.02em}.read ul{margin:1mm 0 1.2mm;padding-left:4mm;columns:2;column-gap:8mm}.read li{margin-bottom:.6mm;break-inside:avoid}.read .strong{font-weight:700;color:#344054;margin:0}'
+      +'.gen{text-align:right;font-size:2.7mm;color:#98a2b3;line-height:1.5}</style></head><body>'
+      +(()=>{ const N=pages.length; return pages.map((src,k)=>''
+      +'<div class="page"><div class="sheet"><div class="top"><div class="logos">'+lg('ms-brand-logo','mojo')+'<span class="x">×</span>'+lg('ms-cust-logo',cust)+'</div><div class="ttl"><h1>Product proof</h1><span>Version '+ver+(d.proofDate?' · issued '+e(d.proofDate):'')+'</span>'+(N>1?'<span class="pg">Page '+(k+1)+' of '+N+'</span>':'')+'</div></div>'
+      +'<div class="info"><div><span class="k">Project</span><b>'+e(project)+'</b></div><div><span class="k">Product</span><b>'+e(p.name)+'</b></div><div><span class="k">Product ref</span><b>'+e(ref)+'</b></div>'
+      +'<div class="st '+status.cls+'"><span class="dot">'+(status.cls==='ok'?'✓':'!')+'</span><div><b>'+status.lbl+'</b><small>'+status.sub+'</small></div></div></div>'
+      +'<div class="main"><div class="side">'+left+'</div><div class="img"><span class="ver">v'+ver+'</span><img src="'+e(abs(src))+'" alt="Proof visual '+(k+1)+'"></div><div class="side">'+(pos||'<div class="card"><span class="k">Branding</span><p>No positions set</p></div>')+'</div></div>'
+      +'<div class="foot"><div class="read"><b>PLEASE READ, TO ENSURE YOU ARE 100% HAPPY WITH YOUR ORDER:</b><ul><li>This proof should only be used to check positioning and content; it cannot be used as an accurate match for colour.</li><li>Have you seen a sample? Please ensure what you are ordering is what you are expecting.</li><li>If a Pantone reference has been chosen by our studio on your behalf, we cannot accept responsibility if you are unhappy with the final print colour.</li><li>When printing in full colour, Pantone references cannot be guaranteed.</li></ul><p class="strong">The visual is a representation of the approximate size, ratio and position of the artwork &amp; product. Once approved we can take no responsibility for an inaccurately branded order.</p></div>'
+      +'<div class="gen">Generated '+e(fmt(new Date().toISOString()))+'</div></div></div></div>'
+      ).join(''); })()
+      +'</div></body></html>';
+    let f=document.getElementById('pfPrintFrame'); if(f) f.remove(); f=document.createElement('iframe'); f.id='pfPrintFrame'; f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
+    document.body.appendChild(f); const doc=f.contentDocument; doc.open(); doc.write(html); doc.close();
+    const go=()=>{ try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(x){ const w2=window.open('','_blank'); if(w2){ w2.document.write(html); w2.document.close(); } } };
+    const im=doc.querySelector('.img img'); let fired=false; const once=()=>{ if(fired) return; fired=true; setTimeout(go,250); };
+    if(im&&!im.complete){ im.onload=once; im.onerror=once; setTimeout(once,2500); } else once();
+    if(window.MStoast) MStoast('Choose “Save as PDF” to download the A3 proof');
+    if(window.MSlog) MSlog(p,{type:'status',icon:'ic-download',label:'Downloaded proof v'+ver+' (A3)',who:0});
+  }
+  window.MSProofA3=proofA3;
+  function pmRole(){ const r=(window.MSID&&MSID.current&&MSID.current())||''; return /cust/i.test(r)?'cust':(typeof ROLE!=='undefined'?ROLE:'dist'); }
+  // snapshot of the branding spec, read by the order page (Check proof / acknowledgement): ms-pm-spec[productName]
+  function designBody(p,d,ctx,role){ snapSpec(p,d); return designBody_(p,d,ctx,role); }
+  // seed a snapshot for every product once, so the order page has branding details even before a product is opened
+  setTimeout(()=>{ try{ const have=JSON.parse(localStorage.getItem('ms-pm-spec')||'{}');
+    // the project's real products first (their notes, warnings, visuals and proofs), then any product not in a project
+    const real=(typeof products!=='undefined'&&Array.isArray(products))?products:[]; real.forEach(p=>{ const d=PD[p.name]; if(d) snapSpec(p,d); });
+    Object.keys(PD).forEach(n=>{ if((have[n]&&have[n].projColours)||real.some(p=>p.name===n)) return; snapSpec({name:n,design:{proof:{byPos:{}}}},PD[n]); }); }catch(e){} },1500);
+  function snapSpec(p,d){ try{ const ch=d.branding.chosen||{}; const all=JSON.parse(localStorage.getItem('ms-pm-spec')||'{}');
+      const pcs=(ch.productColours&&ch.productColours.length?ch.productColours:[ch.productColour||(d.colours[0]&&d.colours[0].name)]).filter(Boolean);
+      all[p.name]={at:Date.now(), variant:ch.variant||'', projColours:(()=>{ try{ const pc=projColours(p,d); return pc.colours.map(n=>({name:n,hex:(typeof hex==='function'?hex(n):''),sizes:(d.sizes&&d.sizes.length>1)?(pc.variants[n]||d.sizes).slice():[]})); }catch(e){ return []; } })(), productColours:pcs.map(n=>{ const c=d.colours.find(x=>x.name===n)||{name:n}; return {name:n,pms:c.pms||'',hex:(typeof hex==='function'?hex(n):'')}; }),
+        dims:d.dims||null,
+        positions:(ch.positions||[]).map(po=>{ const meta=(d.branding.positions||[]).find(x=>x.code===po.code)||{name:po.code}; const m=METHODS[po.method]||{}; const pal=(typeof paletteFor==='function'?paletteFor(po):[])||[]; const pp=(typeof proofPos==='function'?proofPos(p,po.code):{})||{};
+          return {name:meta.name, method:m.name||po.method||'', deco:decoLabel(m,po.numColours||pal.length), colours:pal.map(c=>({name:c.name,pms:c.pms||(typeof pmsOf==='function'?pmsOf(c):''),hex:(typeof hex==='function'?hex(c.name):'')})), size:(pp.size&&pp.size.w&&pp.size.h)?pp.size.w+' × '+pp.size.h+' mm':'', area:(meta.w&&meta.h&&meta.w!=='—')?meta.w+' × '+meta.h+' mm':'', artwork:(pp.artwork||[]).map(a=>a&&(a.name||'Artwork file')).filter(Boolean)}; }),
+        supply:(()=>{ const cd=p.confirmData||{}; return {cusDisplay:p.delivery||'',cusISO:p.deliveryISO||'',nofail:!!p.nofail,supConfirmed:p.sup==='confirmed',supDisplay:cd.supplierDeliveryDisplay||'',supISO:cd.supplierDeliveryISO||'',agreedWith:cd.contactNames||[],courier:cd.courier||'',supNotes:cd.notes||'',orderBy:cd.orderRequiredDisplay||'',orderByISO:cd.orderRequiredISO||''}; })(),
+        costs:(()=>{ try{ const q=qtyOf(p), c=priceCalc(d,q); return {qty:q,blank:+c.blank||0,run:+(c.dec&&c.dec.run)||0,setup:+(c.dec&&c.dec.setupTotal)||0,carriage:+c.carriage||0,delivery:+c.delivery||0}; }catch(e){ return null; } })(),
+        sampleSt:(p.actions&&p.actions[2]&&p.actions[2].st)||'',
+        notes:(typeof pNotes==='function'?pNotes(p,d):'')||'', warnings:(typeof pWarn==='function'?pWarn(p,d):'')||'',
+        // approved visual + approved proof images, for the order page's Check proof toggle
+        visual:(()=>{ try{ const v=visualImgs(p); return v&&v[0]||''; }catch(e){ return ''; } })(),
+        visuals:(()=>{ try{ return (visualImgs(p)||[]).filter(v=>v&&!(/^data:/.test(v)&&v.length>400000)).slice(0,12); }catch(e){ return []; } })(),
+        proof:(()=>{ try{ const bp=(p.design&&p.design.proof&&p.design.proof.byPos)||{}; const f=Object.values(bp).map(x=>(x.visuals||[])[0]).find(Boolean); const L=(p.design&&p.design.proof&&p.design.proof.images)||[]; const v=f||L[0]||''; return /^data:/.test(v)&&v.length>400000?'':v; }catch(e){ return ''; } })()};
+      localStorage.setItem('ms-pm-spec',JSON.stringify(all)); }catch(e){} }
+  function proofMiniPanel(p,d){ snapSpec(p,d);
     const slug=p.name.replace(/[^a-z0-9]/gi,'-').toLowerCase();
     const st=p.design.proof.st, ver=p.design.proof.ver;
     const ch=d.branding.chosen, pc=d.colours.find(c=>c.name===ch.productColour)||d.colours[0];
@@ -526,21 +686,38 @@
     else if(st==='unbranded'){ preview=`<div class="dsv-mini-empty"><svg class="icn"><use href="#ic-ban"/></svg><span>Unbranded — no proof</span></div>`; }
     else {
       const pos=(ch.positions||[]).slice(0,2).map(po=>{ const meta=(d.branding.positions||[]).find(x=>x.code===po.code)||{name:po.code}; const m=METHODS[po.method]||{}; return `<div class="dsv-mini-spec"><b>${meta.name}</b><span>${(m.name||po.method)} · ${decoLabel(m,po.numColours)}</span></div>`; }).join('');
-      preview=`<div class="dsv-mini-img"><img src="${src}" alt="Proof preview"></div>
-        <div class="dsv-mini-meta"><div class="dsv-mini-swatch" style="background:${hex(pc.name)}"></div><div><b>${pc.name}</b><span>${pmsOf(pc)}</span></div></div>
-        ${pos}`;
+      // proof sheet: image in the middle, the full-proof spec down both sides
+      const esc3=v=>String(v==null?'':v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+      const posCards=(ch.positions||[]).map((po,j)=>{ const meta=(d.branding.positions||[]).find(x=>x.code===po.code)||{name:po.code}; const m=METHODS[po.method]||{};
+        const pal=(typeof paletteFor==='function'?paletteFor(po):[])||[]; const pp=proofPos(p,po.code);
+        const cols=pal.map(c=>`<span class="pf-col"><i style="background:${hex(c.name)}"></i><b>${esc3(c.name)}</b>${(c.pms||pmsOf(c))?`<em>${esc3(c.pms||pmsOf(c))}</em>`:''}</span>`).join('');
+        const sz=(pp.size&&pp.size.w&&pp.size.h)?`${pp.size.w} × ${pp.size.h} mm`:'';
+        const area=(meta.w&&meta.h&&meta.w!=='—')?`${meta.w} × ${meta.h} mm`:'';
+        return `<div class="pf-card"><span class="pf-k">Position ${j+1}</span><b>${esc3(meta.name)}</b><span class="pf-v">${esc3(m.name||po.method||'')} · ${esc3(decoLabel(m,po.numColours||pal.length))}</span>${cols?`<span class="pf-sub">Branding colours</span><div class="pf-cols">${cols}</div>`:''}${sz||area?`<span class="pf-sub">Branding size</span><div class="pf-dims">${sz?`<span>${esc3(sz)}</span>`:''}${area?`<span><em>Max area</em>${esc3(area)}</span>`:''}</div>`:''}</div>`; }).join('');
+      const dims=d.dims?`<div class="pf-card"><span class="pf-k">Dimensions</span><div class="pf-dims"><span><em>W</em>${esc3(d.dims.w)}</span><span><em>H</em>${esc3(d.dims.h)}</span><span><em>D</em>${esc3(d.dims.d)}</span></div></div>`:'';
+      const nv=pNotes(p,d), wv=pWarn(p,d);
+      const notes=nv?`<div class="pf-card"><span class="pf-k">Notes</span><p>${esc3(nv)}</p></div>`:'';
+      const warn=wv?`<div class="pf-card pf-warn"><span class="pf-k"><svg class="icn"><use href="#ic-alert"/></svg>Warnings</span><p>${esc3(wv)}</p></div>`:'';
+      preview=`<div class="pf-stage" id="pfStage">
+        <div class="pf-side pf-left">
+          <div class="pf-card"><span class="pf-k">Product colour</span><div class="pf-pc"><i style="background:${hex(pc.name)}"></i><div><b>${esc3(pc.name)}</b><span>${esc3(pmsOf(pc))}</span></div></div></div>
+          ${dims}${notes}${warn}
+        </div>
+        <div class="dsv-mini-img pf-img"><img src="${src}" alt="Proof preview">${ver?`<span class="pf-ver">v${ver}</span>`:''}</div>
+        <div class="pf-side pf-right">${posCards||'<div class="pf-card"><span class="pf-k">Branding</span><p>No positions set</p></div>'}</div>
+        <button type="button" class="pf-fs" id="pfFs" aria-label="Full screen" title="Full screen"><svg class="pf-ex" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><svg class="pf-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </div>`;
     }
     let action;
-    if(st==='approved') action=`<div class="pv-done approved" style="flex:1"><svg class="icn"><use href="#ic-check"/></svg>Proof approved</div><button class="pm-cta-sec sm" id="dsvProofUnappr">Request changes</button>`;
+    if(st==='approved') action=`<div class="pv-done approved" style="flex:1"><svg class="icn"><use href="#ic-check"/></svg>Proof approved</div>`;
     else if(st==='changes') action=`<div class="pv-done"><svg class="icn"><use href="#ic-clock"/></svg>Changes requested — studio reworking.</div>`;
-    else if(st==='awaiting') action=`<button class="pm-cta" id="dsvProofOpen" data-stage="proof"><span>Review &amp; approve proof</span><svg class="icn"><use href="#ic-arrow"/></svg></button>`;
+    else if(st==='awaiting') action='';
     else if(st==='infoneeded') action=`<button class="pm-cta sm" id="dsvProofOpen" data-stage="proof"><svg class="icn"><use href="#ic-chat"/></svg><span>Give feedback</span></button>`;
-    else action=`<span class="ds-wait"><svg class="icn"><use href="#ic-clock"/></svg>With studio</span>`;
-    const viewBtn = ['approved','changes'].includes(st) ? `<button class="pm-cta-sec sm" id="dsvProofView" data-stage="proof">View full proof</button>` : '';
+    else action='';
+    const viewBtn='';
     return `<div class="dsv-mini">
-      <div class="dsv-mini-hd"><b>Proof</b>${ver&&['awaiting','approved','changes'].includes(st)?`<span class="ds-ver">v${ver}</span>`:''}</div>
       <div class="dsv-mini-body">${preview}</div>
-      <div class="dsv-mini-foot">${viewBtn}${action}</div>
+      ${viewBtn||action?`<div class="dsv-mini-foot">${viewBtn}${action}</div>`:''}
     </div>`;
   }
   function priceBody(p,d,ctx,role){
@@ -558,7 +735,7 @@
       ? `<div class="cu-apprbar approved"><span><svg class="icn"><use href="#ic-check"/></svg>Price agreed with the customer · valid until ${fmtDate(expiryDate(d))}</span></div>`
       : `<div class="cu-apprbar"><span><svg class="icn"><use href="#ic-clock"/></svg>Pricing in progress with the distributor</span></div>`;
     return `<div class="pm-cust pm-suppprice">
-      <p class="pr-savlbl">${brandingLabelShort(d)}</p>
+      <p class="pr-savlbl"><span class="pm-brandpill"><svg class="icn"><use href="#ic-brush"/></svg>${brandingLabelShort(d)}</span></p>
       ${statusLine}
       <div class="pm-cmod">
         <div class="pm-cmodh">Your supply cost</div>
@@ -588,15 +765,14 @@
     const matrixBody=`<div class="dp-mxtog" id="dpMxTog"><button class="on" data-m="cost">Cost</button><button data-m="sell">Sell</button></div>
       <div id="dpMatrixHost">${distFullMatrix(d,ctx,idx,'cost')}</div>
       <p class="pr-costnote">The branding chosen in Design is highlighted. <b>Cost view</b> shows the unbranded item, each branding method as a per-unit <b>decoration charge</b>, and setup as a one-off row; <b>Sell view</b> shows the full branded sell price. Click a delivery country row to switch, expand to add more. Distributor-only.</p>`;
-    const calculations=`<div class="dp-group">
-      <div class="dp-grouphd"><span class="dp-grouptag">Calculations</span><span class="dp-groupnote">Editable inputs that build the price</span></div>
-      ${dpAcc('matrix','Price matrix',brandingLabelShort(d),matrixBody,acc('matrix'))}
-      ${dpAcc('override','Override prices','Lock a quantity window',lockedEditorHTML(p,d,ctx,idx),acc('override'))}
-      ${dpAcc('charges','Additional charges','Supplier &amp; customer line items',additionalChargesHTML(p,d,ctx),acc('charges'))}
-      ${dpAcc('discount','Distributor discounts',resolveDiscount(d).pct?resolveDiscount(d).pct+'% · '+resolveDiscount(d).source:'None applied',discountEditorHTML(p,d,ctx),acc('discount'))}
-    </div>`;
-    const results=`<div class="dp-group dp-results">
-      <div class="dp-grouphd"><span class="dp-grouptag">Results</span><span class="dp-groupnote">Calculated outcome — read-only</span></div>
+    const rd=resolveDiscount(d);
+    const PT=[['quote','Quote',''],['matrix','Price matrix',''],['override','Overrides',''],['charges','Additional charges',''],['discount','Discounts',rd.pct?rd.pct+'%':''],['supcontact','Supplier contact',(()=>{ const A=(pmSupAssignAll()[p.name])||{}, k=Object.keys(A)[0]; return k&&A[k].n?String(A[k].n).split(' ')[0]:''; })()]];
+    let pcur=window.__pmPTab; if(!PT.some(t=>t[0]===pcur)) pcur='quote';
+    const ptBar=`<div class="dsg-tabs dpt-tabs" role="tablist" aria-label="Price">${PT.map(([k,l,sub])=>`<button type="button" role="tab" class="dsg-tab${k===pcur?' on':''}" data-ptab="${k}" aria-selected="${k===pcur}"><span>${l}</span>${sub?`<em>${sub}</em>`:''}</button>`).join('')}</div>`;
+    const ppane=(k,html)=>`<div class="dpt-pane" data-ppane="${k}"${k===pcur?'':' hidden'}>${html}</div>`;
+    const calculations=ppane('matrix',`<div class="dpt-lede"><span class="pm-brandpill"><svg class="icn"><use href="#ic-brush"/></svg>${brandingLabelShort(d)}</span></div>${matrixBody}`)+ppane('override',`<div class="dpt-lede">Lock a quantity window at a fixed price.</div><div id="dpAcc-override">${lockedEditorHTML(p,d,ctx,idx)}</div>`)+ppane('charges',`<div class="dpt-lede">Supplier and customer line items.</div><div id="dpAcc-charges">${additionalChargesHTML(p,d,ctx)}</div>`)+ppane('discount',`<div class="dpt-lede">${rd.pct?rd.pct+'% · '+rd.source:'No discount applied.'}</div><div id="dpAcc-discount">${discountEditorHTML(p,d,ctx)}</div>`)+ppane('supcontact',supContactPaneHTML(p,d));
+    const results=`<div class="dpt-pane dp-results" data-ppane="quote"${pcur==='quote'?'':' hidden'}>
+      <div class="dpt-lede"><span class="pm-brandpill"><svg class="icn"><use href="#ic-brush"/></svg>${brandingLabelShort(d)}</span></div>
       <div class="pm-cmod">
         <div class="pm-cmodh">1 · Quantity</div>
         <div class="dp-qrow">
@@ -606,8 +782,8 @@
       </div>
       <div class="pm-cmod">
         <div class="pm-cmodh">2 · Customer sell price</div>
-        <div class="cu-priceline"><span class="cu-was" id="dpWas"></span><span class="cu-now" id="dpUnit"></span><span class="cu-each">/ unit sell</span><span class="cu-disc" id="dpDiscBadge"></span></div>
-        <div class="cu-linetotal">Line sell total <b id="dpTotal"></b> <span class="dp-wasline" id="dpTotalWas"></span></div>
+        <div class="cu-priceline"><span class="cu-now" id="dpUnit"></span><span class="cu-was" id="dpWas"></span><span class="cu-each">/ unit sell</span><span class="cu-disc" id="dpDiscBadge"></span></div>
+        <div class="cu-linetotal"><b id="dpTotal"></b> <span class="dp-wasline" id="dpTotalWas"></span></div>
       </div>
       <div class="pm-cmod">
         <div class="pm-cmodh">3 · Your margin</div>
@@ -628,8 +804,8 @@
         <div id="dpResAddl">${distResultAddlHTML(d,ctx)}</div>
       </div>
     </div>`;
-    return `<div class="pm-cust pm-distprice">
-      <p class="pr-savlbl">${brandingLabelShort(d)}</p>
+    return `<div class="pm-cust pm-distprice dsg">
+      ${ptBar}
       ${results}
       ${calculations}
       <div id="dpStatusBar" class="dp-statusbar">${distStatusBar(p,d)}</div>
@@ -799,8 +975,9 @@
   }
   function lockedReqStatusHTML(d){
     const lk=lockedState(d); if(!lk.reqState) return '';
+    if(lk.reqState==='partial'&&d.twoSupplier){ const q=lk.quote||{}, t=d.twoSupplier, got=q.product?t.product.supplier:t.branding.supplier, wait=q.product?t.branding.supplier:t.product.supplier; return `<svg viewBox="0 0 24 24" class="lk-i"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Quote received from ${got} · awaiting ${wait}. The price isn’t confirmed until both have quoted · <button class="lk-link" id="lkViewReply">View / simulate ${wait}’s reply</button>`; }
     if(lk.reqState==='awaiting'){ return `<svg viewBox="0 0 24 24" class="lk-i"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> Awaiting quote from ${lk.reqNames||'production'} · <button class="lk-link" id="lkViewReply">View / simulate supplier reply</button>`; }
-    return `<svg viewBox="0 0 24 24" class="lk-i"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Quote received from ${lk.quote&&lk.quote.branding?lk.quote.branding.name:'supplier'} · ${lk.quote&&lk.quote.branding?lk.quote.branding.stamp:''} — locked prices updated`;
+    return `<svg viewBox="0 0 24 24" class="lk-i"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Quote received from ${lk.quote&&lk.quote.product&&d.twoSupplier?d.twoSupplier.product.supplier+' ('+lk.quote.product.name+') and '+d.twoSupplier.branding.supplier+' ('+lk.quote.branding.name+')':(lk.quote&&lk.quote.branding?lk.quote.branding.name:'supplier')} · ${lk.quote&&lk.quote.branding?lk.quote.branding.stamp:''} — locked prices updated`;
   }
   function chosenBrandingRows(d){ const map={}; (d.branding.chosen.positions||[]).forEach(pos=>{ const m=METHODS[pos.method]||{}; const n=m.maxColours>1?(pos.numColours||1):1; (map[pos.method]=map[pos.method]||new Set()).add(n); }); return map; }
   function methodCostAt(d, methodKey, numColours, q){
@@ -1014,21 +1191,21 @@
     const lk=lockedState(d); const scrim=ensureLockScrim(); const modal=document.getElementById('pmLockModal');
     const cols=Object.keys(lk.cols).map(k=>+k).sort((a,b)=>a-b); const breaks=d.price.breaks;
     const colsUse=cols.length?cols:breaks.map((b,i)=>i).slice(0,4);
-    const defs=lockedDefaults(d);
-    const fields=colsUse.map(ci=>`<div class="pm-qreq-field"><label>${breaks[ci].q.toLocaleString()}+ deco / unit</label><input data-col="${ci}" value="£${defs[ci].cDeco.toFixed(2)}"></div>`).join('');
+    const defs=lockedDefaults(d); const two=!!(d.twoSupplier&&lk.two), q0=lk.quote||{}; let who=two&&q0.branding&&!q0.product?'product':'branding';
+    const fields=colsUse.map(ci=>`<div class="pm-qreq-field"><label data-qlbl>${breaks[ci].q.toLocaleString()}+ ${who==='product'?'blank':'deco'} / unit</label><input data-col="${ci}" value="£${(who==='product'?defs[ci].cUnb:defs[ci].cDeco).toFixed(2)}"></div>`).join('');
     modal.innerHTML=`<button class="pm-qreq-x" data-x>×</button><div class="pm-qreq-eyebrow">Supplier enquiries · quote response</div><div class="pm-qreq-title">Provide your price quote</div>
-      <div class="pm-qreq-subt">${(d.twoSupplier?d.twoSupplier.branding.supplier:'MerchCo Supplies')} · ${p.name}</div>${lockSpecHTML(d)}
+      <div class="pm-qreq-subt" data-qsup>${two?(who==='product'?d.twoSupplier.product.supplier+' · blank product':d.twoSupplier.branding.supplier+' · branding'):(d.twoSupplier?d.twoSupplier.branding.supplier:'MerchCo Supplies')} · ${p.name}</div>${two?`<div class="pm-qreq-two"><span>Two suppliers quote separately.</span><b>${d.twoSupplier.product.supplier}</b> ${q0.product?'✓ quoted':'awaiting'} · <b>${d.twoSupplier.branding.supplier}</b> ${q0.branding?'✓ quoted':'awaiting'}</div>`:''}${who==='product'?'':lockSpecHTML(d)}
       <div class="pm-qreq-grid">${fields}</div>
-      <div class="pm-qreq-field"><label>Setup charge</label><input id="pmQSetup" value="£${defs[colsUse[0]].cSetup.toFixed(2)}"></div>
-      <div class="pm-qreq-grid"><div class="pm-qreq-field"><label>Your name</label><input id="pmQName" value="Sarah Hill"></div><div class="pm-qreq-field"><label>Quote ref</label><input id="pmQRef" value="Q-48817"></div></div>
+      ${who==='product'?`<div class="pm-qreq-field"><label>Carriage to ${d.twoSupplier.branding.supplier}</label><input id="pmQCarr" value="£${defs[colsUse[0]].cDeliv.toFixed(2)}"></div>`:`<div class="pm-qreq-field"><label>Setup charge</label><input id="pmQSetup" value="£${defs[colsUse[0]].cSetup.toFixed(2)}"></div>`}
+      <div class="pm-qreq-grid"><div class="pm-qreq-field"><label>Your name</label><input id="pmQName" value="${who==='product'?((lockContacts(d).find(c=>c.s==='product')||{}).n||'Tom Reed'):'Sarah Hill'}"></div><div class="pm-qreq-field"><label>Quote ref</label><input id="pmQRef" value="${who==='product'?'Q-48790':'Q-48817'}"></div></div>
       <div class="pm-qreq-foot"><button class="pm-qreq-send" id="pmQSubmit">Submit quote</button><button class="pm-qreq-cancel" data-x>Cancel</button></div>`;
     modal.querySelector('#pmQSubmit').onclick=()=>{
       const num=s=>{ const m=String(s).replace(/[^0-9.]/g,''); return m===''?NaN:parseFloat(m); };
-      modal.querySelectorAll('[data-col]').forEach(inp=>{ const v=num(inp.value); if(!isNaN(v)) lk.vals['cDeco_'+inp.dataset.col]=v.toFixed(2); });
-      const setup=num(modal.querySelector('#pmQSetup').value); colsUse.forEach(ci=>{ if(!isNaN(setup)) lk.vals['cSetup_'+ci]=setup.toFixed(2); });
-      const name=modal.querySelector('#pmQName').value||'Sarah Hill'; const ref='Quote #'+(modal.querySelector('#pmQRef').value||'Q-0000'); const stamp=nowStamp();
-      lk.reqState='quoted'; lk.quote={ branding:{name,stamp,ref} };
-      if(d.twoSupplier&&lk.two) lk.quote.product={name:'Tom Reed',stamp:nowStamp(),ref:'Quote #Q-48790'};
+      modal.querySelectorAll('[data-col]').forEach(inp=>{ const v=num(inp.value); if(!isNaN(v)) lk.vals[(who==='product'?'cUnb_':'cDeco_')+inp.dataset.col]=v.toFixed(2); });
+      if(who==='product'){ const cv=num((modal.querySelector('#pmQCarr')||{}).value); colsUse.forEach(ci=>{ if(!isNaN(cv)) lk.vals['cDeliv_'+ci]=cv.toFixed(2); }); }
+      else { const setup=num(modal.querySelector('#pmQSetup').value); colsUse.forEach(ci=>{ if(!isNaN(setup)) lk.vals['cSetup_'+ci]=setup.toFixed(2); }); }
+      const name=modal.querySelector('#pmQName').value||(who==='product'?'Tom Reed':'Sarah Hill'); const ref='Quote #'+(modal.querySelector('#pmQRef').value||'Q-0000'); const stamp=nowStamp();
+      lk.quote=Object.assign({},lk.quote||{}); lk.quote[who]={name,stamp,ref}; lk.reqState=!two||(lk.quote.branding&&lk.quote.product)?'quoted':'partial';
       closeLockScrim(); onDone&&onDone();
     };
     modal.querySelectorAll('[data-x]').forEach(b=>b.onclick=closeLockScrim);
@@ -1039,7 +1216,7 @@
     const breaks=d.price.breaks; const base=priceCalc(d,breaks[0].q).unit; const cq=qtyOf(p);
     const rows=breaks.map(b=>{ const u=priceCalc(d,b.q).unit; const save=base-u; const on=cq>=b.q && cq<(breaks[breaks.indexOf(b)+1]?breaks[breaks.indexOf(b)+1].q:Infinity);
       return `<tr class="${on?'on':''}"><td>${b.q.toLocaleString()}${on?' (current)':''}</td><td><b>${money(ctx,u)}</b></td><td>${money(ctx,u*b.q)}</td><td>${save>0.0001?money(ctx,save):'—'}</td><td>${save>0.0001?money(ctx,save*b.q):'—'}</td></tr>`; }).join('');
-    return `<div class="pm-section"><h4>Price-break savings</h4><p class="pr-savlbl">${brandingLabelShort(d)}</p>
+    return `<div class="pm-section"><h4>Price-break savings</h4><p class="pr-savlbl"><span class="pm-brandpill"><svg class="icn"><use href="#ic-brush"/></svg>${brandingLabelShort(d)}</span></p>
       <table class="pr-matrix"><thead><tr><th>Qty</th><th>Unit</th><th>Total</th><th>Save / unit</th><th>You save</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   }
 
@@ -1059,9 +1236,14 @@
     const apprBar = pst==='approved'
       ? `<div class="cu-apprbar approved"><span><svg class="icn"><use href="#ic-check"/></svg>Price approved · valid until ${fmtDate(expiryDate(d))}</span><button class="pm-cta-sec sm" id="cuUnappr">Request changes</button></div>`
       : expNote+`<div class="cu-apprbar"><span>Happy with the price?</span><button class="pm-cta sm" id="cuAppr"><svg class="icn"><use href="#ic-check"/></svg>Approve price</button></div>`;
-    return `<div class="pm-cust" data-disc="${disc}">
-      ${apprBar}
-      <p class="pr-savlbl">${brandingLabelShort(d)}</p>
+    const hasAdd=!!(d.price.additional&&d.price.additional.length);
+    const CT=[['quote','Quote',''],['matrix','Price table',''],...(hasAdd?[['charges','Additional costs','']]:[])];
+    let ccur=window.__pmCTab; if(!CT.some(t=>t[0]===ccur)) ccur='quote';
+    const cpane=k=>`class="dpt-pane" data-ppane="${k}"${k===ccur?'':' hidden'}`;
+    return `<div class="pm-cust pm-distprice pm-custprice dsg" data-disc="${disc}">
+      <div class="dsg-tabs dpt-tabs" role="tablist" aria-label="Price">${CT.map(([k,l])=>`<button type="button" role="tab" class="dsg-tab${k===ccur?' on':''}" data-ptab="${k}" data-ctab="1" aria-selected="${k===ccur}"><span>${l}</span></button>`).join('')}</div>
+      <div ${cpane('quote')}>
+      <div class="dpt-lede"><span class="pm-brandpill"><svg class="icn"><use href="#ic-brush"/></svg>${brandingLabelShort(d)}</span></div>
       <div class="pm-cmod">
         <div class="pm-cmodh">1 · Quantity</div>
         <div class="cu-sliderrow"><input type="range" id="cuRange" min="0" max="${sb.length-1}" step="1" value="${si}"><output id="cuQty" class="cu-qty">${sb[si].q.toLocaleString()}</output></div>
@@ -1069,8 +1251,8 @@
       </div>
       <div class="pm-cmod">
         <div class="pm-cmodh">2 · Your unit price</div>
-        <div class="cu-priceline">${disc?`<span class="cu-was" id="cuWas"></span>`:''}<span class="cu-now" id="cuNow"></span><span class="cu-each">/ unit</span>${disc?`<span class="cu-disc">${disc}% off</span>`:''}</div>
-        <div class="cu-linetotal">Line total <b id="cuTotal"></b></div>
+        <div class="cu-priceline"><span class="cu-now" id="cuNow"></span>${disc?`<span class="cu-was" id="cuWas"></span>`:''}<span class="cu-each">/ unit</span>${disc?`<span class="cu-disc">${disc}% off</span>`:''}</div>
+        <div class="cu-linetotal"><b id="cuTotal"></b> <span class="dp-wasline" id="cuTotalWas" style="display:none"></span></div>
       </div>
       <div class="pm-cmod">
         <div class="pm-cmodh">3 · The more you order, the more you save</div>
@@ -1085,18 +1267,17 @@
         <div class="cu-priceline"><span class="cu-now" style="font-size:24px" id="cuDeliv"></span><span class="cu-each">cost +25% · scales with quantity</span></div>
         <div class="cu-linetotal pr-corow">to ${countrySelectHTML(d,'cuCo')}</div>
       </div>
-      ${(d.price.additional&&d.price.additional.length)?`<div class="pm-cmod">
-        <div class="pm-cmodh">5 · Additional costs</div>
+      </div>
+      ${hasAdd?`<div ${cpane('charges')}><div class="dpt-lede">Extra costs your distributor has added to this line.</div><div class="pm-cmod">
         ${d.price.additional.map(a=>{ const amt=a.amt!=null?a.amt:(+a.qty||1)*(+a.unit||0); const q=a.qty!=null?a.qty:1; const u=a.unit!=null?a.unit:amt; return `<div class="cu-acline"><div class="cu-acmeta"><b>${a.label}</b>${a.desc?`<span>${a.desc}</span>`:''}${a.unit!=null?`<span class="cu-acqty">${q} × ${money(ctx,u)}</span>`:''}</div><b class="cu-aclt">${money(ctx,amt)}</b></div>`; }).join('')}
         <div class="cu-linetotal" style="margin-top:10px">Additional total <b>${money(ctx,d.price.additional.reduce((s,a)=>s+(a.amt!=null?a.amt:(+a.qty||1)*(+a.unit||0)),0))}</b></div>
-      </div>`:''}
-      <div class="pm-cmod" style="border-top:1px solid var(--line-soft)">
-        <button class="pm-cta-sec sm" id="cuShowMatrix">View full price table</button>
-        <div id="cuMatrixWrap" style="display:none;margin-top:14px">
-          ${custFullMatrix(d,ctx,idx)}
-          <p class="pr-costnote">Sell prices for every method &amp; colour count. Delivery &amp; any additional costs are added on top.</p>
-        </div>
+      </div></div>`:''}
+      <div ${cpane('matrix')}>
+        <div class="dpt-lede">Sell prices for every method and colour count. Delivery and any additional costs are added on top.</div>
+        <button class="pm-cta-sec sm" id="cuShowMatrix" hidden></button>
+        <div id="cuMatrixWrap">${custFullMatrix(d,ctx,idx)}</div>
       </div>
+      <div class="dp-statusbar">${apprBar}</div>
     </div>`;
   }
   function wireCustPrice(p,d,ctx){
@@ -1114,6 +1295,7 @@
       const nowEl=document.getElementById('cuNow'); if(nowEl)nowEl.textContent=gbp(net);
       const wasEl=document.getElementById('cuWas'); if(wasEl)wasEl.textContent=gbp(was);
       const tot=document.getElementById('cuTotal'); if(tot)tot.textContent=gbp(net*q);
+      { const tw=document.getElementById('cuTotalWas'); if(tw){ const off=(was-net)*q; if(was>net+0.0001){ tw.textContent='was '+gbp(was*q); tw.style.display=''; } else tw.style.display='none'; } }
       const dEl=document.getElementById('cuDeliv'); if(dEl)dEl.textContent=gbp(unitSell(d,q).calc.delivery);
       const su=baseNet-net, st=su*q;
       document.getElementById('cuSaveUnit').textContent=su>0.0001?gbp(su):'—';
@@ -1134,7 +1316,30 @@
     { const b=document.getElementById('cuShowMatrix'); if(b) b.onclick=()=>{ const w=document.getElementById('cuMatrixWrap'); const sh=w.style.display==='none'; w.style.display=sh?'':'none'; b.textContent=sh?'Hide full price table':'View full price table'; }; }
   }
 
+  function sampleOptsHTML(p){ const scfg=(p.design&&p.design.sampleCfg)||{};
+    return `<div class="bb-stephd bb-grouphd2 sm-opthd">Sample options</div><div class="bb-samplebox">
+        <label class="bb-sampopt"><input type="checkbox" class="bb-incsamp" ${scfg.includeBranded?'checked':''} ${scfg.notRequired?'disabled':''}> Include a <b>branded sample</b><span class="bb-sampnote">Shows a branded sample option on the Sample tab.</span></label>
+        <label class="bb-sampopt"><input type="checkbox" class="bb-nosamp" ${scfg.notRequired?'checked':''}> <b>Sample not required</b><span class="bb-sampnote">Removes the sample step — it won't need approval before the product can move to Ready to order.</span></label>
+      </div>`; }
   // ---------- SAMPLE ----------
+  // sub-section tabs + card headers shared by Sample and Stock (same pattern as Design › Branding and Price)
+  const SUB_IC={opts:'<path d="M4 6h16M4 12h10M4 18h6"/><circle cx="17" cy="12" r="2"/><circle cx="13" cy="18" r="2"/>',
+    box:'<path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/>',
+    brand:'<path d="m12 3 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8-4.3-4.1 5.9-.9z"/>',
+    stock:'<path d="M3 8h18l-1.5 11h-15zM8 8V6a4 4 0 0 1 8 0v2"/>', grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+    check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>'};
+  const subHd=(ic,title,right,cls)=>`<div class="bb-stephd${cls?' '+cls:''}"><span class="bb-ic" aria-hidden="true"><svg viewBox="0 0 24 24">${SUB_IC[ic]}</svg></span><span class="bb-ttl">${title}</span>${right?`<span class="bb-stepno">${right}</span>`:''}</div>`;
+  function subTabs(key,tabs,def){ const S=window.__pmSTab=window.__pmSTab||{}; let cur=S[key]; if(!tabs.some(t=>t[0]===cur)) cur=(def&&tabs.some(t=>t[0]===def))?def:tabs[0][0];
+    return {cur, bar:`<div class="dsg-tabs sub-tabs" role="tablist" aria-label="${key}" data-stabs="${key}">${tabs.map(([k,l,sub])=>`<button type="button" role="tab" class="dsg-tab${k===cur?' on':''}" data-stab="${k}" aria-selected="${k===cur}"><span>${l}</span>${sub?`<em>${sub}</em>`:''}</button>`).join('')}</div>`,
+      pane:(k,h)=>`<div class="sub-pane" data-spane="${k}"${k===cur?'':' hidden'}>${h}</div>`}; }
+  // two-supplier branded sample: a blank has to reach the decorator first (ms-two-smp {product: stepsDone})
+  const TSS=[['blank','Blank sample ordered','from '],['sent','Blank sent to the decorator','to '],['branded','Branded by the decorator','at '],['out','Sample sent to the customer','']];
+  function twoSampleHTML(p,d){ const t=d.twoSupplier; if(!t) return ''; let n=0; try{ n=+(JSON.parse(localStorage.getItem('ms-two-smp')||'{}')[p.name])||0; }catch(e){}
+    const who=[t.product.supplier,t.branding.supplier,t.branding.supplier,''];
+    return `<div class="tss"><div class="tss-h"><b>Two-supplier sample</b><span>${t.product.supplier} → ${t.branding.supplier}. The branded sample needs a blank from ${t.product.supplier} first${n?'':'. If you’re ordering an unbranded sample too, ask for two'}.</span></div>
+      <ol class="tss-s">${TSS.map(([k,l,pre],i)=>`<li class="${i<n?'on':''}${i===n?' next':''}"><i>${i<n?'✓':i+1}</i><div><b>${l}</b>${pre?`<span>${pre}${who[i]}</span>`:''}</div>${i===n?`<button type="button" class="pm-cta-sec sm" data-tssm="${p.name.replace(/"/g,'&quot;')}" data-tssn="${i+1}">Mark done</button>`:i===n-1?`<button type="button" class="tss-undo" data-tssm="${p.name.replace(/"/g,'&quot;')}" data-tssn="${i}" title="Undo">Undo</button>`:''}</li>`).join('')}</ol></div>`; }
+  if(!window.__tssWired){ window.__tssWired=1; document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-tssm]'); if(!b) return; e.preventDefault(); let A={}; try{ A=JSON.parse(localStorage.getItem('ms-two-smp')||'{}'); }catch(x){}
+    A[b.dataset.tssm]=+b.dataset.tssn; try{ localStorage.setItem('ms-two-smp',JSON.stringify(A)); }catch(x){} const box=b.closest('.tss'); if(box){ const p={name:b.dataset.tssm}, d=window.MSModal&&MSModal.data?MSModal.data(p):null; if(d){ const tmp=document.createElement('div'); tmp.innerHTML=twoSampleHTML(p,d); box.replaceWith(tmp.firstElementChild); } } }); }
   function sampleBody(p,d,ctx,role){
     const designApproved = p.actions[0].st==='approved';
     const sm=sampleFor(p,d); const u=sm.unbranded, b=sm.branded;
@@ -1161,12 +1366,16 @@
           </div>
           <div class="sm-pricectl" data-type="${idx}">
             <div class="sm-modes">
-              <button type="button" class="sm-mode ${(c.mode==='priced'||c.mode==='quoted')&&!s.quote?'on':''}" data-mode="cost">Cost price</button>
-              <button type="button" class="sm-mode ${(c.mode==='quote'||c.mode==='quoted')||s.quote?'on':''}" data-mode="quote">Supplier quote</button>
+              <button type="button" class="sm-mode ${(c.mode==='priced'||c.mode==='quoted'||c.mode==='quote')&&!(c.mode==='free')?'on':''}" data-mode="cost">Cost price</button>
               <button type="button" class="sm-mode ${c.mode==='free'?'on':''}" data-mode="free">Free</button>
             </div>
-            ${(c.mode==='quote'||c.mode==='quoted'||s.quote)?`<button type="button" class="pm-cta-sec sm sm-reqquote">${c.mode==='quoted'?'Re-request quote ›':'Request quote from supplier ›'}</button>`:''}
-          </div>`;
+            <div class="sm-quoterow"><button type="button" class="pm-cta-sec sm sm-quotebtn"><svg class="icn"><use href="#ic-clock"/></svg>${(c.mode==='quote'||c.mode==='quoted'||s.quote)?'Edit supplier quote':'Supplier quote'}</button><span>Request a quote from the supplier, or enter one you already have.</span></div>
+          </div>
+          ${(()=>{ const tp=isU?'unbranded':'branded', L=sampleLeads(p,d,tp), short=L.cust<L.supTotal;
+            return `<div class="sm-leads" data-smlt="${tp}"><div class="sm-ldh">Lead times <small>working days</small></div>
+              ${L.sups.map(s=>`<label class="sm-ld"><span>${L.sups.length>1?s.role:'Supplier'} · ${String(s.who||'').replace(/</g,'&lt;')}</span><input type="number" min="0" step="1" data-smlk="${s.k}" value="${s.days}"></label>`).join('')}
+              <label class="sm-ld cust"><span>Customer</span><input type="number" min="0" step="1" data-smlk="custLead" value="${L.cust}"></label>
+              ${short?`<p class="sm-ldwarn">The customer lead is shorter than the supplier${L.sups.length>1?'s’ combined':''} lead (${L.supTotal} days).</p>`:''}</div>`; })()}`;
       }
       return `<div class="sm-type ${idx===0?'on':''} ${locked?'locked':''}">
         <div class="sm-th"><span class="sm-dot ${idx===0?'on':''}"></span><b>${label}</b>${lockNote?`<span class="sm-lock">${lockNote}</span>`:''}</div>
@@ -1223,18 +1432,19 @@
           </div>
           <div class="sm-pricectl" data-type="${isU?0:1}">
             <div class="sm-modes">
-              <button type="button" class="sm-mode ${(c.mode==='priced'||c.mode==='quoted')&&!s.quote?'on':''}" data-mode="cost">Cost price</button>
-              <button type="button" class="sm-mode ${(c.mode==='quote'||c.mode==='quoted')||s.quote?'on':''}" data-mode="quote">Supplier quote</button>
+              <button type="button" class="sm-mode ${(c.mode==='priced'||c.mode==='quoted'||c.mode==='quote')&&!(c.mode==='free')?'on':''}" data-mode="cost">Cost price</button>
               <button type="button" class="sm-mode ${c.mode==='free'?'on':''}" data-mode="free">Free</button>
             </div>
-            ${(c.mode==='quote'||c.mode==='quoted'||s.quote)?`<button type="button" class="pm-cta-sec sm sm-reqquote">${c.mode==='quoted'?'Re-request quote ›':'Request quote from supplier ›'}</button>`:''}
+            <div class="sm-quoterow"><button type="button" class="pm-cta-sec sm sm-quotebtn"><svg class="icn"><use href="#ic-clock"/></svg>${(c.mode==='quote'||c.mode==='quoted'||s.quote)?'Edit supplier quote':'Supplier quote'}</button><span>Request a quote from the supplier, or enter one you already have.</span></div>
           </div>`;
       }
+      const dv=(()=>{ try{ return (JSON.parse(localStorage.getItem('ms-sample-delivered')||'{}'))[p.name+'|'+kind]||null; }catch(e){ return null; } })();
+      const dvHTML=dv&&!dv.done?`<div class="sm-delv"><div><b>Sample delivered${dv.at?' · '+new Date(dv.at).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):''}</b><span>Order ${String(dv.ref||'').replace(/</g,'&lt;')} · awaiting feedback</span></div><div class="sm-delva"><button type="button" class="pm-cta sm" data-smfb="approve" data-smk="${kind}">Approve sample</button><button type="button" class="pm-cta-sec sm" data-smfb="changes" data-smk="${kind}">Request changes</button></div></div>`:dv&&dv.done?`<div class="sm-delv ok"><div><b>${dv.done==='approve'?'Sample approved':'Changes requested'}</b><span>Order ${String(dv.ref||'').replace(/</g,'&lt;')}${dv.by?' · '+dv.by:''}${dv.note?' · “'+String(dv.note).replace(/</g,'&lt;')+'”':''}</span></div></div>`:'';
       return `<div class="sm-type sm-card2 on ${locked?'locked':''}">
         ${sampleImg(kind)}
-        <div class="sm-cardbody">
-          <div class="sm-th"><span class="sm-dot on"></span><b>${isU?'Unbranded sample':'Branded sample'}</b>${lockNote?`<span class="sm-lock">${lockNote}</span>`:''}</div>
-          <div class="sm-meta">${sellLine} · lead ${s.lead} working days</div>
+        <div class="sm-cardbody">${dvHTML}
+          ${subHd(isU?'box':'brand',isU?'Unbranded sample':'Branded sample',lockNote?`<span class="sm-lock">${lockNote}</span>`:'','sm-cardhd')}
+          <div class="sm-meta">${sellLine} · lead ${sampleLeads(p,d,isU?'unbranded':'branded').cust} working days</div>
           ${quoteInfo}
           ${isU?chooser():(locked?'':brandedChooser())}
           ${distRow}
@@ -1250,11 +1460,81 @@
       typesInner=`${card('unbranded')}${showBranded?card('branded'):''}`;
     }
     const note=(role==='dist'&&mode!=='none')?'<p class="sm-pricenote">Cost pulled from the product\u2019s <b>Sample cost</b> (Store \u2192 product Edit); cost &amp; sell editable here (\u00d7'+SAMPLE_MARKUP.toFixed(2)+' markup, min +'+money(ctx,SAMPLE_MIN_UPLIFT)+').</p>':'';
-    return `<div class="pm-section">${optSel}<div class="sm-types sm-types2">${typesInner}</div>${note}</div>`;
+    const MODE_LBL={none:'Not required',unbranded:'Unbranded',branded:'Branded',both:'Both'};
+    const showB=mode!=='none' && (mode==='branded'||mode==='both'||scfg.includeBranded) && !(d.branding&&d.branding.chosen&&d.branding.chosen.unbranded);
+    const subLbl=s=>{ const c=sampleCalc(s); return c.mode==='free'?'Free':c.mode==='quote'?'Quote':money(ctx,c.sell); };
+    const T=subTabs('sample',[...(mode!=='none'?[['unbranded','Unbranded',subLbl(u)]]:[]),...(showB?[['branded','Branded',designApproved?subLbl(b):'Locked']]:[]),...(role==='cust'?[]:[['options','Sample options',MODE_LBL[mode]||'']])],mode==='none'&&role!=='cust'?'options':'unbranded');
+    const opts=sampleOptsHTML(p).replace(/<div class="bb-stephd bb-grouphd2 sm-opthd">Sample options<\/div>/,subHd('opts','Sample options','','bb-grouphd2 sm-opthd'));
+    return `<div class="sub-root sm-root">${T.bar}
+      ${T.pane('options',`<div class="pm-section bb-wrap">${opts}${mode==='none'?`<div class="bb-step">${typesInner}</div>`:''}${note}</div>`)}
+      ${mode!=='none'?T.pane('unbranded',`<div class="pm-section bb-wrap sm-wrap">${card('unbranded')}</div>`):''}
+      ${showB?T.pane('branded',`<div class="pm-section bb-wrap sm-wrap">${role!=='cust'?twoSampleHTML(p,d):''}${card('branded')}</div>`):''}</div>`;
   }
+  // supplier contacts + each supplier's default contact for samples (ms-sup-contacts / ms-sup-sample-default)
+  function supContacts(sup){ const slug=String(sup||'supplier').toLowerCase().replace(/[^a-z0-9]+/g,''), dom=slug+'.co.uk';
+    let saved={}; try{ saved=JSON.parse(localStorage.getItem('ms-sup-contacts')||'{}'); }catch(e){}
+    if(saved[sup]) return saved[sup];
+    const O=(window.ORG_DATA&&ORG_DATA.suppliers||[]).find(o=>o.name===sup), main=O&&O.contactName;
+    const first=['Tom','Priya','Sam','Aisha','Ben','Hannah'][slug.length%6], last=['Reed','Shah','Carter','Khan','Walsh','Moore'][slug.charCodeAt(0)%6];
+    return [{n:main||first+' '+last,role:'Account manager',email:(O&&O.contactEmail)||first.toLowerCase()+'@'+dom},{n:'Samples desk',role:'Samples',email:'samples@'+dom},{n:'Sales team',role:'Sales',email:'sales@'+dom}]; }
+  function supSampleDefault(sup){ let m={}; try{ m=JSON.parse(localStorage.getItem('ms-sup-sample-default')||'{}'); }catch(e){} const L=supContacts(sup); return L.find(c=>c.email===m[sup])||L.find(c=>/sample/i.test(c.role))||L[0]; }
+  function setSupSampleDefault(sup,email){ let m={}; try{ m=JSON.parse(localStorage.getItem('ms-sup-sample-default')||'{}'); }catch(e){} m[sup]=email; try{ localStorage.setItem('ms-sup-sample-default',JSON.stringify(m)); }catch(e){} }
+  // supplier contact for ORDERS on this product (ACM can assign one; else the supplier's default for orders)
+  function pmSupAssignAll(){ try{ return JSON.parse(localStorage.getItem('ms-pm-supcontact')||'{}'); }catch(e){ return {}; } }
+  function supOrderDefault(sup){ let m={}; try{ m=JSON.parse(localStorage.getItem('ms-sup-order-default')||'{}'); }catch(e){} const L=supContacts(sup); return L.find(c=>c.email===m[sup])||L.find(c=>/account|sales/i.test(c.role))||L[0]; }
+  function productSups(p,d){ const t=d&&d.twoSupplier; if(t&&t.product&&t.branding) return [[t.product.supplier,'Product supplier'],[t.branding.supplier,'Branding supplier']]; return [[(typeof supplierName==='function'&&supplierName(p))||p.supplier||'Supplier','Supplier']]; }
+  function persistSupContacts(sup){ try{ const all=JSON.parse(localStorage.getItem('ms-sup-contacts')||'{}'); if(!all[sup]){ all[sup]=supContacts(sup); localStorage.setItem('ms-sup-contacts',JSON.stringify(all)); } }catch(e){} }
+  function supContactPaneHTML(p,d){ const A=(pmSupAssignAll()[p.name])||{}, e2=v=>String(v==null?'':v).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+    return `<div class="dpt-lede">Who receives the supplier order for this product. If you don’t choose one, the supplier’s default contact for orders is used.</div>`+productSups(p,d).map(([sup,role])=>{ persistSupContacts(sup);
+      const L=supContacts(sup), def=supOrderDefault(sup), cur=A[sup]||{}, pick=cur.email||def.email, pc=L.find(c=>c.email===pick)||def;
+      return `<div class="pm-cmod sc-blk" data-scname="${e2(p.name)}" data-scsup="${e2(sup)}"><div class="pm-cmodh">${e2(role)} · ${e2(sup)}</div>
+        <label class="sq-f"><span>Send supplier orders to</span><select data-scsel>${L.map(c=>`<option value="${e2(c.email)}"${c.email===pick?' selected':''}>${e2(c.n)} · ${e2(c.role)}${c.email===def.email?' (default for orders)':''}</option>`).join('')}</select><small data-scem>${e2(pc.email)}</small></label>
+        <label class="sq-chk"><input type="checkbox" data-scdef${pick===def.email?' checked disabled':''}> Make this ${e2(sup)}’s default contact for orders</label>
+        <label class="sq-f"><span>Notes for this contact <em class="sc-opt">shown on the supplier order</em></span><textarea rows="3" data-scnote placeholder="e.g. Please confirm dispatch by email, not phone">${e2(cur.note||'')}</textarea></label>
+        <div class="sc-foot"><span class="sc-saved">${cur.at?'Assigned by '+e2(cur.by)+' · '+e2(cur.at):'Using the default contact'}</span><button type="button" class="pm-cta sm" data-scsave>Save contact</button></div></div>`; }).join(''); }
+  document.addEventListener('change',e=>{ const sl=e.target.closest('[data-scsel]'); if(!sl) return; const b=sl.closest('.sc-blk'); const em=b.querySelector('[data-scem]'); if(em) em.textContent=sl.value;
+    const cb=b.querySelector('[data-scdef]'); const def=supOrderDefault(b.dataset.scsup); if(cb){ cb.checked=sl.value===def.email; cb.disabled=sl.value===def.email; } });
+  document.addEventListener('click',e=>{ const btn=e.target.closest('[data-scsave]'); if(!btn) return; const b=btn.closest('.sc-blk'), name=b.dataset.scname, sup=b.dataset.scsup;
+    const email=b.querySelector('[data-scsel]').value, c=supContacts(sup).find(x=>x.email===email)||{}, note=b.querySelector('[data-scnote]').value.trim(), mk=b.querySelector('[data-scdef]');
+    if(mk&&mk.checked&&!mk.disabled){ let m={}; try{ m=JSON.parse(localStorage.getItem('ms-sup-order-default')||'{}'); }catch(x){} m[sup]=email; try{ localStorage.setItem('ms-sup-order-default',JSON.stringify(m)); }catch(x){} }
+    const all=pmSupAssignAll(); all[name]=all[name]||{}; all[name][sup]={email,n:c.n||'',role:c.role||'',note,by:pmWho(),at:pmStamp()}; try{ localStorage.setItem('ms-pm-supcontact',JSON.stringify(all)); }catch(x){}
+    const sv=b.querySelector('.sc-saved'); if(sv) sv.textContent='Assigned by '+pmWho()+' · '+pmStamp(); if(mk){ mk.checked=true; mk.disabled=supOrderDefault(sup).email===email; }
+    if(window.MStoast) MStoast('Supplier contact saved: '+(c.n||email)); });
+  function sampleQuoteForm(p,d,type,cur,onDone){
+    const esc2=v=>String(v==null?'':v).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+    const sup=(d.twoSupplier&&d.twoSupplier.product&&d.twoSupplier.product.supplier)||(typeof supplierName==='function'&&supplierName(p))||p.supplier||'the supplier';
+    const w=document.createElement('div'); w.className='sq-scrim'; let tab='request'; const def=supSampleDefault(sup); let pick=def.email;
+    const draw=()=>{ w.innerHTML=`<div class="sq-modal" role="dialog" aria-modal="true" aria-label="Sample quote">
+      <div class="sq-hd"><div><b>Sample quote</b><span>${esc2(p.name)} · ${type==='branded'?'Branded':'Unbranded'} sample</span></div><button class="sq-x" data-sqx aria-label="Close">×</button></div>
+      <div class="sq-seg"><button class="${tab==='request'?'on':''}" data-sqt="request">Request from supplier</button><button class="${tab==='manual'?'on':''}" data-sqt="manual">Enter manually</button></div>
+      ${tab==='request'?`<p class="sq-lede">We’ll send ${esc2(sup)} a request. Their reply fills in the cost and lead time.</p>
+        <label class="sq-f"><span>Send to</span><select data-sqc>${supContacts(sup).map(c=>`<option value="${esc2(c.email)}"${c.email===pick?' selected':''}>${esc2(c.n)} · ${esc2(c.role)}${c.email===def.email?' (default for samples)':''}</option>`).join('')}</select><small data-sqce>${esc2(pick)}</small></label>
+        <label class="sq-chk"><input type="checkbox" data-sqdef${pick===def.email?' checked disabled':''}> Make this ${esc2(sup)}’s default contact for samples</label>
+        <div class="sq-grid"><label class="sq-f"><span>Quantity</span><input data-sq="qty" type="number" min="1" value="${esc2((cur.qty)||1)}"></label><label class="sq-f"><span>Needed by</span><input data-sq="by" type="date"></label></div>
+        <label class="sq-f"><span>Message to supplier</span><textarea data-sq="msg" rows="3" placeholder="Colour, variant, delivery address or anything else they need to know"></textarea></label>`
+      :`<p class="sq-lede">Already have a quote? Enter it here.</p>
+        <div class="sq-grid"><label class="sq-f"><span>Cost per sample (£)</span><input data-sq="cost" type="number" step="0.01" min="0" value="${cur.cost!=null?esc2(cur.cost):''}"></label><label class="sq-f"><span>Lead time (working days)</span><input data-sq="lead" type="number" min="0" value="${esc2(cur.lead||'')}"></label></div>
+        <div class="sq-grid"><label class="sq-f"><span>Quote reference</span><input data-sq="ref" placeholder="Optional"></label><label class="sq-f"><span>Valid until</span><input data-sq="valid" type="date"></label></div>
+        <label class="sq-f"><span>Notes</span><textarea data-sq="note" rows="2" placeholder="Optional"></textarea></label>`}
+      <p class="sq-err" data-sqerr hidden></p>
+      <div class="sq-ft"><button class="pm-cta-sec sm" data-sqx>Cancel</button><button class="pm-cta sm" data-sqgo>${tab==='request'?'Send request':'Save quote'}</button></div></div>`;
+      w.querySelectorAll('[data-sqt]').forEach(b=>b.onclick=()=>{ tab=b.dataset.sqt; draw(); });
+      w.querySelectorAll('[data-sqx]').forEach(b=>b.onclick=()=>w.remove());
+      const sc=w.querySelector('[data-sqc]'); if(sc) sc.onchange=()=>{ pick=sc.value; const keep=[...w.querySelectorAll('[data-sq]')].map(e=>[e.dataset.sq,e.value]); draw(); keep.forEach(([k,v])=>{ const e=w.querySelector('[data-sq="'+k+'"]'); if(e) e.value=v; }); };
+      w.querySelector('[data-sqgo]').onclick=()=>{ const v=k=>{ const el=w.querySelector('[data-sq="'+k+'"]'); return el?el.value.trim():''; }, err=w.querySelector('[data-sqerr]');
+        const today=new Date().toLocaleDateString('en-GB');
+        if(tab==='request'){ const who=supContacts(sup).find(c=>c.email===pick)||def; const mk=w.querySelector('[data-sqdef]'); if(mk&&mk.checked&&!mk.disabled) setSupSampleDefault(sup,pick);
+          sampleSet(p.name,type,{mode:'quote',quote:true,free:false,quoteTo:who.email,quoteNote:'Quote requested '+today+' from '+who.n+' at '+sup+' ('+who.email+')'+(v('msg')?' · “'+v('msg')+'”':'')+'. Awaiting their reply.'}); if(window.MStoast) MStoast('Sample quote requested from '+who.n+' at '+sup); }
+        else { const c=parseFloat(v('cost')); if(isNaN(c)){ err.textContent='Enter the cost per sample.'; err.hidden=false; return; }
+          const lead=parseInt(v('lead'),10); sampleSet(p.name,type,Object.assign({mode:'quoted',quote:true,free:false,cost:c,sell:null,quoteNote:'Quote entered '+today+(v('ref')?' · ref '+v('ref'):'')+(v('valid')?' · valid until '+new Date(v('valid')).toLocaleDateString('en-GB'):'')+(v('note')?' · '+v('note'):'')},isNaN(lead)?{}:{lead})); if(window.MStoast) MStoast('Sample quote saved'); }
+        w.remove(); onDone(); }; };
+    draw(); w.addEventListener('mousedown',e=>{ if(e.target===w) w.remove(); }); document.body.appendChild(w); }
   function sampleMode(cfg){ cfg=cfg||{}; if(cfg.mode) return cfg.mode; if(cfg.notRequired) return 'none'; if(cfg.includeBranded) return cfg.unbrandedOff?'branded':'both'; return 'unbranded'; }
   function wireSample(p,d,ctx){
     const refresh=()=>{ if(ctx.refresh) ctx.refresh('sample'); if(ctx.persist) ctx.persist(); };
+    { p.design=p.design||{}; p.design.sampleCfg=p.design.sampleCfg||{}; const sec=document.getElementById('pmsec-sample')||document;
+      const inc=sec.querySelector('.bb-incsamp'); if(inc) inc.onchange=()=>{ p.design.sampleCfg.includeBranded=inc.checked; refresh(); };
+      const no=sec.querySelector('.bb-nosamp'); if(no) no.onchange=()=>{ p.design.sampleCfg.notRequired=no.checked; if(no.checked) p.design.sampleCfg.includeBranded=false; refresh(); }; }
     // 4-way sample mode selector (No sample / Unbranded / Branded / Both)
     document.querySelectorAll('.sm-opt').forEach(btn=>btn.onclick=()=>{
       const m=btn.dataset.smmode; p.design=p.design||{}; const cfg=p.design.sampleCfg=p.design.sampleCfg||{};
@@ -1263,10 +1543,17 @@
       refresh();
     });
     // unbranded colour / variant chooser + add to order
+    document.querySelectorAll('[data-smfb]').forEach(b=>b.onclick=()=>{ const kind=b.dataset.smk, fb=b.dataset.smfb, K='ms-sample-delivered'; let M={}; try{ M=JSON.parse(localStorage.getItem(K)||'{}'); }catch(e){}
+      const k=p.name+'|'+kind; if(!M[k]) return; let note=''; if(fb==='changes'){ note=prompt('What needs changing?','')||''; if(!note.trim()) return; }
+      const me=(window.MSChat&&MSChat.me&&MSChat.me())||{}; M[k]=Object.assign(M[k],{done:fb,note,by:me.name||'',doneAt:new Date().toISOString()}); localStorage.setItem(K,JSON.stringify(M));
+      const a=p.actions&&p.actions[2]; if(a){ a.st=fb==='approve'?'approved':'changes'; } if(ctx&&ctx.persist) ctx.persist();
+      try{ window.mslog&&mslog(p.name,(kind==='branded'?'Branded':'Unbranded')+' sample '+(fb==='approve'?'approved':'· changes requested: '+note)); }catch(e){}
+      if(window.MStoast) MStoast(fb==='approve'?'Sample approved':'Changes requested'); refresh(); });
+    document.querySelectorAll('.sm-leads [data-smlk]').forEach(inp=>inp.onchange=()=>{ const tp=inp.closest('[data-smlt]').dataset.smlt, v=inp.value===''?null:Math.max(0,parseInt(inp.value,10)||0); sampleSet(p.name,tp,{[inp.dataset.smlk]:v}); if(window.MStoast) MStoast((tp==='branded'?'Branded':'Unbranded')+' sample lead updated'); refresh(); });
     document.querySelectorAll('.sm-choose [data-smcol]').forEach(b=>b.onclick=()=>{ p.sampleSel=p.sampleSel||{}; p.sampleSel.colour=b.dataset.smcol; refresh(); });
     document.querySelectorAll('.sm-choose [data-smvar]').forEach(b=>b.onclick=()=>{ p.sampleSel=p.sampleSel||{}; p.sampleSel.variant=b.dataset.smvar; refresh(); });
-    { const add=document.querySelector('.sm-addorder'); if(add) add.onclick=()=>{ const sel=p.sampleSel||{}; p.sampleOrder={colour:sel.colour,variant:sel.variant,qty:(p.sampleOrder&&p.sampleOrder.qty)||1}; if(window.addProductToBasket) window.addProductToBasket(p,'sample'); if(window.MStoast) MStoast('Unbranded sample added to your order'); refresh(); }; }
-    { const addb=document.querySelector('.sm-addbranded'); if(addb) addb.onclick=()=>{ p.brandedSampleOrder={qty:(p.brandedSampleOrder&&p.brandedSampleOrder.qty)||1}; if(window.addProductToBasket) window.addProductToBasket(p,'sample'); if(window.MStoast) MStoast('Branded sample added to your order'); refresh(); }; }
+    { const add=document.querySelector('.sm-addorder'); if(add) add.onclick=()=>{ const sel=p.sampleSel||{}; p.sampleOrder={colour:sel.colour,variant:sel.variant,qty:(p.sampleOrder&&p.sampleOrder.qty)||1}; if(window.addProductToBasket) window.addProductToBasket(p,'sample',{sampleType:'unbranded',colour:sel.colour,variant:sel.variant}); if(window.MStoast) MStoast('Unbranded sample added to your order'); refresh(); }; }
+    { const addb=document.querySelector('.sm-addbranded'); if(addb) addb.onclick=()=>{ p.brandedSampleOrder={qty:(p.brandedSampleOrder&&p.brandedSampleOrder.qty)||1}; if(window.addProductToBasket) window.addProductToBasket(p,'sample',{sampleType:'branded'}); if(window.MStoast) MStoast('Branded sample added to your order'); refresh(); }; }
     { const vp=document.querySelector('.sm-viewproof'); if(vp) vp.onclick=(e)=>{ e.preventDefault(); if(ctx.openProof) ctx.openProof(p); else if(window.MSModal&&MSModal.openProof) MSModal.openProof(p,d,ctx); }; }
     document.querySelectorAll('.sm-pricectl').forEach(ctl=>{
       const type = ctl.dataset.type==='0' ? 'unbranded' : 'branded';
@@ -1282,17 +1569,26 @@
       if(ci) ci.onchange=()=>{ const v=parseFloat(ci.value); sampleSet(p.name,type,{cost:isNaN(v)?0:v,sell:null,free:false}); refresh(); };
       const si=ctl.parentElement.querySelector('.sm-sell-in');
       if(si) si.onchange=()=>{ const v=parseFloat(si.value); sampleSet(p.name,type,{sell:isNaN(v)?null:v}); refresh(); };
-      const rq=ctl.querySelector('.sm-reqquote');
-      if(rq) rq.onclick=()=>{ sampleSet(p.name,type,{mode:'quoted',quote:true,free:false,cost:(cur.cost!=null?cur.cost:24.00),quoteNote:'Quote requested '+new Date().toLocaleDateString('en-GB')+' — supplier to confirm cost & lead.'}); refresh(); };
+      const qb=ctl.querySelector('.sm-quotebtn'); if(qb) qb.onclick=()=>sampleQuoteForm(p,d,type,cur,refresh);
     });
   }
 
   // ---------- STOCK ----------
-  function stockBody(p,d,ctx,role){
+  // Product Builder: several product colours can be chosen; stock must be confirmed for every one before "In stock"
+  function chosenColours(d){ const ch=d.branding.chosen||{}; if(ch.unbranded) return []; if(!Array.isArray(ch.productColours)||!ch.productColours.length) ch.productColours=ch.productColour?[ch.productColour]:[]; return ch.productColours; }
+  function stockReady(d){ if(d.stockSource==='mto') return true; const L=chosenColours(d), ok=d.stockOk||{}; return L.length>0&&L.every(c=>ok[c]); }
+  window.PMStock={ready:p=>{ const d=data(p); return d?stockReady(d):true; }, chosen:p=>{ const d=data(p); return d?chosenColours(d):[]; }};
+  function syncStockState(p,d,ctx){ if(d.stockSource==='mto'||!ctx||!ctx.setStatus) return; const a=p.actions&&p.actions[3]; if(!a) return;
+    if(stockReady(d)){ if(a.st!=='instock') ctx.setStatus(p,3,'instock'); } else if(a.st==='instock') ctx.setStatus(p,3,'awaiting'); }
+  function stockBody(p,d,ctx,role){ const h=stockBody0(p,d,ctx,role), t=d.twoSupplier; if(!t||role==='cust') return h;
+    return h.replace('<div class="pm-section bb-wrap">','<div class="pm-section bb-wrap"><div class="st-two"><b>Stock is held by '+t.product.supplier+'</b><span>The blank supplier. Stock checks go to them; '+t.branding.supplier+' brands it once it arrives.</span></div>'); }
+  function stockBody0(p,d,ctx,role){
     const src=d.stockSource;
     if(src==='mto'){
-      return `<div class="pm-section"><h4>Stock</h4><div class="st-mto"><svg class="icn"><use href="#ic-check"/></svg><div><b>Made to order</b><span>Produced to your quantity — always available, no reservation needed.</span></div></div></div>
-        <div class="pm-section"><h4>Available colours</h4><div class="sm-cols">${d.colours.map(c=>`<span class="sm-col"><span class="sw" style="background:${hex(c.name)}"></span>${c.name}</span>`).join('')}</div></div>`;
+      const T=subTabs('stock',[['avail','Availability','Made to order']]);
+      return `<div class="sub-root st-root">${T.bar}${T.pane('avail',`<div class="pm-section bb-wrap">
+        <div class="bb-step">${subHd('check','Made to order')}<p class="bb-hint">Produced to your quantity. Always available, no reservation needed.</p></div>
+        <div class="bb-step">${subHd('grid','Available colours',d.colours.length+' colour'+(d.colours.length===1?'':'s'))}<div class="sm-cols">${d.colours.map(c=>`<span class="sm-col"><span class="sw" style="background:${hex(c.name)}"></span>${c.name}</span>`).join('')}</div></div></div>`)}</div>`;
     }
     const srcTag = src==='api'
       ? '<span class="st-src api"><svg class="icn"><use href="#ic-check"/></svg>Live supplier feed</span>'
@@ -1301,22 +1597,28 @@
     const ch=d.branding.chosen||{}; const pc=projColours(p,d);
     const inProject=(colour,sz)=> pc.colours.includes(colour) && (pc.variants[colour]||d.sizes).includes(sz);
     const colInProject=(colour)=> pc.colours.includes(colour);
+    const chosen=chosenColours(d), ok=d.stockOk||(d.stockOk={}), nOk=chosen.filter(c=>ok[c]).length;
     const designCol = ch.unbranded?null:ch.productColour;
-    const grid = d.colours.map(c=>{
+    const gridOf = list => list.map(c=>{
       const inc=d.incoming.filter(x=>x.colour===c.name);
-      const colPicked = designCol===c.name;
+      const colPicked = chosen.includes(c.name);
       const relevant = colInProject(c.name);
       const rows=d.sizes.map(sz=>{
         const qv=(d.stock[c.name]||{})[sz];
         const due=inc.find(x=>x.size===sz);
-        const sel = colPicked && (ch.variant===sz || d.sizes.length<=1);
+        const sel = colPicked && (c.name!==designCol || ch.variant===sz || d.sizes.length<=1);
         const rel = inProject(c.name,sz);
         return `<div class="st-row ${sel?'sel':''} ${rel?'':'st-dim'}"><span class="st-sz">${sz}${sel?' <span class="st-pick">design</span>':(rel?' <span class="st-rel">in project</span>':'')}</span><span class="st-qty ${qv===0?'zero':''}">${qv==null?'—':qv.toLocaleString()}</span><span class="st-due">${due?`${due.qty.toLocaleString()} due ${due.due}`:''}</span></div>`;
       }).join('');
-      return `<div class="st-colour ${colPicked?'sel':''} ${relevant?'':'st-dim'}"><div class="st-ch"><span class="sw" style="background:${hex(c.name)}"></span><b>${c.name}</b>${colPicked?' <span class="st-pick">design</span>':(relevant?' <span class="st-rel">in project</span>':'')}${c.pms&&c.pms!=='PMS NA'?`<small>${c.pms}</small>`:''}</div>${rows}</div>`;
+      return `<div class="st-colour ${colPicked?'sel':''} ${relevant?'':'st-dim'}"><div class="st-ch"><span class="sw" style="background:${hex(c.name)}"></span><b>${c.name}</b>${colPicked?' <span class="st-pick">design</span>':(relevant?' <span class="st-rel">in project</span>':'')}${c.pms&&c.pms!=='PMS NA'?`<small>${c.pms}</small>`:''}${colPicked?(role==='dist'?`<label class="st-ok${ok[c.name]?' on':''}"><input type="checkbox" data-stok="${c.name}"${ok[c.name]?' checked':''}> Stock confirmed</label>`:`<span class="st-ok${ok[c.name]?' on':''}">${ok[c.name]?'Stock confirmed':'Awaiting confirmation'}</span>`):''}</div>${rows}</div>`;
     }).join('');
-    const selLine = (designCol) ? `<div class="st-sel-banner"><svg class="icn"><use href="#ic-check"/></svg>Design uses <b>${designCol}${ch.variant?' · '+ch.variant:''}</b>. <b>In-project</b> colours/variants are tagged; others are dimmed.</div>` : `<div class="st-sel-banner"><svg class="icn"><use href="#ic-check"/></svg><b>In-project</b> colours/variants are tagged; others are dimmed.</div>`;
-    return ts('stock',d) + `<div class="pm-section"><div class="st-head"><h4>Stock levels at ${today}</h4>${srcTag}</div>${selLine}<div class="st-grid">${grid}</div></div>`;
+    const selLine = (typeof role!=='undefined'&&role==='cust') ? '' : chosen.length ? `<div class="st-sel-banner${nOk===chosen.length?'':' part'}"><svg class="icn"><use href="#${nOk===chosen.length?'ic-check':'ic-clock'}"/></svg><span>Stock confirmed for <b>${nOk} of ${chosen.length}</b> chosen colour${chosen.length>1?'s':''} (${chosen.join(', ')}). ${nOk===chosen.length?'This product is in stock.':'Confirm every chosen colour to mark it in stock.'}</span></div>` : `<div class="st-sel-banner"><svg class="icn"><use href="#ic-check"/></svg><b>In-project</b> colours/variants are tagged; others are dimmed.</div>`;
+    const chosenList=d.colours.filter(c=>chosen.includes(c.name));
+    const T=subTabs('stock',[['chosen','Chosen colours',chosen.length?nOk+' of '+chosen.length+' confirmed':'None chosen'],['all','All colours',String(d.colours.length)]],chosen.length?'chosen':'all');
+    const chosenBody=chosen.length?`${selLine}<div class="st-grid">${gridOf(chosenList)}</div>`:'<p class="bb-hint" style="margin-left:0!important">No product colour chosen yet. Choose colours in Design › Branding and they’ll appear here for stock confirmation.</p>';
+    return `<div class="sub-root st-root">${T.bar}
+      ${T.pane('chosen',`<div class="pm-section bb-wrap"><div class="bb-step">${subHd('stock','Stock for your chosen colours',srcTag)}<p class="bb-hint">Levels at ${today}. ${role==='dist'?'Tick each colour once the supplier has confirmed stock.':'Your distributor confirms stock for each colour.'}</p>${chosenBody}</div></div>`)}
+      ${T.pane('all',`<div class="pm-section bb-wrap"><div class="bb-step">${subHd('grid','All colours and variants',srcTag)}<p class="bb-hint">Levels at ${today}. Colours in this project are tagged; others are dimmed.</p><div class="st-grid">${gridOf(d.colours)}</div></div></div>`)}</div>`;
   }
 
   /* =========================================================
@@ -1324,11 +1626,16 @@
      ========================================================= */
   function wire(p, tabKey, ctx){
     const d=data(p); if(!d) return; ctx=ctx||{}; const role=ctx.role||'dist';
+    document.querySelectorAll('[data-stabs]').forEach(bar=>{ const key=bar.dataset.stabs, root=bar.parentElement;
+      bar.querySelectorAll('[data-stab]').forEach(b=>b.onclick=()=>{ const k=b.dataset.stab; (window.__pmSTab=window.__pmSTab||{})[key]=k;
+        bar.querySelectorAll('.dsg-tab').forEach(x=>{ const on=x===b; x.classList.toggle('on',on); x.setAttribute('aria-selected',on); });
+        root.querySelectorAll(':scope > [data-spane]').forEach(pn=>pn.hidden=pn.dataset.spane!==k); }); });
     if(tabKey==='price') wirePrice(p,d,ctx);
     if(tabKey==='price' && role==='cust') wireCustPrice(p,d,ctx);
     if(tabKey==='price' && role==='dist') wireDistPrice(p,d,ctx);
     if(tabKey==='design') wireDesign(p,d,ctx);
     if(tabKey==='sample') wireSample(p,d,ctx);
+    if(tabKey==='stock') document.querySelectorAll('[data-stok]').forEach(i=>i.onchange=()=>{ (d.stockOk||(d.stockOk={}))[i.dataset.stok]=i.checked; if(ctx.persist)ctx.persist(); syncStockState(p,d,ctx); if(ctx.refresh)ctx.refresh('stock'); });
   }
 
   function wirePrice(p,d,ctx){
@@ -1349,9 +1656,57 @@
   }
 
   function wireDesign(p,d,ctx){
+    // stock photos with a solid background can't be recoloured cleanly: show them as they are (the colour chip still names the colour)
+    document.querySelectorAll('.pm-stock-img img').forEach(img=>{ const chk=()=>{ try{ const c=document.createElement('canvas'); c.width=c.height=2; const x=c.getContext('2d'); x.drawImage(img,0,0,img.naturalWidth,img.naturalHeight,0,0,2,2); const a=x.getImageData(0,0,1,1).data[3];
+      if(a>250){ img.style.filter='none'; const t=img.parentElement.querySelector('.pm-stock-tint'); if(t) t.remove(); const st=img.closest('.pm-stock'); st.classList.add('solid'); const cap=st.parentElement.querySelector('[data-stockcap]'); if(cap&&!cap.dataset.solid){ cap.dataset.solid=1; cap.insertAdjacentHTML('beforeend',' The photo shows the product as supplied, not in this colour.'); } } }catch(e){} }; img.complete&&img.naturalWidth?chk():img.addEventListener('load',chk,{once:true}); });
+    document.querySelectorAll('.dsg-tab[data-dtab]').forEach(b=>b.onclick=()=>{ const k=b.dataset.dtab; window.__pmDTab=k;
+      b.parentElement.querySelectorAll('.dsg-tab').forEach(x=>{ const on=x===b; x.classList.toggle('on',on); x.setAttribute('aria-selected',on); });
+      document.querySelectorAll('.dsg-pane').forEach(pn=>pn.hidden=pn.dataset.dpane!==k);
+      document.querySelectorAll('.dsg-tabact').forEach(x=>x.hidden=x.dataset.dact!==k); });
+    // proof actions (View full proof · status · Request changes / Approve) live in the tab row, left of Save / Download
+    (function(){ const foot=document.querySelector('.dsg-pane[data-dpane="proof"] .dsv-mini-foot'), act=document.querySelector('.dsg-tabact[data-dact="proof"]');
+      if(!foot||!act) return; const kids=[...foot.children]; if(!kids.length) return;
+      const g=document.createElement('span'); g.className='dsg-proofacts'; kids.forEach(k=>g.appendChild(k)); act.insertBefore(g,act.firstChild); foot.remove(); })();
+    document.querySelectorAll('[data-dsvgo]').forEach(b=>b.onclick=()=>{ const f=document.getElementById('dsvCustForm'), w=document.getElementById('pmWork'); if(!f||!w) return; const tb=document.querySelector('.dsg-tabs'); w.scrollTo({top:f.getBoundingClientRect().top-w.getBoundingClientRect().top+w.scrollTop-(tb?tb.offsetHeight:0)-12,behavior:'smooth'}); const i=f.querySelector('input,textarea,button'); if(i) setTimeout(()=>i.focus({preventScroll:true}),400); });
     document.querySelectorAll('.ds-open').forEach(b=>b.onclick=()=>openStage(p,d,ctx,b.dataset.stage));
     { const a=document.getElementById('dsvProofOpen'); if(a) a.onclick=()=>openStage(p,d,ctx,'proof'); }
-    { const v=document.getElementById('dsvProofView'); if(v) v.onclick=()=>openStage(p,d,ctx,'proof'); }
+    { const PF_WARN=['This proof should only be used to check positioning and content; it cannot be used as an accurate match for colour.','Have you seen a sample? Please ensure what you are ordering is what you are expecting.','If a Pantone reference has been chosen by our studio on your behalf, we cannot accept responsibility if you are unhappy with the final print colour.','When printing in full colour, Pantone references cannot be guaranteed.'];
+      const dlg=(html,onGo)=>{ const w=document.createElement('div'); w.className='pfd-scrim'; w.innerHTML='<div class="pfd" role="dialog" aria-modal="true">'+html+'</div>'; document.body.appendChild(w);
+        const close=()=>{ w.remove(); document.removeEventListener('keydown',k,true); }; const k=e=>{ if(e.key==='Escape'){ e.stopImmediatePropagation(); close(); } }; document.addEventListener('keydown',k,true);
+        w.addEventListener('mousedown',e=>{ if(e.target===w) close(); }); w.querySelectorAll('[data-pfdx]').forEach(b=>b.onclick=close); onGo(w,close); return w; };
+      const ver=()=>(p.design.proof&&p.design.proof.ver)||1;
+      const whoAmI=()=>{ const m=window.MSChat&&MSChat.me&&MSChat.me(); return (m&&m.name)||(window.MSID&&MSID.name&&MSID.name())||'Sara Kemp'; };
+      const done=(st,msg)=>{ p.design.proof.st=st; const now=new Date(); if(st==='approved'){ p.design.proof.approvedAt=now.toISOString(); p.design.proof.approvedBy=whoAmI(); } else { p.design.proof.changesAt=now.toISOString(); p.design.proof.changesBy=whoAmI(); delete p.design.proof.approvedAt; delete p.design.proof.approvedBy; } const rolled=rollDesign(p); if(ctx.setStatus) ctx.setStatus(p,0,rolled,msg); else if(window.MSlog) MSlog(p,{type:'status',icon:'ic-check',label:msg,who:0}); if(ctx.persist) ctx.persist(); if(ctx.refresh) ctx.refresh('design'); };
+      const ap=document.querySelector('[data-pfappr]'); if(ap) ap.onclick=()=>dlg(`<div class="pfd-hd"><b>Approve proof v${ver()}</b><button class="pfd-x" data-pfdx aria-label="Close">×</button></div>
+          <div class="pfd-warn"><b>PLEASE READ, TO ENSURE YOU ARE 100% HAPPY WITH YOUR ORDER:</b><ul>${PF_WARN.map(t=>'<li>'+t+'</li>').join('')}</ul></div>
+          <label class="pfd-chk"><input type="checkbox" data-pfok> I have checked the proof and approve it.</label>
+          <div class="pfd-ft"><button class="pm-cta-sec sm" data-pfdx>Cancel</button><button class="pm-cta sm" data-pfgo disabled>Submit</button></div>`,(w,close)=>{
+          const cb=w.querySelector('[data-pfok]'), go=w.querySelector('[data-pfgo]'); cb.onchange=()=>go.disabled=!cb.checked; cb.focus();
+          go.onclick=()=>{ if(!cb.checked) return; close(); done('approved','Approved proof v'+ver()+' — confirmed they have read the proof warnings'); if(window.MStoast) MStoast('Proof approved'); }; });
+      const rj=document.querySelector('[data-pfreject]'); if(rj) rj.onclick=()=>dlg(`<div class="pfd-hd"><b>Changes to proof v${ver()}</b><button class="pfd-x" data-pfdx aria-label="Close">×</button></div>
+          <p class="pfd-lede">Tell the studio what needs changing. Your notes are added to this product’s history.</p>
+          <label class="pfd-f"><span>Changes needed</span><textarea data-pfnote rows="5" placeholder="e.g. Move the logo up 10mm and use the white version"></textarea></label>
+          <p class="pfd-err" data-pferr hidden>Add a note so the studio knows what to change.</p>
+          <div class="pfd-ft"><button class="pm-cta-sec sm" data-pfdx>Cancel</button><button class="pm-cta sm" data-pfgo>Send changes</button></div>`,(w,close)=>{
+          const t=w.querySelector('[data-pfnote]'), er=w.querySelector('[data-pferr]'); t.focus();
+          w.querySelector('[data-pfgo]').onclick=()=>{ const n=t.value.trim(); if(!n){ er.hidden=false; t.focus(); return; } close(); p.design.proof.changeNotes=n; done('changes','Did not approve proof v'+ver()+' — changes requested: “'+n+'”'); if(window.MStoast) MStoast('Changes sent to the studio'); }; });
+    }
+    { const dl=document.querySelector('[data-pfdl]'); if(dl) dl.onclick=()=>proofA3(p,d); }
+    const wireProofFs=()=>{ const fs=document.getElementById('pfFs'), stg=document.getElementById('pfStage'); if(!fs||!stg) return;
+      // full screen lifts the panel out to <body> (above the header and left menu) with a grey backdrop, and puts it back on exit
+      let ph=null; const esc=e=>{ if(e.key==='Escape'){ e.stopImmediatePropagation(); e.preventDefault(); shut(); } }; /* Esc leaves full screen only, not the pop-out */
+      const shut=()=>{ if(!stg.classList.contains('on-fs')) return; stg.classList.remove('on-fs'); const b=document.getElementById('pfScrim'); if(b) b.remove(); if(ph){ ph.replaceWith(stg); ph=null; } document.removeEventListener('keydown',esc,true); fs.setAttribute('aria-label','Full screen'); fs.title='Full screen'; };
+      fs.onclick=e=>{ if(e) e.stopPropagation(); if(stg.classList.contains('on-fs')) return shut();
+        ph=document.createElement('div'); ph.className='pf-ph'; ph.style.height=stg.offsetHeight+'px'; stg.replaceWith(ph);
+        const b=document.createElement('div'); b.id='pfScrim'; b.className='pf-scrim'; b.onclick=shut; document.body.appendChild(b); document.body.appendChild(stg);
+        stg.classList.add('on-fs'); fs.setAttribute('aria-label','Close full screen'); fs.title='Close'; document.addEventListener('keydown',esc,true); };
+      stg.__pfShut=shut; };
+    wireProofFs();
+    { const pm=document.getElementById('pmodal'); if(pm&&!pm.__pfWatch){ pm.__pfWatch=1; new MutationObserver(()=>{ if(!pm.classList.contains('open')){ const st=document.querySelector('#pfStage.on-fs'); if(st&&st.__pfShut) st.__pfShut(); } }).observe(pm,{attributes:true,attributeFilter:['class']}); } }
+    // rebuild the proof sheet from the latest Branding-tab entries (notes, warnings, sizes, colours) each time Proof is shown
+    // any route that shows the Proof pane (tab click, deep link, other handlers) rebuilds it
+    { const pp=document.querySelector('.dsg-pane[data-dpane="proof"]'); if(pp){ let wasHidden=pp.hidden; new MutationObserver(()=>{ const h=pp.hidden; if(wasHidden&&!h&&!document.querySelector('#pfStage.on-fs')) refreshProof(); wasHidden=h; }).observe(pp,{attributes:true,attributeFilter:['hidden']}); /* only when it actually becomes visible */ } }
+    const refreshProof=()=>{ const old=document.querySelector('.dsg-pane[data-dpane="proof"] .dsv-mini .pf-stage'); if(!old) return; const tmp=document.createElement('div'); tmp.innerHTML=proofMiniPanel(p,d); const fresh=tmp.querySelector('.pf-stage'); if(!fresh) return; old.replaceWith(fresh); wireProofFs(); };
     { const u=document.getElementById('dsvProofUnappr'); if(u&&ctx.setStatus) u.onclick=()=>{ p.design.proof.st='awaiting'; const rolled=rollDesign(p); ctx.setStatus(p,0,rolled,'reopened the proof for changes'); if(ctx.refresh) ctx.refresh('design'); }; }
     { const vu=document.getElementById('dsvVisUnappr'); if(vu&&ctx.setStatus) vu.onclick=()=>{ p.design.visual.st='awaiting'; const rolled=rollDesign(p); ctx.setStatus(p,0,rolled,'reopened the visual for changes'); if(ctx.refresh) ctx.refresh('design'); }; }
     wireBrandingBuilder(p,d,ctx);
@@ -1432,6 +1787,38 @@
   function ensureColours(pos){ const m=METHODS[pos.method]||METHODS.none; const k=methodKind(m); let n=1; if(k==='spot') n=Math.max(1,pos.numColours||1); else if(k==='full') n=1; else if(k==='tone') n=1; else n=0;
     pos.colours = pos.colours||[]; while(pos.colours.length<n) pos.colours.push({mode:'pantone',label:'PMS 11-0601 TCX',hex:'#f4f4f0'}); pos.colours.length=n; return pos.colours; }
 
+  // who's using the platform now (for "added by")
+  function pmWho(){ const m=window.MSChat&&MSChat.me&&MSChat.me(); return (m&&m.name)||'You'; }
+  const pmStamp=()=>new Date().toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  // branding counts as "set" once there's a product colour and at least one branding position
+  function brandingSet(d){ const ch=d.branding.chosen||{}; if(ch.unbranded) return true; return chosenColours(d).length>0 && (ch.positions||[]).length>0; }
+  // Brand Assets (customer library): Logo Types + Product Artwork (edits saved by brand-assets.js in ms-brand-assets)
+  const BA_SEED={logos:[{id:'l-black',name:'Logo — black on white',bg:'#fff',fg:'#1b1d2e'},{id:'l-white',name:'Logo — white on black',bg:'#1b1d2e',fg:'#fff'},{id:'l-blue',name:'Logo — white on blue',bg:'#1e5fa8',fg:'#fff'}],
+    artwork:[{id:'aw-1',name:'Citrix logo — white',product:'Eco Wheat-Straw Charging Cable'},{id:'aw-2',name:'Anniversary lockup',product:'Recycled Cotton Tote'},{id:'aw-3',name:'Event wordmark',product:'Tech Travel Bag'}]};
+  function brandAssets(){ let o={}; try{ o=JSON.parse(localStorage.getItem('ms-brand-assets')||'{}'); }catch(e){}
+    const pick=k=>(Array.isArray(o[k])&&o[k].length?o[k]:BA_SEED[k]).filter(x=>x.status!=='archived');
+    return {logos:pick('logos'),artwork:pick('artwork')}; }
+  function assetTile(a){ const bg=a.bg||'#f2f4f7', fg=a.fg||'#344054', t=String(a.name||'').replace(/[<&>]/g,'').slice(0,26);
+    return 'data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200"><rect width="320" height="200" rx="14" fill="${bg}"/><text x="160" y="108" font-family="Mulish,Arial,sans-serif" font-size="22" font-weight="700" fill="${fg}" text-anchor="middle">${t}</text></svg>`); }
+  function brandAssetPicker(p,posName,onPick){ const A=brandAssets(), E=x=>String(x==null?'':x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const mine=A.artwork.filter(a=>a.product===p.name), other=A.artwork.filter(a=>a.product!==p.name);
+    const card=(a,kind)=>`<button type="button" class="ba-pk" data-bak="${kind}" data-baid="${E(a.id)}"><img src="${a.src||assetTile(a)}" alt=""><b>${E(a.name)}</b>${a.product?`<small>${E(a.product)}</small>`:''}</button>`;
+    const w=document.createElement('div'); w.className='sq-scrim'; w.innerHTML=`<div class="sq-modal ba-pkmodal" role="dialog" aria-modal="true" aria-label="Choose from Brand Assets">
+      <div class="sq-hd"><div><b>Choose from Brand Assets</b><span>Artwork for ${E(posName)}</span></div><button class="sq-x" data-bax aria-label="Close">×</button></div>
+      <h5 class="ba-pkh">Logo types</h5><div class="ba-pkgrid">${A.logos.map(a=>card(a,'logos')).join('')}</div>
+      <h5 class="ba-pkh">Product artwork${mine.length?' <em>For this product first</em>':''}</h5><div class="ba-pkgrid">${mine.concat(other).map(a=>card(a,'artwork')).join('')}</div>
+      <div class="sq-ft"><a class="pm-cta-sec sm" href="Merchsmith Brand Assets.html" target="_blank" rel="noopener">Open Brand Assets ↗</a></div></div>`;
+    document.body.appendChild(w); w.addEventListener('mousedown',e=>{ if(e.target===w) w.remove(); });
+    w.onclick=e=>{ if(e.target.closest('[data-bax]')) return w.remove(); const b=e.target.closest('[data-baid]'); if(!b) return; const a=A[b.dataset.bak].find(x=>x.id===b.dataset.baid); w.remove(); onPick(a.src||assetTile(a),a.name,b.dataset.bak==='logos'?'Brand Assets · Logo types':'Brand Assets · Product artwork'); }; }
+  // Visual tab: a graphic summary of what was set in the Branding tab
+  function brandSummaryHTML(p,d,role){ const ch=d.branding.chosen||{}, E=x=>String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    if(ch.unbranded) return `<div class="bsm"><div class="bsm-hd"><b>Branding</b></div><p class="bsm-empty">This product is supplied unbranded.</p></div>`;
+    const cols=chosenColours(d), pos=ch.positions||[], meta=c=>(d.branding.positions||[]).find(x=>x.code===c)||{name:c};
+    if(!brandingSet(d)) return `<div class="bsm bsm-none"><div class="bsm-hd"><b>Branding</b></div><p class="bsm-empty">${role==='cust'?'Your distributor is still setting up the branding for this product.':'Choose the product colour and at least one branding position before adding visuals.'}</p>${role==='cust'?'':'<button type="button" class="pm-cta sm" data-gotab="builder">Set up branding</button>'}</div>`;
+    return `<div class="bsm"><div class="bsm-hd"><b>Branding</b>${role==='cust'?'':'<button type="button" class="bsm-edit" data-gotab="builder">Edit</button>'}</div>
+      <div class="bsm-cols">${cols.map(n=>`<span class="bsm-col"><i style="background:${hex(n)}"></i>${E(n)}</span>`).join('')}</div>
+      <div class="bsm-pos">${pos.map(ps=>{ const m=METHODS[ps.method]||METHODS.none, pal=paletteFor(ps), mt=meta(ps.code), pp=proofPos(p,ps.code), art=pp.artwork[pp.artwork.length-1];
+        return `<div class="bsm-p"><span class="bsm-art">${art?`<img src="${art}" alt="">`:'<svg class="icn"><use href="#ic-brush"/></svg>'}</span><div class="bsm-pt"><b>${E(mt.name)}</b><span>${E(m.name)} · ${E(decoLabel(m,ps.numColours||pal.length))}${mt.w?` · ${mt.w}×${mt.h} mm`:''}</span></div><span class="bsm-dots">${pal.map(c=>`<i title="${E(c.label||c.name||'')}" style="background:${c.hex||hex(c.name)}"></i>`).join('')}</span></div>`; }).join('')}</div></div>`; }
   function brandingBuilderHTML(p,d){
     const ch=d.branding.chosen;
     const hasVar = (d.sizes||[]).length>1;
@@ -1439,7 +1826,7 @@
     if(!ch.selections){ ch.selections = ch.productColour ? [{colour:ch.productColour, variants: ch.variant?[ch.variant]:[]}] : []; }
     const isSel = name => ch.selections.some(s=>s.colour===name);
     const positions=d.branding.positions||[];
-    const unbrStep=`<div class="bb-stephd bb-grouphd2"><span class="bb-n">7</span>Other</div><div class="bb-unbrbox ${ch.unbranded?'on':''}"><label class="bb-unbranded ${ch.unbranded?'on':''}"><input type="checkbox" class="bb-unbtog" ${ch.unbranded?'checked':''}> This product is <b>unbranded</b> (no decoration / proof)</label>${ch.unbranded?'<p class="bb-unbrnote">Unticking this will restore the option to brand the item (positions, methods &amp; proof).</p>':''}</div>`;
+    const unbrStep=`<div class="bb-stephd bb-grouphd2"><span class="bb-n">4</span>Other</div><div class="bb-unbrbox ${ch.unbranded?'on':''}"><label class="bb-unbranded ${ch.unbranded?'on':''}"><input type="checkbox" class="bb-unbtog" ${ch.unbranded?'checked':''}> This product is <b>unbranded</b> (no decoration / proof)</label>${ch.unbranded?'<p class="bb-unbrnote">Unticking this will restore the option to brand the item (positions, methods &amp; proof).</p>':''}</div>`;
     const scfg=(p.design&&p.design.sampleCfg)||{};
     const sampleStep=`<div class="bb-stephd bb-grouphd2"><span class="bb-n">6</span>Sample options</div><div class="bb-samplebox">
         <label class="bb-sampopt"><input type="checkbox" class="bb-incsamp" ${scfg.includeBranded?'checked':''} ${scfg.notRequired?'disabled':''}> Include a <b>branded sample</b><span class="bb-sampnote">Shows a branded sample option on the Sample tab.</span></label>
@@ -1452,11 +1839,11 @@
       <p class="bb-hint">Choose which colours${hasVar?' and variants':''} are available for this product within this project. All are included by default.</p>
       <div class="bb-swatches">${d.colours.map(c=>{const on=pc.colours.includes(c.name);return `<button type="button" class="bb-sw ${on?'on':''}" data-pcol="${c.name}"><i style="background:${hex(c.name)}"></i><span>${c.name}<small>${pmsOf(c)}</small></span>${on?'<svg class="icn bb-swtick"><use href="#ic-check"/></svg>':''}</button>`;}).join('')}</div>
       ${hasVar?pc.colours.map(cn=>`<div class="bb-varrow" data-pvcol="${cn}"><label>${cn} variants</label><div class="bb-vars">${d.sizes.map(sz=>{const on=(pc.variants[cn]||d.sizes).includes(sz);return `<button type="button" class="bb-var ${on?'on':''}" data-pvcol="${cn}" data-pvar="${sz}">${sz}</button>`;}).join('')}</div></div>`).join(''):''}</div>`;
-    const colourStep=`<div class="bb-step"><div class="bb-stephd"><span class="bb-n">2</span>Product colour for the design</div>
-      <p class="bb-hint">Select the single product colour the design is applied to.</p>
-      <div class="bb-swatches">${d.colours.filter(c=>pc.colours.includes(c.name)).map(c=>`<button type="button" class="bb-sw ${ch.productColour===c.name?'on':''}" data-dcolour="${c.name}"><i style="background:${hex(c.name)}"></i><span>${c.name}<small>${pmsOf(c)}</small></span>${ch.productColour===c.name?'<svg class="icn bb-swtick"><use href="#ic-check"/></svg>':''}</button>`).join('')}</div>
-      ${hasVar?`<div class="bb-varrow"><label>Variant</label><div class="bb-vars">${(pc.variants[ch.productColour]||d.sizes).map(sz=>`<button type="button" class="bb-var ${ch.variant===sz?'on':''}" data-dvar="${sz}">${sz}</button>`).join('')}</div></div>`:''}</div>`;
-    const posStep=`<div class="bb-step"><div class="bb-stephd"><span class="bb-n">3</span>Branding positions</div>
+    const colourStep=`<div class="bb-step"><div class="bb-stephd"><span class="bb-n">1</span>Product Colour &amp; Variant</div>
+      
+      <div class="bb-colgal">${colourGalleryHTML(p)}<div class="bb-colsw"><div class="bb-swatches">${d.colours.filter(c=>pc.colours.includes(c.name)).map(c=>`<button type="button" class="bb-sw ${chosenColours(d).includes(c.name)?'on':''}" data-dcolour="${c.name}" aria-pressed="${chosenColours(d).includes(c.name)}"><i style="background:${hex(c.name)}"></i><span>${c.name}<small>${pmsOf(c)}</small></span>${chosenColours(d).includes(c.name)?'<svg class="icn bb-swtick"><use href="#ic-check"/></svg>':''}</button>`).join('')}</div>
+      ${hasVar?`<div class="bb-varrow"><label>Variant</label><div class="bb-vars">${(pc.variants[ch.productColour]||d.sizes).map(sz=>`<button type="button" class="bb-var ${ch.variant===sz?'on':''}" data-dvar="${sz}">${sz}</button>`).join('')}</div></div>`:''}</div></div></div>`;
+    const posStep=`<div class="bb-step"><div class="bb-stephd"><span class="bb-n">2</span>Branding: Position, Method, Colours</div>
       <div id="bbPositions">${positions.map((pos,j)=>{
         const cfg=ch.positions.find(x=>x.code===pos.code); const on=!!cfg;
         const method=cfg?cfg.method:d.branding.rec; const m=METHODS[method]||METHODS.none; const kind=methodKind(m);
@@ -1477,11 +1864,18 @@
         </div>`;
       }).join('')}</div>
       <button type="button" class="bb-addpos" id="bbAddPos">+ Add custom position</button></div>`;
+    const artStep=`<div class="bb-step"><div class="bb-stephd"><span class="bb-n">3</span>Artwork</div>
+      <div class="bb-artlist">${(ch.positions||[]).map(pos=>{ const meta=(d.branding.positions||[]).find(x=>x.code===pos.code)||{name:pos.code}; const pp=proofPos(p,pos.code), L=pp.artLast;
+        return `<div class="bb-art"><div class="bb-arthd"><b>${meta.name}</b><span>${meta.w?meta.w+' mm × '+meta.h+' mm':''}</span></div>
+          <div class="bb-imgs">${pp.artwork.map((src,i)=>`<div class="bb-thumb"><img src="${src}" alt="Artwork ${i+1}"><button type="button" class="bb-ppdel" data-pos="${pos.code}" data-kind="artwork" data-i="${i}" title="Remove">×</button></div>`).join('')}</div>
+          <div class="bb-artacts"><button type="button" class="pm-cta-sec sm bb-bapick" data-pos="${pos.code}" data-posname="${meta.name}"><svg class="icn"><use href="#ic-brush"/></svg>Choose from Brand Assets</button><button type="button" class="pm-cta-sec sm bb-ppadd" data-pos="${pos.code}" data-kind="artwork"><span>+</span>Upload</button></div>
+          <p class="bb-artlast">${L?`Last added by <b>${L.by}</b> · ${L.at} · ${L.from}${L.name?' · '+String(L.name).replace(/</g,'&lt;'):''}`:'No artwork added yet.'}</p></div>`; }).join('')||'<p class="bb-imgnote" style="margin:0">Add a branding position above to attach artwork.</p>'}</div>
+      <input type="file" accept="image/png,image/jpeg,image/svg+xml" class="bb-ppfile" hidden></div>`;
     const list=visualList(p);
-    const imgStep=`<div class="bb-step"><div class="bb-stephd"><span class="bb-n">4</span>Visuals</div>
-      <div class="bb-imgs">${list.map((src,i)=>`<div class="bb-thumb"><img src="${src}" alt="Visual ${i+1}"><button type="button" class="bb-imgdel" data-i="${i}" title="Remove">×</button></div>`).join('')}<button type="button" class="bb-imgadd"><span>+</span>Add</button></div>
+    const imgStep=`<div class="bb-step bb-visstep"><div class="bb-stephd">Visual images</div>
+      <div class="bb-imgs">${list.map((src,i)=>`<div class="bb-thumb"><img src="${src}" alt="Visual ${i+1}"><button type="button" class="bb-imgdel" data-i="${i}" title="Remove">×</button></div>`).join('')}${brandingSet(d)?'<button type="button" class="bb-imgadd"><span>+</span>Add</button>':''}</div>${(p.design&&p.design.visLast)?`<p class="bb-artlast">Last added by <b>${p.design.visLast.by}</b> · ${p.design.visLast.at}${p.design.visLast.name?' · '+String(p.design.visLast.name).replace(/</g,'&lt;'):''}</p>`:''}${brandingSet(d)?'':'<p class="bb-gate"><svg class="icn"><use href="#ic-lock"/></svg>Set the product colour and branding positions in the <button type="button" data-gotab="builder">Branding</button> tab before adding visuals.</p>'}
       <input type="file" accept="image/png,image/jpeg" class="bb-imgfile" hidden>
-      <p class="bb-imgnote">Add or remove indicative visuals for this product. PNG or JPG.</p></div>`;
+      </div>`;
     const proofList=proofImgList(p);
     const proofPosBlocks=(ch.positions||[]).map(pos=>{
       const meta=(d.branding.positions||[]).find(x=>x.code===pos.code)||{name:pos.code};
@@ -1489,30 +1883,40 @@
       const pm=METHODS[pos.method]||METHODS.none;
       const ppal=paletteFor(pos);
       const methodLine=`<div class="bb-ppmeta"><span class="bb-ppmethod">${pm.name} · ${decoLabel(pm,pos.numColours||ppal.length)}</span><span class="bb-ppswatches">${ppal.map(c=>{const bg=c.hex||hex(c.name);const lbl=c.label||c.name||'';const ref=c.pms||(c.name?pmsOf({name:c.name}):'');return `<span class="bb-ppchip"><span class="bb-ppsw" style="background:${bg}"></span><span class="bb-ppchiptxt">${lbl}${ref?` <small>${ref}</small>`:''}</span></span>`;}).join('')}</span></div>`;
-      const cell=(kind,arr,label)=>`<div class="bb-ppcol"><span class="bb-pplbl">${label}</span><div class="bb-imgs">${arr.map((src,i)=>`<div class="bb-thumb"><img src="${src}" alt="${label} ${i+1}"><button type="button" class="bb-ppdel" data-pos="${pos.code}" data-kind="${kind}" data-i="${i}" title="Remove">×</button></div>`).join('')}<button type="button" class="bb-ppadd" data-pos="${pos.code}" data-kind="${kind}"><span>+</span>Add</button></div>${kind==='artwork'?`<div class="bb-ppsize"><span class="bb-pplbl">Branding size (actual)</span><div class="bb-sizerow"><input type="number" class="bb-ppw" data-pos="${pos.code}" value="${pp.size&&pp.size.w!=null?pp.size.w:''}" min="0" placeholder="W"><span class="bb-x">×</span><input type="number" class="bb-pph" data-pos="${pos.code}" value="${pp.size&&pp.size.h!=null?pp.size.h:''}" min="0" placeholder="H"><span class="bb-mm">mm</span></div></div>`:''}</div>`;
-      return `<div class="bb-pppos"><div class="bb-ppposhd"><b>${meta.name}</b><span>${meta.w} mm × ${meta.h} mm</span></div>${methodLine}<div class="bb-ppgrid">${cell('artwork',pp.artwork,'Product artwork')}${cell('visuals',pp.visuals,'Proof visuals')}</div></div>`;
-    }).join('') || '<p class="bb-imgnote" style="margin:0">Add a branding position above to attach artwork &amp; proof visuals.</p>';
-    const proofStep=`<div class="bb-step"><div class="bb-stephd"><span class="bb-n">5</span>Proof</div>
+      const cell=(kind,arr,label)=>`<div class="bb-ppcol"><span class="bb-pplbl">${label}</span><div class="bb-imgs">${arr.map((src,i)=>`<div class="bb-thumb"><img src="${src}" alt="${label} ${i+1}"><button type="button" class="bb-ppdel" data-pos="${pos.code}" data-kind="${kind}" data-i="${i}" title="Remove">×</button></div>`).join('')}<button type="button" class="bb-ppadd" data-pos="${pos.code}" data-kind="${kind}"><span>+</span>Add</button></div></div>`;
+      return `<div class="bb-pppos bb-ppsplit"><div class="bb-ppleft"><div class="bb-ppposhd"><b>${meta.name}</b><span>${meta.w} mm × ${meta.h} mm</span></div>${methodLine}<div class="bb-ppsize"><span class="bb-pplbl">Branding size (actual)</span><div class="bb-sizerow"><input type="number" class="bb-ppw" data-pos="${pos.code}" value="${pp.size&&pp.size.w!=null?pp.size.w:''}" min="0" placeholder="W"><span class="bb-x">×</span><input type="number" class="bb-pph" data-pos="${pos.code}" value="${pp.size&&pp.size.h!=null?pp.size.h:''}" min="0" placeholder="H"><span class="bb-mm">mm</span></div></div></div><div class="bb-ppgrid">${cell('visuals',pp.visuals,'Proof visuals')}</div></div>`;
+    }).join('') || '<p class="bb-imgnote" style="margin:0">Add a branding position in the Branding tab to attach proof visuals.</p>';
+    const proofStep=`<div class="bb-step bb-proofstep">
       <div class="bb-ppwrap">${proofPosBlocks}</div>
-      <input type="file" accept="image/png,image/jpeg" class="bb-ppfile" hidden>
-      <div class="bb-fld" style="margin-top:14px"><label>Notes <span style="font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0">(shown on the proof)</span></label><textarea class="bb-notes" rows="2" placeholder="e.g. supplied individually boxed…">${(d.productNotes||'').replace(/</g,'&lt;')}</textarea></div>
-      <div class="bb-fld" style="margin-top:12px"><label>Warnings <span style="font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0">(shown on the proof)</span></label><textarea class="bb-warn" rows="2" placeholder="e.g. print longevity cannot be guaranteed…">${(d.warnings||'').replace(/</g,'&lt;')}</textarea></div>
+      <div class="bb-fld" style="margin-top:14px"><label>Notes <span style="font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0">(shown on the proof)</span></label><textarea class="bb-notes" rows="2" placeholder="e.g. supplied individually boxed…">${pNotes(p,d).replace(/</g,'&lt;')}</textarea></div>
+      <div class="bb-fld" style="margin-top:12px"><label>Warnings <span style="font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0">(shown on the proof)</span></label><textarea class="bb-warn" rows="2" placeholder="e.g. print longevity cannot be guaranteed…">${pWarn(p,d).replace(/</g,'&lt;')}</textarea>${(typeof ROLE==='undefined'||ROLE!=='cust')&&!(window.MSID&&MSID.current&&MSID.current()==='customer')&&window.MSWARN?'<div data-wnhost>'+MSWARN.pickerHTML(p.name,pWarn(p,d))+'</div>':''}</div>
       </div>`;
-    return `<div class="pm-section bb-wrap"><h4>Product Builder</h4>${projStep}${ch.unbranded?'':`${colourStep}${posStep}${imgStep}${proofStep}`}${sampleStep}${unbrStep}</div>`;
+    d.__visStep=imgStep; d.__proofStep=proofStep;
+    return `<div class="pm-section bb-wrap">${ch.unbranded?'':`<div class="bb-pair">${colourStep}${posStep}</div>${artStep}`}${unbrStep}</div>`;
   }
   function projColours(p,d){ if(!p.projectColours){ p.projectColours={colours:d.colours.map(c=>c.name), variants:{}}; d.colours.forEach(c=>p.projectColours.variants[c.name]=d.sizes.slice()); } return p.projectColours; }
   function proofImgList(p){ p.design=p.design||{}; p.design.proof=p.design.proof||{}; if(!Array.isArray(p.design.proof.images)) p.design.proof.images=[]; return p.design.proof.images; }
+  const pNotes=(p,d)=>{ const v=p.design&&p.design.notes; return v!=null?v:(d.productNotes||''); };
+  // a proof with no warnings yet starts with the product's default saved warnings (MSWARN)
+  const pWarn=(p,d)=>{ const v=p.design&&p.design.warnings; if(v!=null) return v; if(d.warnings) return d.warnings; return window.MSWARN?MSWARN.defaults(p.name).join('\n'):''; };
   function proofPos(p,code){ p.design=p.design||{}; p.design.proof=p.design.proof||{}; p.design.proof.byPos=p.design.proof.byPos||{}; const bp=p.design.proof.byPos; if(!bp[code]) bp[code]={artwork:[],visuals:[]}; if(!Array.isArray(bp[code].artwork)) bp[code].artwork=[]; if(!Array.isArray(bp[code].visuals)) bp[code].visuals=[]; return bp[code]; }
 
   function wireBrandingBuilder(p,d,ctx){
     const ch=d.branding.chosen;
+    document.querySelectorAll('[data-dsave]').forEach(b=>b.onclick=()=>{ if(ctx.persist) ctx.persist(); if(window.MStoast) MStoast((b.dataset.dsave==='visual'?'Visual':'Proof')+' saved'); });
+    document.querySelectorAll('[data-ddl]').forEach(b=>b.onclick=()=>{ const k=b.dataset.ddl, slug=p.name.replace(/[^a-z0-9]+/gi,'-').toLowerCase();
+      const files=k==='visual'?visualList(p):(d.branding.chosen.positions||[]).flatMap(ps=>proofPos(p,ps.code).visuals);
+      if(!files.length){ if(window.MStoast) MStoast('Nothing to download yet'); return; }
+      files.forEach((src,i)=>{ const a=document.createElement('a'); a.href=src; a.download=slug+'-'+k+'-'+(i+1)+(/^data:image\/png/.test(src)?'.png':/^data:image\/svg/.test(src)?'.svg':'.jpg'); document.body.appendChild(a); a.click(); a.remove(); });
+      if(window.MStoast) MStoast(files.length+' file'+(files.length>1?'s':'')+' downloading'); });
+    document.querySelectorAll('[data-gotab]').forEach(b=>b.onclick=e=>{ e.preventDefault(); const t=document.querySelector('.dsg-tab[data-dtab="'+b.dataset.gotab+'"]'); if(t) t.click(); });
     const refresh=()=>{ if(ctx.refresh) ctx.refresh('design'); if(ctx.persist) ctx.persist(); };
     const pc=projColours(p,d);
     // project-scope colours/variants (multi-select; keep at least one colour)
     document.querySelectorAll('.bb-sw[data-pcol]').forEach(b=>b.onclick=()=>{ const name=b.dataset.pcol; const i=pc.colours.indexOf(name); if(i>=0){ if(pc.colours.length>1) pc.colours.splice(i,1); } else { pc.colours.push(name); if(!pc.variants[name]) pc.variants[name]=d.sizes.slice(); } refresh(); });
     document.querySelectorAll('.bb-var[data-pvar]').forEach(b=>b.onclick=()=>{ const cn=b.dataset.pvcol, v=b.dataset.pvar; pc.variants[cn]=pc.variants[cn]||d.sizes.slice(); const i=pc.variants[cn].indexOf(v); if(i>=0){ if(pc.variants[cn].length>1) pc.variants[cn].splice(i,1); } else pc.variants[cn].push(v); refresh(); });
     // design product colour (single select) + variant
-    document.querySelectorAll('.bb-sw[data-dcolour]').forEach(b=>b.onclick=()=>{ if(ch.unbranded) return; ch.productColour=b.dataset.dcolour; if(!(pc.variants[ch.productColour]||d.sizes).includes(ch.variant)) ch.variant=(pc.variants[ch.productColour]||d.sizes)[0]; refresh(); });
+    document.querySelectorAll('.bb-sw[data-dcolour]').forEach(b=>b.onclick=()=>{ if(ch.unbranded) return; const cn=b.dataset.dcolour, L=chosenColours(d), i=L.indexOf(cn); if(i>=0){ if(L.length>1) L.splice(i,1); } else L.push(cn); ch.productColour=L.includes(ch.productColour)?ch.productColour:L[0]; if(i<0) ch.productColour=cn; ch._colourSet=true; syncStockState(p,d,ctx); if(!(pc.variants[ch.productColour]||d.sizes).includes(ch.variant)) ch.variant=(pc.variants[ch.productColour]||d.sizes)[0]; refresh(); });
     document.querySelectorAll('.bb-var[data-dvar]').forEach(b=>b.onclick=()=>{ ch.variant=b.dataset.dvar; refresh(); });
     { const u=document.querySelector('.bb-unbtog'); if(u) u.onchange=()=>{ ch.unbranded=u.checked; if(u.checked){ p.design=p.design||{}; if(p.design.proof) p.design.proof.st='unbranded'; } refresh(); }; }
     { p.design=p.design||{}; p.design.sampleCfg=p.design.sampleCfg||{};
@@ -1533,7 +1937,7 @@
     const fileInput=document.querySelector('.bb-imgfile');
     if(fileInput){
       const readFile=(file)=>new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file); });
-      fileInput.onchange=async()=>{ const f=fileInput.files&&fileInput.files[0]; if(!f) return; const url=await readFile(f); visualList(p).push(url); fileInput.value=''; refresh(); };
+      fileInput.onchange=async()=>{ const f=fileInput.files&&fileInput.files[0]; if(!f) return; const url=await readFile(f); visualList(p).push(url); p.design.visLast={by:pmWho(),at:pmStamp(),name:f.name}; fileInput.value=''; refresh(); };
       const ia=document.querySelector('.bb-imgadd'); if(ia) ia.onclick=()=>fileInput.click();
       document.querySelectorAll('.bb-imgdel').forEach(b=>b.onclick=()=>{ const l=visualList(p); if(l.length<=1){ alert('Keep at least one visual.'); return; } l.splice(+b.dataset.i,1); refresh(); });
     }
@@ -1543,14 +1947,17 @@
     const pf=document.querySelector('.bb-ppfile');
     if(pf){ const rd=(file)=>new Promise(res=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.readAsDataURL(file); });
       let target=null;
-      pf.onchange=async()=>{ const f=pf.files&&pf.files[0]; if(!f||!target)return; const url=await rd(f); const pp=proofPos(p,target.pos); (target.kind==='artwork'?pp.artwork:pp.visuals).push(url); pf.value=''; target=null; refresh(); };
+      pf.onchange=async()=>{ const f=pf.files&&pf.files[0]; if(!f||!target)return; const url=await rd(f); const pp=proofPos(p,target.pos); (target.kind==='artwork'?pp.artwork:pp.visuals).push(url); if(target.kind==='artwork') pp.artLast={by:pmWho(),at:pmStamp(),from:'Manual upload',name:f.name}; pf.value=''; target=null; refresh(); };
       document.querySelectorAll('.bb-ppadd').forEach(b=>b.onclick=()=>{ target={pos:b.dataset.pos,kind:b.dataset.kind}; pf.click(); });
+      document.querySelectorAll('.bb-bapick').forEach(b=>b.onclick=()=>brandAssetPicker(p,b.dataset.posname,(src,name,from)=>{ const pp=proofPos(p,b.dataset.pos); pp.artwork.push(src); pp.artLast={by:pmWho(),at:pmStamp(),from,name}; refresh(); }));
       document.querySelectorAll('.bb-ppdel').forEach(b=>b.onclick=()=>{ const pp=proofPos(p,b.dataset.pos); (b.dataset.kind==='artwork'?pp.artwork:pp.visuals).splice(+b.dataset.i,1); refresh(); });
       document.querySelectorAll('.bb-ppw').forEach(inp=>inp.onchange=()=>{ const pp=proofPos(p,inp.dataset.pos); pp.size=pp.size||{}; pp.size.w=inp.value===''?null:+inp.value; if(ctx.persist)ctx.persist(); });
       document.querySelectorAll('.bb-pph').forEach(inp=>inp.onchange=()=>{ const pp=proofPos(p,inp.dataset.pos); pp.size=pp.size||{}; pp.size.h=inp.value===''?null:+inp.value; if(ctx.persist)ctx.persist(); });
     }
-    const nt=document.querySelector('.bb-notes'); if(nt) nt.onchange=()=>{ d.productNotes=nt.value.trim(); if(ctx.persist)ctx.persist(); };
-    const wn=document.querySelector('.bb-warn'); if(wn) wn.onchange=()=>{ d.warnings=wn.value.trim(); if(ctx.persist)ctx.persist(); };
+    const nt=document.querySelector('.bb-notes'); if(nt) nt.oninput=nt.onchange=()=>{ p.design=p.design||{}; p.design.notes=nt.value.trim(); d.productNotes=p.design.notes; if(ctx.persist)ctx.persist(); };
+    const wn=document.querySelector('.bb-warn'); const setW=v=>{ p.design=p.design||{}; p.design.warnings=String(v||'').trim(); d.warnings=p.design.warnings; if(ctx.persist)ctx.persist(); };
+    const wnHost=document.querySelector('[data-wnhost]'), wnDraw=()=>{ if(!wnHost||!window.MSWARN) return; wnHost.innerHTML=MSWARN.pickerHTML(p.name,wn.value); MSWARN.wirePicker(wnHost,p.name,()=>wn.value,v=>{ wn.value=v; setW(v); },wnDraw); };
+    if(wn){ wn.oninput=()=>{ setW(wn.value); }; wn.onchange=()=>{ setW(wn.value); wnDraw(); }; wnDraw(); }
     document.querySelectorAll('.bb-sizerow').forEach(row=>{ const meta=(d.branding.positions||[]).find(x=>x.code===row.dataset.pos); if(!meta)return; row.querySelectorAll('input').forEach(inp=>inp.onchange=()=>{ meta[inp.dataset.dim]=+inp.value||0; if(ctx.persist)ctx.persist(); }); });
   }
 
@@ -1737,8 +2144,8 @@
       svRoot.querySelector('#pvSpec').innerHTML=`
         ${colourBlock}
         <div class="pv-block"><h5>Product dimensions</h5><p>Width: ${d.dims.w} · Height: ${d.dims.h} · Depth: ${d.dims.d}</p></div>
-        ${d.productNotes?`<div class="pv-block"><h5>Notes</h5><p>${d.productNotes}</p></div>`:''}
-        ${d.warnings?`<div class="pv-block pv-warn"><h5>Warnings</h5><p>${d.warnings}</p></div>`:''}
+        ${pNotes(p,d)?`<div class="pv-block"><h5>Notes</h5><p>${pNotes(p,d).replace(/</g,'&lt;')}</p></div>`:''}
+        ${pWarn(p,d)?`<div class="pv-block pv-warn"><h5>Warnings</h5><p>${pWarn(p,d).replace(/</g,'&lt;')}</p></div>`:''}
         ${posBlock}`;
     }
     const discEl=svRoot.querySelector('#pvDisc');
@@ -1815,5 +2222,22 @@
   function priceState(p){ const d=data(p); if(!d||!d.price) return null; const o={}; PRICE_PERSIST_KEYS.forEach(k=>{ if(d.price[k]!==undefined) o[k]=d.price[k]; }); return o; }
   function restorePriceState(p,o){ const d=data(p); if(!d||!d.price||!o) return; PRICE_PERSIST_KEYS.forEach(k=>{ if(o[k]!==undefined) d.price[k]=o[k]; }); }
 
-  window.MSModal = { def, body, wire, openProof, openStage, rollDesign, seedDesign, designVerb, data:p=>data(p), priceSummary, priceState, restorePriceState, resolveDiscount, discountsConfig, saveDiscountsConfig, METHODS, hex };
+  // quote (D01): sell price + delivery at any quantity, and the product's price-break quantities
+  function quoteAt(p,q){ const d=data(p); if(!d) return null; const v=priceView(d,q); return { qty:v.qty, unit:v.unit, delivery:v.delivery, discPct:v.discPct }; }
+  function breaksOf(p){ const d=data(p); return d?sliderBreaks(d).map(b=>b.q):[]; }
+  window.MSModal = { def, body, wire, openProof, openStage, rollDesign, seedDesign, designVerb, data:p=>data(p), priceSummary, quoteAt, breaksOf, priceState, restorePriceState, resolveDiscount, discountsConfig, saveDiscountsConfig, METHODS, hex };
+
+  document.addEventListener('click',e=>{ const b=e.target.closest('[data-ptab]'); if(!b) return; const k=b.dataset.ptab; if(b.dataset.ctab) window.__pmCTab=k; else window.__pmPTab=k; const w=b.closest('.pm-distprice'); if(!w) return;
+    w.querySelectorAll('[data-ptab]').forEach(x=>{ const on=x===b; x.classList.toggle('on',on); x.setAttribute('aria-selected',on); });
+    w.querySelectorAll('.dpt-pane').forEach(pn=>pn.hidden=pn.dataset.ppane!==k); });
+  // pop-out row: header columns = the row's own columns
+  (function(){ let t=0; const sync=()=>{ const c=document.getElementById('pmRowClone'); if(!c) return; const h=c.querySelector('.thead'), r=c.querySelector('.row'); if(!h||!r) return; const cs=getComputedStyle(r);
+      const set=(k,v)=>{ if(h.style.getPropertyValue(k)!==v) h.style.setProperty(k,v,'important'); }; set('grid-template-columns',cs.gridTemplateColumns); set('padding-left',cs.paddingLeft); set('padding-right',cs.paddingRight); set('column-gap',cs.columnGap); set('display','grid'); };
+    const kick=()=>{ clearTimeout(t); t=setTimeout(sync,60); };
+    if(window.__msLayout) __msLayout.add(sync); else new MutationObserver(kick).observe(document.documentElement,{childList:true,subtree:true}); window.addEventListener('resize',kick); })();
+
+  // wheel anywhere on the pop-out (product row, headings) scrolls its content
+  document.addEventListener('wheel',e=>{ const pn=e.target.closest&&e.target.closest('.pmodal.open .pmodal-panel'); if(!pn) return; const w=pn.querySelector('#pmWork,.pm-work'); if(!w||w.contains(e.target)) return;
+    let el=e.target; while(el&&el!==pn){ const cs=getComputedStyle(el); if(/(auto|scroll)/.test(cs.overflowY)&&el.scrollHeight>el.clientHeight+1) return; el=el.parentElement; }
+    e.preventDefault(); w.scrollBy({top:e.deltaY*(e.deltaMode===1?16:1),left:0}); },{passive:false});
 })();

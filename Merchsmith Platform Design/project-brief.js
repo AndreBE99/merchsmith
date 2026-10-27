@@ -110,28 +110,33 @@
     mount.innerHTML = campaignHTML(b) + budgetBarHTML(b) + defaultsHTML(b) + itemsHTML(b);
     wire(mount);
     updateBriefAlert(b);
+    // description: 3 lines with "Show more" when longer; full while editing
+    const pd=mount.querySelector('.pb-desc .pb-clamp'), mb=mount.querySelector('[data-descmore]');
+    if(pd&&mb){ const fit=()=>{ if(pd.classList.contains('open')) return; mb.hidden=pd.scrollHeight<=pd.clientHeight+2; };
+      requestAnimationFrame(fit); pd.addEventListener('focus',()=>pd.classList.add('open')); pd.addEventListener('blur',()=>{ if(!mb.dataset.open){ pd.classList.remove('open'); fit(); } });
+      mb.onclick=()=>{ const o=!mb.dataset.open; if(o){ mb.dataset.open='1'; pd.classList.add('open'); mb.textContent='Show less'; } else { delete mb.dataset.open; pd.classList.remove('open'); mb.textContent='Show more'; fit(); } }; }
   }
   // not-sourced count → red "!" badge on the View-brief button (seen by customer + distributor)
   function unsourcedCount(b){ b=b||load(); return (b.items||[]).filter(it=>!((it.added&&it.added.length)||it.fulfilledBy)).length; }
   function updateBriefAlert(b){ const n=unsourcedCount(b); const btn=document.getElementById('briefToggle'); if(!btn) return; let badge=btn.querySelector('.brief-alert'); if(n>0){ if(!badge){ badge=document.createElement('span'); badge.className='brief-alert'; btn.appendChild(badge); } badge.textContent=n; badge.title=n+' product'+(n===1?'':'s')+' not yet sourced — pick from the store in the brief'; } else if(badge){ badge.remove(); } }
 
   function campaignHTML(b){
-    const c=b.campaign;
-    return `<section class="pb-block">
+    const c=b.campaign, att=c.attachments||[];
+    // summary strip (merch use · budget · attachments), then the description full width
+    return `<section class="pb-block pb-camp">
       <div class="pb-blockhd"><h3>Campaign</h3><span class="pb-blocksub">What we're trying to achieve</span></div>
-      <div class="pb-campaign">
-        <div class="pb-story">
-          <label class="pb-flbl">Description</label>
-          <div class="pb-prose" contenteditable="true" data-edit="campaign.description" spellcheck="false">${esc(c.description)}</div>
-        </div>
-        <div class="pb-side">
-          <div class="pb-mini"><label class="pb-flbl">Merch use</label>
-            <div class="pb-prose sm" contenteditable="true" data-edit="campaign.merchUse" spellcheck="false">${esc(c.merchUse)}</div></div>
-          <div class="pb-mini"><label class="pb-flbl">Total budget</label>
-            <div class="pb-budgetin"><span>£</span><input type="number" min="0" step="50" data-edit="campaign.budget" value="${c.budget}"></div></div>
-          <div class="pb-mini"><label class="pb-flbl">Attachments <span class="pb-tlnote">drop images · click to zoom</span></label>
-            <div class="pb-attach">${(c.attachments||[]).map((a,i)=>`<div class="pb-att" data-attidx="${i}"><image-slot id="pb-att-${esc(a.id||i)}" shape="rounded" fit="cover" placeholder="Drop"></image-slot><button class="pb-att-zoom" data-attzoom="${i}" title="Zoom &amp; browse"><svg class="icn"><use href="#ic-expand"/></svg></button><button class="pb-att-del" data-attdel="${i}" title="Remove">×</button><span class="pb-att-cap">${esc(a.name)}</span></div>`).join('')}<button class="pb-att-add" data-addfile title="Add attachment"><svg class="icn"><use href="#ic-plus"/></svg></button></div></div>
-        </div>
+      <div class="pb-facts">
+        <div class="pb-fact"><label class="pb-flbl">Merch use</label>
+          <div class="pb-prose sm" contenteditable="true" data-edit="campaign.merchUse" data-ph="Add what the merch is for" spellcheck="false">${esc(c.merchUse)}</div></div>
+        <div class="pb-fact"><label class="pb-flbl">Total budget</label>
+          <div class="pb-budgetin"><span>£</span><input type="number" min="0" step="50" data-edit="campaign.budget" value="${c.budget}" aria-label="Total budget"></div></div>
+        <div class="pb-fact pb-fact-att"><label class="pb-flbl">Attachments <span class="pb-tlnote">${att.length?att.length+' · click to zoom':'drop images'}</span></label>
+          <div class="pb-attach">${att.map((a,i)=>`<div class="pb-att" data-attidx="${i}"><image-slot id="pb-att-${esc(a.id||i)}" shape="rounded" fit="cover" placeholder="Drop"></image-slot><button class="pb-att-zoom" data-attzoom="${i}" title="Zoom &amp; browse"><svg class="icn"><use href="#ic-expand"/></svg></button><button class="pb-att-del" data-attdel="${i}" title="Remove">×</button><span class="pb-att-cap">${esc(a.name)}</span></div>`).join('')}<button class="pb-att-add" data-addfile title="Add attachment"><svg class="icn"><use href="#ic-plus"/></svg></button></div></div>
+      </div>
+      <div class="pb-desc">
+        <label class="pb-flbl">Description</label>
+        <div class="pb-prose pb-clamp" contenteditable="true" data-edit="campaign.description" data-ph="Add a description: the story, audience and goals for this campaign" spellcheck="false">${esc(c.description)}</div>
+        <button class="pb-more" data-descmore hidden>Show more</button>
       </div>
     </section>`;
   }
@@ -192,16 +197,16 @@
       ? `<div class="pb-susr"><input type="range" min="0" max="10" step="1" class="pb-range" data-edit="defaults.sustainabilityMin" value="${d.sustainabilityMin}"><b id="pbSusV">${d.sustainabilityMin}+ / 10</b></div>`
       : `<div class="pb-suoff">Off · enable in <a href="Merchsmith Admin.html#nav=settings">Platform settings</a> <span class="pb-phase">Phase 2</span></div>`;
     return `<section class="pb-block">
-      <div class="pb-blockhd"><h3>Project defaults</h3><span class="pb-blocksub">Applied to every product — override per product or per item</span></div>
+      <div class="pb-blockhd"><h3>Project defaults</h3></div>
       <div class="pb-grid">
         ${tile('Delivery date', dateTile)}
         ${tile('Delivery country', countrySel)}
         ${tile('Expected quantity', qtyTile)}
         ${tile('Product colours <span class="pb-tlnote">preferred body colours</span>', swMulti(PRODUCT_COLOURS, d.productColours, 'pcol'), {wide:true})}
         ${tile('Branding colours', brandColoursControl(d), {wide:true, link:{href:'Merchsmith Brand Assets.html#cat=colours', label:'Colours'}})}
-        ${tile('Branding positions', `<input type="text" class="pb-txt" data-edit="defaults.positions" value="${esc(d.positions)}" placeholder="e.g. front; back where space allows">`, {wide:true})}
-        ${tile('Logotypes', logoPicker(d.logos), {full:true, link:{href:'Merchsmith Brand Assets.html#cat=logos', label:'Logo Types'}})}
-        ${tile('Sample', sampleTile)}
+                ${tile('Logotypes', logoPicker(d.logos), {full:true, link:{href:'Merchsmith Brand Assets.html#cat=logos', label:'Logo Types'}})}
+        ${d.brandNotes?tile('Branding notes', `<p class="pb-bnotes">${esc(d.brandNotes)}</p>`, {full:true}):''}
+          ${tile('Sample', sampleTile)}
         ${tile('Sustainability minimum', susTile)}
       </div>
     </section>`;
@@ -255,6 +260,7 @@
           <button class="pb-itdel" data-del="${it.id}" title="Remove">×</button>
         </div>
         <div class="pb-itstatus">${fulfil}${noteTag}<span class="pb-effrow">${effChips}</span></div>
+        ${it.notes?`<p class="pb-itnote"><svg class="icn"><use href="#ic-doc"/></svg><span>${esc(it.notes)}</span></p>`:''}
         <div class="pb-itover" id="pbOver-${it.id}" ${openItems.has(it.id)?'':'hidden'}>
           <div class="pb-ovgrid">
             ${ovField(it,'country','Delivery country', `<select class="pb-sel sm" data-ovedit="${it.id}:country"><option value="">Default · ${esc(COUNTRIES[d.country])}</option>${COUNTRIES.map((c,i)=>`<option value="${i}" ${ov.country===i?'selected':''}>${c}</option>`).join('')}</select>`)}

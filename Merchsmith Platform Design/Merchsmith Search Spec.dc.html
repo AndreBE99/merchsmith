@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Merchsmith — Search spec</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&amp;family=Mulish:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;} body{margin:0;background:#f6f5f2;color:#1e2033;font-family:Mulish,system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:#4b50c0;text-decoration:underline;text-underline-offset:2px;} a:hover{color:#2f3390;}
+kbd{font-family:Mulish,sans-serif;font-size:11px;font-weight:800;background:#fff;border:1px solid #d0d5dd;border-bottom-width:2px;border-radius:5px;padding:1px 6px;color:#344054;}
+</style>
+</helmet>
+
+<div style="background:#fff;border-bottom:1px solid #e4e7ec;">
+  <div style="max-width:1240px;margin:0 auto;padding:30px clamp(18px,4vw,40px) 24px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;">
+    <div style="max-width:780px;">
+      <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#667085;">Spec · all user views · Oct 2026 · Draft 2 · built in the prototype (search.js)</div>
+      <h1 style="font-family:'EB Garamond',serif;font-weight:500;font-size:clamp(32px,4.4vw,46px);line-height:1.08;margin:8px 0 10px;">Search</h1>
+      <p style="margin:0;font-size:15px;line-height:1.6;color:#475467;text-wrap:pretty;">How people find things on the platform: the search bar in the header, the search boxes on each list, and product search in the store. Each user type looks for different things and may only see their own records. Decisions Q1–Q9 were agreed on 15 Oct and are listed at the end.</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12.5px;">
+      <span style="display:inline-flex;align-items:center;gap:6px;background:#ecfdf3;color:#067647;border-radius:999px;padding:5px 11px;font-weight:700;">● Agreed</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;background:#eef0fa;color:#3c4279;border-radius:999px;padding:5px 11px;font-weight:700;">● Proposed</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;background:#fffaeb;color:#b54708;border-radius:999px;padding:5px 11px;font-weight:700;">● Open</span>
+    </div>
+  </div>
+</div>
+
+<div style="max-width:1240px;margin:0 auto;padding:26px clamp(18px,4vw,40px) 80px;display:flex;flex-direction:column;gap:22px;">
+
+  <nav style="display:flex;flex-wrap:wrap;gap:8px;font-size:13px;font-weight:700;">
+    <a href="#today" style="background:#fff;border:1px solid #e4e7ec;border-radius:999px;padding:6px 12px;text-decoration:none;color:#344054;">1 · Today</a>
+    <a href="#who" style="background:#fff;border:1px solid #e4e7ec;border-radius:999px;padding:6px 12px;text-decoration:none;color:#344054;">2 · Who looks for what</a>
+    <a href="#global" style="background:#fff;border:1px solid #e4e7ec;border-radius:999px;padding:6px 12px;text-decoration:none;color:#344054;">3 · Header search</a>
+    <a href="#types" style="background:#fff;border:1px solid #e4e7ec;border-radius:999px;padding:6px 12px;text-decoration:none;color:#344054;">4 · What can be found</a>
+    <a href="#match" style="background:#fff;border:1px solid #e4e7ec;border-radius:999px;padding:6px 12px;text-decoration:none;color:#344054;">5 · Matching &amp; ranking</a>
+    <a href="#local" style="background:#fff;border:1px solid #e4e7ec;border-radius:999px;padding:6px 12px;text-decoration:none;color:#344054;">6 · List search boxes</a>
+    <a href="#store" style="background:#fff;border:1px solid #e4e7ec;border-radius:999px;padding:6px 12px;text-decoration:none;color:#344054;">7 · Store search</a>
+    <a href="#rules" style="background:#fff;border:1px solid #e4e7ec;border-radius:999px;padding:6px 12px;text-decoration:none;color:#344054;">8 · Permissions</a>
+    <a href="#phases" style="background:#fff;border:1px solid #e4e7ec;border-radius:999px;padding:6px 12px;text-decoration:none;color:#344054;">9 · Build order</a>
+    <a href="#open" style="background:#ecfdf3;border:1px solid #abefc6;border-radius:999px;padding:6px 12px;text-decoration:none;color:#067647;">Decisions</a>
+  </nav>
+
+  <section id="today" style="background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px 24px;">
+    <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 6px;">1 · Where search is today</h2>
+    <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#475467;max-width:80ch;">The header bar on every page says “Search products, projects, orders…” but typing in it does nothing. Around 25 lists and pickers have their own search box. Each one only filters what is on screen, and each was built separately, so placeholder wording, matching and empty states differ from page to page.</p>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:760px;">
+        <thead><tr style="text-align:left;color:#667085;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;">
+          <th style="padding:8px 10px;border-bottom:2px solid #1e2033;">ID</th><th style="padding:8px 10px;border-bottom:2px solid #1e2033;">Where</th><th style="padding:8px 10px;border-bottom:2px solid #1e2033;">Who</th><th style="padding:8px 10px;border-bottom:2px solid #1e2033;">Searches</th><th style="padding:8px 10px;border-bottom:2px solid #1e2033;">State</th></tr></thead>
+        <tbody>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;font-weight:800;color:#667085;">S01</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Header search</b> (chrome.js, every page)</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Everyone</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Nothing yet</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><span style="background:#fef3f2;color:#b42318;border-radius:999px;padding:3px 9px;font-weight:700;font-size:12px;white-space:nowrap;">Not built</span></td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;font-weight:800;color:#667085;">S02</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Store</b> product search</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Customer, distributor</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Uses the header bar, so not working; browsing is by department and filters</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><span style="background:#fef3f2;color:#b42318;border-radius:999px;padding:3px 9px;font-weight:700;font-size:12px;white-space:nowrap;">Not built</span></td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;font-weight:800;color:#667085;">S03</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Project product list · Your projects · Distributor projects table</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Customer, distributor</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Product and project names</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:3px 9px;font-weight:700;font-size:12px;white-space:nowrap;">Filters list</span></td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;font-weight:800;color:#667085;">S04</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Orders table · Finance invoice tables</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Customer, distributor, supplier</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Order refs, customers, products, invoice numbers</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:3px 9px;font-weight:700;font-size:12px;white-space:nowrap;">Filters list</span></td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;font-weight:800;color:#667085;">S05</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Organisations (customers, suppliers) · Team · Users</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Distributor, admin</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Names, emails, organisations, roles</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><span style="background:#fffaeb;color:#b54708;border-radius:999px;padding:3px 9px;font-weight:700;font-size:12px;white-space:nowrap;">Mixed: Organisations boxes look unwired</span></td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;font-weight:800;color:#667085;">S06</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Product database · Store range · Supplier portal products</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Admin, distributor, supplier</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Name, SKU code, supplier</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:3px 9px;font-weight:700;font-size:12px;white-space:nowrap;">Filters list</span></td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;font-weight:800;color:#667085;">S07</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Chats · Notifications · Calls · Emails · Calendar transcript</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Everyone (Calls / Emails: admin, distributor)</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">People, message text, subjects, numbers, notes</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:3px 9px;font-weight:700;font-size:12px;white-space:nowrap;">Filters list</span></td></tr>
+          <tr><td style="padding:10px;font-weight:800;color:#667085;">S08</td><td style="padding:10px;">Pickers: add collaborator, existing customer, Pantone, store home products, chat link</td><td style="padding:10px;">Varies</td><td style="padding:10px;color:#475467;">One list each</td><td style="padding:10px;"><span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:3px 9px;font-weight:700;font-size:12px;white-space:nowrap;">Filters list</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="who" style="background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px 24px;">
+    <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 6px;">2 · Who looks for what</h2>
+    <p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#475467;max-width:80ch;">The same search bar works for everyone, but what it searches, and in what order, depends on who is signed in. These are the jobs each user type comes to search for. <span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:2px 8px;font-weight:700;font-size:12px;">Agreed</span></p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;">
+      <div style="border:1px solid #e4e7ec;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;">
+        <b style="font-size:16px;">Customer</b><span style="font-size:12px;color:#667085;">Buyer, approver, finance, viewer</span>
+        <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.6;color:#344054;"><li>A product to buy: “bamboo pen”, “navy tote”, “under £5”</li><li>Their project or a product in it</li><li>“Where’s my order?”: order ref or product name</li><li>An invoice to pay, a proof to approve</li><li>A logo or asset in Brand Assets</li><li>Their account manager or a colleague</li></ul>
+        <span style="font-size:12.5px;color:#b42318;font-weight:700;">Never sees: cost, margin, suppliers, other customers.</span>
+      </div>
+      <div style="border:1px solid #e4e7ec;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;">
+        <b style="font-size:16px;">Distributor</b><span style="font-size:12px;color:#667085;">Admin, account manager, studio, production, finance</span>
+        <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.6;color:#344054;"><li>A customer, then everything for them</li><li>An order, PO, quote, invoice or credit note by number</li><li>A product by name, SKU or supplier code (store + full catalogue)</li><li>A supplier’s whole product range, to find an alternative</li><li>A supplier and their contacts</li><li>A person: name, email, phone (caller lookup)</li><li>A setting: “markup”, “footer”, “lead times”</li></ul>
+        <span style="font-size:12.5px;color:#667085;font-weight:700;">Their own customers rank first for account managers (Q5); Finance sees invoices first, Studio sees proofs first.</span>
+      </div>
+      <div style="border:1px solid #e4e7ec;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;">
+        <b style="font-size:16px;">Supplier</b><span style="font-size:12px;color:#667085;">Admin, contact</span>
+        <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.6;color:#344054;"><li>A PO by number, or the distributor’s PO ref</li><li>Their own product by name or code</li><li>Blank stock coming in / going out</li><li>A distributor contact</li></ul>
+        <span style="font-size:12.5px;color:#b42318;font-weight:700;">Never sees: end-customer names, sell prices, other suppliers.</span>
+      </div>
+      <div style="border:1px solid #e4e7ec;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px;">
+        <b style="font-size:16px;">Platform admin (Merchsmith)</b><span style="font-size:12px;color:#667085;">Owner, admin, support, billing</span>
+        <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.6;color:#344054;"><li>A distributor, supplier or any user by email (support)</li><li>A product in the master catalogue, mapping issues</li><li>A subscription invoice</li><li>Any distributor’s projects and orders (always searchable, Q6)</li></ul>
+        <span style="font-size:12.5px;color:#667085;font-weight:700;">Searches across every organisation; each result names its organisation.</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="global" style="background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px 24px;">
+    <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 6px;">3 · Header search: how it behaves</h2>
+    <p style="margin:0 0 18px;font-size:14px;line-height:1.6;color:#475467;max-width:80ch;">One search for the whole platform, opened from the header bar or the keyboard. Results drop down under the header bar as you type (full screen on phones), grouped by type, with the most likely one first. <span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:2px 8px;font-weight:700;font-size:12px;">Agreed</span> (Q1)</p>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:26px;align-items:start;" data-om-raster="1">
+      <div style="display:flex;flex-direction:column;gap:14px;font-size:13.5px;line-height:1.6;color:#344054;">
+        <div><b style="display:block;font-size:14px;color:#1e2033;">Opening</b>Click the bar, press <kbd>/</kbd> or <kbd>Ctrl</kbd> <kbd>K</kbd> (<kbd>⌘</kbd> <kbd>K</kbd> on Mac) from any page. On phones, a search icon opens it full screen.</div>
+        <div><b style="display:block;font-size:14px;color:#1e2033;">Before typing</b>Recent searches, recently opened items (last 5), and 3–4 suggestions for the role: customer “Track an order”, “Approve proofs (2)”; distributor “Orders due this week”, “Unpaid invoices”.</div>
+        <div><b style="display:block;font-size:14px;color:#1e2033;">While typing</b>Results from the first character for refs and the second for words. Up to 3 per group, “See all 14 orders” under each. One <b>top result</b> when a match is clear, ready for <kbd>Enter</kbd>.</div>
+        <div><b style="display:block;font-size:14px;color:#1e2033;">Exact references jump</b>A full order, PO, quote, invoice or SKU number goes straight to the record on <kbd>Enter</kbd>: MS-1054, PO-1054-X1, Q-261015-118, INV-2041, LM-CABLE-01.</div>
+        <div><b style="display:block;font-size:14px;color:#1e2033;">Narrowing</b>Chips under the box: All · Products · Supplier ranges · Projects · Orders · People… Hidden typed shortcuts also work for power users: <b>in:orders</b>, <b>status:overdue</b>, <b>customer:citrix</b>, <b>supplier:bagworks</b>; typing one switches the matching chip on so it’s clear what happened (Q3). On a list page the chip starts on that list (“Search orders”), with All one tap away.</div>
+        <div><b style="display:block;font-size:14px;color:#1e2033;">Actions (everyone, Q4)</b>Typing a verb offers it, limited to what that person can do: customers “new project”, “invite a colleague”, “pay invoice”; distributors “add customer”, “settings markup”; suppliers “upload invoice”; admins “invite distributor”.</div>
+        <div><b style="display:block;font-size:14px;color:#1e2033;">Keyboard</b><kbd>↑</kbd> <kbd>↓</kbd> move, <kbd>Enter</kbd> opens, <kbd>Ctrl</kbd> <kbd>Enter</kbd> opens in a new tab, <kbd>Tab</kbd> moves between chips, <kbd>Esc</kbd> closes.</div>
+        <div><b style="display:block;font-size:14px;color:#1e2033;">Full results page</b><kbd>Enter</kbd> with no top result, or “See all”, opens a results page with filters down the side (type, organisation, status, date) and the query in the URL so it can be shared.</div>
+      </div>
+      <div style="background:#5860a6;border-radius:16px;padding:16px;box-shadow:0 20px 50px rgba(30,32,51,.18);">
+        <div style="background:#fff;border-radius:12px;overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #e4e7ec;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#5860a6" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
+            <span style="flex:1;font-size:15px;color:#1e2033;">citrix tote<span style="display:inline-block;width:1.5px;height:17px;background:#5860a6;vertical-align:-3px;margin-left:1px;"></span></span>
+            <kbd>Esc</kbd>
+          </div>
+          <div style="display:flex;gap:6px;padding:10px 14px;flex-wrap:wrap;border-bottom:1px solid #f2f4f7;">
+            <span style="font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;background:#5860a6;color:#fff;">All</span>
+            <span style="font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;border:1px solid #e4e7ec;color:#344054;">Products 3</span>
+            <span style="font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;border:1px solid #e4e7ec;color:#344054;">Projects 1</span>
+            <span style="font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;border:1px solid #e4e7ec;color:#344054;">Orders 2</span>
+            <span style="font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;border:1px solid #e4e7ec;color:#344054;">People 1</span>
+          </div>
+          <div style="padding:8px;display:flex;flex-direction:column;gap:2px;font-size:13px;">
+            <span style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#98a2b3;padding:6px 8px 2px;">Top result</span>
+            <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:9px;background:#eef0fa;">
+              <span style="width:34px;height:34px;border-radius:8px;background:#f3f2ee;flex:none;"></span>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column;"><b>Recycled Cotton <mark style="background:#fde68a;border-radius:3px;padding:0 1px;">Tote</mark></b><span style="font-size:12px;color:#667085;">In <mark style="background:#fde68a;border-radius:3px;padding:0 1px;">Citrix</mark> · Autumn Giveaways · Ready to order</span></span>
+              <kbd>Enter</kbd>
+            </div>
+            <span style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#98a2b3;padding:8px 8px 2px;">Orders</span>
+            <div style="display:flex;align-items:center;gap:10px;padding:7px 8px;"><span style="font-weight:800;color:#5860a6;width:72px;">MS-1041</span><span style="flex:1;color:#344054;"><mark style="background:#fde68a;border-radius:3px;padding:0 1px;">Citrix</mark> · 250 × Tech Travel Bag, 100 × <mark style="background:#fde68a;border-radius:3px;padding:0 1px;">Tote</mark></span><span style="font-size:11.5px;color:#067647;font-weight:700;">Dispatched</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:7px 8px;"><span style="font-weight:800;color:#5860a6;width:72px;">MS-1033</span><span style="flex:1;color:#344054;"><mark style="background:#fde68a;border-radius:3px;padding:0 1px;">Citrix</mark> · Sample · Cotton <mark style="background:#fde68a;border-radius:3px;padding:0 1px;">Tote</mark></span><span style="font-size:11.5px;color:#667085;font-weight:700;">Delivered</span></div>
+            <span style="font-size:12px;color:#5860a6;font-weight:700;padding:2px 8px 6px;">See all orders →</span>
+            <span style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#98a2b3;padding:6px 8px 2px;">Store products</span>
+            <div style="display:flex;align-items:center;gap:10px;padding:7px 8px;"><span style="width:28px;height:28px;border-radius:7px;background:#f3f2ee;flex:none;"></span><span style="flex:1;color:#344054;">Jute Shopper <mark style="background:#fde68a;border-radius:3px;padding:0 1px;">Tote</mark> · from £2.40</span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:7px 8px;"><span style="width:28px;height:28px;border-radius:7px;background:#f3f2ee;flex:none;"></span><span style="flex:1;color:#344054;">Organic Canvas <mark style="background:#fde68a;border-radius:3px;padding:0 1px;">Tote</mark> · from £3.15</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:10px;padding:9px 14px;border-top:1px solid #f2f4f7;font-size:11.5px;color:#667085;"><span><kbd>↑</kbd> <kbd>↓</kbd> move · <kbd>Enter</kbd> open</span><span>Distributor view</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="types" style="background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px 24px;">
+    <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 6px;">4 · What can be found</h2>
+    <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#475467;max-width:80ch;">Each type of result, what it matches on, what the result line shows, and who can see it. C = customer, D = distributor, S = supplier, A = platform admin. <span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:2px 8px;font-weight:700;font-size:12px;">Agreed</span></p>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:880px;">
+        <thead><tr style="text-align:left;color:#667085;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;">
+          <th style="padding:8px 10px;border-bottom:2px solid #1e2033;">Type</th><th style="padding:8px 10px;border-bottom:2px solid #1e2033;">Matches on</th><th style="padding:8px 10px;border-bottom:2px solid #1e2033;">Result shows</th><th style="padding:8px 10px;border-bottom:2px solid #1e2033;">Opens</th><th style="padding:8px 10px;border-bottom:2px solid #1e2033;white-space:nowrap;">C · D · S · A</th></tr></thead>
+        <tbody>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Store products</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Name, brand, SKU / supplier code, category, colours, material, eco tags, description</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Image, name, “from” price, colour dots</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Store product page</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">✓ · ✓ · own · ✓</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Catalogue products</b> (not in the store range)</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">As above</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">“Not in your range” tag, Add to range</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Store range / product database</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">— · ✓ · — · ✓</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Supplier ranges</b> (own chip)</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Supplier name, then every product in their feed: name, code, category, colours, branding methods</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Supplier logo + product count, then products with “In your range” / “Not in your range”</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Store range filtered to that supplier</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">— · ✓ · own · ✓</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Projects</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Name, customer, brief text, collaborators</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Name, customer, items, order-by date</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Project page</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">own · ✓ · — · ✓</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Project items</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Product name, project, status</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Thumbnail, project, status dot</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Product pop-out in its project</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">own · ✓ · — · ✓</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Orders &amp; samples</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Order ref, customer PO number, products, customer, delivery postcode, tracking number</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Ref, customer, items, status, deliver-by</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Order page</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">own · ✓ · own · ✓</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Documents</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Number: quote, PO, additional PO, invoice, credit note, supplier credit, delivery note</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Number, type, amount, status</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Document in its order / Finance</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">own · ✓ · own · billing</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Organisations</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Name, legal name, domain, customer no., company no., postcode</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Logo, name, type, status</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Organisation drawer</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">— · ✓ · — · ✓</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>People</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Name, preferred name, email, phone, job title</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Avatar, name, organisation, role; Message / Call</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Person card</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">contacts · ✓ · contacts · ✓</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Messages</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Chat text, email subjects, call notes, meeting transcripts</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Snippet with the match, who, when</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Thread at that message</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">own · own · own · own</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Brand assets</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">File name, asset type, colour names / Pantone, fonts</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Preview, type</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;color:#475467;">Brand Assets</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;white-space:nowrap;">own · ✓ · — · —</td></tr>
+          <tr><td style="padding:10px;"><b>Pages, settings &amp; help</b></td><td style="padding:10px;color:#475467;">Page names and keywords (“markup”, “VAT”, “favicon”, “lead times”)</td><td style="padding:10px;color:#475467;">Where it is (Settings › Branding)</td><td style="padding:10px;color:#475467;">That tab</td><td style="padding:10px;white-space:nowrap;">✓ · ✓ · ✓ · ✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="match" style="background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px;">
+    <div>
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 10px;">5 · Matching</h2>
+      <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.7;color:#344054;">
+        <li>Ignores case, accents, punctuation and spaces in refs: “ms1054”, “MS 1054” and “1054” all find MS-1054.</li>
+        <li>Matches the start of any word: “trav” finds Tech <b>Trav</b>el Bag. Every word must match, in any order.</li>
+        <li>Allows one typo in words of 5+ letters: “notbook” finds notebook. Says “Showing results for notebook”.</li>
+        <li>Merch synonyms from one fixed Merchsmith list (Q7): tote ↔ bag ↔ shopper, mug ↔ cup, pen ↔ biro, hoodie ↔ sweatshirt, eco ↔ sustainable ↔ recycled.</li>
+        <li>Colour words use the platform colour map: “navy” also finds Dark Blue and Midnight.</li>
+        <li>Plurals and simple endings: bags → bag, printed → print.</li>
+        <li>Price and quantity words in the store: “under £5”, “500 pens” (shows the price at 500).</li>
+      </ul>
+    </div>
+    <div>
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 10px;">Ranking</h2>
+      <ol style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.7;color:#344054;">
+        <li>Exact reference or SKU match.</li>
+        <li>Things that are yours and live: your open projects and orders, your own customers for account managers (all customers stay searchable, Q5), anything awaiting your action.</li>
+        <li>Name matches before description matches; whole words before word starts.</li>
+        <li>Recently opened or updated.</li>
+        <li>Group order follows the role: customers see Products → Projects → Orders; Finance sees Documents first; suppliers see POs first.</li>
+      </ol>
+      <p style="margin:12px 0 0;font-size:13px;line-height:1.6;color:#475467;"><b>No results:</b> say what was searched and where, offer the nearest spelling, “Search everywhere” if a chip was on, and for customers in the store, “Ask your account manager to find it”, which starts a chat with the search text.</p>
+    </div>
+  </section>
+
+  <section id="local" style="background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px 24px;">
+    <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 6px;">6 · List search boxes: one pattern everywhere</h2>
+    <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#475467;max-width:80ch;">The search boxes on lists (S03–S08) stay, because filtering the table you are looking at is a different job from finding anything anywhere. They should all behave the same. <span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:2px 8px;font-weight:700;font-size:12px;">Agreed</span></p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;font-size:13.5px;line-height:1.6;color:#344054;">
+      <div style="background:#f9fafb;border-radius:12px;padding:14px 16px;"><b style="display:block;color:#1e2033;">Wording</b>“Search orders by ref, customer or product”: the noun, then what it matches.</div>
+      <div style="background:#f9fafb;border-radius:12px;padding:14px 16px;"><b style="display:block;color:#1e2033;">Feedback</b>Filters as you type; matches highlighted; count updates (“6 of 41 orders”); × to clear; <kbd>Esc</kbd> clears.</div>
+      <div style="background:#f9fafb;border-radius:12px;padding:14px 16px;"><b style="display:block;color:#1e2033;">Remembered</b>The query goes in the URL (#q=tote), so Back and shared links keep it; it combines with the list’s filters.</div>
+      <div style="background:#f9fafb;border-radius:12px;padding:14px 16px;"><b style="display:block;color:#1e2033;">Same matching</b>Uses the rules in section 5, so “1054” works the same in the Orders table and the header.</div>
+      <div style="background:#f9fafb;border-radius:12px;padding:14px 16px;"><b style="display:block;color:#1e2033;">Empty</b>“No orders match ‘tote’. Clear filters · Search everywhere →”.</div>
+      <div style="background:#f9fafb;border-radius:12px;padding:14px 16px;"><b style="display:block;color:#1e2033;">Fix first</b>Organisations → Customers and Suppliers search boxes, which appear unwired.</div>
+    </div>
+  </section>
+
+  <section id="store" style="background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px 24px;">
+    <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 6px;">7 · Store search (shopping)</h2>
+    <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#475467;max-width:80ch;">In the store, the header search behaves like a shop’s: products first, with images. <span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:2px 8px;font-weight:700;font-size:12px;">Agreed</span></p>
+    <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.7;color:#344054;max-width:90ch;">
+      <li><b>Suggestions:</b> matching departments and sub-categories (“Bags › Totes”), then products with image and “from” price, then the distributor’s popular searches.</li><li><b>Your projects and orders:</b> a small group under the products (up to 3), so a customer can still jump to a project or order from the store (Q2).</li>
+      <li><b>Results page:</b> the category grid and filters (price, colour, brand, eco, branding method, lead time) with the query as a removable chip; sort by relevance, price, newest, fastest lead time.</li>
+      <li><b>Only the distributor’s range:</b> customers never see catalogue products outside the store range. Distributor previewing the store sees what customers see, with an “Also in the catalogue (12)” link.</li>
+      <li><b>Promoted products:</b> Spotlight / Featured products rank first when they match.</li>
+      <li><b>From a project:</b> “Add product” in a project opens the same search with “Add to project” on each result.</li><li><b>Search insights (Q8):</b> Distributor Settings → Store settings shows top searches, searches with no results (“12 customers searched ‘lanyard’”) and searches with no clicks, over the last 30 / 90 days, with “Find in catalogue” to add matching products to the range.</li>
+    </ul>
+  </section>
+
+  <section id="rules" style="background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px 24px;">
+    <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 6px;">8 · Permissions and privacy</h2>
+    <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.7;color:#344054;max-width:90ch;">
+      <li>Search never reveals something you could not open. Results are filtered by the same rules as the pages, before counting, so counts never leak (“3 orders” must not include hidden ones). <span style="background:#ecfdf3;color:#067647;border-radius:999px;padding:2px 8px;font-weight:700;font-size:12px;">Agreed principle</span></li>
+      <li>Customers: their own organisation only; no cost, margin or supplier names in matches or snippets.</li>
+      <li>Suppliers: only POs and products addressed to them; end-customer names are never matched or shown (blank-stock suppliers included).</li>
+      <li>Distributor roles all see all customers; account managers get their own ranked first (Q5).</li><li>Platform admins can search every distributor’s projects and orders (Q6). Each result names the distributor.</li>
+      <li>Recent searches are stored per person and can be cleared.</li>
+    </ul>
+  </section>
+
+  <section id="phases" style="background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:22px 24px;">
+    <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 12px;">9 · Suggested build order</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+      <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.6;color:#344054;"><b style="display:block;color:#5860a6;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">Step 1</b><b style="display:block;color:#1e2033;font-size:15px;margin:2px 0 4px;">Search engine + header search</b>One shared matcher (section 5) and the header dropdown for projects, orders, documents, products, people, pages. Exact-ref jump, chips, hidden shortcuts, actions.</div>
+      <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.6;color:#344054;"><b style="display:block;color:#5860a6;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">Step 2</b><b style="display:block;color:#1e2033;font-size:15px;margin:2px 0 4px;">Store search</b>Suggestions, results page with filters, synonyms and colour words, supplier ranges, search insights.</div>
+      <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.6;color:#344054;"><b style="display:block;color:#5860a6;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">Step 3</b><b style="display:block;color:#1e2033;font-size:15px;margin:2px 0 4px;">List boxes</b>Every list search moved onto the shared matcher and pattern (section 6).</div>
+      <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;font-size:13.5px;line-height:1.6;color:#344054;"><b style="display:block;color:#5860a6;font-size:12px;letter-spacing:.06em;text-transform:uppercase;">Step 4</b><b style="display:block;color:#1e2033;font-size:15px;margin:2px 0 4px;">Full results page + messages</b>Results page with side filters; chats, emails, calls and transcripts.</div>
+    </div>
+    <p style="margin:12px 0 0;font-size:12.5px;color:#667085;"><b style="color:#067647;">All four steps are built in the prototype (search.js, 15 Oct).</b> In the prototype, search runs in the browser over the demo data. Going live needs a search index on the backend that applies the same permission rules.</p>
+  </section>
+
+  <section id="open" style="background:#f6fef9;border:1px solid #abefc6;border-radius:16px;padding:22px 24px;">
+    <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:28px;margin:0 0 4px;">Decisions</h2>
+    <p style="margin:0 0 14px;font-size:13.5px;color:#475467;">Agreed 15 Oct 2026.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;font-size:13.5px;line-height:1.55;color:#344054;">
+      <div style="background:#fff;border:1px solid #d1fadf;border-radius:12px;padding:12px 16px;"><b style="color:#067647;">Q1</b> <b>Where results appear.</b> Dropdown under the header bar; full screen on phones.</div>
+      <div style="background:#fff;border:1px solid #d1fadf;border-radius:12px;padding:12px 16px;"><b style="color:#067647;">Q2</b> <b>Store header search.</b> Products first, then a small “Your projects and orders” group.</div>
+      <div style="background:#fff;border:1px solid #d1fadf;border-radius:12px;padding:12px 16px;"><b style="color:#067647;">Q3</b> <b>Narrowing.</b> Chips, with typed shortcuts (in:orders, status:overdue) as a hidden extra.</div>
+      <div style="background:#fff;border:1px solid #d1fadf;border-radius:12px;padding:12px 16px;"><b style="color:#067647;">Q4</b> <b>Actions in search.</b> Yes, for everyone, limited to what each person can do.</div>
+      <div style="background:#fff;border:1px solid #d1fadf;border-radius:12px;padding:12px 16px;"><b style="color:#067647;">Q5</b> <b>Account managers.</b> All customers searchable; their own ranked first.</div>
+      <div style="background:#fff;border:1px solid #d1fadf;border-radius:12px;padding:12px 16px;"><b style="color:#067647;">Q6</b> <b>Platform admin.</b> Can always search distributors’ projects and orders.</div>
+      <div style="background:#fff;border:1px solid #d1fadf;border-radius:12px;padding:12px 16px;"><b style="color:#067647;">Q7</b> <b>Synonyms.</b> One fixed Merchsmith list.</div>
+      <div style="background:#fff;border:1px solid #d1fadf;border-radius:12px;padding:12px 16px;"><b style="color:#067647;">Q8</b> <b>Search insights.</b> Yes, in Store settings.</div>
+      <div style="background:#fff;border:1px solid #d1fadf;border-radius:12px;padding:12px 16px;"><b style="color:#067647;">Q9</b> <b>Messages.</b> Own group in the header search, built in step 4.</div>
+      <div style="background:#fff;border:1px solid #d1fadf;border-radius:12px;padding:12px 16px;"><b style="color:#067647;">Q10</b> <b>Supplier ranges.</b> Added: search a supplier’s whole product range, as its own chip (from your feedback).</div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+</body>
+</html>

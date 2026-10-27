@@ -1,9 +1,11 @@
 /* ============================================================
    admin-supplier.js — "Add supplier" flows for the Merchsmith
-   platform admin. TWO variations to compare:
-     A) Guided wizard  (multi-step modal)        → "Add supplier"
-     B) Single-form drawer (everything on one)   → "Quick add"
-   Both write the same record into window.ADMIN.suppliers and
+   platform admin. ONE entry point — "Add supplier" runs the guided
+   wizard, which also covers invited (self-onboarding) suppliers.
+   Two earlier variations are kept for reference and reachable via
+   MSAddSupplier.drawer (single-form) and .invite (invite-only), but
+   are no longer surfaced as separate buttons.
+   All write the same record into window.ADMIN.suppliers and
    re-render via window.__adminRender(). Self-contained mock.
    ============================================================ */
 (function(){
@@ -32,7 +34,7 @@
   function blank(){ return { name:'',domain:'',region:'UK',kind:'both',cats:new Set(['All']),
     conn:'api',adapter:'xindao',endpoint:'',key:'',secret:'',account:'',cadence:'daily',tested:false,
     csvName:'',csvCount:0, matchDomains:'',
-    users:[], notes:'', agreements:[],
+    users:[], notes:'', agreements:[], specs:new Set(),
     invited:false, _simCount:0 }; }
 
   function offersProduct(D){ return D.kind==='both'||D.kind==='product'; }
@@ -64,7 +66,7 @@
       cats:[...D.cats], connection:D.conn, adapter:D.conn==='api'?D.adapter:null,
       cadence:D.conn==='api'?D.cadence:null, tested:!!D.tested, fieldMap:D.conn==='api'?(D.fieldMap||{}):null,
       matchDomains:(D.matchDomains||'').split(/[\s,]+/).filter(Boolean),
-      users:(D.users||[]).filter(u=>u.name||u.email), notes:D.notes||'', agreements:D.agreements||[],
+      specialisms:[...(D.specs||[])], users:(D.users||[]).filter(u=>u.name||u.email), notes:D.notes||'', agreements:D.agreements||[],
       canInviteUsers:!!D.invited };
     A.suppliers.unshift(rec);
     if(window.__adminRender) window.__adminRender();
@@ -77,6 +79,9 @@
   function segHTML(id,opts,cur){ return `<div class="fm-seg" data-seg="${id}">${opts.map(([v,l])=>`<button type="button" data-v="${v}" class="${cur===v?'on':''}">${l}</button>`).join('')}</div>`; }
   function chipsHTML(id,list,sel){ return `<div class="as-chips" data-chips="${id}">${list.map(it=>{const [v,l]=Array.isArray(it)?it:[it,it];const on=sel.has(v);return `<button type="button" class="as-chip ${on?'on':''}" data-v="${v}">${l}</button>`;}).join('')}</div>`; }
   function methodsField(D){ return offersBranding(D)?`<label class="fm-f"><span>Branding methods offered</span></label>${chipsHTML('methods',METHODS,D.methods)}`:''; }
+  // merch specialism tags — the shared vocabulary managed in people.js (same tags as Edit organisation)
+  function specsField(D){ const list=window.MSPEOPLE&&MSPEOPLE.specList?MSPEOPLE.specList():[];
+    return `<div style="display:flex;align-items:center;justify-content:space-between"><label class="fm-f" style="margin:0"><span>Merch specialism</span></label>${window.MSPEOPLE&&MSPEOPLE.manageSpecialisms?'<button type="button" data-specmanage style="font:inherit;font-size:12.5px;font-weight:700;color:var(--periwinkle-deep);background:none;border:0;cursor:pointer;padding:0">Manage tags</button>':''}</div>${list.length?chipsHTML('specs',list,D.specs):'<p class="as-emptyrow">No specialism tags yet.</p>'}`; }
   function catsField(D){ return offersProduct(D)?`<label class="fm-f"><span>Product categories</span></label>${chipsHTML('cats',['All',...DEPTS],D.cats)}`:''; }
   function adapterCards(D){ return `<div class="as-adapters" data-adapters>${ADAPTERS.map(a=>`<button type="button" class="as-adp ${D.adapter===a.id?'on':''}" data-adp="${a.id}"><b>${a.name}</b><span>${a.sub}</span></button>`).join('')}</div>`; }
   function adapterFields(D){ const a=ADP[D.adapter]||ADP.generic; return `<div class="as-credgrid">${a.fields.map(f=>`<label class="fm-f"><span>${FIELDLBL[f]}</span><input data-cred="${f}" value="${esc(D[f]||'')}" placeholder="${FIELDPH[f]||''}" ${f==='secret'?'type="password"':''}></label>`).join('')}</div>
@@ -233,7 +238,7 @@
   function drawerForm(){
     const D=blank();
     const wrap=document.createElement('div'); wrap.className='as-drawerscrim';
-    wrap.innerHTML=`<div class="as-drawer"><div class="as-dhead"><div><h2>Add supplier</h2><span>All on one page — for quick entry</span></div><button class="dwr-x" data-fx>×</button></div>
+    wrap.innerHTML=`<div class="as-drawer"><div class="as-dhead"><div><h2>Set up supplier in full</h2><span>Identity, capability, feed connection and team, all on one page</span></div><button class="dwr-x" data-fx>×</button></div>
       <div class="as-dbody" id="asDBody"></div>
       <div class="as-dfoot"><button class="btn ghost" data-fx>Cancel</button><button class="btn" id="asDSave">Add supplier</button></div></div>`;
     document.body.appendChild(wrap); document.body.style.overflow='hidden';
@@ -249,7 +254,7 @@
         </div>
         <div class="as-sec"><h4>Type &amp; capability</h4>
           ${segHTML('kind',[['both','Product + Branding'],['product','Product'],['branding','Branding']],D.kind)}
-          <div id="asDCap" style="margin-top:12px">${catsField(D)}</div>
+          <div id="asDCap" style="margin-top:12px">${specsField(D)}</div>
         </div>
         <div class="as-sec"><h4>Connection</h4>
           ${offersProduct(D)?segHTML('conn',[['api','API feed'],['csv','CSV upload'],['manual','Manual']],D.conn):''}
@@ -258,6 +263,7 @@
         </div>
         <div class="as-sec"><h4>Team &amp; documents</h4>${teamField(D)}</div>`;
       wireFields(document.getElementById('asDBody'),D,()=>render());
+      const sm=document.querySelector('#asDBody [data-specmanage]'); if(sm) sm.onclick=()=>MSPEOPLE.manageSpecialisms(()=>render());
     }
     document.getElementById('asDSave').onclick=()=>{ if(!valid(D)){ const i=document.querySelector('#asDBody [data-f="name"]'); if(i)i.focus(); return; } const rec=commit(D); close(); toast(`Supplier “${rec.name}” added`); };
     render();
@@ -386,8 +392,8 @@
     /* drawer */
     .as-drawerscrim{position:fixed;inset:0;background:rgba(22,24,28,.5);backdrop-filter:blur(3px);z-index:130;opacity:0;transition:opacity .22s;}
     .as-drawerscrim.open{opacity:1;}
-    .as-drawer{position:fixed;top:0;right:0;height:100vh;width:min(560px,100%);background:var(--paper);box-shadow:-20px 0 60px rgba(20,22,45,.3);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .26s cubic-bezier(.22,.61,.36,1);}
-    .as-drawerscrim.open .as-drawer{transform:none;}
+    .as-drawer{position:fixed;top:0;right:0;height:100vh;width:min(560px,100%);background:var(--paper);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .26s cubic-bezier(.22,.61,.36,1);}
+    .as-drawerscrim.open .as-drawer{transform:none;box-shadow:-20px 0 60px rgba(20,22,45,.3);}
     .as-dhead{display:flex;align-items:flex-start;gap:14px;padding:20px 24px;border-bottom:1px solid var(--line-soft);background:#fff;}
     .as-dhead h2{font-family:var(--serif);font-weight:500;font-size:22px;margin:0;}
     .as-dhead span{font-size:12.5px;color:var(--muted);}
@@ -426,19 +432,11 @@
   function wire(){
     injectCSS();
     const add=document.getElementById('qInviteSup');
-    if(add){ add.onclick=wizard; }
-    const head=add&&add.closest('.phead');
-    if(head){
-      if(!document.getElementById('qInviteSupInvite')){
-        const b=document.createElement('button'); b.id='qInviteSupInvite'; b.className='btn ghost sm'; b.style.marginLeft='8px';
-        b.innerHTML='Invite supplier'; b.onclick=inviteSupplier; add.after(b);
-      }
-      if(!document.getElementById('qInviteSupQuick')){
-        const q=document.getElementById('qInviteSupInvite');
-        const b=document.createElement('button'); b.id='qInviteSupQuick'; b.className='btn ghost sm'; b.style.marginLeft='8px';
-        b.innerHTML='Quick add'; b.onclick=drawerForm; q.after(b);
-      }
-    }
+    // the short invite form (admin-home.js) owns this button; the full wizard stays available from it
+    if(add&&!window.__inviteSupplier){ add.onclick=wizard; }
+    // one entry point: the guided wizard, which handles invited suppliers too.
+    // Tidy away the extra buttons if an older render left them behind.
+    ['qInviteSupInvite','qInviteSupQuick'].forEach(id=>{ const el=document.getElementById(id); if(el) el.remove(); });
     window.MSAddSupplier={ wizard, drawer:drawerForm, invite:inviteSupplier, editFieldMap };
     window.MSSupplierMap={ requiredGaps, fieldMapStats:rec=>fieldMapStats(rec), PLATFORM_FIELDS };
   }

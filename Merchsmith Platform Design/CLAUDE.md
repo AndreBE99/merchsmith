@@ -15,3 +15,10 @@ Key facts to restate when relevant:
 
 ## Source of truth
 HANDOVER.md is the living architecture/status doc — keep it updated as work progresses.
+
+## HARD RULE: update the Developer Index with every set of changes
+After EVERY set of changes (every turn that edits the platform), add dated entries to `Merchsmith Developer Index.html` before ending the turn:
+- Prepend `['YYYY-MM-DD','What changed']` (today's date, plain English) to the `h:[` history of each page affected, newest first.
+- New pages get their own `{f,t,d,h}` entry in the right category; retired pages get a "Retired / superseded" entry (don't delete them).
+- Changes to shared files (sidebar.js, chrome.js, theme.js, people.js etc.) are logged on the pages where the change is visible.
+- Do this alongside the HANDOVER.md update. No exceptions, including small fixes.

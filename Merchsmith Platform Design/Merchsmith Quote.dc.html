@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Quote</title>
+<meta name="omelette-owns-print" content="1">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js?v=10"></script>
+<script src="colour-map.js"></script>
+<style>
+@page{size:420mm 297mm;margin:0}
+html,body{margin:0;padding:0;background:#54566b;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+a{color:inherit} a:hover{color:inherit}
+@media print{html,body{background:#fff}[data-noprint]{display:none!important}[data-pages]{zoom:1!important;gap:0!important;padding:0!important}[data-page]{box-shadow:none!important;break-after:page}}
+</style>
+</helmet>
+<div style="font-family:var(--sans,'Inter',sans-serif);color:var(--ink,#23232a);">
+  <div data-noprint="1" style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#2c2d3a;color:#fff;padding:12px 22px;font-size:13.5px;">
+    <span><b>Quote {{ q.no }}</b> · A3 landscape · {{ q.pageCount }} pages</span>
+    <span style="display:flex;gap:10px;">
+      <button onClick="{{ back }}" style="font:inherit;font-size:13px;font-weight:700;border-radius:9px;padding:9px 16px;cursor:pointer;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);white-space:nowrap;">← Back</button>
+      <button onClick="{{ print }}" style="font:inherit;font-size:13px;font-weight:700;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;background:var(--periwinkle-deep,#5860a6);color:#fff;white-space:nowrap;">Save as PDF / Print</button>
+    </span>
+  </div>
+
+  <div data-pages="1" style="display:flex;flex-direction:column;align-items:center;gap:36px;padding:32px 24px 72px;zoom:{{ zoom }};">
+
+    <section data-page="1" data-screen-label="01 Cover" style="width:1587px;height:1122px;flex:none;display:grid;grid-template-columns:minmax(0,1fr) 540px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.4);overflow:hidden;">
+      <div style="padding:76px 84px 64px;display:flex;flex-direction:column;min-width:0;">
+        
+        <div>
+          <div style="font-size:14px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--periwinkle-deep,#5860a6);">Quote</div>
+          <h1 style="font-family:var(--serif,'Fraunces',serif);font-weight:500;font-size:104px;line-height:.95;letter-spacing:-.02em;margin:18px 0 0;text-wrap:balance;">{{ cust.name }}</h1>
+          <div style="font-family:var(--serif,'Fraunces',serif);font-size:36px;line-height:1.2;color:#55555f;margin-top:14px;">{{ q.project }}</div>
+        </div>
+        <div style="margin-top:44px;padding-top:24px;border-top:2px solid #23232a;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 32px;">
+          <sc-for list="{{ q.meta }}" as="m" hint-placeholder-count="6">
+            <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
+              <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6a6a73;">{{ m.k }}</span>
+              <span style="display:flex;align-items:center;gap:10px;font-size:19px;font-weight:600;line-height:1.3;"><sc-if value="{{ m.photo }}" hint-placeholder-val="{{ false }}"><img src="{{ m.photo }}" alt="{{ m.v }}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;display:block;flex:none;"></sc-if>{{ m.v }}</span>
+              <span style="font-size:15px;color:#55555f;">{{ m.sub }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top:auto;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:10px;border-bottom:1px solid #d8d6cf;white-space:nowrap;">
+            <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6a6a73;">Summary at your quantities</span>
+            <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6a6a73;">Ex VAT</span>
+          </div>
+          <sc-for list="{{ summary.rows }}" as="r" hint-placeholder-count="5">
+            <div style="display:grid;grid-template-columns:44px minmax(0,1fr) 120px 130px;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid #eeede8;font-size:16px;">
+              <span style="font-size:13px;font-weight:700;color:#8a8a93;">p.{{ r.page }}</span>
+              <span style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.name }}</span>
+              <span style="color:#55555f;text-align:right;">{{ r.qty }} units</span>
+              <span style="font-weight:600;text-align:right;">{{ r.total }}</span>
+            </div>
+          </sc-for>
+          <div style="display:flex;justify-content:flex-end;gap:36px;padding-top:14px;font-size:16px;color:#55555f;">
+            <span>Total ex VAT <b style="color:#23232a;margin-left:8px;">{{ summary.ex }}</b></span>
+            <sc-if value="{{ q.vat }}" hint-placeholder-val="{{ true }}"><span>Total inc VAT <b style="color:#23232a;margin-left:8px;font-size:20px;">{{ summary.inc }}</b></span></sc-if>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--periwinkle-deep,#5860a6);color:#fff;padding:76px 64px 64px;display:flex;flex-direction:column;min-width:0;">
+        <div style="height:64px;display:flex;align-items:center;justify-content:flex-end;">
+          <sc-if value="{{ dist.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ dist.logo }}" alt="{{ dist.name }}" style="height:64px;width:auto;max-width:380px;object-fit:contain;object-position:right;display:block;filter:brightness(0) invert(1);"></sc-if>
+          <sc-if value="{{ dist.noLogo }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--serif,'Fraunces',serif);font-size:38px;font-weight:500;color:#fff;">{{ dist.name }}</span></sc-if>
+        </div>
+        <div style="margin-top:auto;display:flex;flex-direction:column;">
+          <b style="font-size:19px;">{{ dist.legal }}</b>
+          <div style="display:flex;flex-direction:column;gap:2px;font-size:17px;line-height:1.45;margin-top:8px;">
+            <sc-for list="{{ dist.address }}" as="a" hint-placeholder-count="3"><span>{{ a }}</span></sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px;font-size:17px;line-height:1.45;margin-top:16px;">
+            <span>{{ dist.phone }}</span><span>{{ dist.email }}</span><span>{{ dist.web }}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:15px;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.35);">
+            <span>Company no.</span><b>{{ dist.companyNo }}</b>
+            <span>VAT no.</span><b>{{ dist.vat }}</b>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:22px 30px;margin-top:34px;">
+            <sc-for list="{{ accred }}" as="ac" hint-placeholder-count="4">
+              <sc-if value="{{ ac.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ ac.img }}" alt="{{ ac.name }}" style="height:{{ ac.h }}px;width:auto;display:block;"></sc-if>
+              <sc-if value="{{ ac.noImg }}" hint-placeholder-val="{{ false }}"><span style="display:flex;flex-direction:column;font-size:12px;line-height:1.25;border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:7px 12px;"><span style="text-transform:uppercase;letter-spacing:.08em;font-size:10.5px;">{{ ac.t }}</span><b>{{ ac.name }}</b></span></sc-if>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <sc-for list="{{ products }}" as="p" hint-placeholder-count="2">
+      <section data-page="1" data-screen-label="{{ p.label }}" style="width:1587px;height:1122px;flex:none;display:flex;flex-direction:column;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.4);overflow:hidden;">
+        <div style="flex:1;min-height:0;display:flex;flex-direction:{{ p.dir }};">
+          <div style="width:640px;flex:none;background:#f3f2ee;position:relative;display:flex;align-items:center;justify-content:center;padding:84px 64px;">
+            <img src="{{ p.img }}" alt="{{ p.name }}" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;display:block;">
+            <span style="position:absolute;top:44px;left:48px;font-size:13px;font-weight:800;letter-spacing:.18em;color:#6a6a73;">{{ p.num }}</span>
+            <sc-if value="{{ p.hasChosen }}" hint-placeholder-val="{{ true }}">
+              <div style="position:absolute;left:40px;bottom:40px;max-width:calc(100% - 80px);background:#fff;border-radius:14px;padding:14px 18px;box-shadow:0 6px 22px rgba(35,35,42,.12);display:flex;flex-direction:column;gap:5px;">
+                <span style="font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--periwinkle-deep,#5860a6);">Quoted branding</span>
+                <sc-for list="{{ p.chosen }}" as="c" hint-placeholder-count="1"><span style="font-size:15px;font-weight:600;line-height:1.4;">{{ c }}</span></sc-for>
+              </div>
+            </sc-if>
+          </div>
+          <div style="flex:1;min-width:0;padding:60px 72px 34px;display:flex;flex-direction:column;">
+            <div style="display:flex;gap:14px;align-items:baseline;font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--periwinkle-deep,#5860a6);"><span>{{ p.sku }}</span><span style="color:#8a8a93;">{{ p.model }}</span></div>
+            <h2 style="font-family:var(--serif,'Fraunces',serif);font-weight:500;font-size:50px;line-height:1.02;letter-spacing:-.015em;margin:10px 0 0;text-wrap:balance;">{{ p.name }}</h2>
+            <p style="font-size:16.5px;line-height:1.6;color:#45454f;margin:16px 0 0;max-width:74ch;text-wrap:pretty;">{{ p.blurb }}</p>
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 44px;margin-top:26px;">
+              <div style="display:flex;flex-direction:column;">
+                <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding-bottom:8px;border-bottom:2px solid #23232a;">Product</span>
+                <div style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 16px;padding:9px 0;border-bottom:1px solid #eeede8;align-items:center;">
+                  <span style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6a6a73;">Colours</span>
+                  <span style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:15px;">
+                    <sc-for list="{{ p.swatches }}" as="s" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:6px;"><i style="width:15px;height:15px;border-radius:50%;background:{{ s.hex }};box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);display:inline-block;"></i>{{ s.name }}</span></sc-for>
+                  </span>
+                </div>
+                <sc-for list="{{ p.specs }}" as="sp" hint-placeholder-count="5">
+                  <div style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 16px;padding:9px 0;border-bottom:1px solid #eeede8;align-items:baseline;">
+                    <span style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6a6a73;">{{ sp.k }}</span>
+                    <span style="font-size:15px;line-height:1.4;">{{ sp.v }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="display:flex;flex-direction:column;">
+                <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding-bottom:8px;border-bottom:2px solid #23232a;">Branding</span>
+                <sc-for list="{{ p.brand }}" as="sp" hint-placeholder-count="4">
+                  <div style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 16px;padding:9px 0;border-bottom:1px solid #eeede8;align-items:baseline;">
+                    <span style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6a6a73;">{{ sp.k }}</span>
+                    <span style="font-size:15px;line-height:1.4;">{{ sp.v }}</span>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ p.hasNotes }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:18px;background:#f7f6f2;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;">
+                    <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6a6a73;">Please note</span>
+                    <sc-for list="{{ p.notes }}" as="n" hint-placeholder-count="1"><span style="font-family:var(--serif,'Fraunces',serif);font-size:16.5px;line-height:1.45;font-style:italic;">{{ n }}</span></sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+            <div style="margin-top:auto;padding-top:22px;">
+              <sc-for list="{{ p.rows }}" as="row" hint-placeholder-count="5">
+                <div style="display:grid;grid-template-columns:200px repeat({{ p.cols }},minmax(0,1fr));border-bottom:1px solid {{ row.line }};">
+                  <span style="font-size:{{ row.ls }}px;font-weight:{{ row.lw }};padding:9px 0;color:{{ row.lc }};">{{ row.label }}</span>
+                  <sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="4">
+                    <span style="text-align:right;padding:9px 16px;font-size:{{ row.fs }}px;font-weight:{{ row.fw }};background:{{ c.bg }};font-variant-numeric:tabular-nums;position:relative;"><em style="position:absolute;right:16px;bottom:100%;margin-bottom:2px;white-space:nowrap;font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--periwinkle-deep,#5860a6);">{{ c.tag }}</em>{{ c.v }}</span>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="height:60px;flex:none;border-top:1px solid #e7e6e1;padding:0 56px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:24px;font-size:13px;color:#6a6a73;white-space:nowrap;"><span style="display:flex;align-items:center;justify-self:start;">
+          <sc-if value="{{ dist.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ dist.logo }}" alt="{{ dist.name }}" style="height:22px;width:auto;display:block;filter:{{ dist.logoFilter }};"></sc-if>
+          <sc-if value="{{ dist.noLogo }}" hint-placeholder-val="{{ false }}"><b style="color:#23232a;">{{ dist.name }}</b></sc-if></span>
+          <span style="text-align:center;">Quote <b style="color:#23232a;">{{ q.no }}</b> · {{ cust.name }} · {{ q.project }} · Valid until <b style="color:#23232a;">{{ q.valid }}</b></span>
+          <span style="justify-self:end;">Page <b style="color:#23232a;">{{ p.page }}</b> of {{ q.pageCount }}</span>
+        </div>
+      </section>
+    </sc-for>
+
+    <sc-for list="{{ lit }}" as="l" hint-placeholder-count="0">
+      <section data-page="1" data-screen-label="{{ l.label }}" style="width:1587px;height:1122px;flex:none;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.4);overflow:hidden;">
+        <img src="{{ l.img }}" alt="{{ l.title }}" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </section>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { m: null, zoom: 1 };
+  componentDidMount() {
+    this.load(); this.fit();
+    this._fit = () => this.fit(); this._load = () => this.load();
+    window.addEventListener('resize', this._fit);
+    window.addEventListener('load', this._load);
+    window.addEventListener('storage', this._load);
+    setTimeout(this._load, 400);
+    // opened from a download link (#print=1): print once the logos and product images have loaded
+    if (/print=1/.test(location.hash)) { history.replaceState(null, '', location.pathname + location.search); const go = () => Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))).then(() => setTimeout(() => window.print(), 400)); setTimeout(go, 1200); }
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._fit);
+    window.removeEventListener('load', this._load);
+    window.removeEventListener('storage', this._load);
+  }
+  fit() { this.setState({ zoom: Math.min(1, (window.innerWidth - 48) / 1587) }); }
+
+  load() {
+    const J = (k, fb) => { try { const v = JSON.parse(localStorage.getItem(k) || 'null'); return v == null ? fb : v; } catch (e) { return fb; } };
+    const S = (k) => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
+    const gbp = n => '£' + Number(n || 0).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const int = n => Number(n || 0).toLocaleString('en-GB');
+    const fD = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    let sheet = J('ms-project-sheet', null);
+    if (!sheet || !Array.isArray(sheet.items) || !sheet.items.length) sheet = SEED_SHEET;
+
+    // distributor: profile record (people store overrides, skipping blanks) over the platform record
+    const dist = Object.assign({}, DIST_BASE);
+    const over = o => { if (o) Object.keys(o).forEach(k => { if (o[k] != null && o[k] !== '') dist[k] = o[k]; }); };
+    over(J('ms-org-profiles', {}).distributor);
+    over((J('ms-people', {}).orgs || {})['dist:acme']);
+    const addr = (dist.addr1 || dist.city || dist.postcode)
+      ? [dist.addr1, dist.addr2, [dist.city, dist.county].filter(Boolean).join(', '), dist.postcode].filter(Boolean)
+      : String(dist.address || '').split(/\n|,\s*/).filter(Boolean);
+    let logo = S('ms-pdf-logo'), tone = S('ms-pdf-logo-tone');
+    if (!logo) { logo = S('ms-brand-logo'); tone = ''; }
+    const custLogo = S('ms-cust-logo');
+
+    const fc = J('ms-footer-cfg', null);
+    const accred = ((fc && fc.accred) || ACCRED_DEF).filter(a => a.on !== false).map(a => ({
+      hasImg: !!a.img, noImg: !a.img, img: a.img || '', h: Math.round((a.hpx || 36) * 1.3), t: a.t || '', name: a.s || a.t || ''
+    }));
+
+    const custId = String(sheet.client || 'Citrix').toLowerCase();
+    const acct = J('ms-cust-account', {})[custId] || {};
+    const vatOn = acct.vat !== false;
+    const terms = acct.terms || '30 days from invoice';
+
+    const today = new Date();
+    const valid = sheet.validUntil || fD(new Date(Date.now() + 30 * 86400000));
+    const ymd = String(today.getFullYear()).slice(2) + String(today.getMonth() + 1).padStart(2, '0') + String(today.getDate()).padStart(2, '0');
+    const hash = [...String(sheet.title || '')].reduce((a, c) => (a * 31 + c.charCodeAt(0)) % 997, 7);
+    const qno = 'Q-' + ymd + '-' + String(hash).padStart(3, '0');
+
+    const hexOf = n => { const C = window.MSCOLOUR; if (C && C.mapOr && C.hex) { const h = C.hex(C.mapOr(n)); if (h) return h; } return COLOUR_FB[String(n).toLowerCase()] || '#d8d6cf'; };
+    const tint = 'color-mix(in oklch, var(--periwinkle-deep,#5860a6) 9%, white)';
+
+    const items = sheet.items.filter(it => it.overall !== 'archived');
+    const products = items.map((it, i) => {
+      const q = it.quote || SEED_QUOTE[it.name] || {};
+      const brk = (q.breaks && q.breaks.length) ? q.breaks : [{ qty: it.qty, unit: it.each, delivery: 0, current: true }];
+      const cur = brk.find(b => b.current) || brk[0];
+      const row = (label, fn, o) => Object.assign({ label, line: '#eeede8', ls: 13, lw: 700, lc: '#6a6a73', fs: 15, fw: 500,
+        cells: brk.map(b => ({ v: fn(b), bg: b.current ? tint : 'transparent', tag: '' })) }, o || {});
+      const addl = (q.additional || []).filter(a => (+a.qty || 0) * (+a.unit || 0));
+      const addlT = addl.reduce((s, a) => s + (+a.qty || 0) * (+a.unit || 0), 0);
+      const ex = b => b.unit * b.qty + (b.delivery || 0) + addlT;
+      const rows = [
+        row('Quantity', b => int(b.qty), { ls: 15, lc: '#23232a', fs: 19, fw: 700, line: '#23232a' }),
+        row('Unit price inc. branding', b => gbp(b.unit)),
+        row('UK delivery', b => b.delivery ? gbp(b.delivery) : 'Included'),
+        ...addl.map(a => row(a.label || 'Additional charge', () => gbp((+a.qty || 0) * (+a.unit || 0)))),
+        row('Total ex VAT', b => gbp(ex(b)), vatOn ? {} : { ls: 15, lc: '#23232a', fs: 19, fw: 700, line: 'transparent' })
+      ];
+      if (vatOn) {
+        rows.push(row('VAT at 20%', b => gbp(ex(b) * 0.2)));
+        rows.push(row('Total inc VAT', b => gbp(ex(b) * 1.2), { ls: 15, lc: '#23232a', fs: 19, fw: 700, line: 'transparent' }));
+      }
+      rows[0].cells.forEach((c, k) => { if (brk[k].current) c.tag = 'Your quantity'; });
+      const specs = [
+        ['Sizes', (q.sizes || []).join(', ')],
+        ['Dimensions', q.dims],
+        ['Material', q.material],
+        ['Country of origin', q.origin],
+        ['Accreditations', (q.certs || []).join(' · ')],
+        ['Lead time', q.lead ? q.lead + ' working days from proof approval' : '']
+      ].filter(x => x[1]).map(([k, v]) => ({ k, v }));
+      const brand = [
+        ['Available methods', (q.methods || []).join(', ')],
+        ['Positions', (q.positions || []).join(' · ')],
+        ['Branding area', q.area ? (q.area + (/mm/i.test(q.area) ? '' : ' mm')) : '']
+      ].filter(x => x[1]).map(([k, v]) => ({ k, v }));
+      const colours = (q.colours && q.colours.length) ? q.colours : (it.colours || []);
+      return {
+        name: it.name, sku: q.sku || '', model: q.model || '', blurb: it.blurb || q.blurb || '',
+        img: q.imgUrl || ('assets/products/' + (it.img || 'bag') + '.png'),
+        dir: i % 2 ? 'row-reverse' : 'row', page: i + 2,
+        num: String(i + 1).padStart(2, '0') + ' / ' + String(items.length).padStart(2, '0'),
+        label: String(i + 2).padStart(2, '0') + ' ' + it.name,
+        swatches: colours.map(n => ({ name: n, hex: hexOf(n) })),
+        specs, brand, rows, cols: brk.length,
+        chosen: String(q.chosen || '').split(' · ').filter(Boolean), hasChosen: !!q.chosen,
+        notes: q.notes || [], hasNotes: !!(q.notes && q.notes.length),
+        _cur: cur, _ex: ex(cur)
+      };
+    });
+    const lit = (J('ms-sales-lit', []) || []).filter(x => x.on !== false && x.img).map((x, i) => ({
+      img: x.img, title: x.title || '', label: String(items.length + 2 + i).padStart(2, '0') + ' ' + (x.title || 'Sales literature')
+    }));
+    const exT = products.reduce((a, p) => a + p._ex, 0);
+    const owner = sheet.owner || dist.contactName || '';
+    const ownerPhoto = (J('ms-people', {}).photos || {})[owner.trim().toLowerCase()] || AVATARS[owner] || '';
+    const m = {
+      dist: { name: dist.name, legal: dist.legalName || dist.name, address: addr, phone: dist.phone, email: dist.contactEmail, web: dist.website,
+        companyNo: dist.companyNo || '—', vat: dist.vat || '—', logo, hasLogo: !!logo, noLogo: !logo, logoFilter: tone === 'black' ? 'brightness(0)' : 'none' },
+      cust: { name: sheet.client || 'Customer', logo: custLogo, hasLogo: !!custLogo, noLogo: !custLogo },
+      q: { no: qno, project: sheet.title || '', valid, vat: vatOn, pageCount: 1 + products.length + lit.length,
+        meta: [
+          { k: 'Quote number', v: qno, sub: '' },
+          { k: 'Date', v: fD(today), sub: '' },
+          { k: 'Valid until', v: valid, sub: '30 days from issue' },
+          { k: 'Prepared by', v: owner, sub: dist.contactEmail || '', photo: ownerPhoto },
+          { k: 'Payment terms', v: terms, sub: vatOn ? 'Prices shown ex and inc VAT' : 'VAT not applicable' },
+          { k: 'Products', v: products.length + ' product' + (products.length === 1 ? '' : 's'), sub: 'One per page, from page 2' }
+        ] },
+      accred,
+      summary: { rows: products.map(p => ({ page: p.page, name: p.name, qty: int(p._cur.qty), total: gbp(p._ex) })), ex: gbp(exT), inc: gbp(exT * 1.2) },
+      products, lit
+    };
+    if (logo && this._trimSrc === logo && this._trimmed) m.dist.logo = this._trimmed;
+    this.setState({ m });
+    if (logo && this._trimSrc !== logo) { this._trimSrc = logo; this._trimmed = null; this.trimLogo(logo); }
+  }
+  // crop the transparent margin off the uploaded logo so the visible mark sits flush left
+  trimLogo(src) {
+    const im = new Image();
+    im.onload = () => {
+      try {
+        const w = im.naturalWidth, h = im.naturalHeight, c = document.createElement('canvas'); c.width = w; c.height = h;
+        const x = c.getContext('2d'); x.drawImage(im, 0, 0); const d = x.getImageData(0, 0, w, h).data;
+        let l = w, r = -1, t = h, b = -1;
+        for (let y = 0; y < h; y++) for (let i = 0; i < w; i++) if (d[(y * w + i) * 4 + 3] > 8) { if (i < l) l = i; if (i > r) r = i; if (y < t) t = y; if (y > b) b = y; }
+        if (r < 0 || (l === 0 && t === 0 && r === w - 1 && b === h - 1)) return;
+        const o = document.createElement('canvas'); o.width = r - l + 1; o.height = b - t + 1;
+        o.getContext('2d').drawImage(c, l, t, o.width, o.height, 0, 0, o.width, o.height);
+        this._trimmed = o.toDataURL('image/png');
+        if (this._trimSrc === src && this.state.m) this.setState({ m: Object.assign({}, this.state.m, { dist: Object.assign({}, this.state.m.dist, { logo: this._trimmed }) }) });
+      } catch (e) {}
+    };
+    im.src = src;
+  }
+
+  renderVals() {
+    const m = this.state.m || {};
+    return Object.assign({}, m, {
+      zoom: this.state.zoom,
+      print: () => window.print(),
+      back: () => { if (history.length > 1) history.back(); else window.close(); }
+    });
+  }
+}
+
+const AVATARS = { 'Jess Doyle': 'assets/avatars/av1.jpg', 'Sara Kemp': 'assets/avatars/av2.jpg', 'Tom Reed': 'assets/avatars/av3.jpg' };
+const DIST_BASE = { name: 'Mojo Promotions', legalName: 'Mojo Promotions Ltd', companyNo: '06715832', vat: 'GB 947 1203 55',
+  addr1: '12 Pritchard Street', city: 'Bristol', postcode: 'BS2 8RH', website: 'mojopromotions.co.uk', phone: '0117 330 6120',
+  contactName: 'Jess Doyle', contactEmail: 'hello@mojopromotions.co.uk' };
+const ACCRED_DEF = [
+  { t: 'Certified', s: 'B Corporation', img: 'assets/accred-01.png', hpx: 52 },
+  { t: 'Climate positive', s: 'Ecologi workforce', img: 'assets/accred-02.png', hpx: 30 },
+  { t: 'Member', s: 'bpma', img: 'assets/accred-04.png', hpx: 28 },
+  { t: 'Accredited', s: 'Living Wage Employer', img: 'assets/accred-03.png', hpx: 46 }
+];
+const COLOUR_FB = { white: '#ffffff', black: '#1b1b1f', blue: '#2f5fb3', navy: '#1f2a4d', grey: '#9a9aa3', charcoal: '#3b3d45', natural: '#e9e0cc', kraft: '#c49a6c', cork: '#b58b5f', terracotta: '#c3623f' };
+const SEED_QUOTE = {
+  'Eco Wheat-Straw Charging Cable': { sku: 'LM-CABLE-01', model: '3-in-1', colours: ['Natural', 'Black'], sizes: ['One size'], dims: '80mm × 120mm × 10mm', material: 'Wheat-straw bio-plastic',
+    methods: ['Screenprint', 'Transfer', 'DTF'], positions: ['Front (30 × 8 mm)', 'Back (30 × 8 mm)'], chosen: 'Front: Screenprint, 2 colours · Back: Screenprint, 1 colour', lead: 10, moq: 50,
+    breaks: [{ qty: 100, unit: 8.45, delivery: 25, current: true }, { qty: 250, unit: 7.12, delivery: 25 }, { qty: 500, unit: 5.04, delivery: 34 }, { qty: 1000, unit: 3.86, delivery: 43 }] },
+  'Tech Travel Bag': { sku: 'TECH-BAG', model: 'Traveller', colours: ['Charcoal', 'Navy'], sizes: ['One size'], dims: '300mm × 400mm × 120mm', material: 'rPET',
+    methods: ['Embroidery', 'Transfer', 'Screenprint'], positions: ['Front (180 × 180 mm)'], chosen: 'Front: Embroidery, 3 colours', lead: 9, moq: 50,
+    breaks: [{ qty: 250, unit: 16.40, delivery: 30, current: true }, { qty: 500, unit: 14.62, delivery: 39 }, { qty: 1000, unit: 13.10, delivery: 48 }] }
+};
+const SEED_SHEET = { title: 'Autumn Giveaways', client: 'Citrix', owner: 'Jess Doyle', items: [
+  { name: 'Eco Wheat-Straw Charging Cable', img: 'cable', qty: 100, each: 8.45, overall: 'progress', blurb: 'A 3-in-1 charging cable in a wheat-straw bio-plastic case, with USB-C, Lightning and Micro-USB tips.' },
+  { name: 'Tech Travel Bag', img: 'bag', qty: 250, each: 16.40, overall: 'progress', blurb: 'A padded rPET travel bag with a laptop sleeve, cable pockets and a luggage pass-through.' }
+] };
+</script>
+</body>
+</html>

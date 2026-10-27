@@ -1,0 +1,296 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e13] [cursor=pointer]
+  - alert [ref=e17]
+  - generic [ref=e19]:
+    - banner [ref=e20]:
+      - generic [ref=e21]:
+        - img "Merchsmith" [ref=e23]
+        - generic [ref=e24]:
+          - button "notifications" [ref=e25] [cursor=pointer]
+          - button "user menu" [ref=e31] [cursor=pointer]
+    - complementary "Platform admin navigation" [ref=e36]:
+      - navigation [ref=e37]:
+        - link "Dashboard" [ref=e38] [cursor=pointer]:
+          - /url: /admin
+        - link "Distributors" [ref=e44] [cursor=pointer]:
+          - /url: /platform/distributors
+        - link "Suppliers" [ref=e50] [cursor=pointer]:
+          - /url: /admin/suppliers
+        - link "Users" [ref=e56] [cursor=pointer]:
+          - /url: /admin/users
+        - link "Products" [ref=e61] [cursor=pointer]:
+          - /url: /platform/products
+        - link "Recommended range" [ref=e65] [cursor=pointer]:
+          - /url: /platform/curated-range
+        - link "Store layout" [ref=e68] [cursor=pointer]:
+          - /url: /platform/store-layout
+        - link "Subscriptions" [ref=e71] [cursor=pointer]:
+          - /url: /admin/subscriptions
+        - link "Team" [ref=e74] [cursor=pointer]:
+          - /url: /admin/team
+        - link "Chats" [ref=e80] [cursor=pointer]:
+          - /url: /chats
+        - link "Calendar" [ref=e83] [cursor=pointer]:
+          - /url: /calendar
+        - link "Calls" [ref=e86] [cursor=pointer]:
+          - /url: /calls
+        - link "Emails" [ref=e89] [cursor=pointer]:
+          - /url: /emails
+        - link "Settings" [ref=e93] [cursor=pointer]:
+          - /url: /admin/settings
+      - button "Sign out" [ref=e98] [cursor=pointer]
+    - main [ref=e102]:
+      - generic [ref=e132]:
+        - generic [ref=e133]:
+          - heading "Dashboard" [level=1] [ref=e134]
+          - button "Invite organisation" [ref=e135] [cursor=pointer]
+        - generic [ref=e137]:
+          - generic [ref=e138]:
+            - generic [ref=e139]: "3"
+            - generic [ref=e140]: Distributors
+          - generic [ref=e141]:
+            - generic [ref=e142]: "2"
+            - generic [ref=e143]: Active
+          - generic [ref=e144]:
+            - generic [ref=e145]: "11"
+            - generic [ref=e146]: Suppliers
+          - generic [ref=e147]:
+            - generic [ref=e148]: £2,400
+            - generic [ref=e149]: Platform MRR
+          - generic [ref=e150]:
+            - generic [ref=e151]: £8,726
+            - generic [ref=e152]: GMV (12mo)
+        - generic [ref=e153]:
+          - generic [ref=e154]:
+            - generic [ref=e155]:
+              - heading "Monthly recurring revenue" [level=3] [ref=e156]
+              - generic [ref=e157]: £0 of it from seat overage
+            - paragraph [ref=e158]: Base subscription plus seat overage, per distributor.
+            - img "Platform MRR by month, Sep ’26 to Oct ’26, now £2,400" [ref=e159]:
+              - generic [ref=e160]: £0
+              - generic [ref=e162]: £750
+              - generic [ref=e164]: £1.5k
+              - generic [ref=e166]: £2.3k
+              - generic [ref=e168]: £3k
+              - generic "Sep ’26 · £2,400 MRR (£0 seat overage) · 2 billed" [ref=e171]
+              - generic "Oct ’26 · £2,400 MRR (£0 seat overage) · 2 billed" [ref=e172]
+              - generic [ref=e173]: Sep ’26
+              - generic [ref=e174]: Oct
+          - generic [ref=e175]:
+            - heading "Needs attention" [level=3] [ref=e177]
+            - link "test Awaiting activation · 1mo ago" [ref=e179] [cursor=pointer]:
+              - /url: /platform/distributors?distributor=test
+              - generic [ref=e183]:
+                - generic [ref=e184]: test
+                - text: Awaiting activation · 1mo ago
+        - generic [ref=e185]:
+          - generic [ref=e186]:
+            - heading "Recent activity" [level=3] [ref=e188]
+            - generic [ref=e189]:
+              - generic [ref=e190]:
+                - generic [ref=e192]: Mojo Promotions Ltd created · John Young
+                - generic [ref=e193]: 9h ago
+              - generic [ref=e194]:
+                - generic [ref=e196]: John Young colourway deleted
+                - generic [ref=e197]: 9h ago
+              - generic [ref=e198]:
+                - generic [ref=e200]: John Young profile updated
+                - generic [ref=e201]: 9h ago
+              - generic [ref=e202]:
+                - generic [ref=e204]: Mojo Promotions Ltd profile updated · Lindsey Anderson
+                - generic [ref=e205]: 9h ago
+              - generic [ref=e206]:
+                - generic [ref=e208]: Mojo Promotions Ltd upload completed · Lindsey Anderson
+                - generic [ref=e209]: 9h ago
+              - generic [ref=e210]:
+                - generic [ref=e212]: Mojo Promotions Ltd created · Lindsey Anderson
+                - generic [ref=e213]: 9h ago
+          - generic [ref=e214]:
+            - generic [ref=e215]:
+              - heading "Plan mix" [level=3] [ref=e216]
+              - button "Manage ›" [ref=e217] [cursor=pointer]
+            - generic [ref=e218]:
+              - generic [ref=e220]:
+                - generic [ref=e221]: Starter
+                - generic [ref=e222]: 0 · 0%
+              - generic [ref=e225]:
+                - generic [ref=e226]: Growth
+                - generic [ref=e227]: 0 · 0%
+              - generic [ref=e230]:
+                - generic [ref=e231]: Scale
+                - generic [ref=e232]: 3 · 100%
+        - heading "Orders and subscription finance" [level=2] [ref=e235]
+        - generic [ref=e236]:
+          - group "Period" [ref=e237]:
+            - button "This month" [ref=e238] [cursor=pointer]
+            - button "Last 30 days" [ref=e239] [cursor=pointer]
+            - button "Last 90 days" [ref=e240] [cursor=pointer]
+            - button "This quarter" [ref=e241] [cursor=pointer]
+            - button "Year to date" [ref=e242] [cursor=pointer]
+          - generic [ref=e243]:
+            - generic [ref=e244]: Compare with
+            - generic [ref=e245]:
+              - combobox "Compare with" [ref=e246] [cursor=pointer]: Previous period
+              - textbox [aria-hidden]: prev
+              - group [aria-hidden]:
+                - generic: Compare with
+          - button "Print / PDF" [ref=e247] [cursor=pointer]
+        - generic [ref=e248]:
+          - generic [ref=e249]:
+            - generic [ref=e250]: Platform order value
+            - generic [ref=e251]: £8,726
+          - generic [ref=e252]:
+            - generic [ref=e253]: Orders
+            - generic [ref=e254]: "8"
+          - generic [ref=e255]:
+            - generic [ref=e256]: Live items
+            - generic [ref=e257]: "8"
+          - generic [ref=e258]:
+            - generic [ref=e259]: On-time delivery
+            - generic [ref=e260]: 100%
+        - generic [ref=e261]:
+          - generic [ref=e262]:
+            - heading "Platform order value" [level=3] [ref=e264]
+            - img "Platform order value over time" [ref=e265]:
+              - generic [ref=e266]: £0
+              - generic [ref=e268]: £1,287
+              - generic [ref=e270]: £2,574
+              - generic [ref=e272]:
+                - generic "10 Jul · £0"
+                - generic [ref=e273]: 10 Jul
+              - generic:
+                - generic "17 Jul · £0"
+              - generic [ref=e274]:
+                - generic "24 Jul · £0"
+                - generic [ref=e275]: 24 Jul
+              - generic:
+                - generic "31 Jul · £0"
+              - generic [ref=e276]:
+                - generic "7 Aug · £1,214" [ref=e277]
+                - generic [ref=e278]: 7 Aug
+              - generic:
+                - generic "14 Aug · £0"
+              - generic [ref=e279]:
+                - generic "21 Aug · £0"
+                - generic [ref=e280]: 21 Aug
+              - generic:
+                - generic "28 Aug · £0"
+              - generic [ref=e281]:
+                - generic "4 Sept · £0"
+                - generic [ref=e282]: 4 Sept
+              - generic "11 Sept · £1,448" [ref=e284]
+              - generic [ref=e285]:
+                - generic "18 Sept · £1,548" [ref=e286]
+                - generic [ref=e287]: 18 Sept
+              - generic "25 Sept · £1,943" [ref=e289]
+              - generic [ref=e290]:
+                - generic "2 Oct · £2,574" [ref=e291]
+                - generic [ref=e292]: 2 Oct
+              - generic:
+                - generic "9 Oct · £0"
+            - generic [ref=e293]: Order value
+          - generic [ref=e296]:
+            - heading "Order value by distributor" [level=3] [ref=e298]
+            - generic [ref=e300]:
+              - generic [ref=e301]: Dev Distributor
+              - generic [ref=e304]: £8,726
+              - emphasis [ref=e305]: 11 items
+          - generic [ref=e306]:
+            - heading "Pipeline · all distributors" [level=3] [ref=e308]
+            - generic [ref=e309]:
+              - link "2 Received" [ref=e310] [cursor=pointer]:
+                - /url: /admin/overview
+                - generic [ref=e311]: "2"
+                - emphasis [ref=e314]: Received
+              - link "0 Sent" [ref=e315] [cursor=pointer]:
+                - /url: /admin/overview
+                - generic [ref=e316]: "0"
+                - emphasis [ref=e319]: Sent
+              - link "0 Acknowledged" [ref=e320] [cursor=pointer]:
+                - /url: /admin/overview
+                - generic [ref=e321]: "0"
+                - emphasis [ref=e324]: Acknowledged
+              - link "1 Proof" [ref=e325] [cursor=pointer]:
+                - /url: /admin/overview
+                - generic [ref=e326]: "1"
+                - emphasis [ref=e329]: Proof
+              - link "0 Confirmed" [ref=e330] [cursor=pointer]:
+                - /url: /admin/overview
+                - generic [ref=e331]: "0"
+                - emphasis [ref=e334]: Confirmed
+              - link "3 In production" [ref=e335] [cursor=pointer]:
+                - /url: /admin/overview
+                - generic [ref=e336]: "3"
+                - emphasis [ref=e339]: In production
+              - link "2 Dispatched" [ref=e340] [cursor=pointer]:
+                - /url: /admin/overview
+                - generic [ref=e341]: "2"
+                - emphasis [ref=e344]: Dispatched
+          - generic [ref=e345]:
+            - heading "Top suppliers" [level=3] [ref=e347]
+            - paragraph [ref=e348]: Cost placed with each
+            - generic [ref=e350]:
+              - generic [ref=e351]: XD Connects
+              - generic [ref=e354]: £6,145
+              - emphasis [ref=e355]: 11 items
+        - generic [ref=e356]:
+          - generic [ref=e357]:
+            - generic [ref=e358]: MRR
+            - generic [ref=e359]: £2,400
+          - generic [ref=e360]:
+            - generic [ref=e361]: ARR
+            - generic [ref=e362]: £28,800
+          - generic [ref=e363]:
+            - generic [ref=e364]: Suspended distributors
+            - generic [ref=e365]: "0"
+          - generic [ref=e366]:
+            - generic [ref=e367]: Past due subscriptions
+            - generic [ref=e368]: "0"
+          - generic [ref=e369]:
+            - generic [ref=e370]: Avg revenue per distributor
+            - generic [ref=e371]: £1,200
+        - generic [ref=e372]:
+          - generic [ref=e373]:
+            - heading "MRR by plan" [level=3] [ref=e375]
+            - 'generic "Scale (2): £2,400.00" [ref=e377]'
+            - generic [ref=e379]:
+              - generic [ref=e381]: Scale (2)
+              - generic [ref=e382]: £2,400
+          - generic [ref=e383]:
+            - heading "MRR by status" [level=3] [ref=e385]
+            - generic [ref=e386]:
+              - generic [ref=e387]:
+                - generic [ref=e388]: active
+                - generic [ref=e391]: £2,400
+                - emphasis [ref=e392]: 2 distributors
+              - generic [ref=e393]:
+                - generic [ref=e394]: pending
+                - generic [ref=e397]: £0
+                - emphasis [ref=e398]: 1 distributors
+          - generic [ref=e399]:
+            - heading "Largest distributors" [level=3] [ref=e401]
+            - generic [ref=e402]:
+              - generic [ref=e403]:
+                - generic [ref=e404]: Dev Distributor
+                - generic [ref=e407]: £1,200
+                - emphasis [ref=e408]: Scale
+              - generic [ref=e409]:
+                - generic [ref=e410]: Mojo Promotions Ltd
+                - generic [ref=e413]: £1,200
+                - emphasis [ref=e414]: Scale
+    - contentinfo [ref=e110]:
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - generic [ref=e113]: Merchsmith Ltd · Company no. 14827391
+          - generic [ref=e114]: © 2026 Merchsmith
+        - generic [ref=e115]:
+          - generic "Coming soon" [ref=e116]: Platform terms
+          - generic "Coming soon" [ref=e117]: Operator privacy
+          - link "Support" [ref=e118] [cursor=pointer]:
+            - /url: mailto:john@merchsmith.com
+          - generic [ref=e119]: Build v0.1.0-alpha.8.1
+  - button "Messages, 1 unread" [ref=e415] [cursor=pointer]:
+    - generic [ref=e416]: "1"
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=e123]:
+    - button [ref=e125] [cursor=pointer]: ×

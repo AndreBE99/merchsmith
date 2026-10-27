@@ -1,0 +1,215 @@
+- generic [ref=f20e1]:
+  - generic [ref=f20e12] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=f20e13]
+    - generic [ref=f20e18]:
+      - button "Open issues overlay" [ref=f20e19]:
+        - generic [ref=f20e293]:
+          - generic [aria-hidden] [ref=f20e294]: "1"
+          - generic [ref=f20e295]: "2"
+        - generic [ref=f20e23]:
+          - text: Issue
+          - generic [aria-hidden] [ref=f20e296]: s
+      - button "Collapse issues badge" [ref=f20e24]
+  - alert [ref=f20e17]
+  - generic [ref=f20e28]:
+    - banner [ref=f20e29]:
+      - generic [ref=f20e30]:
+        - generic [ref=f20e32]:
+          - heading "Dev Distributor" [level=6] [ref=f20e33]
+          - heading "Test Customer" [level=6] [ref=f20e35]
+        - generic [ref=f20e39]:
+          - textbox "Search" [ref=f20e44]:
+            - /placeholder: Search products, projects, orders…
+          - group [aria-hidden]
+        - generic [ref=f20e45]:
+          - button "notifications" [ref=f20e46] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f20e51]: "5"
+          - button "user menu" [ref=f20e53] [cursor=pointer]
+    - complementary "Main navigation" [ref=f20e58]:
+      - navigation [ref=f20e59]:
+        - link "Dashboard" [ref=f20e60] [cursor=pointer]:
+          - /url: /
+        - link "Store" [ref=f20e66] [cursor=pointer]:
+          - /url: /store
+        - link "Projects" [ref=f20e71] [cursor=pointer]:
+          - /url: /projects
+        - link "Orders" [ref=f20e76] [cursor=pointer]:
+          - /url: /orders
+        - link "Brand Assets" [ref=f20e80] [cursor=pointer]:
+          - /url: /brand-assets?cat=logos
+        - button "Team" [ref=f20e87] [cursor=pointer]
+        - link "Chats" [ref=f20e93] [cursor=pointer]:
+          - /url: /chats
+        - link "Calendar" [ref=f20e96] [cursor=pointer]:
+          - /url: /calendar
+        - link "Finance" [ref=f20e99] [cursor=pointer]:
+          - /url: /finance
+        - link "Settings" [ref=f20e103] [cursor=pointer]:
+          - /url: /settings/customer
+    - main [ref=f20e107]:
+      - generic [ref=f20e108]: Finance
+      - generic [ref=f20e113]:
+        - heading "Finance" [level=1] [ref=f20e114]
+        - generic [ref=f20e115]:
+          - tablist [ref=f20e116]:
+            - tab "Overview" [selected] [ref=f20e117] [cursor=pointer]
+            - tab "Invoices" [ref=f20e118] [cursor=pointer]
+            - tab "Terms & invoicing" [ref=f20e119] [cursor=pointer]
+          - tabpanel [ref=f20e120]:
+            - generic [ref=f20e121]:
+              - group "Period" [ref=f20e122]:
+                - button "This month" [ref=f20e123] [cursor=pointer]
+                - button "Last 30 days" [active] [ref=f20e124] [cursor=pointer]
+                - button "Last 90 days" [ref=f20e125] [cursor=pointer]
+                - button "This quarter" [ref=f20e126] [cursor=pointer]
+                - button "Year to date" [ref=f20e127] [cursor=pointer]
+              - generic [ref=f20e128]:
+                - generic [ref=f20e129]: Compare with
+                - generic [ref=f20e130]:
+                  - combobox "Compare with" [ref=f20e131] [cursor=pointer]: Previous period
+                  - textbox [aria-hidden]: prev
+                  - group [aria-hidden]:
+                    - generic: Compare with
+              - button "Print / PDF" [ref=f20e132] [cursor=pointer]
+            - generic [ref=f20e133]:
+              - generic [ref=f20e134]:
+                - generic [ref=f20e135]: Spent this year
+                - generic [ref=f20e136]: £3,479
+              - link "Outstanding £1,953 3 invoices" [ref=f20e137] [cursor=pointer]:
+                - /url: /finance?tab=invoices
+                - generic [ref=f20e138]:
+                  - generic [ref=f20e139]: Outstanding
+                  - generic [ref=f20e140]: £1,953
+                  - text: 3 invoices
+              - link "Overdue £0 0 invoices" [ref=f20e141] [cursor=pointer]:
+                - /url: /finance?tab=invoices
+                - generic [ref=f20e142]:
+                  - generic [ref=f20e143]: Overdue
+                  - generic [ref=f20e144]: £0
+                  - text: 0 invoices
+              - generic [ref=f20e145]:
+                - generic [ref=f20e146]: Available credit
+                - generic [ref=f20e147]: No limit
+            - generic [ref=f20e148]:
+              - generic [ref=f20e149]:
+                - heading "Credit used" [level=3] [ref=f20e151]
+                - generic [ref=f20e152]: No credit limit set.
+              - generic [ref=f20e153]:
+                - heading "Invoices due next" [level=3] [ref=f20e155]
+                - generic [ref=f20e156]:
+                  - generic [ref=f20e157]:
+                    - generic [ref=f20e158]: Due 15 Oct
+                    - generic [ref=f20e161]: £144
+                  - generic [ref=f20e162]:
+                    - generic [ref=f20e163]: Due 24 Oct
+                    - generic [ref=f20e166]: £510
+                  - generic [ref=f20e167]:
+                    - generic [ref=f20e168]: Due 24 Oct
+                    - generic [ref=f20e171]: £1,299
+              - generic [ref=f20e172]:
+                - heading "Credits and refunds" [level=3] [ref=f20e174]
+                - generic [ref=f20e175]:
+                  - generic [ref=f20e176]:
+                    - generic [ref=f20e177]: Credit notes
+                    - generic [ref=f20e178]: "1"
+                  - generic [ref=f20e179]:
+                    - generic [ref=f20e180]: Value
+                    - generic [ref=f20e181]: £932
+              - generic [ref=f20e182]:
+                - heading "Spend by month" [level=3] [ref=f20e184]
+                - img "Spend by month" [ref=f20e185]:
+                  - generic [ref=f20e186]: £0
+                  - generic [ref=f20e188]: £2,469
+                  - generic [ref=f20e190]: £4,938
+                  - generic [ref=f20e192]:
+                    - generic "1 Jan · £0"
+                    - generic [ref=f20e193]: 1 Jan
+                  - generic:
+                    - generic "1 Feb · £0"
+                  - generic [ref=f20e194]:
+                    - generic "1 Mar · £0"
+                    - generic [ref=f20e195]: 1 Mar
+                  - generic:
+                    - generic "1 Apr · £0"
+                  - generic [ref=f20e196]:
+                    - generic "1 May · £0"
+                    - generic [ref=f20e197]: 1 May
+                  - generic:
+                    - generic "1 Jun · £0"
+                  - generic [ref=f20e198]:
+                    - generic "1 Jul · £0"
+                    - generic [ref=f20e199]: 1 Jul
+                  - generic "1 Aug · £1,214" [ref=f20e201]
+                  - generic [ref=f20e202]:
+                    - generic "1 Sept · £4,938" [ref=f20e203]
+                    - generic [ref=f20e204]: 1 Sept
+                  - generic "1 Oct · £2,574" [ref=f20e206]
+                - generic [ref=f20e207]: Order value
+              - generic [ref=f20e210]:
+                - heading "By project" [level=3] [ref=f20e212]
+                - generic [ref=f20e214]:
+                  - generic [ref=f20e215]: Customer Table Test 2
+                  - generic [ref=f20e218]: £8,726
+      - generic [ref=f20e220]:
+        - generic [ref=f20e221]:
+          - generic [ref=f20e222]:
+            - link "Let's Talk." [ref=f20e223] [cursor=pointer]:
+              - /url: /store/pages/contact
+            - paragraph [ref=f20e224]: Sustainable promotional merchandise, branded in-house and delivered on time.
+          - generic [ref=f20e225]:
+            - heading "Company" [level=4] [ref=f20e226]
+            - link "About us" [ref=f20e227] [cursor=pointer]:
+              - /url: /store/pages/about
+            - link "Environmental footprint" [ref=f20e228] [cursor=pointer]:
+              - /url: /store/pages/environment
+            - link "Value chain" [ref=f20e229] [cursor=pointer]:
+              - /url: /store/pages/value-chain
+            - link "People & culture" [ref=f20e230] [cursor=pointer]:
+              - /url: /store/pages/people
+          - generic [ref=f20e231]:
+            - heading "Let us help" [level=4] [ref=f20e232]
+            - link "FAQ" [ref=f20e233] [cursor=pointer]:
+              - /url: /store/pages/faq
+            - link "Terms & conditions" [ref=f20e234] [cursor=pointer]:
+              - /url: /store/pages/terms
+            - link "Privacy" [ref=f20e235] [cursor=pointer]:
+              - /url: /store/pages/privacy
+            - link "Returns" [ref=f20e236] [cursor=pointer]:
+              - /url: /store/pages/returns
+            - link "Contact us" [ref=f20e237] [cursor=pointer]:
+              - /url: /store/pages/contact
+        - generic [ref=f20e238]:
+          - generic [ref=f20e239]:
+            - heading "Stay in touch" [level=4] [ref=f20e240]
+            - paragraph [ref=f20e241]: Product drops, sustainability news and the occasional good idea. No more than monthly.
+          - generic [ref=f20e242]:
+            - textbox "Email address" [ref=f20e243]:
+              - /placeholder: Your work email
+            - button "Sign up" [ref=f20e244] [cursor=pointer]
+        - generic [ref=f20e245]:
+          - generic [ref=f20e251]:
+            - generic [ref=f20e252]: Accredited
+            - generic [ref=f20e253]: New accreditation
+          - generic [ref=f20e254]:
+            - generic "X" [ref=f20e255]
+            - generic "Facebook" [ref=f20e258]
+            - generic "Instagram" [ref=f20e261]
+            - generic "LinkedIn" [ref=f20e266]
+            - generic "YouTube" [ref=f20e270]
+        - generic [ref=f20e274]:
+          - generic [ref=f20e275]:
+            - generic [ref=f20e276]: © 2026 Test Distributor
+            - link "Cookie policy" [ref=f20e277] [cursor=pointer]:
+              - /url: /store/pages/cookies
+            - link "Accessibility" [ref=f20e278] [cursor=pointer]:
+              - /url: /store/pages/accessibility
+            - generic [ref=f20e279]: Powered by Merchsmith
+          - generic [ref=f20e280]:
+            - generic [ref=f20e281]: Secured by Stripe
+            - img "Visa" [ref=f20e282]
+            - img "Mastercard" [ref=f20e283]
+            - img "American Express" [ref=f20e284]
+  - button "Messages" [ref=f20e285] [cursor=pointer]
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f20e288]:
+    - button [ref=f20e290] [cursor=pointer]: ×

@@ -8,7 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
-<script src="theme.js"></script>
+<script>if(/[?&]store=merchsmith\b/.test(location.search)) window.MS_SCOPE='platform';</script>
+<script>if(/tab=billing/.test(location.hash)){ const m=location.hash.match(/sub=(\w+)/); location.replace('Merchsmith Finance.html'+(m?'#sub='+m[1]:'')); }</script>
+<script src="theme.js?v=10"></script>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
@@ -25,19 +27,96 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .account{display:flex;align-items:center;gap:8px;background:none;border:0;cursor:pointer;border-radius:999px;padding:4px 8px 4px 4px;font-family:var(--sans);}
 .account .av{width:32px;height:32px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;}
 .account .acc-nm{font-weight:700;font-size:14px;color:var(--ink);}
-.crumbband{background:var(--periwinkle);color:#fff;padding:13px 36px;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px var(--page-gutter);}
 .crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
 .crumb .sep{opacity:.6;}
 .crumb .here{font-weight:700;}
-.main{max-width:860px;margin:0 auto;padding:30px 36px 90px;}
+.main{width:100%;max-width:none;padding:30px var(--page-gutter) 90px;}
 .ptitle{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1;letter-spacing:-.01em;margin:0;}
 .psub{font-size:14.5px;color:var(--text-soft);margin-top:10px;max-width:640px;line-height:1.55;}
-.settabs{display:flex;gap:4px;margin-top:26px;border-bottom:1px solid var(--line-soft);}
-.settab{border:0;background:none;font:inherit;font-size:14.5px;font-weight:700;color:var(--ink-3);padding:11px 16px;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;}
+.settabs{display:flex;gap:4px;margin-top:26px;border-bottom:1px solid var(--line-soft);overflow-x:auto;scrollbar-width:none;}
+.settabs::-webkit-scrollbar{display:none;}
+.settab{flex:none;white-space:nowrap;border:0;background:none;font:inherit;font-size:14.5px;font-weight:700;color:var(--ink-3);padding:11px 16px;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;}
 .settab.active{color:var(--periwinkle-deep);border-bottom-color:var(--periwinkle-deep);}
+.subgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:4px 0 16px;}
+.subfig{background:var(--paper);border-radius:13px;padding:15px 17px;}
+.subfig b{display:block;font-family:var(--serif);font-weight:500;font-size:30px;line-height:1;letter-spacing:-.02em;}
+.subfig span{display:block;margin-top:7px;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);}
+.subfig.tot{background:var(--tint-peri);}
+.subfig.tot b{color:var(--periwinkle-deep);}
+.seatbar{width:52px;height:5px;border-radius:99px;background:var(--paper-2);overflow:hidden;flex:none;}
+.seatbar i{display:block;height:100%;background:var(--periwinkle-deep);}
+.seatbar.over i{background:var(--flare);}
+.seatbar.big{width:100%;height:8px;}
+.subline{font-size:13.5px;color:var(--ink-2);margin:13px 0 0;}
+.rolecols{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:700px){.rolecols{grid-template-columns:1fr;}}
+.rolh{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:0 0 9px;}
+.rolh.bill{color:var(--periwinkle-deep);}
+.rolh.free{color:var(--green-deep);}
+.rolelist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
+.rolelist li{font-size:13.5px;color:var(--ink-2);padding-left:22px;position:relative;}
+.rolelist li::before{content:"";position:absolute;left:3px;top:7px;width:7px;height:7px;border-radius:50%;background:var(--periwinkle);}
+.rolelist.free li::before{background:var(--spearmint,#36C0A0);}
+.subplans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:820px){.subplans{grid-template-columns:1fr;}}
+.subplan{border:1.5px solid var(--line-soft);border-radius:14px;padding:16px 18px;}
+.subplan.on{border-color:var(--periwinkle);background:var(--tint-peri);}
+.sp-n{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-weight:500;font-size:19px;}
+.sp-cur{font-family:var(--sans);font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--periwinkle);border-radius:999px;padding:2px 8px;}
+.sp-p{font-family:var(--serif);font-weight:500;font-size:26px;margin:6px 0 12px;}
+.sp-p span{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-3);}
+.sp-r{display:flex;justify-content:space-between;font-size:12.5px;padding:5px 0;border-top:1px solid var(--line-soft);}
+.sp-r span{color:var(--ink-3);font-weight:600;}
+.sp-r b{color:var(--ink);}
+.sp-t{font-size:12.5px;color:var(--ink-2);margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);}
+.sp-t i{font-style:normal;color:var(--flare);font-weight:700;}
 .fcfg-h{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .fcfg-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--paper-2);}
 .fcfg-row:nth-child(2){border-top:0;}
+/* footer + pages editors */
+.fgrp{border:1px solid var(--line-soft);border-radius:13px;padding:16px 18px;margin-bottom:14px;}
+.fgrp-h{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.fgrp-h h3{font-size:13.5px;font-weight:800;margin:0;}
+.fgrp-h .hint{font-size:12px;color:var(--muted);font-weight:600;}
+.fgrp-h .sp{margin-left:auto;}
+.frw{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px solid var(--paper-2);}
+.frw:first-of-type{border-top:0;}
+.frw input[type=text],.frw input[type=email],.frw input[type=url]{font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:7px 10px;color:var(--ink);background:#fff;min-width:0;}
+.frw .w-t{flex:1;}
+.frw .w-h{flex:1.3;}
+.frw .grab{color:var(--line);cursor:grab;font-size:14px;flex:none;}
+.flab{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);width:118px;flex:none;}
+.ffield{display:flex;align-items:center;gap:10px;padding:7px 0;}
+.ffield input,.ffield textarea{flex:1;font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:8px 11px;color:var(--ink);background:#fff;}
+.ffield textarea{min-height:64px;resize:vertical;line-height:1.55;}
+.ffield input:focus,.ffield textarea:focus,.frw input:focus{outline:0;border-color:var(--periwinkle);}
+.accrow2{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--paper-2);}
+.accrow2:first-of-type{border-top:0;}
+.accrow2 input[type=text]{font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:7px 10px;color:var(--ink);background:#fff;min-width:0;}
+.accrow2 input:focus,.accrow2 select:focus{outline:0;border-color:var(--periwinkle);}
+.accrow2 .w-mark{flex:none;width:88px;font:inherit;font-size:12.5px;border:1.5px solid var(--line-soft);border-radius:8px;padding:6px 7px;background:#fff;color:var(--ink);text-transform:capitalize;cursor:pointer;}
+.accrow2 .w-q{flex:none;width:104px;}
+.accrow2 .w-t{flex:1;}
+.accthumb{width:78px;height:38px;border-radius:7px;background:var(--paper);border:1px dashed var(--line);display:grid;place-items:center;font-size:8.5px;font-weight:800;color:var(--muted);text-align:center;overflow:hidden;flex:none;padding:3px;}
+.accthumb img{max-width:100%;max-height:100%;object-fit:contain;}
+.upl{font:inherit;font-size:12px;font-weight:700;color:var(--periwinkle-deep);background:none;border:1.5px solid var(--line-soft);border-radius:8px;padding:6px 11px;cursor:pointer;flex:none;}
+.upl:hover{border-color:var(--periwinkle-deep);}
+.cardchk{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-right:14px;}
+.pgrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--paper-2);}
+.pgrow:first-child{border-top:0;}
+.pgrow b{font-size:14px;font-weight:700;}
+.pgrow .slug{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted);}
+.pgtype{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:3px 9px;background:var(--tint-peri);color:var(--periwinkle-deep);}
+.pgstate{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:3px 9px;}
+.pgstate.def{background:#fbeccd;color:#9a6b1f;}
+.pgstate.ed{background:var(--tint-green);color:var(--green-deep);}
+.pgsec{border:1px solid var(--line-soft);border-radius:11px;padding:13px 15px;margin-bottom:10px;}
+.pgsec-h{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+.pgsec-h span{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.pgsec-h .sp{margin-left:auto;}
+.xbtn{border:0;background:none;color:var(--muted);font-size:16px;line-height:1;cursor:pointer;padding:2px 5px;border-radius:6px;flex:none;}
+.xbtn:hover{color:var(--flare);background:var(--paper-2);}
 .fcfg-row input[type=text]{font:inherit;font-size:13.5px;border:1.5px solid var(--line-soft);border-radius:9px;padding:8px 11px;}
 .fcfg-row .ft{width:180px;font-weight:600;} .fcfg-row .fh{flex:1;color:var(--periwinkle-deep);}
 .fcfg-row .fdel{border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;}
@@ -47,6 +126,8 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .ftog.on{background:var(--periwinkle-deep);} .ftog.on::after{left:18px;}
 .fcol-pick{font:inherit;font-size:12px;border:1.5px solid var(--line-soft);border-radius:8px;padding:6px 8px;}
 .card{background:#fff;border:1px solid var(--line-soft);border-radius:18px;padding:24px 26px;margin-top:22px;box-shadow:0 4px 16px rgba(40,44,80,.04);}
+#orgProfileMount .op{max-width:none;margin-top:22px;border-radius:18px;padding:24px 26px;box-shadow:0 4px 16px rgba(40,44,80,.04);}
+#orgProfileMount .op-hdt{min-width:0;}
 .card-h{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
 .card-h h2{font-family:var(--serif);font-weight:500;font-size:23px;margin:0;}
 .tag{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--paper-2);border-radius:6px;padding:3px 9px;}
@@ -114,7 +195,16 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 .btn{font:inherit;font-size:13.5px;font-weight:700;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;}
 .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line-soft);}
 .logogrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:640px){.logogrid{grid-template-columns:1fr;}}
+.logogrid.lg3{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px;}
+.lgsmall{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:16px 28px;}
+.lgsmall .logoslot{width:220px;}
+.logoslot{min-width:0;}
+.logomono{row-gap:6px;min-height:28px;}
+.logoslot-hint{display:block;line-height:1.45;}
+.favdrop{width:120px;background:#fff;} .favdrop img{width:56px;height:56px;object-fit:contain;} .favdrop .favtab{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--ink-2);background:var(--paper-2);border-radius:8px 8px 0 0;padding:7px 10px;max-width:108px;} .favdrop .favtab img{width:16px;height:16px;}
+@media(max-width:640px){.logogrid,.logogrid.lg3{grid-template-columns:1fr;}}
+.sqdrop{width:120px;display:grid;place-items:center;font-size:30px;font-weight:800;color:#fff;border-style:solid;}
+.sqdrop img{width:100%;height:100%;object-fit:contain;background:#fff;}
 .logoslot{display:flex;flex-direction:column;gap:7px;}
 .logoslot-lbl{font-size:12px;font-weight:700;color:var(--ink-3);}
 .logoslot-drop{height:120px;border:1.5px dashed var(--line-soft);border-radius:12px;overflow:hidden;background:var(--paper);}
@@ -185,19 +275,27 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
   
   <div class="headtools"><button class="account"><span class="av">JD</span><span class="acc-nm">Jess Doyle</span></button></div>
 </header>
-<div class="crumbband"><div class="crumb"><span>Mojo Promotions</span><span class="sep">›</span><span class="here">Distributor settings</span></div></div>
+<div class="crumbband"><div class="crumb" id="setCrumb"><span>Mojo Promotions</span><span class="sep">›</span><span class="here">Settings</span></div></div>
 
 <main class="main">
-  <h1 class="ptitle" id="setTitle">Distributor settings</h1>
-  <p class="psub" id="setSub">Account-wide settings for Mojo Promotions. These apply across every customer and project unless overridden at a more specific level.</p>
-
+  <h1 class="ptitle" id="setTitle">Settings</h1>
   <div class="settabs">
+    <button class="settab" data-panel="orgprofile">Organisation profile</button>
     <button class="settab active" data-panel="leadtimes">Lead times</button>
-    <button class="settab" data-panel="footer">Footer</button>
-    <button class="settab" onclick="return false" style="opacity:.5;cursor:default">Markup &amp; pricing</button>
-    <button class="settab" onclick="return false" style="opacity:.5;cursor:default">Discounts</button>
+    <button class="settab" data-panel="footer">Footer</button><button class="settab" data-panel="pages">Pages</button>
     <button class="settab" data-panel="branding">Branding</button>
-    <button class="settab" data-panel="drafts">Drafts</button>
+    <button class="settab" data-panel="domain">Domain</button>
+    <button class="settab" data-panel="warndrafts">Warning drafts</button>
+    <button class="settab" data-panel="saleslit">Sales literature</button>
+    <button class="settab" data-panel="custdefaults">Customer defaults</button>
+    <button class="settab" data-panel="subscription">Subscription</button>
+  </div>
+  <div class="settabs storetabs" style="display:none">
+    <button class="settab" data-panel="storehome">Homepage</button>
+    <button class="settab" data-panel="markup">Markup &amp; pricing</button>
+    <button class="settab" data-panel="discounts">Discounts</button>
+    <button class="settab" data-panel="appearance">Store appearance</button>
+    <button class="settab" data-panel="searchins">Search insights</button>
   </div>
 
   <div class="panel" id="panel-leadtimes">
@@ -214,25 +312,66 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
   </div>
 
   <div class="card">
+    <div class="card-h"><h2>Sample lead times</h2><span class="tag">Customer</span></div>
+    <p class="lede">The lead time customers are quoted for samples. Supplier sample lead times are set on each <b>supplier's profile</b> (defaults 1 day unbranded, 7 days branded); both can be changed per product on the pop-out's Sample tab.</p>
+    <div class="lieuctl"><span class="lbl">Unbranded sample (default)</span><div class="stepper"><button data-cs="unbranded" data-d="-1" aria-label="Decrease">−</button><span class="val" id="csU">3</span><button data-cs="unbranded" data-d="1" aria-label="Increase">+</button></div><span class="unit">working days</span></div>
+    <div class="lieuctl"><span class="lbl">Branded sample (default)</span><div class="stepper"><button data-cs="branded" data-d="-1" aria-label="Decrease">−</button><span class="val" id="csB">10</span><button data-cs="branded" data-d="1" aria-label="Increase">+</button></div><span class="unit">working days</span></div>
+  </div>
+
+  <div id="viaMount"></div>
+
+  <div class="card">
     <div class="card-h"><h2>Related</h2></div>
     <div class="linkrow"><div class="li"><b>Suppliers &amp; their day-in-lieu overrides</b><span>Manage suppliers, contacts and per-supplier buffers</span></div><a href="Merchsmith Organisations.html">Open Organisations ›</a></div>
     <div class="linkrow"><div class="li"><b>Customers</b><span>Standing discounts, teams and addresses</span></div><a href="Merchsmith Organisations.html">Open Organisations ›</a></div>
   </div>
+  <div id="splitDefMount"></div>
   </div>
 
   <div class="panel" id="panel-storerange" hidden></div>
 
   <div class="panel" id="panel-storehome" hidden></div>
 
+  <div class="panel" id="panel-searchins" hidden><div id="searchInsMount"></div></div>
+
   <div class="panel" id="panel-footer" hidden>
   <div class="card">
-    <div class="card-h"><h2>Footer links</h2><span class="tag">Your platform</span></div>
-    <p class="lede">Manage the links shown in your platform footer. Toggle visibility, rename, or set the URL. These show to your customers and suppliers. <b>“Powered by Merchsmith”</b> is shown on all views except the customer's.</p>
-    <div class="fcfg" id="fLeft"><div class="fcfg-h">Left column</div></div>
-    <div class="fcfg" id="fRight" style="margin-top:18px"><div class="fcfg-h">Right column</div></div>
-    <div style="margin-top:18px;display:flex;gap:10px"><button class="btn ghost" id="fAdd">+ Add link</button><button class="btn" id="fSave">Save footer</button></div>
+    <div class="card-h"><h2>Footer</h2><span class="tag">Your platform</span></div>
+    <p class="lede">Everything in your platform footer is editable here. It appears on every page your customers and suppliers see, and takes its colour from your colourway. <b>“Powered by Merchsmith”</b> can be switched off below.</p>
+    <div id="fEditor"></div>
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" id="fSave">Save footer</button>
+      <button class="btn ghost" id="fPreview">Preview a page</button>
+      <button class="btn ghost" id="fReset">Reset to defaults</button>
+    </div>
   </div>
   </div>
+
+  <div class="panel" id="panel-warndrafts" hidden><div id="warnDraftsMount" style="margin-top:22px"></div></div>
+
+  <div class="panel" id="panel-saleslit" hidden><div id="salesLitMount"></div></div>
+
+  <div class="panel" id="panel-custdefaults" hidden><div id="custDefMount"></div></div>
+
+  <div class="panel" id="panel-pages" hidden>
+  <div class="card">
+    <div class="card-h"><h2>Content pages</h2><span class="tag">Your platform</span></div>
+    <p class="lede">The pages your footer links to. Each one follows a template for its type — editorial, legal, FAQ or contact — so you fill in sections rather than starting from a blank box. Pages you have not touched show default scaffolding.</p>
+    <div id="pgList"></div>
+  </div>
+  <div class="card" id="pgEditCard" hidden style="margin-top:16px">
+    <div class="card-h"><h2 id="pgEditTitle">Edit page</h2><span class="tag" id="pgEditType">—</span></div>
+    <div id="pgEditor"></div>
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" id="pgSave">Save page</button>
+      <button class="btn ghost" id="pgView">View page</button>
+      <button class="btn ghost" id="pgRevert">Revert to default</button>
+      <button class="btn ghost" id="pgClose">Close</button>
+    </div>
+  </div>
+  </div>
+
+  <div class="panel" id="panel-orgprofile" hidden><div id="orgProfileMount"></div></div>
 
   <div class="panel" id="panel-branding" hidden>
   <div class="card">
@@ -261,48 +400,97 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
   </div>
 
   <div class="card">
-    <div class="card-h"><h2>Logos</h2><span class="tag">Header &amp; PDF</span></div>
-    <p class="lede">Upload the logos used across your platform. The <b>header logo</b> appears top-left in the app; the <b>PDF logo</b> is used on downloadable documents (proofs, quotes) — we'll wire that in at a later stage.</p>
-    <div class="logogrid">
+    <div class="card-h"><h2>Logos</h2><span class="tag">Square, header &amp; PDF</span></div>
+    <p class="lede">Every logo for your organisation lives here. The <b>square logo</b> is used in lists, chat and avatars; the <b>header logo</b> appears top-left in the app; the <b>PDF logo</b> is used on proofs, quotes and order documents.</p>
+    <div class="logogrid lg3">
+      <div class="lgsmall">
+      <div class="logoslot"><span class="logoslot-lbl">Square logo</span><div class="logoslot-drop sqdrop" id="sqLogoBox"></div><div class="logomono"><label class="logomono-btn" style="cursor:pointer">Upload<input type="file" accept="image/*" id="sqLogoFile" hidden></label><button type="button" class="logodel" id="sqLogoDel" hidden>Remove logo</button></div><span class="logoslot-hint">Used in lists, chat and avatars. <b>Square, at least 256 × 256 px.</b></span></div>
+      <div class="logoslot"><span class="logoslot-lbl">Favicon</span><div class="logoslot-drop sqdrop favdrop" id="favBox"></div><div class="logomono"><label class="logomono-btn" style="cursor:pointer">Upload<input type="file" accept="image/png,image/svg+xml,image/x-icon,image/*" id="favFile" hidden></label><button type="button" class="logodel" id="favDel" hidden>Remove</button></div><span class="logoslot-hint">Browser tab, bookmarks and home-screen shortcuts for you and your customers. <b>Square PNG or SVG, at least 64 × 64 px.</b></span></div>
+      </div>
       <div class="logoslot"><span class="logoslot-lbl">Platform header logo</span><div class="logoslot-drop"><image-slot id="brand-header-logo" shape="rect" fit="contain" data-crop placeholder="Drop header logo (SVG / PNG)"></image-slot></div><div class="logomono" data-for="brand-header-logo"><span>Tone</span><button type="button" class="logomono-btn on" data-mono="original">Original</button><button type="button" class="logomono-btn" data-mono="white">Mono white</button><button type="button" class="logomono-btn" data-mono="black">Mono black</button><button type="button" class="logodel" data-crop-logo="brand-header-logo">Crop</button><button type="button" class="logodel" data-del-logo="brand-header-logo">Remove logo</button></div><span class="logoslot-hint">Shown top-left. Transparent PNG or SVG recommended. <b>Recommended: 320 × 80 px</b> (4:1), max 512 px wide. Double-click to crop &amp; reposition.</span></div>
       <div class="logoslot"><span class="logoslot-lbl">PDF / document logo</span><div class="logoslot-drop"><image-slot id="brand-pdf-logo" shape="rect" fit="contain" data-crop placeholder="Drop PDF logo (PNG / SVG)"></image-slot></div><div class="logomono" data-for="brand-pdf-logo"><span>Tone</span><button type="button" class="logomono-btn on" data-mono="original">Original</button><button type="button" class="logomono-btn" data-mono="white">Mono white</button><button type="button" class="logomono-btn" data-mono="black">Mono black</button><button type="button" class="logodel" data-crop-logo="brand-pdf-logo">Crop</button><button type="button" class="logodel" data-del-logo="brand-pdf-logo">Remove logo</button></div><span class="logoslot-hint">Used on proofs, quotes &amp; order docs. <b>Recommended: 600 × 200 px</b> (3:1) or vector SVG, transparent background. Double-click to crop &amp; reposition.</span></div>
     </div>
   </div>
   </div>
 
-  <div class="panel" id="panel-drafts" hidden>
+  <div class="panel" id="panel-appearance" hidden><div id="appearanceMount"></div></div>
+
+  <div class="panel" id="panel-domain" hidden><div id="domainMount"></div></div>
+
+  <div class="panel" id="panel-markup" hidden><div id="markupMount"></div></div>
+
+  <div class="panel" id="panel-discounts" hidden><div id="discountsMount"></div><div id="promoMount"></div></div>
+
+  <div class="panel" id="panel-billing" hidden><div id="billingMount"></div></div>
+
+  <div class="panel" id="panel-subscription" hidden>
   <div class="card">
-    <div class="card-h"><h2>Email drafts</h2><span class="tag">Automated emails</span></div>
-    <p class="lede">Edit the wording of the automated emails the system sends on your behalf. Use the merge fields shown (e.g. <code>{customer}</code>, <code>{project}</code>, <code>{product}</code>, <code>{link}</code>) — they're replaced with live values when sent.</p>
-    <div class="drafts" id="draftList"></div>
+    <div class="card-h"><h2>Your subscription</h2><span class="tag" id="subPlanTag">—</span></div>
+    <p class="lede">Your plan includes the whole platform — nothing is held back on a lower tier. The only thing that changes between plans is the monthly base, how many <b>distributor seats</b> are included, and the rate for each seat beyond that.</p>
+    <div id="subBox"></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h2>What counts as a seat</h2></div>
+    <p class="lede">A seat is one billable user in <b>your own team</b>. Your customers and your suppliers log in free — they never count towards your allowance and are never billed, on any plan.</p>
+    <div id="subRoles"></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h2>If you add more people</h2></div>
+    <p class="lede">Compare the tiers against your current team size. Seats are billed monthly at the rate for your plan.</p>
+    <div id="subPlans"></div>
   </div>
   </div>
+
+
 </main>
 
 <div class="saved-toast" id="toast"><svg class="icn"><use href="#i-check"/></svg><span>Saved</span></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-dash" viewBox="0 0 24 24"><path d="M4 20h16M7 20v-6M12 20V9M17 20v-10"/></symbol>
-  <symbol id="i-box" viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
-  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+  <symbol id="i-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 20v-6M12 20V9M17 20v-10"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
 </svg>
-<script src="lead-times.js"></script>
+<script src="names.js?v=2"></script>
+<script src="address.js?v=1"></script>
+<script src="admin-data.js?v=8"></script>
+<script src="store-domain.js?v=3"></script>
+<script src="bacs-deadline.js?v=2"></script>
+<script src="two-supplier.js"></script>
+<script src="finance-tables.js?v=1"></script>
+<script src="finance-invoices.js?v=4"></script>
+<script src="store-appearance.js?v=4"></script>
+<script src="billing.js?v=3"></script>
+<script src="markup.js?v=1"></script>
+<script src="discounts.js?v=2"></script>
+<script src="org-data.js?v=8"></script>
+<script src="promo-codes.js?v=2"></script>
+<script src="store-structure.js"></script>
+<script src="lead-times.js?v=3"></script>
 <script src="store-feed.js"></script>
 <script src="ms-data.js"></script>
 <script src="catalogue-data.js"></script>
-<script src="dist-storerange.js?v=3"></script>
+<script src="product-notes.js?v=4"></script>
+<script src="dist-storerange.js?v=27"></script>
 <script src="ms-brands.js?v=2"></script>
+<script src="ms-tags.js?v=3"></script>
+<script src="ms-dist-tags.js?v=1"></script>
 <script src="dist-overrides.js?v=2"></script>
 <script src="store-home.js?v=7"></script>
-<script src="dist-storehome.js?v=8"></script>
+<script src="dist-storehome.js?v=10"></script>
 <script src="image-slot.js"></script>
 <script src="logos.js"></script>
 <script src="identity.js"></script>
-<script src="sidebar.js"></script>
-<script src="chrome.js"></script>
+<script src="avatars.js"></script>
+<script src="people.js?v=19"></script>
+<script src="org-profile.js?v=14"></script>
+<script src="sidebar.js?v=26"></script>
+<script src="site-content.js"></script>
+<script src="chrome.js?v=3"></script>
 <script>
 const ML=window.MSLead;
 const toast=(()=>{ const el=document.getElementById('toast'); let t; return ()=>{ el.classList.add('show'); clearTimeout(t); t=setTimeout(()=>el.classList.remove('show'),1400); }; })();
-function render(){ document.getElementById('gVal').textContent=ML.globalLieu(); document.getElementById('fLieu').textContent=ML.globalLieu(); }
+function render(){ document.getElementById('gVal').textContent=ML.globalLieu(); document.getElementById('fLieu').textContent=ML.globalLieu(); if(ML.custSampleLead){ document.getElementById('csU').textContent=ML.custSampleLead('unbranded'); document.getElementById('csB').textContent=ML.custSampleLead('branded'); } }
+document.querySelectorAll('[data-cs]').forEach(b=>b.onclick=()=>{ const t=b.dataset.cs; ML.setCustSampleLead(t,ML.custSampleLead(t)+(+b.dataset.d)); render(); toast(); });
 document.getElementById('gLess').onclick=()=>{ ML.setGlobalLieu(Math.max(0,ML.globalLieu()-1)); render(); toast(); };
 document.getElementById('gMore').onclick=()=>{ ML.setGlobalLieu(ML.globalLieu()+1); render(); toast(); };
 render();
@@ -312,47 +500,358 @@ function showTab(name){ const b=document.querySelector('.settab[data-panel="'+na
   document.querySelectorAll('.settab').forEach(x=>x.classList.toggle('active',x===b));
   document.querySelectorAll('.panel').forEach(p=>p.hidden = p.id!=='panel-'+name);
   // store-range / store-settings have no in-page tab — they live in the sidebar; hide the tab bar when showing them
-  const sidebarOnly = (name==='storerange'||name==='storehome');
-  const tabbar=document.querySelector('.settabs'); if(tabbar) tabbar.style.display = sidebarOnly?'none':'';
-  const ttl=document.getElementById('setTitle'), sub=document.getElementById('setSub');
-  if(name==='storerange'){ if(ttl)ttl.textContent='Store'; if(sub)sub.textContent='Manage the products that appear in your customer-facing store.'; }
-  else if(name==='storehome'){ if(ttl)ttl.textContent='Store settings'; if(sub)sub.textContent='Show, hide, reorder and edit the sections of your customer-facing store homepage.'; }
-  else { if(ttl)ttl.textContent='Distributor settings'; if(sub)sub.textContent='Account-wide settings for Mojo Promotions. These apply across every customer and project unless overridden at a more specific level.'; }
+  // Store settings has its own sub-tabs (Homepage, Markup & pricing, Discounts, Store appearance)
+  const STORE_TABS=['storehome','markup','discounts','appearance','searchins'], inStore=STORE_TABS.includes(name);
+  const sidebarOnly = (name==='storerange'||name==='billing'||inStore);
+  const tabbar=document.querySelector('.settabs:not(.storetabs)'); if(tabbar) tabbar.style.display = sidebarOnly?'none':'';
+  const stbar=document.querySelector('.storetabs'); if(stbar) stbar.style.display = inStore&&window.MS_SCOPE!=='platform'?'':'none';
+  const ttl=document.getElementById('setTitle');
+  const PLAT=window.MS_SCOPE==='platform';
+  const CRUMB=PLAT
+    ? { storehome:['Default store','Store settings'], footer:['Default store','Footer'] }
+    : { storerange:['Store','Product range'], storehome:['Store','Store settings','Homepage'], markup:['Store','Store settings','Markup & pricing'], discounts:['Store','Store settings','Discounts'], appearance:['Store','Store settings','Store appearance'], billing:['Finance','Billing & payments'] };
+  if(PLAT){ if(tabbar) tabbar.style.display='none';
+    if(ttl) ttl.textContent = name==='footer'?'Default store footer':'Default store settings'; }
+  else if(name==='storerange'){ if(ttl)ttl.textContent='Product range'; }
+  else if(inStore){ if(ttl)ttl.textContent='Store settings'; }
+  else if(name==='billing'){ if(ttl)ttl.textContent='Billing & payments'; }
+  else if(!PLAT){ if(ttl)ttl.textContent='Settings'; }
+  { const cr=document.getElementById('setCrumb'); const path=CRUMB[name]||['Settings'];
+    if(cr) cr.innerHTML=path.map((s,i)=>
+      (i?'<span class="sep">›</span>':'')+(i===path.length-1?'<span class="here">'+s+'</span>':'<span>'+s+'</span>')).join(''); }
+  if(name==='subscription') renderSubscription();
   if(name==='storerange' && window.MSDistRange) MSDistRange.render();
-  if(name==='storehome' && window.MSStoreHome) MSStoreHome.render(); }
-document.querySelectorAll('.settab[data-panel]').forEach(b=>b.onclick=()=>{ showTab(b.dataset.panel); history.replaceState(null,'','#tab='+b.dataset.panel); });
+  if(name==='storehome' && window.MSStoreHome) MSStoreHome.render();
+  if(name==='discounts' && window.MSDISC) MSDISC.panel(document.getElementById('discountsMount'));
+  if(name==='discounts' && window.MSPROMO) MSPROMO.panel(document.getElementById('promoMount'));
+  if(name==='warndrafts' && window.MSWARN) MSWARN.settings(document.getElementById('warnDraftsMount'));
+  if(name==='searchins'){ const go=()=>window.MSSEARCH?MSSEARCH.insightsPanel(document.getElementById('searchInsMount')):setTimeout(go,150); go(); }
+  if(name==='saleslit' && window.MSSALESLIT) MSSALESLIT.settings(document.getElementById('salesLitMount'));
+  if(name==='custdefaults' && window.MSCUSTDEF) MSCUSTDEF.settings(document.getElementById('custDefMount'));
+  if(name==='appearance' && window.MSAPPEAR) MSAPPEAR.mount(document.getElementById('appearanceMount'));
+  if(name==='markup' && window.MSMARKUP) MSMARKUP.panel(document.getElementById('markupMount'));
+  if(name==='billing' && window.ADMIN){ const me=ADMIN.distributors.find(d=>d.id==='acme')||ADMIN.distributors[0]; if(window.MSFIN) MSFIN.panel(document.getElementById('billingMount'),me); else if(window.MSBILL) MSBILL.panel(document.getElementById('billingMount'),me); }
+  if(name==='domain' && window.MSDOMAIN && window.ADMIN){ const me=ADMIN.distributors.find(d=>d.id==='acme')||ADMIN.distributors[0]; MSDOMAIN.distributorPanel(document.getElementById('domainMount'),me); } }
+document.querySelectorAll('.settab[data-panel]').forEach(b=>b.onclick=()=>{ showTab(b.dataset.panel); history.replaceState(null,'','#tab='+b.dataset.panel); window.scrollTo(0,0); });
 // deep-link: open the tab/panel named in #tab=… (e.g. from the sidebar "Store range" — which has no in-page tab button)
-(function(){ const m=(location.hash.match(/tab=([a-z]+)/i)||[])[1]; if(m && document.getElementById('panel-'+m)) showTab(m); })();
-window.addEventListener('hashchange',()=>{ const m=(location.hash.match(/tab=([a-z]+)/i)||[])[1]; if(m && document.getElementById('panel-'+m)) showTab(m); });
+(function(){ const m=(location.hash.match(/tab=([a-z]+)/i)||[])[1];
+  if(window.MS_SCOPE==='platform'){ showTab(m==='footer'?'footer':'storehome'); return; }
+  if(m && document.getElementById('panel-'+m)) showTab(m); })();
+(function(){ let k=(location.hash.split('&')[0]||''); window.addEventListener('hashchange',()=>{
+    const n=(location.hash.split('&')[0]||''); if(n!==k){ k=n; window.scrollTo(0,0); } }); })();
+window.addEventListener('hashchange',()=>{ const m=(location.hash.match(/tab=([a-z]+)/i)||[])[1];
+  if(window.MS_SCOPE==='platform'){ showTab(m==='footer'?'footer':'storehome'); return; }
+  if(m && document.getElementById('panel-'+m)) showTab(m); });
 
-/* ---- footer editor ---- */
-const FDEF={ left:[{t:'Contact us',h:'#',on:true},{t:'FAQs',h:'#',on:true}],
-             right:[{t:'Privacy Policy',h:'#',on:true},{t:'Terms & Conditions',h:'#',on:true},{t:'Cookie Policy',h:'#',on:true},{t:'Accessibility',h:'#',on:true}] };
-let FCFG; try{ FCFG=JSON.parse(localStorage.getItem('ms-footer-cfg')||'null'); }catch(e){} FCFG=FCFG||JSON.parse(JSON.stringify(FDEF));
-function frow(a,col,i){
-  return `<div class="fcfg-row" data-col="${col}" data-i="${i}">
+/* ---- footer editor ----
+   Edits the whole footer object used by chrome.js (link columns, newsletter,
+   contact, exit link, accreditation logos, socials, payment marks, legal row).
+   Accreditation logos are stored as data URLs so they survive a reload. */
+const FDEF=(window.MSChrome&&MSChrome.FOOTER_DEF)?JSON.parse(JSON.stringify(MSChrome.FOOTER_DEF)):{cols:[],accred:[],social:[],legal:[]};
+let FCFG=(window.MSChrome&&MSChrome.footerCfg)?MSChrome.footerCfg():JSON.parse(JSON.stringify(FDEF));
+const fesc=v=>String(v==null?'':v).replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
+function linkRows(links,path){
+  return (links||[]).map((a,i)=>`<div class="frw" data-path="${path}" data-i="${i}">
+    <span class="grab" title="Drag to reorder">⠿</span>
     <button class="ftog ${a.on!==false?'on':''}" data-tog></button>
-    <input type="text" class="ft" value="${(a.t||'').replace(/"/g,'&quot;')}" data-t placeholder="Link title">
-    <input type="text" class="fh" value="${(a.h||'').replace(/"/g,'&quot;')}" data-h placeholder="URL">
-    <select class="fcol-pick" data-move><option value="left"${col==='left'?' selected':''}>Left</option><option value="right"${col==='right'?' selected':''}>Right</option></select>
-    <button class="fdel" data-del>×</button></div>`;
+    <input type="text" class="w-t" value="${fesc(a.t)}" data-k="t" placeholder="Link title">
+    <input type="text" class="w-h" value="${fesc(a.h)}" data-k="h" placeholder="URL or Merchsmith Page.html?p=slug">
+    <button class="xbtn" data-del>×</button></div>`).join('');
+}
+function fld(label,path,k,val,ph,ta){
+  return `<div class="ffield"><span class="flab">${label}</span>${ta
+    ? `<textarea data-path="${path}" data-k="${k}" placeholder="${fesc(ph)}">${fesc(val)}</textarea>`
+    : `<input type="text" data-path="${path}" data-k="${k}" value="${fesc(val)}" placeholder="${fesc(ph)}">`}</div>`;
+}
+function tog(path,label,on){
+  return `<button class="ftog ${on!==false?'on':''}" data-tog data-path="${path}" data-k="on" title="${label}"></button>`;
 }
 function renderFooter(){
-  document.getElementById('fLeft').innerHTML='<div class="fcfg-h">Left column</div>'+FCFG.left.map((a,i)=>frow(a,'left',i)).join('');
-  document.getElementById('fRight').innerHTML='<div class="fcfg-h">Right column</div>'+FCFG.right.map((a,i)=>frow(a,'right',i)).join('');
+  const c=FCFG;
+  const cols=(c.cols||[]).map((col,ci)=>`<div class="fgrp">
+    <div class="fgrp-h"><h3>Link column ${ci+1}</h3>
+      <input type="text" data-path="cols.${ci}" data-k="h" value="${fesc(col.h)}" placeholder="Column heading" style="font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:6px 10px">
+      <span class="sp"></span><button class="xbtn" data-delcol="${ci}" title="Delete column">×</button></div>
+    ${linkRows(col.links,'cols.'+ci+'.links')}
+    <div style="margin-top:10px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" data-addlink="${ci}">+ Add link</button></div>
+  </div>`).join('');
+
+  document.getElementById('fEditor').innerHTML=`
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Brand block</h3><span class="hint">Top-left of the footer</span></div>
+    ${fld('Blurb','','blurb',c.blurb,'One or two lines about the business',true)}
+    <div class="ffield"><span class="flab">Let’s Talk</span>
+      ${tog('talk','Show the Let’s Talk button',c.talk.on)}
+      <input type="text" data-path="talk" data-k="t" value="${fesc(c.talk.t)}" placeholder="Button text">
+      <input type="text" data-path="talk" data-k="h" value="${fesc(c.talk.h)}" placeholder="Where it goes"></div>
+  </div>
+
+  ${cols}
+  <div style="margin:-4px 0 16px"><button class="btn ghost" style="padding:7px 13px;font-size:12.5px" id="fAddCol">+ Add link column</button></div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Newsletter sign-up</h3>${tog('news','Show the newsletter block',c.news.on)}<span class="hint">Captures an email; nothing is sent in the prototype</span></div>
+    ${fld('Heading','news','h',c.news.h,'Stay in touch')}
+    ${fld('Body','news','b',c.news.b,'What subscribers get, and how often',true)}
+    ${fld('Placeholder','news','ph',c.news.ph,'Your work email')}
+    ${fld('Button','news','cta',c.news.cta,'Sign up')}
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Contact details</h3>${tog('contact','Show contact details',c.contact.on)}<span class="hint">Also shown on the Contact us page</span></div>
+    ${fld('Email','contact','email',c.contact.email,'hello@example.com')}
+    ${fld('Phone','contact','phone',c.contact.phone,'+44 …')}
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Link to your marketing site</h3>${tog('exit','Show the outbound link',c.exit.on)}
+      <span class="hint">Opens in a new tab</span></div>
+    ${fld('Label','exit','t',c.exit.t,'About Mojo Promotions')}
+    ${fld('URL','exit','h',c.exit.h,'https://…')}
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Accreditations</h3><span class="hint">Pick an emblem and name it — or upload the real logo, which replaces the emblem</span></div>
+    ${(c.accred||[]).map((a,i)=>`<div class="accrow2" data-path="accred.${i}">
+      <button class="ftog ${a.on!==false?'on':''}" data-tog data-path="accred.${i}" data-k="on"></button>
+      <span class="accthumb">${a.img?`<img src="${fesc(a.img)}" alt="">`:'No logo'}</span>
+      <select class="w-mark" data-path="accred.${i}" data-k="mark" title="Emblem">${(window.MSChrome&&MSChrome.ACC_MARKS||['seal']).map(m=>`<option value="${m}" ${a.mark===m?'selected':''}>${m}</option>`).join('')}</select>
+      <input type="text" class="w-q" data-path="accred.${i}" data-k="t" value="${fesc(a.t)}" placeholder="Certified">
+      <input type="text" class="w-t" data-path="accred.${i}" data-k="s" value="${fesc(a.s)}" placeholder="Accreditation name">
+      <button class="upl" data-upl="${i}">${a.img?'Replace':'Upload'}</button>
+      ${a.img?`<button class="upl" data-clr="${i}">Clear</button>`:''}
+      <button class="xbtn" data-delacc="${i}">×</button></div>`).join('')}
+    <div style="margin-top:10px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="fAddAcc">+ Add accreditation</button></div>
+    <input type="file" id="accFile" accept="image/*" hidden>
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Social</h3><span class="hint">Leave a URL blank to keep the icon inert</span></div>
+    ${(c.social||[]).map((sc,i)=>`<div class="frw" data-path="social.${i}">
+      <button class="ftog ${sc.on!==false?'on':''}" data-tog data-path="social.${i}" data-k="on"></button>
+      <span class="flab" style="width:86px">${fesc(sc.t)}</span>
+      <input type="text" class="w-h" data-path="social.${i}" data-k="h" value="${fesc(sc.h)}" placeholder="https://…"></div>`).join('')}
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Payment marks</h3>${tog('pay','Show payment marks',c.pay.on)}</div>
+    ${fld('Label','pay','label',c.pay.label,'Secured by Stripe')}
+    <div class="ffield"><span class="flab">Cards</span><div>
+      ${cardChoices().map(x=>
+        `<label class="cardchk"><input type="checkbox" data-card="${x}" ${payNames(c).indexOf(x)>-1?'checked':''}>${x}</label>`).join('')}
+    </div></div>
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Bottom row</h3></div>
+    ${fld('Copyright','','copyright',c.copyright,'© 2026 Your company')}
+    ${linkRows(c.legal,'legal')}
+    <div style="margin-top:10px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="fAddLegal">+ Add legal link</button></div>
+    <div class="ffield" style="margin-top:6px"><span class="flab">Powered by</span>
+      ${tog('','powered',c.powered)}<span class="hint">Show “Powered by Merchsmith”</span></div>
+  </div>`;
+
+  // wire the buttons that rebuild structure
+  const E=document.getElementById('fEditor');
+  E.querySelectorAll('[data-addlink]').forEach(b=>b.onclick=()=>{ readFooterDOM();
+    FCFG.cols[+b.dataset.addlink].links.push({t:'New link',h:'#',on:true}); renderFooter(); });
+  E.querySelectorAll('[data-delcol]').forEach(b=>b.onclick=()=>{ readFooterDOM();
+    FCFG.cols.splice(+b.dataset.delcol,1); renderFooter(); });
+  E.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ readFooterDOM();
+    const r=b.closest('[data-path]'); ref(r.dataset.path).splice(+r.dataset.i,1); renderFooter(); });
+  E.querySelectorAll('[data-delacc]').forEach(b=>b.onclick=()=>{ readFooterDOM();
+    FCFG.accred.splice(+b.dataset.delacc,1); renderFooter(); });
+  const add=(id,fn)=>{ const b=document.getElementById(id); if(b) b.onclick=()=>{ readFooterDOM(); fn(); renderFooter(); }; };
+  add('fAddCol',()=>FCFG.cols.push({h:'New column',links:[{t:'New link',h:'#',on:true}]}));
+  add('fAddAcc',()=>FCFG.accred.push({t:'Accredited',s:'New accreditation',mark:'seal',img:'',on:true}));
+  add('fAddLegal',()=>FCFG.legal.push({t:'New link',h:'#',on:true}));
+
+  // accreditation logo upload → data URL
+  const file=document.getElementById('accFile'); let upTarget=null;
+  E.querySelectorAll('[data-upl]').forEach(b=>b.onclick=()=>{ upTarget=+b.dataset.upl; file.value=''; file.click(); });
+  E.querySelectorAll('[data-clr]').forEach(b=>b.onclick=()=>{ readFooterDOM(); FCFG.accred[+b.dataset.clr].img=''; renderFooter(); });
+  if(file) file.onchange=()=>{ const f=file.files&&file.files[0]; if(!f||upTarget==null) return;
+    const rd=new FileReader(); rd.onload=()=>{ readFooterDOM(); FCFG.accred[upTarget].img=rd.result; renderFooter(); }; rd.readAsDataURL(f); };
+
+  // toggles
+  E.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{ b.classList.toggle('on'); readFooterDOM(); });
 }
-function readRow(row){ return {t:row.querySelector('[data-t]').value, h:row.querySelector('[data-h]').value||'#', on:row.querySelector('[data-tog]').classList.contains('on')}; }
-function syncFromDOM(){ const L=[],R=[]; document.querySelectorAll('#panel-footer .fcfg-row').forEach(row=>{ const a=readRow(row); (row.dataset.col==='left'?L:R).push(a); }); FCFG.left=L; FCFG.right=R; }
-document.getElementById('panel-footer').addEventListener('click',e=>{
-  const tog=e.target.closest('[data-tog]'); if(tog){ syncFromDOM(); tog.classList.toggle('on'); const row=tog.closest('.fcfg-row'); FCFG[row.dataset.col][+row.dataset.i].on=tog.classList.contains('on'); return; }
-  const del=e.target.closest('[data-del]'); if(del){ syncFromDOM(); const row=del.closest('.fcfg-row'); FCFG[row.dataset.col].splice(+row.dataset.i,1); renderFooter(); return; }
-});
-document.getElementById('panel-footer').addEventListener('change',e=>{
-  const mv=e.target.closest('[data-move]'); if(mv){ syncFromDOM(); const row=mv.closest('.fcfg-row'); const from=row.dataset.col, to=mv.value; if(from!==to){ const a=FCFG[from].splice(+row.dataset.i,1)[0]; FCFG[to].push(a); renderFooter(); } }
-});
-document.getElementById('fAdd').onclick=()=>{ syncFromDOM(); FCFG.left.push({t:'New link',h:'#',on:true}); renderFooter(); };
-document.getElementById('fSave').onclick=()=>{ syncFromDOM(); try{ localStorage.setItem('ms-footer-cfg',JSON.stringify(FCFG)); }catch(e){} const ftr=document.querySelector('.ms-footer'); if(ftr) ftr.remove(); if(window.MSChrome&&MSChrome.buildFooter) MSChrome.buildFooter(); toast(); };
+/* Payment cards are objects {t,img,hpx} when we ship artwork for them and plain strings
+   otherwise. The editor works in names, so these convert both ways — mapping a ticked name
+   back to its default object is what keeps the logo files attached on save. */
+const payName=x=>(typeof x==='string')?x:((x&&x.t)||'');
+const payNames=c=>((c&&c.pay&&c.pay.cards)||[]).map(payName).filter(Boolean);
+function cardChoices(){
+  const def=(((window.MSChrome&&MSChrome.FOOTER_DEF)||FDEF).pay.cards||[]).map(payName);
+  const extra=['Maestro','Apple Pay','Google Pay','PayPal'];   // no artwork — render as text chips
+  return [...new Set([...def,...extra,...payNames(FCFG)])].filter(Boolean);
+}
+function cardFor(name){
+  const def=(((window.MSChrome&&MSChrome.FOOTER_DEF)||FDEF).pay.cards||[]);
+  return def.find(d=>payName(d)===name) || name;               // object if we have one, else the name
+}
+
+// resolve a dotted path like 'cols.1.links' against FCFG
+function ref(path){ if(!path) return FCFG;
+  return String(path).split('.').reduce((o,k)=>o?o[k]:undefined,FCFG); }
+function readFooterDOM(){
+  document.querySelectorAll('#fEditor [data-k]').forEach(el=>{
+    const holder=el.dataset.path!==undefined?el:el.closest('[data-path]');
+    const path=el.dataset.path!==undefined?el.dataset.path:(holder?holder.dataset.path:'');
+    const k=el.dataset.k;
+    let target=ref(path);
+    if(path && /\.\d+$/.test(path)===false && holder && holder.dataset.i!==undefined) target=ref(path)[+holder.dataset.i];
+    if(!target||typeof target!=='object') return;
+    if(el.tagName==='BUTTON') target[k]=el.classList.contains('on');
+    else target[k]=el.value;
+  });
+  // powered toggle + top-level text fields (blank data-path)
+  const pw=document.querySelector('#fEditor [data-k="powered"]'); if(pw) FCFG.powered=pw.classList.contains('on');
+  const bl=document.querySelector('#fEditor [data-k="blurb"]'); if(bl) FCFG.blurb=bl.value;
+  const cp=document.querySelector('#fEditor [data-k="copyright"]'); if(cp) FCFG.copyright=cp.value;
+  // keep the full card object (img/hpx) — writing bare names here used to wipe the logos
+  const boxes=document.querySelectorAll('#fEditor [data-card]');
+  if(boxes.length) FCFG.pay.cards=[...boxes].filter(b=>b.checked).map(b=>cardFor(b.dataset.card));
+}
+document.getElementById('fSave').onclick=()=>{ readFooterDOM();
+  try{ localStorage.setItem((window.MSChrome&&MSChrome.FOOTER_KEY)||'ms-footer-cfg',JSON.stringify(FCFG)); }catch(e){}
+  if(window.MSChrome&&MSChrome.buildFooter) MSChrome.buildFooter(); toast(); };
+document.getElementById('fReset').onclick=()=>{
+  if(!confirm('Reset the footer to its default content? Uploaded logos will be cleared.')) return;
+  try{ localStorage.removeItem((window.MSChrome&&MSChrome.FOOTER_KEY)||'ms-footer-cfg'); }catch(e){}
+  FCFG=JSON.parse(JSON.stringify(FDEF)); renderFooter();
+  if(window.MSChrome&&MSChrome.buildFooter) MSChrome.buildFooter(); toast(); };
+document.getElementById('fPreview').onclick=()=>{ readFooterDOM();
+  try{ localStorage.setItem((window.MSChrome&&MSChrome.FOOTER_KEY)||'ms-footer-cfg',JSON.stringify(FCFG)); }catch(e){}
+  location.href=window.MS_SCOPE==='platform'?'Merchsmith Store.html?store=merchsmith':'Merchsmith Page.html?p=about'; };
 renderFooter();
+
+/* ---- content pages editor ----
+   One editor driven by page TYPE: editorial (sections/stats/CTA), legal
+   (clauses), faq (groups of Q&A), contact (offices/hours). */
+(function(){
+  if(!window.MSSITE) return;
+  const L=document.getElementById('pgList'), card=document.getElementById('pgEditCard'), ED=document.getElementById('pgEditor');
+  let cur=null, P=null;
+  const e2=v=>String(v==null?'':v).replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
+  function list(){
+    L.innerHTML=MSSITE.PAGES.map(pg=>{
+      const ed=MSSITE.isEdited(pg.slug);
+      return `<div class="pgrow">
+        <div style="flex:1;min-width:0"><b>${e2(pg.title)}</b> <span class="slug">?p=${e2(pg.slug)}</span></div>
+        <span class="pgtype">${e2(pg.type)}</span>
+        <span class="pgstate ${ed?'ed':'def'}">${ed?'Edited':'Default'}</span>
+        <button class="btn ghost" style="padding:6px 12px;font-size:12.5px" data-edit="${e2(pg.slug)}">Edit</button>
+        <a class="btn ghost" style="padding:6px 12px;font-size:12.5px" href="${MSSITE.url(pg.slug)}">View</a>
+      </div>`;
+    }).join('');
+    L.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>open(b.dataset.edit));
+  }
+
+  const f=(lab,k,val,ph,ta)=>`<div class="ffield"><span class="flab">${lab}</span>${ta
+      ? `<textarea data-f="${k}" placeholder="${e2(ph)}">${e2(val)}</textarea>`
+      : `<input type="text" data-f="${k}" value="${e2(val)}" placeholder="${e2(ph)}">`}</div>`;
+
+  function editor(){
+    let h=f('Standfirst','standfirst',P.standfirst,'The one-paragraph summary under the title',true);
+    if(P.type==='editorial'){
+      h+=(P.sections||[]).map((s,i)=>`<div class="pgsec" data-sec="${i}">
+        <div class="pgsec-h"><span>Section ${i+1}</span><span class="sp"></span>
+          <label class="cardchk"><input type="checkbox" data-simg="${i}" ${s.img?'checked':''}>Image</label>
+          <button class="xbtn" data-delsec="${i}">×</button></div>
+        ${f('Heading','sections.'+i+'.h',s.h,'Section heading')}
+        ${f('Body','sections.'+i+'.body',s.body,'Section copy',true)}</div>`).join('')
+        +`<div style="margin-bottom:16px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="pgAddSec">+ Add section</button></div>
+        <div class="pgsec"><div class="pgsec-h"><span>Stat band</span></div>
+        ${(P.stats||[]).map((st,i)=>`<div class="frw"><input type="text" class="w-t" data-f="stats.${i}.v" value="${e2(st.v)}" placeholder="Figure">
+          <input type="text" class="w-h" data-f="stats.${i}.l" value="${e2(st.l)}" placeholder="Label">
+          <button class="xbtn" data-delstat="${i}">×</button></div>`).join('')}
+        <div style="margin-top:10px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="pgAddStat">+ Add stat</button></div></div>
+        <div class="pgsec"><div class="pgsec-h"><span>Closing call to action</span></div>
+        ${f('Heading','cta.h',(P.cta||{}).h,'Work with us')}
+        ${f('Body','cta.b',(P.cta||{}).b,'One line')}
+        ${f('Button','cta.t',(P.cta||{}).t,"Let's Talk.")}</div>`;
+    }
+    if(P.type==='legal'){
+      h+=f('Last reviewed','reviewed',P.reviewed,'e.g. 12 September 2026')
+       +(P.clauses||[]).map((c,i)=>`<div class="pgsec"><div class="pgsec-h"><span>Clause ${i+1}</span>
+          <span class="sp"></span><button class="xbtn" data-delcl="${i}">×</button></div>
+          ${f('Heading','clauses.'+i+'.h',c.h,'Clause heading')}
+          ${f('Wording','clauses.'+i+'.body',c.body,'Your own wording',true)}</div>`).join('')
+       +`<div><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="pgAddCl">+ Add clause</button></div>`;
+    }
+    if(P.type==='faq'){
+      h+=(P.groups||[]).map((g,gi)=>`<div class="pgsec"><div class="pgsec-h"><span>Group ${gi+1}</span>
+          <input type="text" data-f="groups.${gi}.h" value="${e2(g.h)}" placeholder="Group heading" style="font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:6px 10px">
+          <span class="sp"></span><button class="xbtn" data-delgrp="${gi}">×</button></div>
+        ${(g.items||[]).map((it,ii)=>`<div style="padding:8px 0;border-top:1px solid var(--paper-2)">
+          ${f('Question','groups.'+gi+'.items.'+ii+'.q',it.q,'The question')}
+          ${f('Answer','groups.'+gi+'.items.'+ii+'.a',it.a,'The answer',true)}
+          <div style="text-align:right"><button class="xbtn" data-delq="${gi}.${ii}">× Remove</button></div></div>`).join('')}
+        <div style="margin-top:8px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" data-addq="${gi}">+ Add question</button></div></div>`).join('')
+       +`<div><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="pgAddGrp">+ Add group</button></div>`;
+    }
+    if(P.type==='contact'){
+      h+=f('Opening hours','hours',P.hours,'Monday to Friday, 9am to 5.30pm')
+       +(P.offices||[]).map((o,i)=>`<div class="pgsec"><div class="pgsec-h"><span>Location ${i+1}</span>
+          <span class="sp"></span><button class="xbtn" data-deloff="${i}">×</button></div>
+          ${f('Name','offices.'+i+'.h',o.h,'Head office')}
+          ${f('Address','offices.'+i+'.body',o.body,'One line per line',true)}</div>`).join('')
+       +`<div><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="pgAddOff">+ Add location</button></div>
+         <p class="lede" style="margin-top:14px">Email and phone come from <b>Footer → Contact details</b> so they stay in step with the footer.</p>`;
+    }
+    ED.innerHTML=h;
+
+    const set=(id,fn)=>{ const b=document.getElementById(id); if(b) b.onclick=()=>{ read(); fn(); editor(); }; };
+    set('pgAddSec',()=>(P.sections=P.sections||[]).push({h:'New section',body:'',img:false}));
+    set('pgAddStat',()=>(P.stats=P.stats||[]).push({v:'',l:''}));
+    set('pgAddCl',()=>(P.clauses=P.clauses||[]).push({h:'New clause',body:''}));
+    set('pgAddGrp',()=>(P.groups=P.groups||[]).push({h:'New group',items:[{q:'',a:''}]}));
+    set('pgAddOff',()=>(P.offices=P.offices||[]).push({h:'',body:''}));
+    ED.querySelectorAll('[data-addq]').forEach(b=>b.onclick=()=>{ read();
+      P.groups[+b.dataset.addq].items.push({q:'',a:''}); editor(); });
+    const del=(sel,fn)=>ED.querySelectorAll(sel).forEach(b=>b.onclick=()=>{ read(); fn(b); editor(); });
+    del('[data-delsec]',b=>P.sections.splice(+b.dataset.delsec,1));
+    del('[data-delstat]',b=>P.stats.splice(+b.dataset.delstat,1));
+    del('[data-delcl]',b=>P.clauses.splice(+b.dataset.delcl,1));
+    del('[data-delgrp]',b=>P.groups.splice(+b.dataset.delgrp,1));
+    del('[data-deloff]',b=>P.offices.splice(+b.dataset.deloff,1));
+    del('[data-delq]',b=>{ const [g,i]=b.dataset.delq.split('.').map(Number); P.groups[g].items.splice(i,1); });
+    ED.querySelectorAll('[data-simg]').forEach(cb=>cb.onchange=()=>{ read(); });
+  }
+
+  // write a dotted path into P
+  function put(path,val){
+    const ks=path.split('.'); const last=ks.pop();
+    const t=ks.reduce((o,k)=>{ if(o[k]==null) o[k]=/^\d+$/.test(k)?[]:{}; return o[k]; },P);
+    t[last]=val;
+  }
+  function read(){
+    ED.querySelectorAll('[data-f]').forEach(el=>put(el.dataset.f,el.value));
+    ED.querySelectorAll('[data-simg]').forEach(cb=>{ if(P.sections&&P.sections[+cb.dataset.simg]) P.sections[+cb.dataset.simg].img=cb.checked; });
+  }
+
+  function open(slug){
+    cur=slug; P=MSSITE.page(slug);
+    document.getElementById('pgEditTitle').textContent='Edit · '+P.title;
+    document.getElementById('pgEditType').textContent=P.type;
+    document.getElementById('pgView').onclick=()=>location.href=MSSITE.url(slug);
+    card.hidden=false; editor();
+    window.scrollTo(0,Math.max(0,card.offsetTop-20));
+  }
+  document.getElementById('pgSave').onclick=()=>{ read();
+    const {slug,title,type,nav,...content}=P; MSSITE.setPage(cur,content); list(); toast(); };
+  document.getElementById('pgRevert').onclick=()=>{
+    if(!confirm('Revert this page to its default content?')) return;
+    MSSITE.resetPage(cur); P=MSSITE.page(cur); editor(); list(); toast(); };
+  document.getElementById('pgClose').onclick=()=>{ card.hidden=true; cur=null; };
+  list();
+  // deep link from a page's "Edit this page" link
+  const dp=(location.hash.match(/[#&]p=([^&]+)/)||[])[1];
+  if(dp && MSSITE.PAGES.some(x=>x.slug===decodeURIComponent(dp))) open(decodeURIComponent(dp));
+})();
 
 /* ---- branding: colourway sets + logos ---- */
 (function(){
@@ -378,6 +877,20 @@ renderFooter();
   }
   render();
   // logo: persist uploaded image + tone to localStorage so they appear platform-wide
+  // square logo: the organisation record's logoSq (was edited in Organisation profile)
+  (function(){ const box=document.getElementById('sqLogoBox'), fi=document.getElementById('sqLogoFile'), del=document.getElementById('sqLogoDel'); if(!box||!window.MSORG) return;
+    const draw=()=>{ const p=MSORG.get('distributor'); box.innerHTML=p.logoSq?'<img src="'+p.logoSq+'" alt="">':String(MSORG.name('distributor')||'?').split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase(); box.style.setProperty('background',p.logoSq?'#fff':'#ec018c','important'); del.hidden=!p.logoSq; };
+    fi.onchange=async()=>{ try{ const url=await MSORG.readLogo(fi.files[0],512); MSORG.set('distributor',{logoSq:url}); draw(); }catch(e){ if(e&&e.message) alert(e.message); } fi.value=''; };
+    del.onclick=()=>{ if(!confirm('Remove the square logo? Lists and chat will show your initials instead.')) return; MSORG.set('distributor',{logoSq:''}); draw(); };
+    window.addEventListener('ms-org-updated',e=>{ if(!e.detail||e.detail.key==='distributor') draw(); }); draw(); })();
+  // favicon: ms-brand-favicon, applied by theme.js on distributor + customer pages
+  (function(){ const box=document.getElementById('favBox'), fi=document.getElementById('favFile'), del=document.getElementById('favDel'); if(!box||!window.MSORG) return;
+    const K='ms-brand-favicon', get=()=>{ try{ return localStorage.getItem(K)||''; }catch(e){ return ''; } };
+    const apply=()=>{ const u=(window.MSFavPick&&MSFavPick())||'favicon.svg'; let l=document.querySelector('link[rel="icon"]'); if(!l){ l=document.createElement('link'); l.rel='icon'; document.head.appendChild(l); } l.type=/^data:image\/svg|\.svg$/.test(u)?'image/svg+xml':'image/png'; l.href=u; };
+    const draw=()=>{ const u=get(); box.innerHTML=u?'<div style="display:flex;flex-direction:column;align-items:center;gap:10px"><img src="'+u+'" alt=""><span class="favtab"><img src="'+u+'" alt="">'+String(MSORG.name('distributor')||'').slice(0,12)+'</span></div>':'<img src="favicon.svg" alt="" style="opacity:.35">'; del.hidden=!u; };
+    fi.onchange=async()=>{ try{ const url=await MSORG.readLogo(fi.files[0],128); localStorage.setItem(K,url); apply(); draw(); }catch(e){ if(e&&e.message) alert(e.message); } fi.value=''; };
+    del.onclick=()=>{ try{ localStorage.removeItem(K); }catch(e){} apply(); draw(); };
+    draw(); })();
   const LOGO_KEYS={'brand-header-logo':'ms-brand-logo','brand-pdf-logo':'ms-pdf-logo'};
   const TONE_KEYS={'brand-header-logo':'ms-brand-logo-tone','brand-pdf-logo':'ms-pdf-logo-tone'};
   // remove logo buttons
@@ -512,66 +1025,62 @@ renderFooter();
   };
 })();
 
-/* ---- email drafts editor ---- */
-(function(){
-  const DEF=[
-    {id:'invite', name:'Customer invitation', trig:'Sent when you invite a new customer user',
-      subject:'You\u2019ve been invited to {distributor} on Merchsmith',
-      body:'Hi {name},\n\n{distributor} has set up a branded merchandise portal for {customer}. You can browse approved products, build projects and track orders in one place.\n\nActivate your account: {link}\n\nIf you have any questions just reply to this email.\n\nThanks,\n{distributor}'},
-    {id:'approval', name:'Approval required', trig:'Sent when a proof or price needs the customer\u2019s sign-off',
-      subject:'Action needed: approve {product} for {project}',
-      body:'Hi {name},\n\n{product} in your {project} project is ready for your approval. Please review the proof and pricing and let us know you\u2019re happy to proceed.\n\nReview & approve: {link}\n\nNothing is ordered until you approve.\n\n{distributor}'},
-    {id:'order', name:'Order confirmation', trig:'Sent when an order is placed',
-      subject:'Order confirmed \u2014 {project}',
-      body:'Hi {name},\n\nThanks \u2014 your order for {project} is confirmed and now in production. We\u2019ll be in touch with proofs and delivery updates.\n\nView your order: {link}\n\n{distributor}'},
-    {id:'dispatch', name:'Dispatch notification', trig:'Sent when an order ships',
-      subject:'Your {project} order is on its way',
-      body:'Hi {name},\n\nGood news \u2014 your order for {project} has been dispatched and is on its way.\n\nTrack delivery: {link}\n\n{distributor}'},
-    {id:'deadline', name:'Order deadline reminder', trig:'Sent as an order-by deadline approaches',
-      subject:'Reminder: order {product} by {deadline}',
-      body:'Hi {name},\n\nTo hit your requested delivery date for {project}, {product} needs to be ordered by {deadline}. Approve the outstanding items to keep things on track.\n\nComplete your order: {link}\n\n{distributor}'}
-  ];
-  let saved={}; try{ saved=JSON.parse(localStorage.getItem('ms-email-drafts')||'{}'); }catch(e){}
-  const D=DEF.map(d=>Object.assign({}, d, saved[d.id]||{}));
-  const listEl=document.getElementById('draftList'); if(!listEl) return;
-  function save(){ const o={}; D.forEach(d=>o[d.id]={subject:d.subject,body:d.body}); try{ localStorage.setItem('ms-email-drafts',JSON.stringify(o)); }catch(e){} }
-  function render(){
-    listEl.innerHTML=D.map((d,i)=>`<div class="draft ${i===0?'open':''}" data-i="${i}">
-      <div class="draft-h"><b>${d.name}</b><span class="dtrig">${d.trig}</span><span class="dtog">▾</span></div>
-      <div class="draft-body">
-        <div class="draft-fld"><label>Subject</label><input type="text" data-f="subject" value="${(d.subject||'').replace(/"/g,'&quot;')}"></div>
-        <div class="draft-fld"><label>Body</label><textarea data-f="body">${(d.body||'').replace(/</g,'&lt;')}</textarea></div>
-        <div class="draft-foot"><button class="btn" data-save="${i}">Save draft</button><button class="btn ghost" data-test="${i}">Send test ▸</button><button class="btn ghost" data-reset="${i}">Reset to default</button><span class="draft-fields">Fields: {name} {customer} {distributor} {project} {product} {deadline} {link}</span></div>
-      </div></div>`).join('');
-    listEl.querySelectorAll('.draft-h').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
-    listEl.querySelectorAll('[data-f]').forEach(inp=>inp.onchange=()=>{ const i=+inp.closest('.draft').dataset.i; D[i][inp.dataset.f]=inp.value; });
-    listEl.querySelectorAll('[data-save]').forEach(b=>b.onclick=()=>{ save(); toast(); });
-    listEl.querySelectorAll('[data-reset]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.reset; D[i]=Object.assign({},DEF[i]); save(); render(); listEl.querySelectorAll('.draft')[i].classList.add('open'); toast(); });
-    listEl.querySelectorAll('[data-test]').forEach(b=>b.onclick=()=>openTest(D[+b.dataset.test]));
-  }
-  // ---- send-test preview ----
-  const SAMPLE={name:'Sara Kemp',customer:'Citrix',distributor:'Mojo Promotions',project:'Autumn Giveaways',product:'Eco Wheat-Straw Charging Cable',deadline:'Fri 10 Oct, 17:00',link:'https://mojo.merchsmith.com/approve/8f2a'};
-  function fill(s){ return (s||'').replace(/\{(\w+)\}/g,(m,k)=>SAMPLE[k]!=null?SAMPLE[k]:m); }
-  let testRoot=null;
-  function openTest(d){
-    if(!testRoot){ testRoot=document.createElement('div'); testRoot.className='etest-scrim'; testRoot.innerHTML='<div class="etest" role="dialog"></div>'; document.body.appendChild(testRoot); testRoot.addEventListener('click',e=>{ if(e.target===testRoot) close(); }); }
-    function close(){ testRoot.classList.remove('open'); document.body.style.overflow=''; }
-    const subj=fill(d.subject), body=fill(d.body).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\n/g,'<br>');
-    testRoot.querySelector('.etest').innerHTML=`
-      <div class="etest-hd"><b>Send test — ${d.name}</b><button class="etest-x" aria-label="Close">×</button></div>
-      <div class="etest-send"><label>Send test to</label><div class="etest-row"><input type="email" id="etestTo" value="zak@canalandrivertrust.org"><button class="btn" id="etestGo">Send test</button></div></div>
-      <div class="etest-prevlbl">Preview <span>merge fields filled with sample data</span></div>
-      <div class="etest-mail">
-        <div class="etest-from"><span class="etest-av">MP</span><div><b>${SAMPLE.distributor}</b><span>to ${SAMPLE.name} &lt;${SAMPLE.name.toLowerCase().replace(/ /g,'.')}@cust.org&gt;</span></div></div>
-        <div class="etest-subj">${subj.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>
-        <div class="etest-body">${body}</div>
-      </div>`;
-    testRoot.querySelector('.etest-x').onclick=close;
-    testRoot.querySelector('#etestGo').onclick=()=>{ const to=testRoot.querySelector('#etestTo').value; close(); toast('Test sent to '+to); };
-    testRoot.classList.add('open'); document.body.style.overflow='hidden';
-  }
-  render();
-})();
+
+
+/* ---- subscription (the distributor's own plan) ----
+   Reads the same ADMIN model the platform console bills from, so the seat
+   allowance, overage rate and total shown here cannot drift from the invoice. */
+function renderSubscription(){
+  const A=window.ADMIN; const box=document.getElementById('subBox'); if(!A||!box) return;
+  const me=A.distributors.find(d=>d.name==='Mojo Promotions')||A.distributors[0];
+  const s=A.seatInfo(me), pct=Math.min(100,Math.round(s.used/Math.max(1,s.included)*100));
+  const tag=document.getElementById('subPlanTag'); if(tag){ tag.textContent=s.plan.name+' plan'; tag.style.background=s.plan.color; tag.style.color='var(--ink)'; }
+  box.innerHTML=`
+    <div class="subgrid">
+      <div class="subfig"><b>${s.baseTxt}</b><span>Base / month</span></div>
+      <div class="subfig"><b>${s.used} / ${s.included}</b><span>Seats used</span></div>
+      <div class="subfig"><b>${s.extra?'+'+s.overageTxt:'—'}</b><span>Seat overage</span></div>
+      <div class="subfig tot"><b>${s.totalTxt}</b><span>Total / month</span></div>
+    </div>
+    <div class="seatbar big ${s.extra?'over':''}"><i style="width:${pct}%"></i></div>
+    <p class="subline">${s.extra
+      ? `<b>${s.used} of ${s.included} included seats used</b>, ${s.extra} extra at ${s.rateTxt} per seat — <b>${s.overageTxt}</b> added to your ${s.baseTxt} base this month.`
+      : `<b>${s.used} of ${s.included} included seats used.</b> You can add ${s.included-s.used} more at no extra cost; after that each seat is ${s.rateTxt} a month.`}</p>`;
+  const roles=document.getElementById('subRoles');
+  if(roles) roles.innerHTML=`<div class="rolecols">
+    <div><h4 class="rolh bill">Billable — counts as a seat</h4><ul class="rolelist">${(A.seatRoles||[]).map(r=>`<li>${r}</li>`).join('')}</ul></div>
+    <div><h4 class="rolh free">Free — never counts</h4><ul class="rolelist free"><li>All customer users</li><li>All supplier users</li></ul></div>
+  </div>`;
+  const pl=document.getElementById('subPlans');
+  if(pl) pl.innerHTML=`<div class="subplans">${A.plans.map(p=>{
+    const ex=Math.max(0,s.used-p.seats), tot=p.base+ex*p.overage, on=p.name===s.plan.name;
+    return `<div class="subplan ${on?'on':''}">
+      <div class="sp-n">${p.name}${on?'<span class="sp-cur">Your plan</span>':''}</div>
+      <div class="sp-p">£${p.base.toLocaleString('en-GB')}<span>/mo base</span></div>
+      <div class="sp-r"><span>Included seats</span><b>${p.seats}</b></div>
+      <div class="sp-r"><span>Additional seat</span><b>£${p.overage}/mo</b></div>
+      <div class="sp-t">At your ${s.used} seats: <b>£${tot.toLocaleString('en-GB')}/mo</b>${ex?` <i>(${ex} over)</i>`:''}</div>
+    </div>`; }).join('')}</div>`;
+}
+if((location.hash.match(/tab=([a-z]+)/i)||[])[1]==='subscription') renderSubscription();
 </script>
+<script>
+(function(){ function mount(){ const el=document.getElementById('orgProfileMount'); if(!el||!window.MSORG) return;
+  const k=window.MS_SCOPE==='platform'?'merchsmith':'distributor';
+  el.innerHTML=MSORG.panelHTML(k); MSORG.wire(el,k); }
+  mount(); window.addEventListener('ms-identity-change',mount);
+  document.addEventListener('ms-slot-change',()=>setTimeout(mount,120),true);
+  if(/orgprofile/.test(location.hash)){ const t=document.querySelector('.settab[data-panel="orgprofile"]'); if(t) setTimeout(()=>t.click(),0); } })();
+</script>
+<script src="via-us.js?v=2"></script>
+<script>if(window.MSVIA) MSVIA.mountSettings(document.getElementById('viaMount'));</script>
+<script src="product-warnings.js?v=4"></script>
+<script>(function(){ const p=document.getElementById('panel-warndrafts'); if(p&&!p.hidden&&window.MSWARN) MSWARN.settings(document.getElementById('warnDraftsMount')); })();</script>
+<script src="split-delivery.js?v=11"></script>
+<script src="sales-lit.js?v=1"></script>
+<script src="customer-defaults.js?v=2"></script>
+<script>(function(){ const p=document.getElementById('panel-custdefaults'); if(p&&!p.hidden&&window.MSCUSTDEF) MSCUSTDEF.settings(document.getElementById('custDefMount')); })();</script>
+<script>(function(){ const p=document.getElementById('panel-saleslit'); if(p&&!p.hidden&&window.MSSALESLIT) MSSALESLIT.settings(document.getElementById('salesLitMount')); })();</script>
+<script>(function(){ const go=()=>{ const el=document.getElementById('splitDefMount'); if(el&&window.MSSPLIT&&MSSPLIT.defaultsPanel) MSSPLIT.defaultsPanel(el); }; document.readyState==='loading'?document.addEventListener('DOMContentLoaded',go):go(); })();</script>
 </body>
 </html>

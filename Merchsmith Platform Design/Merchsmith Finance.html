@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Finance</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script>if(/[?&]store=merchsmith\b/.test(location.search)) window.MS_SCOPE='platform';</script>
+<script>/* Finance page: the Billing & payments panel on its own page. #sub=cust|sup|bank|plan selects the tab. */
+window.MS_FINANCE_PAGE=true; (function(){ const m=location.hash.match(/sub=(\w+)/); const want='#tab=billing'+(m?'&sub='+m[1]:''); if(!/tab=billing/.test(location.hash)) history.replaceState(null,'',location.pathname+location.search+want); })();
+addEventListener('hashchange',()=>{ if(!/tab=billing/.test(location.hash)){ const m=location.hash.match(/sub=(\w+)/); history.replaceState(null,'',location.pathname+location.search+'#tab=billing'+(m?'&sub='+m[1]:'')); dispatchEvent(new HashChangeEvent('hashchange')); } });</script>
+<script src="theme.js?v=10"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;box-shadow:0 4px 10px -2px rgba(40,44,80,.04);}
+.brand{display:flex;align-items:center;gap:14px;}
+.crt-txt{font-weight:800;font-size:12px;line-height:1.04;color:var(--brand-black);}
+.xsep-lg{color:#222;font-size:15px;margin:0 2px;}
+.mojo{font-family:"Fredoka",var(--sans);font-weight:600;font-size:28px;line-height:1;color:var(--brand-black);}
+.topnav{display:flex;align-items:center;gap:6px;}
+.topnav a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink-3);font-weight:600;font-size:14px;padding:8px 13px;border-radius:999px;}
+.topnav a:hover{color:var(--periwinkle-deep);}
+.headtools{display:flex;align-items:center;gap:12px;}
+.account{display:flex;align-items:center;gap:8px;background:none;border:0;cursor:pointer;border-radius:999px;padding:4px 8px 4px 4px;font-family:var(--sans);}
+.account .av{width:32px;height:32px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;}
+.account .acc-nm{font-weight:700;font-size:14px;color:var(--ink);}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px var(--page-gutter);}
+.crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
+.crumb .sep{opacity:.6;}
+.crumb .here{font-weight:700;}
+.main{width:100%;max-width:none;padding:30px var(--page-gutter) 90px;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1;letter-spacing:-.01em;margin:0;}
+.psub{font-size:14.5px;color:var(--text-soft);margin-top:10px;max-width:640px;line-height:1.55;}
+.settabs{display:flex;gap:4px;margin-top:26px;border-bottom:1px solid var(--line-soft);overflow-x:auto;scrollbar-width:none;}
+.settabs::-webkit-scrollbar{display:none;}
+.settab{flex:none;white-space:nowrap;border:0;background:none;font:inherit;font-size:14.5px;font-weight:700;color:var(--ink-3);padding:11px 16px;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;}
+.settab.active{color:var(--periwinkle-deep);border-bottom-color:var(--periwinkle-deep);}
+.subgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:4px 0 16px;}
+.subfig{background:var(--paper);border-radius:13px;padding:15px 17px;}
+.subfig b{display:block;font-family:var(--serif);font-weight:500;font-size:30px;line-height:1;letter-spacing:-.02em;}
+.subfig span{display:block;margin-top:7px;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);}
+.subfig.tot{background:var(--tint-peri);}
+.subfig.tot b{color:var(--periwinkle-deep);}
+.seatbar{width:52px;height:5px;border-radius:99px;background:var(--paper-2);overflow:hidden;flex:none;}
+.seatbar i{display:block;height:100%;background:var(--periwinkle-deep);}
+.seatbar.over i{background:var(--flare);}
+.seatbar.big{width:100%;height:8px;}
+.subline{font-size:13.5px;color:var(--ink-2);margin:13px 0 0;}
+.rolecols{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:700px){.rolecols{grid-template-columns:1fr;}}
+.rolh{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin:0 0 9px;}
+.rolh.bill{color:var(--periwinkle-deep);}
+.rolh.free{color:var(--green-deep);}
+.rolelist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;}
+.rolelist li{font-size:13.5px;color:var(--ink-2);padding-left:22px;position:relative;}
+.rolelist li::before{content:"";position:absolute;left:3px;top:7px;width:7px;height:7px;border-radius:50%;background:var(--periwinkle);}
+.rolelist.free li::before{background:var(--spearmint,#36C0A0);}
+.subplans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:820px){.subplans{grid-template-columns:1fr;}}
+.subplan{border:1.5px solid var(--line-soft);border-radius:14px;padding:16px 18px;}
+.subplan.on{border-color:var(--periwinkle);background:var(--tint-peri);}
+.sp-n{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-weight:500;font-size:19px;}
+.sp-cur{font-family:var(--sans);font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--periwinkle);border-radius:999px;padding:2px 8px;}
+.sp-p{font-family:var(--serif);font-weight:500;font-size:26px;margin:6px 0 12px;}
+.sp-p span{font-family:var(--sans);font-size:12px;font-weight:600;color:var(--ink-3);}
+.sp-r{display:flex;justify-content:space-between;font-size:12.5px;padding:5px 0;border-top:1px solid var(--line-soft);}
+.sp-r span{color:var(--ink-3);font-weight:600;}
+.sp-r b{color:var(--ink);}
+.sp-t{font-size:12.5px;color:var(--ink-2);margin-top:11px;padding-top:10px;border-top:1px solid var(--line-soft);}
+.sp-t i{font-style:normal;color:var(--flare);font-weight:700;}
+.fcfg-h{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.fcfg-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--paper-2);}
+.fcfg-row:nth-child(2){border-top:0;}
+/* footer + pages editors */
+.fgrp{border:1px solid var(--line-soft);border-radius:13px;padding:16px 18px;margin-bottom:14px;}
+.fgrp-h{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.fgrp-h h3{font-size:13.5px;font-weight:800;margin:0;}
+.fgrp-h .hint{font-size:12px;color:var(--muted);font-weight:600;}
+.fgrp-h .sp{margin-left:auto;}
+.frw{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px solid var(--paper-2);}
+.frw:first-of-type{border-top:0;}
+.frw input[type=text],.frw input[type=email],.frw input[type=url]{font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:7px 10px;color:var(--ink);background:#fff;min-width:0;}
+.frw .w-t{flex:1;}
+.frw .w-h{flex:1.3;}
+.frw .grab{color:var(--line);cursor:grab;font-size:14px;flex:none;}
+.flab{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);width:118px;flex:none;}
+.ffield{display:flex;align-items:center;gap:10px;padding:7px 0;}
+.ffield input,.ffield textarea{flex:1;font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:8px 11px;color:var(--ink);background:#fff;}
+.ffield textarea{min-height:64px;resize:vertical;line-height:1.55;}
+.ffield input:focus,.ffield textarea:focus,.frw input:focus{outline:0;border-color:var(--periwinkle);}
+.accrow2{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--paper-2);}
+.accrow2:first-of-type{border-top:0;}
+.accrow2 input[type=text]{font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:7px 10px;color:var(--ink);background:#fff;min-width:0;}
+.accrow2 input:focus,.accrow2 select:focus{outline:0;border-color:var(--periwinkle);}
+.accrow2 .w-mark{flex:none;width:88px;font:inherit;font-size:12.5px;border:1.5px solid var(--line-soft);border-radius:8px;padding:6px 7px;background:#fff;color:var(--ink);text-transform:capitalize;cursor:pointer;}
+.accrow2 .w-q{flex:none;width:104px;}
+.accrow2 .w-t{flex:1;}
+.accthumb{width:78px;height:38px;border-radius:7px;background:var(--paper);border:1px dashed var(--line);display:grid;place-items:center;font-size:8.5px;font-weight:800;color:var(--muted);text-align:center;overflow:hidden;flex:none;padding:3px;}
+.accthumb img{max-width:100%;max-height:100%;object-fit:contain;}
+.upl{font:inherit;font-size:12px;font-weight:700;color:var(--periwinkle-deep);background:none;border:1.5px solid var(--line-soft);border-radius:8px;padding:6px 11px;cursor:pointer;flex:none;}
+.upl:hover{border-color:var(--periwinkle-deep);}
+.cardchk{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--ink-2);margin-right:14px;}
+.pgrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--paper-2);}
+.pgrow:first-child{border-top:0;}
+.pgrow b{font-size:14px;font-weight:700;}
+.pgrow .slug{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--muted);}
+.pgtype{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:3px 9px;background:var(--tint-peri);color:var(--periwinkle-deep);}
+.pgstate{font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:3px 9px;}
+.pgstate.def{background:#fbeccd;color:#9a6b1f;}
+.pgstate.ed{background:var(--tint-green);color:var(--green-deep);}
+.pgsec{border:1px solid var(--line-soft);border-radius:11px;padding:13px 15px;margin-bottom:10px;}
+.pgsec-h{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+.pgsec-h span{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.pgsec-h .sp{margin-left:auto;}
+.xbtn{border:0;background:none;color:var(--muted);font-size:16px;line-height:1;cursor:pointer;padding:2px 5px;border-radius:6px;flex:none;}
+.xbtn:hover{color:var(--flare);background:var(--paper-2);}
+.fcfg-row input[type=text]{font:inherit;font-size:13.5px;border:1.5px solid var(--line-soft);border-radius:9px;padding:8px 11px;}
+.fcfg-row .ft{width:180px;font-weight:600;} .fcfg-row .fh{flex:1;color:var(--periwinkle-deep);}
+.fcfg-row .fdel{border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;}
+.fcfg-row .fdel:hover{color:var(--flare);}
+.ftog{position:relative;width:38px;height:22px;border-radius:999px;background:var(--line-soft);border:0;cursor:pointer;flex:none;transition:background .15s;}
+.ftog::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.ftog.on{background:var(--periwinkle-deep);} .ftog.on::after{left:18px;}
+.fcol-pick{font:inherit;font-size:12px;border:1.5px solid var(--line-soft);border-radius:8px;padding:6px 8px;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:18px;padding:24px 26px;margin-top:22px;box-shadow:0 4px 16px rgba(40,44,80,.04);}
+#orgProfileMount .op{max-width:none;margin-top:22px;border-radius:18px;padding:24px 26px;box-shadow:0 4px 16px rgba(40,44,80,.04);}
+#orgProfileMount .op-hdt{min-width:0;}
+.card-h{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+.card-h h2{font-family:var(--serif);font-weight:500;font-size:23px;margin:0;}
+.tag{font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--paper-2);border-radius:6px;padding:3px 9px;}
+.lede{font-size:14px;color:var(--text-soft);line-height:1.6;margin:0 0 20px;max-width:62ch;}
+.lieuctl{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.lieuctl .lbl{font-size:13px;font-weight:700;color:var(--ink-3);}
+.stepper{display:inline-flex;align-items:center;border:1.5px solid var(--line-soft);border-radius:12px;overflow:hidden;background:#fff;}
+.stepper button{border:0;background:none;width:42px;height:42px;font-size:20px;font-weight:700;color:var(--ink);cursor:pointer;}
+.stepper button:hover{background:var(--paper);color:var(--periwinkle-deep);}
+.stepper .val{min-width:46px;text-align:center;font-weight:800;font-size:18px;border-left:1.5px solid var(--line-soft);border-right:1.5px solid var(--line-soft);height:42px;display:grid;place-items:center;}
+.unit{font-size:13px;color:var(--text-soft);}
+.formula{font-size:14px;color:var(--ink-2);background:var(--paper);border-radius:12px;padding:14px 18px;}
+.formula .pill{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:6px;background:#fff;border:1px solid var(--line-soft);font-weight:800;color:var(--periwinkle-deep);margin:0 4px;}
+.formula b{color:var(--periwinkle-deep);}
+.linkrow{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--paper-2);}
+.linkrow:first-of-type{border-top:0;}
+.linkrow .li b{font-size:14.5px;}
+.linkrow .li span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;}
+.linkrow a{font-size:13px;font-weight:700;color:var(--periwinkle-deep);text-decoration:none;}
+.note{font-size:13px;color:var(--text-soft);background:var(--paper);border-radius:10px;padding:12px 15px;margin-top:8px;}
+.saved-toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:11px;display:flex;align-items:center;gap:9px;opacity:0;transition:opacity .25s,transform .25s;z-index:50;}
+.saved-toast.show{opacity:1;transform:translateX(-50%);}
+.saved-toast .icn{width:16px;height:16px;color:var(--spearmint,#5fb98a);}
+.cwsets{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.cwset{border:1.5px solid var(--line-soft);border-radius:13px;padding:14px;cursor:pointer;background:#fff;position:relative;transition:border-color .14s,box-shadow .14s;}
+.cwset:hover{border-color:var(--periwinkle);}
+.cwset.on{border-color:var(--periwinkle-deep);box-shadow:0 0 0 1px var(--periwinkle-deep);}
+.cwset-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;}.cwset-hd b{font-size:14px;color:var(--ink);}
+.cwset-name{font:inherit;font-size:14px;font-weight:700;color:var(--ink);border:1px solid transparent;border-radius:6px;padding:2px 5px;margin:-2px 0;background:none;max-width:150px;}
+.cwset-name:hover{border-color:var(--line-soft);}
+.cwset-name:focus{outline:0;border-color:var(--periwinkle-deep);background:#fff;}
+.cwset-tick{width:18px;height:18px;border-radius:50%;background:var(--periwinkle-deep);color:#fff;display:none;place-items:center;font-size:11px;font-weight:800;}
+.cwset-tick{position:absolute;bottom:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--periwinkle-deep);color:#fff;display:none;place-items:center;font-size:12px;font-weight:800;}
+.cwset.on .cwset-tick{display:grid;}
+.cwset-sw{display:flex;gap:6px;}
+.cwset-sw i{width:30px;height:30px;border-radius:7px;border:1px solid rgba(0,0,0,.1);}
+.cwset-tag{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:9px;}
+.cwset-del{position:absolute;top:8px;right:8px;border:0;background:none;color:var(--muted);font-size:16px;cursor:pointer;line-height:1;display:none;}
+.cwset.custom .cwset-del{display:block;}
+.cwset-edit{position:absolute;top:7px;right:30px;border:0;background:none;color:var(--ink-3);font-size:18px;font-weight:700;cursor:pointer;line-height:1;}
+.cwset:not(.custom) .cwset-edit{right:9px;}
+.cwset-edit:hover{color:var(--periwinkle-deep);}
+.cwset-del:hover{color:var(--flare);}
+.cwform{margin-top:18px;border-top:1px solid var(--line-soft);padding-top:18px;}
+.crumbgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.crumbrow{display:flex;align-items:center;gap:12px;border:1px solid var(--line-soft);border-radius:11px;padding:11px 13px;}
+.crumbrow .cr-sw{width:34px;height:34px;border-radius:8px;border:1px solid rgba(0,0,0,.1);flex:none;padding:0;cursor:pointer;overflow:hidden;}
+.crumbrow .cr-sw input{width:150%;height:150%;margin:-25%;border:0;padding:0;cursor:pointer;background:none;}
+.crumbrow .cr-nm{font-size:13.5px;font-weight:700;color:var(--ink);flex:1;}
+.crumbrow .cr-reset{font:inherit;font-size:11px;font-weight:700;color:var(--muted);background:none;border:0;cursor:pointer;text-decoration:underline;}
+.crumbrow .cr-reset:hover{color:var(--flare);}
+.crumbrow.overridden{border-color:var(--periwinkle-deep);}
+.cr-tag{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--paper-2);border-radius:5px;padding:2px 6px;margin-left:7px;}
+.crumb-warn{display:flex;align-items:center;gap:10px;background:#fbeccd;border:1px solid #f0d9b0;border-radius:10px;padding:10px 13px;margin-bottom:14px;font-size:12.5px;color:#7a5a1f;}
+.crumb-warn .icn{color:#9a6b1f;flex:none;}
+.crumb-warn span{flex:1;}
+.cr-resetall{font:inherit;font-size:12px;font-weight:700;color:#7a5a1f;background:none;border:1px solid #e3c98a;border-radius:7px;padding:6px 11px;cursor:pointer;}
+.cr-resetall:hover{background:#f5e3c0;}
+.cwfrow{display:flex;flex-direction:column;gap:6px;max-width:300px;margin-bottom:14px;}
+.cwfrow label{font-size:12px;font-weight:700;color:var(--ink-3);}
+.cwfrow input{font:inherit;font-size:14px;border:1.5px solid var(--line-soft);border-radius:9px;padding:9px 11px;}
+.cwfields{display:flex;gap:14px;flex-wrap:wrap;}
+.cwfield{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);}
+.cwfield input[type=color]{width:64px;height:40px;border:1px solid var(--line-soft);border-radius:9px;background:none;cursor:pointer;padding:2px;}
+.btn{font:inherit;font-size:13.5px;font-weight:700;background:var(--periwinkle-deep);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line-soft);}
+.logogrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:640px){.logogrid{grid-template-columns:1fr;}}
+.logoslot{display:flex;flex-direction:column;gap:7px;}
+.logoslot-lbl{font-size:12px;font-weight:700;color:var(--ink-3);}
+.logoslot-drop{height:120px;border:1.5px dashed var(--line-soft);border-radius:12px;overflow:hidden;background:var(--paper);}
+.logoslot-drop image-slot{width:100%;height:100%;display:block;}
+.logoslot-hint{font-size:11.5px;color:var(--muted);}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:var(--paper-2);border-radius:5px;padding:1px 6px;color:var(--periwinkle-ink);}
+.drafts{display:flex;flex-direction:column;gap:12px;}
+.draft{border:1px solid var(--line-soft);border-radius:12px;overflow:hidden;}
+.draft-h{display:flex;align-items:center;gap:11px;padding:13px 16px;cursor:pointer;background:#fff;}
+.draft-h .dtog{margin-left:auto;color:var(--muted);font-size:13px;transition:transform .15s;}
+.draft.open .dtog{transform:rotate(180deg);}
+.draft-h b{font-size:14px;color:var(--ink);}
+.draft-h .dtrig{font-size:12px;color:var(--muted);}
+.draft-body{display:none;padding:0 16px 16px;border-top:1px solid var(--line-soft);}
+.draft.open .draft-body{display:block;}
+.draft-fld{margin-top:13px;}
+.draft-fld label{display:block;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.draft-fld input,.draft-fld textarea{width:100%;font:inherit;font-size:13.5px;border:1.5px solid var(--line-soft);border-radius:9px;padding:10px 12px;color:var(--ink);background:#fff;resize:vertical;}
+.draft-fld textarea{min-height:120px;line-height:1.55;}
+.draft-foot{margin-top:12px;display:flex;gap:10px;align-items:center;}
+.draft-fields{font-size:11.5px;color:var(--muted);}
+.etest-scrim{position:fixed;inset:0;z-index:1300;background:rgba(22,24,28,.45);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:48px 16px;}
+.etest-scrim.open{display:flex;}
+.etest{background:#fff;width:min(560px,100%);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(20,22,45,.3);}
+.etest-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line-soft);}
+.etest-hd b{font-family:var(--serif);font-weight:500;font-size:19px;}
+.etest-x{border:0;background:none;font-size:22px;line-height:1;color:var(--muted);cursor:pointer;}
+.etest-send{padding:16px 20px;border-bottom:1px solid var(--line-soft);}
+.etest-send label{display:block;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.etest-row{display:flex;gap:10px;}
+.etest-row input{flex:1;font:inherit;font-size:13.5px;border:1.5px solid var(--line-soft);border-radius:9px;padding:9px 12px;}
+.etest-prevlbl{padding:14px 20px 0;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+.etest-prevlbl span{font-weight:600;text-transform:none;letter-spacing:0;color:var(--muted);margin-left:6px;}
+.etest-mail{margin:12px 20px 22px;border:1px solid var(--line-soft);border-radius:12px;overflow:hidden;}
+.etest-from{display:flex;align-items:center;gap:11px;padding:14px 16px;border-bottom:1px solid var(--line-soft);background:var(--paper);}
+.etest-av{width:36px;height:36px;border-radius:50%;background:var(--periwinkle-deep);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none;}
+.etest-from b{font-size:14px;color:var(--ink);display:block;}
+.etest-from span{font-size:12px;color:var(--muted);}
+.etest-subj{padding:14px 16px 6px;font-weight:700;font-size:15px;color:var(--ink);}
+.etest-body{padding:0 16px 18px;font-size:13.5px;color:var(--ink-2);line-height:1.6;}
+.crop-scrim{position:fixed;inset:0;z-index:1300;background:rgba(22,24,28,.5);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:24px;}
+.crop-scrim.open{display:flex;}
+.crop-modal{background:#fff;width:min(520px,100%);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(20,22,45,.3);}
+.crop-hd{display:flex;align-items:center;justify-content:space-between;padding:15px 20px;border-bottom:1px solid var(--line-soft);}
+.crop-hd b{font-family:var(--serif);font-weight:500;font-size:19px;}
+.crop-x{border:0;background:none;font-size:22px;line-height:1;color:var(--muted);cursor:pointer;}
+.crop-stage{height:300px;margin:18px 20px 0;border-radius:12px;overflow:hidden;background:var(--paper-2);background-image:linear-gradient(45deg,#e9e7e1 25%,transparent 25%),linear-gradient(-45deg,#e9e7e1 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e9e7e1 75%),linear-gradient(-45deg,transparent 75%,#e9e7e1 75%);background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0;}
+.crop-stage.dark{background:var(--ink);}
+.crop-stage image-slot{width:100%;height:100%;display:block;}
+.crop-hint{font-size:12px;color:var(--muted);text-align:center;margin:11px 20px 0;}
+.crop-foot{display:flex;justify-content:flex-end;padding:14px 20px 18px;}
+.logomono{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.logomono>span{font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin-right:2px;}
+.logomono-btn{font:inherit;font-size:11.5px;font-weight:700;border:1px solid var(--line-soft);background:#fff;color:var(--ink-2);border-radius:7px;padding:5px 10px;cursor:pointer;}
+.logomono-btn.on{background:var(--periwinkle-deep);border-color:var(--periwinkle-deep);color:#fff;}
+.logodel{font:inherit;font-size:11.5px;font-weight:700;border:0;background:none;color:var(--muted);cursor:pointer;text-decoration:underline;}
+.logodel[data-crop-logo]{margin-left:auto;color:var(--periwinkle-deep);}
+.logodel[data-del-logo]{color:var(--muted);}
+.logodel:hover{color:var(--flare);}
+.logoslot-drop.mono-white{background:var(--ink);}
+.logoslot-drop.mono-white image-slot{filter:brightness(0) invert(1);}
+.logoslot-drop.mono-black image-slot{filter:brightness(0);}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="brand" data-identity-lockup></div>
+  
+  <div class="headtools"><button class="account"><span class="av">JD</span><span class="acc-nm">Jess Doyle</span></button></div>
+</header>
+<div class="crumbband"><div class="crumb" id="setCrumb"><span>Mojo Promotions</span><span class="sep">›</span><span class="here">Settings</span></div></div>
+
+<main class="main">
+  <h1 class="ptitle" id="setTitle">Settings</h1>
+  <div class="settabs">
+    <button class="settab" data-panel="orgprofile">Organisation profile</button>
+    <button class="settab active" data-panel="leadtimes">Lead times</button>
+    <button class="settab" data-panel="footer">Footer</button><button class="settab" data-panel="pages">Pages</button>
+    <button class="settab" data-panel="branding">Branding</button>
+    <button class="settab" data-panel="domain">Domain</button>
+    <button class="settab" data-panel="subscription">Subscription</button>
+  </div>
+  <div class="settabs storetabs" style="display:none">
+    <button class="settab" data-panel="storehome">Homepage</button>
+    <button class="settab" data-panel="markup">Markup &amp; pricing</button>
+    <button class="settab" data-panel="discounts">Discounts</button>
+    <button class="settab" data-panel="appearance">Store appearance</button>
+  </div>
+
+  <div class="panel" id="panel-leadtimes">
+  <div class="card">
+    <div class="card-h"><h2>Lead times</h2><span class="tag">Days in lieu</span></div>
+    <p class="lede">Every product has a <b>supplier lead time</b> from the supplier's data. The <b>customer lead time</b> you quote adds a buffer of working days — "days in lieu" — to leave room for issues. This is the account-wide default; individual suppliers can override it from their profile.</p>
+    <div class="lieuctl">
+      <span class="lbl">Default days in lieu</span>
+      <div class="stepper"><button id="gLess" aria-label="Decrease">−</button><span class="val" id="gVal">3</span><button id="gMore" aria-label="Increase">+</button></div>
+      <span class="unit">working days</span>
+    </div>
+    <div class="formula">Customer lead time <span class="pill">=</span> supplier lead time <span class="pill">+</span> <b id="fLieu">3</b> working days in lieu</div>
+    <div class="note">Per-supplier overrides now live on each <b>supplier's profile</b> in Organisations → Suppliers, not here.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Sample lead times</h2><span class="tag">Customer</span></div>
+    <p class="lede">The lead time customers are quoted for samples. Supplier sample lead times are set on each <b>supplier's profile</b> (defaults 1 day unbranded, 7 days branded); both can be changed per product on the pop-out's Sample tab.</p>
+    <div class="lieuctl"><span class="lbl">Unbranded sample (default)</span><div class="stepper"><button data-cs="unbranded" data-d="-1" aria-label="Decrease">−</button><span class="val" id="csU">3</span><button data-cs="unbranded" data-d="1" aria-label="Increase">+</button></div><span class="unit">working days</span></div>
+    <div class="lieuctl"><span class="lbl">Branded sample (default)</span><div class="stepper"><button data-cs="branded" data-d="-1" aria-label="Decrease">−</button><span class="val" id="csB">10</span><button data-cs="branded" data-d="1" aria-label="Increase">+</button></div><span class="unit">working days</span></div>
+  </div>
+
+  <div id="viaMount"></div>
+
+  <div class="card">
+    <div class="card-h"><h2>Related</h2></div>
+    <div class="linkrow"><div class="li"><b>Suppliers &amp; their day-in-lieu overrides</b><span>Manage suppliers, contacts and per-supplier buffers</span></div><a href="Merchsmith Organisations.html">Open Organisations ›</a></div>
+    <div class="linkrow"><div class="li"><b>Customers</b><span>Standing discounts, teams and addresses</span></div><a href="Merchsmith Organisations.html">Open Organisations ›</a></div>
+  </div>
+  </div>
+
+  <div class="panel" id="panel-storerange" hidden></div>
+
+  <div class="panel" id="panel-storehome" hidden></div>
+
+  <div class="panel" id="panel-footer" hidden>
+  <div class="card">
+    <div class="card-h"><h2>Footer</h2><span class="tag">Your platform</span></div>
+    <p class="lede">Everything in your platform footer is editable here. It appears on every page your customers and suppliers see, and takes its colour from your colourway. <b>“Powered by Merchsmith”</b> can be switched off below.</p>
+    <div id="fEditor"></div>
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" id="fSave">Save footer</button>
+      <button class="btn ghost" id="fPreview">Preview a page</button>
+      <button class="btn ghost" id="fReset">Reset to defaults</button>
+    </div>
+  </div>
+  </div>
+
+  <div class="panel" id="panel-pages" hidden>
+  <div class="card">
+    <div class="card-h"><h2>Content pages</h2><span class="tag">Your platform</span></div>
+    <p class="lede">The pages your footer links to. Each one follows a template for its type — editorial, legal, FAQ or contact — so you fill in sections rather than starting from a blank box. Pages you have not touched show default scaffolding.</p>
+    <div id="pgList"></div>
+  </div>
+  <div class="card" id="pgEditCard" hidden style="margin-top:16px">
+    <div class="card-h"><h2 id="pgEditTitle">Edit page</h2><span class="tag" id="pgEditType">—</span></div>
+    <div id="pgEditor"></div>
+    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn" id="pgSave">Save page</button>
+      <button class="btn ghost" id="pgView">View page</button>
+      <button class="btn ghost" id="pgRevert">Revert to default</button>
+      <button class="btn ghost" id="pgClose">Close</button>
+    </div>
+  </div>
+  </div>
+
+  <div class="panel" id="panel-orgprofile" hidden><div id="orgProfileMount"></div></div>
+
+  <div class="panel" id="panel-branding" hidden>
+  <div class="card">
+    <div class="card-h"><h2>Platform colourway</h2></div>
+    <p class="lede">Choose the colour set your customers see when logged in to your platform. The built-in sets are shown first — add your own brand colours and switch between them. Changes apply live across the platform.</p>
+    <div class="cwsets" id="cwSets"></div>
+    <div style="margin-top:16px"><button class="btn ghost" id="cwAdd">+ Add colour set</button></div>
+    <div class="cwform" id="cwForm" hidden>
+      <div class="fcfg-h">New colour set</div>
+      <div class="cwfrow"><label>Set name</label><input type="text" id="cwName" placeholder="e.g. Spring 2026"></div>
+      <div class="cwfields">
+        <label class="cwfield"><span>Primary</span><input type="color" id="cwPrimary" value="#7B85C5"></label>
+        <label class="cwfield"><span>Primary deep</span><input type="color" id="cwDeep" value="#5860A6"></label>
+        <label class="cwfield"><span>Primary ink</span><input type="color" id="cwInk" value="#3C4279"></label>
+        <label class="cwfield"><span>Tint</span><input type="color" id="cwTint" value="#ECEEF9"></label>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:10px"><button class="btn" id="cwSave">Save &amp; apply</button><button class="btn ghost" id="cwCancel">Cancel</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Breadcrumb header colour</h2><span class="tag">Per menu area</span></div>
+    <p class="lede">Set the breadcrumb bar colour for each area of the platform. One colour per menu category — leave on the theme default, or pick a colour. Changes apply live.</p>
+    <div class="crumb-warn" id="crumbWarn" hidden><svg class="icn" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17.5v.5"/></svg><span>These colours <b>override the selected colourway</b> for the breadcrumb bar.</span><button class="cr-resetall" id="crumbResetAll">Reset all to colourway</button></div>
+    <div class="crumbgrid" id="crumbGrid"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Logos</h2><span class="tag">Header &amp; PDF</span></div>
+    <p class="lede">Upload the logos used across your platform. The <b>header logo</b> appears top-left in the app; the <b>PDF logo</b> is used on downloadable documents (proofs, quotes) — we'll wire that in at a later stage.</p>
+    <div class="logogrid">
+      <div class="logoslot"><span class="logoslot-lbl">Platform header logo</span><div class="logoslot-drop"><image-slot id="brand-header-logo" shape="rect" fit="contain" data-crop placeholder="Drop header logo (SVG / PNG)"></image-slot></div><div class="logomono" data-for="brand-header-logo"><span>Tone</span><button type="button" class="logomono-btn on" data-mono="original">Original</button><button type="button" class="logomono-btn" data-mono="white">Mono white</button><button type="button" class="logomono-btn" data-mono="black">Mono black</button><button type="button" class="logodel" data-crop-logo="brand-header-logo">Crop</button><button type="button" class="logodel" data-del-logo="brand-header-logo">Remove logo</button></div><span class="logoslot-hint">Shown top-left. Transparent PNG or SVG recommended. <b>Recommended: 320 × 80 px</b> (4:1), max 512 px wide. Double-click to crop &amp; reposition.</span></div>
+      <div class="logoslot"><span class="logoslot-lbl">PDF / document logo</span><div class="logoslot-drop"><image-slot id="brand-pdf-logo" shape="rect" fit="contain" data-crop placeholder="Drop PDF logo (PNG / SVG)"></image-slot></div><div class="logomono" data-for="brand-pdf-logo"><span>Tone</span><button type="button" class="logomono-btn on" data-mono="original">Original</button><button type="button" class="logomono-btn" data-mono="white">Mono white</button><button type="button" class="logomono-btn" data-mono="black">Mono black</button><button type="button" class="logodel" data-crop-logo="brand-pdf-logo">Crop</button><button type="button" class="logodel" data-del-logo="brand-pdf-logo">Remove logo</button></div><span class="logoslot-hint">Used on proofs, quotes &amp; order docs. <b>Recommended: 600 × 200 px</b> (3:1) or vector SVG, transparent background. Double-click to crop &amp; reposition.</span></div>
+    </div>
+  </div>
+  </div>
+
+  <div class="panel" id="panel-appearance" hidden><div id="appearanceMount"></div></div>
+
+  <div class="panel" id="panel-domain" hidden><div id="domainMount"></div></div>
+
+  <div class="panel" id="panel-markup" hidden><div id="markupMount"></div></div>
+
+  <div class="panel" id="panel-discounts" hidden><div id="discountsMount"></div><div id="promoMount"></div></div>
+
+  <div class="panel" id="panel-billing" hidden><div id="billingMount"></div></div>
+
+  <div class="panel" id="panel-subscription" hidden>
+  <div class="card">
+    <div class="card-h"><h2>Your subscription</h2><span class="tag" id="subPlanTag">—</span></div>
+    <p class="lede">Your plan includes the whole platform — nothing is held back on a lower tier. The only thing that changes between plans is the monthly base, how many <b>distributor seats</b> are included, and the rate for each seat beyond that.</p>
+    <div id="subBox"></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h2>What counts as a seat</h2></div>
+    <p class="lede">A seat is one billable user in <b>your own team</b>. Your customers and your suppliers log in free — they never count towards your allowance and are never billed, on any plan.</p>
+    <div id="subRoles"></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><h2>If you add more people</h2></div>
+    <p class="lede">Compare the tiers against your current team size. Seats are billed monthly at the rate for your plan.</p>
+    <div id="subPlans"></div>
+  </div>
+  </div>
+
+
+</main>
+
+<div class="saved-toast" id="toast"><svg class="icn"><use href="#i-check"/></svg><span>Saved</span></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 20v-6M12 20V9M17 20v-10"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+</svg>
+<script src="names.js?v=2"></script>
+<script src="address.js?v=1"></script>
+<script src="admin-data.js?v=8"></script>
+<script src="store-domain.js?v=3"></script>
+<script src="bacs-deadline.js?v=2"></script>
+<script src="two-supplier.js"></script>
+<script src="order-data.js"></script>
+<script src="demo-orders.js?v=1"></script>
+<script src="order-social.js?v=20"></script>
+<script src="finance-integrations.js?v=2"></script>
+<script src="acct-manager.js?v=2"></script>
+<script src="finance-tables.js?v=9"></script>
+<script src="dashboards.js?v=9"></script>
+<script src="finance-invoices.js?v=6"></script>
+<script src="store-appearance.js?v=4"></script>
+<script src="billing.js?v=3"></script>
+<script src="markup.js?v=1"></script>
+<script src="discounts.js?v=2"></script>
+<script src="org-data.js?v=8"></script>
+<script src="promo-codes.js?v=2"></script>
+<script src="store-structure.js"></script>
+<script src="lead-times.js?v=3"></script>
+<script src="store-feed.js"></script>
+<script src="ms-data.js"></script>
+<script src="catalogue-data.js"></script>
+<script src="product-notes.js?v=4"></script>
+<script src="dist-storerange.js?v=27"></script>
+<script src="ms-brands.js?v=2"></script>
+<script src="ms-tags.js?v=3"></script>
+<script src="ms-dist-tags.js?v=1"></script>
+<script src="dist-overrides.js?v=2"></script>
+<script src="store-home.js?v=7"></script>
+<script src="dist-storehome.js?v=10"></script>
+<script src="image-slot.js"></script>
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script src="avatars.js"></script>
+<script src="people.js?v=19"></script>
+<script src="org-profile.js?v=14"></script>
+<script src="sidebar.js?v=26"></script>
+<script src="site-content.js"></script>
+<script src="chrome.js?v=3"></script>
+<script>
+const ML=window.MSLead;
+const toast=(()=>{ const el=document.getElementById('toast'); let t; return ()=>{ el.classList.add('show'); clearTimeout(t); t=setTimeout(()=>el.classList.remove('show'),1400); }; })();
+function render(){ document.getElementById('gVal').textContent=ML.globalLieu(); document.getElementById('fLieu').textContent=ML.globalLieu(); if(ML.custSampleLead){ document.getElementById('csU').textContent=ML.custSampleLead('unbranded'); document.getElementById('csB').textContent=ML.custSampleLead('branded'); } }
+document.querySelectorAll('[data-cs]').forEach(b=>b.onclick=()=>{ const t=b.dataset.cs; ML.setCustSampleLead(t,ML.custSampleLead(t)+(+b.dataset.d)); render(); toast(); });
+document.getElementById('gLess').onclick=()=>{ ML.setGlobalLieu(Math.max(0,ML.globalLieu()-1)); render(); toast(); };
+document.getElementById('gMore').onclick=()=>{ ML.setGlobalLieu(ML.globalLieu()+1); render(); toast(); };
+render();
+
+/* ---- tabs ---- */
+function showTab(name){ const b=document.querySelector('.settab[data-panel="'+name+'"]');
+  document.querySelectorAll('.settab').forEach(x=>x.classList.toggle('active',x===b));
+  document.querySelectorAll('.panel').forEach(p=>p.hidden = p.id!=='panel-'+name);
+  // store-range / store-settings have no in-page tab — they live in the sidebar; hide the tab bar when showing them
+  // Store settings has its own sub-tabs (Homepage, Markup & pricing, Discounts, Store appearance)
+  const STORE_TABS=['storehome','markup','discounts','appearance'], inStore=STORE_TABS.includes(name);
+  const sidebarOnly = (name==='storerange'||name==='billing'||inStore);
+  const tabbar=document.querySelector('.settabs:not(.storetabs)'); if(tabbar) tabbar.style.display = sidebarOnly?'none':'';
+  const stbar=document.querySelector('.storetabs'); if(stbar) stbar.style.display = inStore&&window.MS_SCOPE!=='platform'?'':'none';
+  const ttl=document.getElementById('setTitle');
+  const PLAT=window.MS_SCOPE==='platform';
+  const CRUMB=PLAT
+    ? { storehome:['Default store','Store settings'], footer:['Default store','Footer'] }
+    : { storerange:['Store','Product range'], storehome:['Store','Store settings','Homepage'], markup:['Store','Store settings','Markup & pricing'], discounts:['Store','Store settings','Discounts'], appearance:['Store','Store settings','Store appearance'], billing:window.MS_FINANCE_PAGE?['Finance']:['Finance','Billing & payments'] };
+  if(PLAT){ if(tabbar) tabbar.style.display='none';
+    if(ttl) ttl.textContent = name==='footer'?'Default store footer':'Default store settings'; }
+  else if(name==='storerange'){ if(ttl)ttl.textContent='Product range'; }
+  else if(inStore){ if(ttl)ttl.textContent='Store settings'; }
+  else if(name==='billing'){ if(ttl)ttl.textContent=window.MS_FINANCE_PAGE?'Finance':'Billing & payments'; }
+  else if(!PLAT){ if(ttl)ttl.textContent='Settings'; }
+  { const cr=document.getElementById('setCrumb'); const path=CRUMB[name]||['Settings'];
+    if(cr) cr.innerHTML=path.map((s,i)=>
+      (i?'<span class="sep">›</span>':'')+(i===path.length-1?'<span class="here">'+s+'</span>':'<span>'+s+'</span>')).join(''); }
+  if(name==='subscription') renderSubscription();
+  if(name==='storerange' && window.MSDistRange) MSDistRange.render();
+  if(name==='storehome' && window.MSStoreHome) MSStoreHome.render();
+  if(name==='discounts' && window.MSDISC) MSDISC.panel(document.getElementById('discountsMount'));
+  if(name==='discounts' && window.MSPROMO) MSPROMO.panel(document.getElementById('promoMount'));
+  if(name==='appearance' && window.MSAPPEAR) MSAPPEAR.mount(document.getElementById('appearanceMount'));
+  if(name==='markup' && window.MSMARKUP) MSMARKUP.panel(document.getElementById('markupMount'));
+  if(name==='billing' && window.ADMIN){ const me=ADMIN.distributors.find(d=>d.id==='acme')||ADMIN.distributors[0]; if(window.MSFIN) MSFIN.panel(document.getElementById('billingMount'),me); else if(window.MSBILL) MSBILL.panel(document.getElementById('billingMount'),me); }
+  if(name==='domain' && window.MSDOMAIN && window.ADMIN){ const me=ADMIN.distributors.find(d=>d.id==='acme')||ADMIN.distributors[0]; MSDOMAIN.distributorPanel(document.getElementById('domainMount'),me); } }
+document.querySelectorAll('.settab[data-panel]').forEach(b=>b.onclick=()=>{ showTab(b.dataset.panel); history.replaceState(null,'','#tab='+b.dataset.panel); window.scrollTo(0,0); });
+// deep-link: open the tab/panel named in #tab=… (e.g. from the sidebar "Store range" — which has no in-page tab button)
+(function(){ const m=(location.hash.match(/tab=([a-z]+)/i)||[])[1];
+  if(window.MS_SCOPE==='platform'){ showTab(m==='footer'?'footer':'storehome'); return; }
+  if(m && document.getElementById('panel-'+m)) showTab(m); })();
+(function(){ let k=(location.hash.split('&')[0]||''); window.addEventListener('hashchange',()=>{
+    const n=(location.hash.split('&')[0]||''); if(n!==k){ k=n; window.scrollTo(0,0); } }); })();
+window.addEventListener('hashchange',()=>{ const m=(location.hash.match(/tab=([a-z]+)/i)||[])[1];
+  if(window.MS_SCOPE==='platform'){ showTab(m==='footer'?'footer':'storehome'); return; }
+  if(m && document.getElementById('panel-'+m)) showTab(m); });
+
+/* ---- footer editor ----
+   Edits the whole footer object used by chrome.js (link columns, newsletter,
+   contact, exit link, accreditation logos, socials, payment marks, legal row).
+   Accreditation logos are stored as data URLs so they survive a reload. */
+const FDEF=(window.MSChrome&&MSChrome.FOOTER_DEF)?JSON.parse(JSON.stringify(MSChrome.FOOTER_DEF)):{cols:[],accred:[],social:[],legal:[]};
+let FCFG=(window.MSChrome&&MSChrome.footerCfg)?MSChrome.footerCfg():JSON.parse(JSON.stringify(FDEF));
+const fesc=v=>String(v==null?'':v).replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
+function linkRows(links,path){
+  return (links||[]).map((a,i)=>`<div class="frw" data-path="${path}" data-i="${i}">
+    <span class="grab" title="Drag to reorder">⠿</span>
+    <button class="ftog ${a.on!==false?'on':''}" data-tog></button>
+    <input type="text" class="w-t" value="${fesc(a.t)}" data-k="t" placeholder="Link title">
+    <input type="text" class="w-h" value="${fesc(a.h)}" data-k="h" placeholder="URL or Merchsmith Page.html?p=slug">
+    <button class="xbtn" data-del>×</button></div>`).join('');
+}
+function fld(label,path,k,val,ph,ta){
+  return `<div class="ffield"><span class="flab">${label}</span>${ta
+    ? `<textarea data-path="${path}" data-k="${k}" placeholder="${fesc(ph)}">${fesc(val)}</textarea>`
+    : `<input type="text" data-path="${path}" data-k="${k}" value="${fesc(val)}" placeholder="${fesc(ph)}">`}</div>`;
+}
+function tog(path,label,on){
+  return `<button class="ftog ${on!==false?'on':''}" data-tog data-path="${path}" data-k="on" title="${label}"></button>`;
+}
+function renderFooter(){
+  const c=FCFG;
+  const cols=(c.cols||[]).map((col,ci)=>`<div class="fgrp">
+    <div class="fgrp-h"><h3>Link column ${ci+1}</h3>
+      <input type="text" data-path="cols.${ci}" data-k="h" value="${fesc(col.h)}" placeholder="Column heading" style="font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:6px 10px">
+      <span class="sp"></span><button class="xbtn" data-delcol="${ci}" title="Delete column">×</button></div>
+    ${linkRows(col.links,'cols.'+ci+'.links')}
+    <div style="margin-top:10px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" data-addlink="${ci}">+ Add link</button></div>
+  </div>`).join('');
+
+  document.getElementById('fEditor').innerHTML=`
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Brand block</h3><span class="hint">Top-left of the footer</span></div>
+    ${fld('Blurb','','blurb',c.blurb,'One or two lines about the business',true)}
+    <div class="ffield"><span class="flab">Let’s Talk</span>
+      ${tog('talk','Show the Let’s Talk button',c.talk.on)}
+      <input type="text" data-path="talk" data-k="t" value="${fesc(c.talk.t)}" placeholder="Button text">
+      <input type="text" data-path="talk" data-k="h" value="${fesc(c.talk.h)}" placeholder="Where it goes"></div>
+  </div>
+
+  ${cols}
+  <div style="margin:-4px 0 16px"><button class="btn ghost" style="padding:7px 13px;font-size:12.5px" id="fAddCol">+ Add link column</button></div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Newsletter sign-up</h3>${tog('news','Show the newsletter block',c.news.on)}<span class="hint">Captures an email; nothing is sent in the prototype</span></div>
+    ${fld('Heading','news','h',c.news.h,'Stay in touch')}
+    ${fld('Body','news','b',c.news.b,'What subscribers get, and how often',true)}
+    ${fld('Placeholder','news','ph',c.news.ph,'Your work email')}
+    ${fld('Button','news','cta',c.news.cta,'Sign up')}
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Contact details</h3>${tog('contact','Show contact details',c.contact.on)}<span class="hint">Also shown on the Contact us page</span></div>
+    ${fld('Email','contact','email',c.contact.email,'hello@example.com')}
+    ${fld('Phone','contact','phone',c.contact.phone,'+44 …')}
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Link to your marketing site</h3>${tog('exit','Show the outbound link',c.exit.on)}
+      <span class="hint">Opens in a new tab</span></div>
+    ${fld('Label','exit','t',c.exit.t,'About Mojo Promotions')}
+    ${fld('URL','exit','h',c.exit.h,'https://…')}
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Accreditations</h3><span class="hint">Pick an emblem and name it — or upload the real logo, which replaces the emblem</span></div>
+    ${(c.accred||[]).map((a,i)=>`<div class="accrow2" data-path="accred.${i}">
+      <button class="ftog ${a.on!==false?'on':''}" data-tog data-path="accred.${i}" data-k="on"></button>
+      <span class="accthumb">${a.img?`<img src="${fesc(a.img)}" alt="">`:'No logo'}</span>
+      <select class="w-mark" data-path="accred.${i}" data-k="mark" title="Emblem">${(window.MSChrome&&MSChrome.ACC_MARKS||['seal']).map(m=>`<option value="${m}" ${a.mark===m?'selected':''}>${m}</option>`).join('')}</select>
+      <input type="text" class="w-q" data-path="accred.${i}" data-k="t" value="${fesc(a.t)}" placeholder="Certified">
+      <input type="text" class="w-t" data-path="accred.${i}" data-k="s" value="${fesc(a.s)}" placeholder="Accreditation name">
+      <button class="upl" data-upl="${i}">${a.img?'Replace':'Upload'}</button>
+      ${a.img?`<button class="upl" data-clr="${i}">Clear</button>`:''}
+      <button class="xbtn" data-delacc="${i}">×</button></div>`).join('')}
+    <div style="margin-top:10px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="fAddAcc">+ Add accreditation</button></div>
+    <input type="file" id="accFile" accept="image/*" hidden>
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Social</h3><span class="hint">Leave a URL blank to keep the icon inert</span></div>
+    ${(c.social||[]).map((sc,i)=>`<div class="frw" data-path="social.${i}">
+      <button class="ftog ${sc.on!==false?'on':''}" data-tog data-path="social.${i}" data-k="on"></button>
+      <span class="flab" style="width:86px">${fesc(sc.t)}</span>
+      <input type="text" class="w-h" data-path="social.${i}" data-k="h" value="${fesc(sc.h)}" placeholder="https://…"></div>`).join('')}
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Payment marks</h3>${tog('pay','Show payment marks',c.pay.on)}</div>
+    ${fld('Label','pay','label',c.pay.label,'Secured by Stripe')}
+    <div class="ffield"><span class="flab">Cards</span><div>
+      ${cardChoices().map(x=>
+        `<label class="cardchk"><input type="checkbox" data-card="${x}" ${payNames(c).indexOf(x)>-1?'checked':''}>${x}</label>`).join('')}
+    </div></div>
+  </div>
+
+  <div class="fgrp">
+    <div class="fgrp-h"><h3>Bottom row</h3></div>
+    ${fld('Copyright','','copyright',c.copyright,'© 2026 Your company')}
+    ${linkRows(c.legal,'legal')}
+    <div style="margin-top:10px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="fAddLegal">+ Add legal link</button></div>
+    <div class="ffield" style="margin-top:6px"><span class="flab">Powered by</span>
+      ${tog('','powered',c.powered)}<span class="hint">Show “Powered by Merchsmith”</span></div>
+  </div>`;
+
+  // wire the buttons that rebuild structure
+  const E=document.getElementById('fEditor');
+  E.querySelectorAll('[data-addlink]').forEach(b=>b.onclick=()=>{ readFooterDOM();
+    FCFG.cols[+b.dataset.addlink].links.push({t:'New link',h:'#',on:true}); renderFooter(); });
+  E.querySelectorAll('[data-delcol]').forEach(b=>b.onclick=()=>{ readFooterDOM();
+    FCFG.cols.splice(+b.dataset.delcol,1); renderFooter(); });
+  E.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ readFooterDOM();
+    const r=b.closest('[data-path]'); ref(r.dataset.path).splice(+r.dataset.i,1); renderFooter(); });
+  E.querySelectorAll('[data-delacc]').forEach(b=>b.onclick=()=>{ readFooterDOM();
+    FCFG.accred.splice(+b.dataset.delacc,1); renderFooter(); });
+  const add=(id,fn)=>{ const b=document.getElementById(id); if(b) b.onclick=()=>{ readFooterDOM(); fn(); renderFooter(); }; };
+  add('fAddCol',()=>FCFG.cols.push({h:'New column',links:[{t:'New link',h:'#',on:true}]}));
+  add('fAddAcc',()=>FCFG.accred.push({t:'Accredited',s:'New accreditation',mark:'seal',img:'',on:true}));
+  add('fAddLegal',()=>FCFG.legal.push({t:'New link',h:'#',on:true}));
+
+  // accreditation logo upload → data URL
+  const file=document.getElementById('accFile'); let upTarget=null;
+  E.querySelectorAll('[data-upl]').forEach(b=>b.onclick=()=>{ upTarget=+b.dataset.upl; file.value=''; file.click(); });
+  E.querySelectorAll('[data-clr]').forEach(b=>b.onclick=()=>{ readFooterDOM(); FCFG.accred[+b.dataset.clr].img=''; renderFooter(); });
+  if(file) file.onchange=()=>{ const f=file.files&&file.files[0]; if(!f||upTarget==null) return;
+    const rd=new FileReader(); rd.onload=()=>{ readFooterDOM(); FCFG.accred[upTarget].img=rd.result; renderFooter(); }; rd.readAsDataURL(f); };
+
+  // toggles
+  E.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{ b.classList.toggle('on'); readFooterDOM(); });
+}
+/* Payment cards are objects {t,img,hpx} when we ship artwork for them and plain strings
+   otherwise. The editor works in names, so these convert both ways — mapping a ticked name
+   back to its default object is what keeps the logo files attached on save. */
+const payName=x=>(typeof x==='string')?x:((x&&x.t)||'');
+const payNames=c=>((c&&c.pay&&c.pay.cards)||[]).map(payName).filter(Boolean);
+function cardChoices(){
+  const def=(((window.MSChrome&&MSChrome.FOOTER_DEF)||FDEF).pay.cards||[]).map(payName);
+  const extra=['Maestro','Apple Pay','Google Pay','PayPal'];   // no artwork — render as text chips
+  return [...new Set([...def,...extra,...payNames(FCFG)])].filter(Boolean);
+}
+function cardFor(name){
+  const def=(((window.MSChrome&&MSChrome.FOOTER_DEF)||FDEF).pay.cards||[]);
+  return def.find(d=>payName(d)===name) || name;               // object if we have one, else the name
+}
+
+// resolve a dotted path like 'cols.1.links' against FCFG
+function ref(path){ if(!path) return FCFG;
+  return String(path).split('.').reduce((o,k)=>o?o[k]:undefined,FCFG); }
+function readFooterDOM(){
+  document.querySelectorAll('#fEditor [data-k]').forEach(el=>{
+    const holder=el.dataset.path!==undefined?el:el.closest('[data-path]');
+    const path=el.dataset.path!==undefined?el.dataset.path:(holder?holder.dataset.path:'');
+    const k=el.dataset.k;
+    let target=ref(path);
+    if(path && /\.\d+$/.test(path)===false && holder && holder.dataset.i!==undefined) target=ref(path)[+holder.dataset.i];
+    if(!target||typeof target!=='object') return;
+    if(el.tagName==='BUTTON') target[k]=el.classList.contains('on');
+    else target[k]=el.value;
+  });
+  // powered toggle + top-level text fields (blank data-path)
+  const pw=document.querySelector('#fEditor [data-k="powered"]'); if(pw) FCFG.powered=pw.classList.contains('on');
+  const bl=document.querySelector('#fEditor [data-k="blurb"]'); if(bl) FCFG.blurb=bl.value;
+  const cp=document.querySelector('#fEditor [data-k="copyright"]'); if(cp) FCFG.copyright=cp.value;
+  // keep the full card object (img/hpx) — writing bare names here used to wipe the logos
+  const boxes=document.querySelectorAll('#fEditor [data-card]');
+  if(boxes.length) FCFG.pay.cards=[...boxes].filter(b=>b.checked).map(b=>cardFor(b.dataset.card));
+}
+document.getElementById('fSave').onclick=()=>{ readFooterDOM();
+  try{ localStorage.setItem((window.MSChrome&&MSChrome.FOOTER_KEY)||'ms-footer-cfg',JSON.stringify(FCFG)); }catch(e){}
+  if(window.MSChrome&&MSChrome.buildFooter) MSChrome.buildFooter(); toast(); };
+document.getElementById('fReset').onclick=()=>{
+  if(!confirm('Reset the footer to its default content? Uploaded logos will be cleared.')) return;
+  try{ localStorage.removeItem((window.MSChrome&&MSChrome.FOOTER_KEY)||'ms-footer-cfg'); }catch(e){}
+  FCFG=JSON.parse(JSON.stringify(FDEF)); renderFooter();
+  if(window.MSChrome&&MSChrome.buildFooter) MSChrome.buildFooter(); toast(); };
+document.getElementById('fPreview').onclick=()=>{ readFooterDOM();
+  try{ localStorage.setItem((window.MSChrome&&MSChrome.FOOTER_KEY)||'ms-footer-cfg',JSON.stringify(FCFG)); }catch(e){}
+  location.href=window.MS_SCOPE==='platform'?'Merchsmith Store.html?store=merchsmith':'Merchsmith Page.html?p=about'; };
+renderFooter();
+
+/* ---- content pages editor ----
+   One editor driven by page TYPE: editorial (sections/stats/CTA), legal
+   (clauses), faq (groups of Q&A), contact (offices/hours). */
+(function(){
+  if(!window.MSSITE) return;
+  const L=document.getElementById('pgList'), card=document.getElementById('pgEditCard'), ED=document.getElementById('pgEditor');
+  let cur=null, P=null;
+  const e2=v=>String(v==null?'':v).replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
+  function list(){
+    L.innerHTML=MSSITE.PAGES.map(pg=>{
+      const ed=MSSITE.isEdited(pg.slug);
+      return `<div class="pgrow">
+        <div style="flex:1;min-width:0"><b>${e2(pg.title)}</b> <span class="slug">?p=${e2(pg.slug)}</span></div>
+        <span class="pgtype">${e2(pg.type)}</span>
+        <span class="pgstate ${ed?'ed':'def'}">${ed?'Edited':'Default'}</span>
+        <button class="btn ghost" style="padding:6px 12px;font-size:12.5px" data-edit="${e2(pg.slug)}">Edit</button>
+        <a class="btn ghost" style="padding:6px 12px;font-size:12.5px" href="${MSSITE.url(pg.slug)}">View</a>
+      </div>`;
+    }).join('');
+    L.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>open(b.dataset.edit));
+  }
+
+  const f=(lab,k,val,ph,ta)=>`<div class="ffield"><span class="flab">${lab}</span>${ta
+      ? `<textarea data-f="${k}" placeholder="${e2(ph)}">${e2(val)}</textarea>`
+      : `<input type="text" data-f="${k}" value="${e2(val)}" placeholder="${e2(ph)}">`}</div>`;
+
+  function editor(){
+    let h=f('Standfirst','standfirst',P.standfirst,'The one-paragraph summary under the title',true);
+    if(P.type==='editorial'){
+      h+=(P.sections||[]).map((s,i)=>`<div class="pgsec" data-sec="${i}">
+        <div class="pgsec-h"><span>Section ${i+1}</span><span class="sp"></span>
+          <label class="cardchk"><input type="checkbox" data-simg="${i}" ${s.img?'checked':''}>Image</label>
+          <button class="xbtn" data-delsec="${i}">×</button></div>
+        ${f('Heading','sections.'+i+'.h',s.h,'Section heading')}
+        ${f('Body','sections.'+i+'.body',s.body,'Section copy',true)}</div>`).join('')
+        +`<div style="margin-bottom:16px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="pgAddSec">+ Add section</button></div>
+        <div class="pgsec"><div class="pgsec-h"><span>Stat band</span></div>
+        ${(P.stats||[]).map((st,i)=>`<div class="frw"><input type="text" class="w-t" data-f="stats.${i}.v" value="${e2(st.v)}" placeholder="Figure">
+          <input type="text" class="w-h" data-f="stats.${i}.l" value="${e2(st.l)}" placeholder="Label">
+          <button class="xbtn" data-delstat="${i}">×</button></div>`).join('')}
+        <div style="margin-top:10px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="pgAddStat">+ Add stat</button></div></div>
+        <div class="pgsec"><div class="pgsec-h"><span>Closing call to action</span></div>
+        ${f('Heading','cta.h',(P.cta||{}).h,'Work with us')}
+        ${f('Body','cta.b',(P.cta||{}).b,'One line')}
+        ${f('Button','cta.t',(P.cta||{}).t,"Let's Talk.")}</div>`;
+    }
+    if(P.type==='legal'){
+      h+=f('Last reviewed','reviewed',P.reviewed,'e.g. 12 September 2026')
+       +(P.clauses||[]).map((c,i)=>`<div class="pgsec"><div class="pgsec-h"><span>Clause ${i+1}</span>
+          <span class="sp"></span><button class="xbtn" data-delcl="${i}">×</button></div>
+          ${f('Heading','clauses.'+i+'.h',c.h,'Clause heading')}
+          ${f('Wording','clauses.'+i+'.body',c.body,'Your own wording',true)}</div>`).join('')
+       +`<div><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="pgAddCl">+ Add clause</button></div>`;
+    }
+    if(P.type==='faq'){
+      h+=(P.groups||[]).map((g,gi)=>`<div class="pgsec"><div class="pgsec-h"><span>Group ${gi+1}</span>
+          <input type="text" data-f="groups.${gi}.h" value="${e2(g.h)}" placeholder="Group heading" style="font:inherit;font-size:13px;border:1.5px solid var(--line-soft);border-radius:8px;padding:6px 10px">
+          <span class="sp"></span><button class="xbtn" data-delgrp="${gi}">×</button></div>
+        ${(g.items||[]).map((it,ii)=>`<div style="padding:8px 0;border-top:1px solid var(--paper-2)">
+          ${f('Question','groups.'+gi+'.items.'+ii+'.q',it.q,'The question')}
+          ${f('Answer','groups.'+gi+'.items.'+ii+'.a',it.a,'The answer',true)}
+          <div style="text-align:right"><button class="xbtn" data-delq="${gi}.${ii}">× Remove</button></div></div>`).join('')}
+        <div style="margin-top:8px"><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" data-addq="${gi}">+ Add question</button></div></div>`).join('')
+       +`<div><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="pgAddGrp">+ Add group</button></div>`;
+    }
+    if(P.type==='contact'){
+      h+=f('Opening hours','hours',P.hours,'Monday to Friday, 9am to 5.30pm')
+       +(P.offices||[]).map((o,i)=>`<div class="pgsec"><div class="pgsec-h"><span>Location ${i+1}</span>
+          <span class="sp"></span><button class="xbtn" data-deloff="${i}">×</button></div>
+          ${f('Name','offices.'+i+'.h',o.h,'Head office')}
+          ${f('Address','offices.'+i+'.body',o.body,'One line per line',true)}</div>`).join('')
+       +`<div><button class="btn ghost" style="padding:6px 12px;font-size:12.5px" id="pgAddOff">+ Add location</button></div>
+         <p class="lede" style="margin-top:14px">Email and phone come from <b>Footer → Contact details</b> so they stay in step with the footer.</p>`;
+    }
+    ED.innerHTML=h;
+
+    const set=(id,fn)=>{ const b=document.getElementById(id); if(b) b.onclick=()=>{ read(); fn(); editor(); }; };
+    set('pgAddSec',()=>(P.sections=P.sections||[]).push({h:'New section',body:'',img:false}));
+    set('pgAddStat',()=>(P.stats=P.stats||[]).push({v:'',l:''}));
+    set('pgAddCl',()=>(P.clauses=P.clauses||[]).push({h:'New clause',body:''}));
+    set('pgAddGrp',()=>(P.groups=P.groups||[]).push({h:'New group',items:[{q:'',a:''}]}));
+    set('pgAddOff',()=>(P.offices=P.offices||[]).push({h:'',body:''}));
+    ED.querySelectorAll('[data-addq]').forEach(b=>b.onclick=()=>{ read();
+      P.groups[+b.dataset.addq].items.push({q:'',a:''}); editor(); });
+    const del=(sel,fn)=>ED.querySelectorAll(sel).forEach(b=>b.onclick=()=>{ read(); fn(b); editor(); });
+    del('[data-delsec]',b=>P.sections.splice(+b.dataset.delsec,1));
+    del('[data-delstat]',b=>P.stats.splice(+b.dataset.delstat,1));
+    del('[data-delcl]',b=>P.clauses.splice(+b.dataset.delcl,1));
+    del('[data-delgrp]',b=>P.groups.splice(+b.dataset.delgrp,1));
+    del('[data-deloff]',b=>P.offices.splice(+b.dataset.deloff,1));
+    del('[data-delq]',b=>{ const [g,i]=b.dataset.delq.split('.').map(Number); P.groups[g].items.splice(i,1); });
+    ED.querySelectorAll('[data-simg]').forEach(cb=>cb.onchange=()=>{ read(); });
+  }
+
+  // write a dotted path into P
+  function put(path,val){
+    const ks=path.split('.'); const last=ks.pop();
+    const t=ks.reduce((o,k)=>{ if(o[k]==null) o[k]=/^\d+$/.test(k)?[]:{}; return o[k]; },P);
+    t[last]=val;
+  }
+  function read(){
+    ED.querySelectorAll('[data-f]').forEach(el=>put(el.dataset.f,el.value));
+    ED.querySelectorAll('[data-simg]').forEach(cb=>{ if(P.sections&&P.sections[+cb.dataset.simg]) P.sections[+cb.dataset.simg].img=cb.checked; });
+  }
+
+  function open(slug){
+    cur=slug; P=MSSITE.page(slug);
+    document.getElementById('pgEditTitle').textContent='Edit · '+P.title;
+    document.getElementById('pgEditType').textContent=P.type;
+    document.getElementById('pgView').onclick=()=>location.href=MSSITE.url(slug);
+    card.hidden=false; editor();
+    window.scrollTo(0,Math.max(0,card.offsetTop-20));
+  }
+  document.getElementById('pgSave').onclick=()=>{ read();
+    const {slug,title,type,nav,...content}=P; MSSITE.setPage(cur,content); list(); toast(); };
+  document.getElementById('pgRevert').onclick=()=>{
+    if(!confirm('Revert this page to its default content?')) return;
+    MSSITE.resetPage(cur); P=MSSITE.page(cur); editor(); list(); toast(); };
+  document.getElementById('pgClose').onclick=()=>{ card.hidden=true; cur=null; };
+  list();
+  // deep link from a page's "Edit this page" link
+  const dp=(location.hash.match(/[#&]p=([^&]+)/)||[])[1];
+  if(dp && MSSITE.PAGES.some(x=>x.slug===decodeURIComponent(dp))) open(decodeURIComponent(dp));
+})();
+
+/* ---- branding: colourway sets + logos ---- */
+(function(){
+  const T=window.MSTheme; if(!T) return;
+  const setsEl=document.getElementById('cwSets');
+  function render(){
+    const cur=T.current(); const list=T.allThemes(); const customs=T.customThemes();
+    setsEl.innerHTML=list.map(t=>{
+      const isCustom=customs.some(c=>c.id===t.id);
+      const v=t.vars||{}; const sw=[v['--periwinkle']||t.dot,v['--periwinkle-deep'],v['--periwinkle-ink'],v['--tint-peri']].filter(Boolean);
+      return `<div class="cwset ${t.id===cur?'on':''} ${isCustom?'custom':''}" data-id="${t.id}">
+        <button class="cwset-del" data-del="${t.id}" title="Delete">×</button>
+        <button class="cwset-edit" data-edit="${t.id}" title="Edit colours">✎</button>
+        <div class="cwset-hd">${isCustom?`<input class="cwset-name" data-name="${t.id}" value="${(t.name||'').replace(/"/g,'&quot;')}">`:`<b>${t.name}</b>`}<span class="cwset-tick">✓</span></div>
+        <div class="cwset-sw">${sw.map(c=>`<i style="background:${c}"></i>`).join('')}</div>
+        <div class="cwset-tag">${isCustom?'Custom set':'Built-in'}</div>
+      </div>`;
+    }).join('');
+    setsEl.querySelectorAll('.cwset').forEach(c=>c.onclick=e=>{ if(e.target.closest('[data-del]')||e.target.closest('[data-edit]')||e.target.closest('[data-name]'))return; T.set(c.dataset.id); render(); toast(); });
+    setsEl.querySelectorAll('[data-edit]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); editSet(b.dataset.edit); });
+    setsEl.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ if(confirm('Delete this colour set?')){ T.removeCustom(b.dataset.del); render(); toast(); } });
+    setsEl.querySelectorAll('[data-name]').forEach(inp=>{ inp.onclick=e=>e.stopPropagation(); inp.onchange=()=>{ const arr=T.customThemes(); const t=arr.find(x=>x.id===inp.dataset.name); if(t){ t.name=inp.value.trim()||t.name; localStorage.setItem('ms-custom-themes',JSON.stringify(arr)); try{ if(window.MSTheme&&MSTheme.persist) MSTheme.persist(); }catch(e){} } render(); toast(); }; });
+  }
+  render();
+  // logo: persist uploaded image + tone to localStorage so they appear platform-wide
+  const LOGO_KEYS={'brand-header-logo':'ms-brand-logo','brand-pdf-logo':'ms-pdf-logo'};
+  const TONE_KEYS={'brand-header-logo':'ms-brand-logo-tone','brand-pdf-logo':'ms-pdf-logo-tone'};
+  // remove logo buttons
+  // crop buttons → open a pop-out cropper (shares the slot id, so the crop persists)
+  document.querySelectorAll('[data-crop-logo]').forEach(btn=>btn.onclick=()=>{
+    const id=btn.dataset.cropLogo; const slot=document.getElementById(id);
+    if(!slot || !slot.hasAttribute('data-filled')){ toast(); return; }
+    openCrop(id, btn.closest('.logoslot').querySelector('.logoslot-lbl').textContent);
+  });
+  let cropRoot=null, cropId=null;
+  function openCrop(id, label){
+    cropId=id;
+    if(!cropRoot){ cropRoot=document.createElement('div'); cropRoot.className='crop-scrim'; cropRoot.innerHTML='<div class="crop-modal" role="dialog"></div>'; document.body.appendChild(cropRoot); cropRoot.addEventListener('click',e=>{ if(e.target===cropRoot) closeCrop(); }); }
+    const tone=(function(){ try{ return localStorage.getItem('ms-logo-tone-'+id)||'original'; }catch(e){ return 'original'; } })();
+    const filt = tone==='white'?'filter:brightness(0) invert(1);':tone==='black'?'filter:brightness(0);':'';
+    cropRoot.querySelector('.crop-modal').innerHTML=`
+      <div class="crop-hd"><b>Crop — ${label}</b><button class="crop-x" aria-label="Close">×</button></div>
+      <div class="crop-stage ${tone==='white'?'dark':''}" style="height:auto;aspect-ratio:${id==='brand-header-logo'?'4 / 1':'3 / 1'}"><image-slot id="${id}" shape="rect" fit="contain" data-crop style="width:100%;height:100%;${filt}"></image-slot></div>
+      <p class="crop-hint">Drag to reposition · scroll or corner-drag to zoom. This crop is applied to the logo everywhere it appears.</p>
+      <div class="crop-foot"><button class="btn" id="cropDone">Apply crop</button></div>`;
+    cropRoot.classList.add('open'); document.body.style.overflow='hidden';
+    const big=cropRoot.querySelector('image-slot');
+    cropRoot.querySelector('.crop-x').onclick=closeCrop;
+    cropRoot.querySelector('#cropDone').onclick=closeCrop;
+    setTimeout(()=>{ try{ big.dispatchEvent(new MouseEvent('dblclick',{bubbles:true})); }catch(e){} }, 120);
+  }
+  // rasterise the cropped frame to a flat image so the crop shows wherever the
+  // logo is used (header lockup etc), then mirror it to the logo localStorage key.
+  function rasteriseCrop(){
+    return new Promise(res=>{
+      const big=cropRoot&&cropRoot.querySelector('image-slot'); if(!big){ res(); return; }
+      let g=null; try{ g=big._geom&&big._geom(); }catch(e){}
+      const v=(big._view)||{s:1,x:0,y:0};
+      const url=big._userUrl || (big.getAttribute&&big.getAttribute('src'));
+      if(!g||!url){ res(); return; }
+      const img=new Image();
+      img.onload=()=>{
+        try{
+          const fw=g.fw, fh=g.fh, k=g.base*(v.s||1);
+          const dw=g.iw*k, dh=g.ih*k;
+          const cx=fw*(0.5+(v.x||0)/100), cy=fh*(0.5+(v.y||0)/100);
+          const cv=document.createElement('canvas'); cv.width=Math.round(fw); cv.height=Math.round(fh);
+          const ctx=cv.getContext('2d'); ctx.drawImage(img, cx-dw/2, cy-dh/2, dw, dh);
+          const out=cv.toDataURL('image/png');
+          const key= cropId==='brand-header-logo'?'ms-brand-logo': cropId==='brand-pdf-logo'?'ms-pdf-logo':null;
+          if(key){ try{ localStorage.setItem(key,out); }catch(e){} }
+        }catch(e){}
+        res();
+      };
+      img.onerror=()=>res();
+      img.src=url;
+    });
+  }
+  function closeCrop(){
+    if(!cropRoot) return;
+    const s=cropRoot.querySelector('image-slot'); if(s){ try{ s.dispatchEvent(new MouseEvent('dblclick',{bubbles:true})); }catch(e){} }
+    rasteriseCrop().then(()=>{ cropRoot.classList.remove('open'); document.body.style.overflow=''; broadcastLogo(); });
+  }
+  document.querySelectorAll('[data-del-logo]').forEach(btn=>btn.onclick=()=>{
+    const id=btn.dataset.delLogo; const slot=document.getElementById(id);
+    if(slot){ const rm=slot.shadowRoot&&slot.shadowRoot.querySelector('[data-act="clear"]'); if(rm){ rm.click(); } }
+    try{ localStorage.setItem(LOGO_KEYS[id],''); localStorage.setItem(TONE_KEYS[id],'original'); localStorage.setItem('ms-logo-tone-'+id,'original'); }catch(e){}
+    const grp=document.querySelector('.logomono[data-for="'+id+'"]'); if(grp){ grp.querySelectorAll('.logomono-btn').forEach(x=>x.classList.toggle('on',x.dataset.mono==='original')); }
+    const dropWrap=slot?slot.closest('.logoslot-drop'):null; if(dropWrap) dropWrap.classList.remove('mono-white','mono-black');
+    broadcastLogo(); toast();
+  });
+  function broadcastLogo(){ try{ if(window.MSID&&MSID.relock) MSID.relock(); }catch(e){} try{ if(window.MSTheme&&MSTheme.persist) MSTheme.persist(); }catch(e){} }
+  document.querySelectorAll('.logoslot image-slot').forEach(slot=>{
+    slot.addEventListener('ms-slot-change',e=>{ const key=LOGO_KEYS[slot.id]; if(!key)return; try{ if(e.detail&&e.detail.url) localStorage.setItem(key,e.detail.url); else localStorage.removeItem(key); }catch(_){} broadcastLogo(); toast(); });
+  });
+  // logo mono-tone toggles
+  document.querySelectorAll('.logomono').forEach(grp=>{
+    const drop=document.querySelector('.logoslot-drop image-slot#'+grp.dataset.for);
+    const dropWrap=drop?drop.closest('.logoslot-drop'):null;
+    const toneKey = grp.dataset.for==='brand-header-logo' ? 'ms-brand-logo-tone' : grp.dataset.for==='brand-pdf-logo' ? 'ms-pdf-logo-tone' : null;
+    grp.querySelectorAll('.logomono-btn').forEach(b=>b.onclick=()=>{
+      grp.querySelectorAll('.logomono-btn').forEach(x=>x.classList.toggle('on',x===b));
+      if(dropWrap){ dropWrap.classList.remove('mono-white','mono-black'); if(b.dataset.mono!=='original') dropWrap.classList.add('mono-'+b.dataset.mono); }
+      try{ localStorage.setItem('ms-logo-tone-'+grp.dataset.for, b.dataset.mono); if(toneKey) localStorage.setItem(toneKey, b.dataset.mono); }catch(e){}
+      broadcastLogo();
+      toast();
+    });
+    try{ const saved=localStorage.getItem('ms-logo-tone-'+grp.dataset.for); if(saved){ const t=grp.querySelector('[data-mono="'+saved+'"]'); if(t) t.click(); } }catch(e){}
+  });
+  const form=document.getElementById('cwForm');
+  // breadcrumb header colour grid
+  (function(){
+    const grid=document.getElementById('crumbGrid'); if(!grid||!window.MSTheme||!MSTheme.crumbCats) return;
+    const warn=document.getElementById('crumbWarn');
+    function setDefault(){ const cs=getComputedStyle(document.documentElement); return (cs.getPropertyValue('--periwinkle-deep')||'#5860A6').trim(); }
+    function toHex(c){ if(!c) return '#5860A6'; if(c[0]==='#') return c; const m=c.match(/\d+/g); return m?'#'+m.slice(0,3).map(n=>(+n).toString(16).padStart(2,'0')).join(''):'#5860A6'; }
+    function draw(){
+      const cols=MSTheme.crumbColours(); const def=toHex(setDefault());
+      const any=MSTheme.crumbCats.some(c=>cols[c.id]); if(warn) warn.hidden=!any;
+      grid.innerHTML=MSTheme.crumbCats.map(c=>{ const set=!!cols[c.id]; const v=cols[c.id]||def;
+        return `<div class="crumbrow ${set?'overridden':''}"><span class="cr-sw"><input type="color" data-cat="${c.id}" value="${v}"></span><span class="cr-nm">${c.name}${set?'<span class="cr-tag">Override</span>':''}</span>${set?`<button class="cr-reset" data-reset="${c.id}">Reset</button>`:''}</div>`;
+      }).join('');
+      grid.querySelectorAll('input[data-cat]').forEach(i=>i.oninput=()=>{ MSTheme.setCrumbColour(i.dataset.cat,i.value); draw(); toast(); });
+      grid.querySelectorAll('[data-reset]').forEach(b=>b.onclick=()=>{ MSTheme.setCrumbColour(b.dataset.reset,null); draw(); toast(); });
+    }
+    if(warn){ const ra=document.getElementById('crumbResetAll'); if(ra) ra.onclick=()=>{ MSTheme.crumbCats.forEach(c=>MSTheme.setCrumbColour(c.id,null)); draw(); toast(); }; }
+    draw();
+  })();
+  let editingId=null;
+  function setField(id,v){ const e=document.getElementById(id); if(e&&v) e.value=v; }
+  function editSet(id){
+    const t=T.allThemes().find(x=>x.id===id); if(!t) return;
+    const isCustom=T.customThemes().some(c=>c.id===id);
+    // apply first so we can read computed vars for built-ins, then prefill
+    T.set(id);
+    const cs=getComputedStyle(document.documentElement);
+    const g=(name,fallback)=>{ const v=(t.vars&&t.vars[name])|| (cs.getPropertyValue(name)||'').trim() || fallback; return v; };
+    const toHex=(c)=>{ if(!c) return ''; if(c[0]==='#') return c; const m=c.match(/\d+/g); if(!m) return ''; return '#'+m.slice(0,3).map(n=>(+n).toString(16).padStart(2,'0')).join(''); };
+    setField('cwName', t.name);
+    setField('cwPrimary', toHex(g('--periwinkle','#7B85C5')));
+    setField('cwDeep', toHex(g('--periwinkle-deep','#5860A6')));
+    setField('cwInk', toHex(g('--periwinkle-ink','#3C4279')));
+    setField('cwTint', toHex(g('--tint-peri','#ECEEF9')));
+    editingId=id; form.dataset.builtin=isCustom?'':'1';
+    const h=form.querySelector('.fcfg-h'); if(h) h.textContent=isCustom?'Edit colour set':'Edit colour set (saves a copy)';
+    form.hidden=false; render(); toast();
+  }
+  document.getElementById('cwAdd').onclick=()=>{ editingId=null; const h=form.querySelector('.fcfg-h'); if(h) h.textContent='New colour set'; form.hidden=!form.hidden; };
+  document.getElementById('cwCancel').onclick=()=>{ form.hidden=true; editingId=null; };
+  document.getElementById('cwSave').onclick=()=>{
+    const name=(document.getElementById('cwName').value||'').trim()||'Custom set';
+    const vars={'--periwinkle':document.getElementById('cwPrimary').value,'--periwinkle-deep':document.getElementById('cwDeep').value,'--periwinkle-ink':document.getElementById('cwInk').value,'--tint-peri':document.getElementById('cwTint').value};
+    const isCustomEdit = editingId && T.customThemes().some(c=>c.id===editingId);
+    if(isCustomEdit){ T.updateCustom(editingId,{name,dot:vars['--periwinkle'],vars}); T.set(editingId); }
+    else { const id=T.addCustom({name,dot:vars['--periwinkle'],vars}); T.set(id); }
+    form.hidden=true; editingId=null; document.getElementById('cwName').value=''; render(); toast();
+  };
+})();
+
+
+
+/* ---- subscription (the distributor's own plan) ----
+   Reads the same ADMIN model the platform console bills from, so the seat
+   allowance, overage rate and total shown here cannot drift from the invoice. */
+function renderSubscription(){
+  const A=window.ADMIN; const box=document.getElementById('subBox'); if(!A||!box) return;
+  const me=A.distributors.find(d=>d.name==='Mojo Promotions')||A.distributors[0];
+  const s=A.seatInfo(me), pct=Math.min(100,Math.round(s.used/Math.max(1,s.included)*100));
+  const tag=document.getElementById('subPlanTag'); if(tag){ tag.textContent=s.plan.name+' plan'; tag.style.background=s.plan.color; tag.style.color='var(--ink)'; }
+  box.innerHTML=`
+    <div class="subgrid">
+      <div class="subfig"><b>${s.baseTxt}</b><span>Base / month</span></div>
+      <div class="subfig"><b>${s.used} / ${s.included}</b><span>Seats used</span></div>
+      <div class="subfig"><b>${s.extra?'+'+s.overageTxt:'—'}</b><span>Seat overage</span></div>
+      <div class="subfig tot"><b>${s.totalTxt}</b><span>Total / month</span></div>
+    </div>
+    <div class="seatbar big ${s.extra?'over':''}"><i style="width:${pct}%"></i></div>
+    <p class="subline">${s.extra
+      ? `<b>${s.used} of ${s.included} included seats used</b>, ${s.extra} extra at ${s.rateTxt} per seat — <b>${s.overageTxt}</b> added to your ${s.baseTxt} base this month.`
+      : `<b>${s.used} of ${s.included} included seats used.</b> You can add ${s.included-s.used} more at no extra cost; after that each seat is ${s.rateTxt} a month.`}</p>`;
+  const roles=document.getElementById('subRoles');
+  if(roles) roles.innerHTML=`<div class="rolecols">
+    <div><h4 class="rolh bill">Billable — counts as a seat</h4><ul class="rolelist">${(A.seatRoles||[]).map(r=>`<li>${r}</li>`).join('')}</ul></div>
+    <div><h4 class="rolh free">Free — never counts</h4><ul class="rolelist free"><li>All customer users</li><li>All supplier users</li></ul></div>
+  </div>`;
+  const pl=document.getElementById('subPlans');
+  if(pl) pl.innerHTML=`<div class="subplans">${A.plans.map(p=>{
+    const ex=Math.max(0,s.used-p.seats), tot=p.base+ex*p.overage, on=p.name===s.plan.name;
+    return `<div class="subplan ${on?'on':''}">
+      <div class="sp-n">${p.name}${on?'<span class="sp-cur">Your plan</span>':''}</div>
+      <div class="sp-p">£${p.base.toLocaleString('en-GB')}<span>/mo base</span></div>
+      <div class="sp-r"><span>Included seats</span><b>${p.seats}</b></div>
+      <div class="sp-r"><span>Additional seat</span><b>£${p.overage}/mo</b></div>
+      <div class="sp-t">At your ${s.used} seats: <b>£${tot.toLocaleString('en-GB')}/mo</b>${ex?` <i>(${ex} over)</i>`:''}</div>
+    </div>`; }).join('')}</div>`;
+}
+if((location.hash.match(/tab=([a-z]+)/i)||[])[1]==='subscription') renderSubscription();
+</script>
+<script>
+(function(){ function mount(){ const el=document.getElementById('orgProfileMount'); if(!el||!window.MSORG) return;
+  const k=window.MS_SCOPE==='platform'?'merchsmith':'distributor';
+  el.innerHTML=MSORG.panelHTML(k); MSORG.wire(el,k); }
+  mount(); window.addEventListener('ms-identity-change',mount);
+  document.addEventListener('ms-slot-change',()=>setTimeout(mount,120),true);
+  if(/orgprofile/.test(location.hash)){ const t=document.querySelector('.settab[data-panel="orgprofile"]'); if(t) setTimeout(()=>t.click(),0); } })();
+</script>
+<script src="via-us.js?v=2"></script>
+<script>if(window.MSVIA) MSVIA.mountSettings(document.getElementById('viaMount'));</script>
+</body>
+</html>

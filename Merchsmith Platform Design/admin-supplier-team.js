@@ -17,16 +17,16 @@ window.MSSupplierTeam=(function(){
 
   // realistic seed contacts per known supplier (clearly mock; editable after)
   const SEEDS={
-    xd:[ {name:'Sanne de Vries',email:'sanne@xdconnects.com',role:'Account manager',status:'active'},
-         {name:'Lars Hofman',email:'lars@xdconnects.com',role:'Data & feeds',status:'active'} ],
-    pf:[ {name:'Émile Dubois',email:'emile@pfconcept.com',role:'Account manager',status:'active'},
-         {name:'Marta Nowak',email:'marta@pfconcept.com',role:'Data & feeds',status:'active'} ],
-    midocean:[ {name:'Joost Smit',email:'joost@midocean.com',role:'Account manager',status:'active'} ],
-    senator:[ {name:'Anja Keller',email:'anja@senator.com',role:'Account manager',status:'active'} ],
-    printhouse:[ {name:'Owen Pryce',email:'owen@printhouse.co',role:'Account manager',status:'active'},
-                 {name:'Decoration studio',email:'studio@printhouse.co',role:'Decoration',status:'active'} ],
-    inkwell:[ {name:'Priya Shah',email:'priya@inkwellprint.co.uk',role:'Account manager',status:'invited'} ],
-    greenstock:[ {name:'Tom Hale',email:'tom@greenstock.eco',role:'Account manager',status:'active'} ]
+    xd:[ {name:'Sanne de Vries',email:'sanne@xdconnects.com',tel:'+31 20 794 3120',role:'Account manager',status:'active'},
+         {name:'Lars Hofman',email:'lars@xdconnects.com',tel:'+31 20 794 3127',role:'Data & feeds',status:'active'} ],
+    pf:[ {name:'Émile Dubois',email:'emile@pfconcept.com',tel:'+31 528 239 410',role:'Account manager',status:'active'},
+         {name:'Marta Nowak',email:'marta@pfconcept.com',tel:'+31 528 239 452',role:'Data & feeds',status:'active'} ],
+    midocean:[ {name:'Joost Smit',email:'joost@midocean.com',tel:'+31 10 205 7718',role:'Account manager',status:'active'} ],
+    senator:[ {name:'Anja Keller',email:'anja@senator.com',tel:'+49 7151 4020 36',role:'Account manager',status:'active'} ],
+    printhouse:[ {name:'Owen Pryce',email:'owen@printhouse.co',tel:'+44 20 3927 1840',role:'Account manager',status:'active'},
+                 {name:'Decoration studio',email:'studio@printhouse.co',tel:'+44 20 3927 1845',role:'Decoration',status:'active'} ],
+    inkwell:[ {name:'Priya Shah',email:'priya@inkwellprint.co.uk',tel:'+44 161 870 2291',role:'Account manager',status:'invited'} ],
+    greenstock:[ {name:'Tom Hale',email:'tom@greenstock.eco',tel:'+44 117 325 6604',role:'Account manager',status:'active'} ]
   };
 
   function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
@@ -37,7 +37,10 @@ window.MSSupplierTeam=(function(){
     const base=SEEDS[s.id] || [{ name:(s.name||'Supplier')+' contact', email:'hello@'+(s.domain||'supplier.com'), role:'Account manager', status:'active' }];
     return base.map(m=>Object.assign({id:uid()},m));
   }
-  function teamOf(s){ const all=load(); if(!all[s.id]){ all[s.id]=seedFor(s); save(all); } return all[s.id]; }
+  function teamOf(s){ const all=load(); if(!all[s.id]){ all[s.id]=seedFor(s); save(all); }
+    const seed=SEEDS[s.id]||[]; let ch=false;
+    all[s.id].forEach(m=>{ if(m.tel) return; const hit=seed.find(x=>x.email&&m.email&&x.email.toLowerCase()===m.email.toLowerCase()); if(hit&&hit.tel){ m.tel=hit.tel; ch=true; } });
+    if(ch) save(all); return all[s.id]; }
   function setTeam(supId,list){ const all=load(); all[supId]=list; save(all); }
 
   function section(s){

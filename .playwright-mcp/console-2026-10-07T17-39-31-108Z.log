@@ -1,0 +1,4 @@
+[     707ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[     975ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[     983ms] [LOG] Accessing project with guest authentication: {name: guest, email: guest@thazzit.com} @ http://localhost:4000/main.js:10974
+[    1015ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:4001/api/projects/6ac683c910b553f08a9a8042/view:0

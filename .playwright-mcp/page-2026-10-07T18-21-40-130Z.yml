@@ -1,0 +1,169 @@
+- generic [ref=f23e1]:
+  - button "Open Next.js Dev Tools" [ref=f23e13] [cursor=pointer]
+  - alert [ref=f23e17]
+  - generic [ref=f23e19]:
+    - banner [ref=f23e20]:
+      - generic [ref=f23e21]:
+        - heading "XD Connects" [level=6] [ref=f23e24]
+        - generic [ref=f23e28]:
+          - textbox "Search" [ref=f23e33]:
+            - /placeholder: Search products, projects, orders…
+          - group [aria-hidden]
+        - generic [ref=f23e34]:
+          - button "notifications" [ref=f23e35] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f23e40]: "4"
+          - button "user menu" [ref=f23e42] [cursor=pointer]
+    - complementary "Main navigation" [ref=f23e47]:
+      - navigation [ref=f23e48]:
+        - link "Dashboard" [ref=f23e49] [cursor=pointer]:
+          - /url: /
+        - link "Products" [ref=f23e55] [cursor=pointer]:
+          - /url: /supplier/products
+        - link "Orders" [ref=f23e59] [cursor=pointer]:
+          - /url: /orders
+        - button "Distributors" [ref=f23e63] [cursor=pointer]
+        - link "Requests" [ref=f23e68] [cursor=pointer]:
+          - /url: /supplier/connection-requests
+        - link "Chats" [ref=f23e73] [cursor=pointer]:
+          - /url: /chats
+        - link "Calendar" [ref=f23e76] [cursor=pointer]:
+          - /url: /calendar
+        - link "Finance" [ref=f23e79] [cursor=pointer]:
+          - /url: /finance
+        - link "Settings" [ref=f23e83] [cursor=pointer]:
+          - /url: /supplier/settings
+    - main [ref=f23e87]:
+      - generic [ref=f23e88]: Finance
+      - generic [ref=f23e93]:
+        - heading "Finance" [level=1] [ref=f23e94]
+        - generic [ref=f23e95]:
+          - group "Period" [ref=f23e96]:
+            - button "This month" [ref=f23e97] [cursor=pointer]
+            - button "Last 30 days" [active] [ref=f23e98] [cursor=pointer]
+            - button "Last 90 days" [ref=f23e99] [cursor=pointer]
+            - button "This quarter" [ref=f23e100] [cursor=pointer]
+            - button "Year to date" [ref=f23e101] [cursor=pointer]
+          - generic [ref=f23e102]:
+            - generic [ref=f23e103]: Compare with
+            - generic [ref=f23e104]:
+              - combobox "Compare with" [ref=f23e105] [cursor=pointer]: Previous period
+              - textbox [aria-hidden]: prev
+              - group [aria-hidden]:
+                - generic: Compare with
+          - button "Print / PDF" [ref=f23e106] [cursor=pointer]
+        - generic [ref=f23e107]:
+          - generic [ref=f23e108]:
+            - generic [ref=f23e109]: Invoiced
+            - generic [ref=f23e110]: £0
+            - generic [ref=f23e241]:
+              - emphasis [ref=f23e242]: ▼ 100%
+              - text: vs comparison
+          - generic [ref=f23e111]:
+            - generic [ref=f23e112]: Invoiced this year
+            - generic [ref=f23e113]: £855
+          - generic [ref=f23e114]:
+            - generic [ref=f23e115]: Paid
+            - generic [ref=f23e116]: £0
+          - generic [ref=f23e117]:
+            - generic [ref=f23e118]: Paid this year
+            - generic [ref=f23e119]: £0
+          - generic [ref=f23e120]:
+            - generic [ref=f23e121]: Awaiting payment
+            - generic [ref=f23e122]: £855
+            - text: 1 invoices
+          - generic [ref=f23e123]:
+            - generic [ref=f23e124]: Overdue
+            - generic [ref=f23e125]: £855
+            - text: 1 invoices
+          - generic [ref=f23e126]:
+            - generic [ref=f23e127]: Avg days to be paid
+            - generic [ref=f23e128]: 0 days
+        - generic [ref=f23e129]:
+          - generic [ref=f23e130]:
+            - heading "Needs attention" [level=3] [ref=f23e132]
+            - link "5 POs not yet invoiced →" [ref=f23e134] [cursor=pointer]:
+              - /url: /orders
+              - generic [ref=f23e135]: "5"
+              - generic [ref=f23e136]: POs not yet invoiced
+              - generic [ref=f23e137]: →
+          - generic [ref=f23e138]:
+            - heading "POs not yet invoiced" [level=3] [ref=f23e140]
+            - generic [ref=f23e141]:
+              - generic [ref=f23e142]:
+                - generic [ref=f23e143]: PO-1002-1
+                - generic [ref=f23e146]: £1,020
+              - generic [ref=f23e147]:
+                - generic [ref=f23e148]: PO-1003-1
+                - generic [ref=f23e151]: £717
+              - generic [ref=f23e152]:
+                - generic [ref=f23e153]: PO-1004-1
+                - generic [ref=f23e156]: £1,368
+              - generic [ref=f23e157]:
+                - generic [ref=f23e158]: PO-1006-1
+                - generic [ref=f23e161]: £20
+              - generic [ref=f23e162]:
+                - generic [ref=f23e163]: PO-1007-1
+                - generic [ref=f23e166]: £353
+      - generic [ref=f23e168]:
+        - generic [ref=f23e169]:
+          - generic [ref=f23e170]:
+            - link "Let's Talk." [ref=f23e171] [cursor=pointer]:
+              - /url: /store/pages/contact
+            - paragraph [ref=f23e172]: Sustainable promotional merchandise, branded in-house and delivered on time.
+          - generic [ref=f23e173]:
+            - heading "Company" [level=4] [ref=f23e174]
+            - link "About us" [ref=f23e175] [cursor=pointer]:
+              - /url: /store/pages/about
+            - link "Environmental footprint" [ref=f23e176] [cursor=pointer]:
+              - /url: /store/pages/environment
+            - link "Value chain" [ref=f23e177] [cursor=pointer]:
+              - /url: /store/pages/value-chain
+            - link "People & culture" [ref=f23e178] [cursor=pointer]:
+              - /url: /store/pages/people
+          - generic [ref=f23e179]:
+            - heading "Let us help" [level=4] [ref=f23e180]
+            - link "FAQ" [ref=f23e181] [cursor=pointer]:
+              - /url: /store/pages/faq
+            - link "Terms & conditions" [ref=f23e182] [cursor=pointer]:
+              - /url: /store/pages/terms
+            - link "Privacy" [ref=f23e183] [cursor=pointer]:
+              - /url: /store/pages/privacy
+            - link "Returns" [ref=f23e184] [cursor=pointer]:
+              - /url: /store/pages/returns
+            - link "Contact us" [ref=f23e185] [cursor=pointer]:
+              - /url: /store/pages/contact
+        - generic [ref=f23e186]:
+          - generic [ref=f23e187]:
+            - heading "Stay in touch" [level=4] [ref=f23e188]
+            - paragraph [ref=f23e189]: Product drops, sustainability news and the occasional good idea. No more than monthly.
+          - generic [ref=f23e190]:
+            - textbox "Email address" [ref=f23e191]:
+              - /placeholder: Your work email
+            - button "Sign up" [ref=f23e192] [cursor=pointer]
+        - generic [ref=f23e193]:
+          - generic [ref=f23e199]:
+            - generic [ref=f23e200]: Accredited
+            - generic [ref=f23e201]: New accreditation
+          - generic [ref=f23e202]:
+            - generic "X" [ref=f23e203]
+            - generic "Facebook" [ref=f23e206]
+            - generic "Instagram" [ref=f23e209]
+            - generic "LinkedIn" [ref=f23e214]
+            - generic "YouTube" [ref=f23e218]
+        - generic [ref=f23e222]:
+          - generic [ref=f23e223]:
+            - generic [ref=f23e224]: © 2026 Test Distributor
+            - link "Cookie policy" [ref=f23e225] [cursor=pointer]:
+              - /url: /store/pages/cookies
+            - link "Accessibility" [ref=f23e226] [cursor=pointer]:
+              - /url: /store/pages/accessibility
+            - generic [ref=f23e227]: Powered by Merchsmith
+          - generic [ref=f23e228]:
+            - generic [ref=f23e229]: Secured by Stripe
+            - img "Visa" [ref=f23e230]
+            - img "Mastercard" [ref=f23e231]
+            - img "American Express" [ref=f23e232]
+  - button "Messages" [ref=f23e233] [cursor=pointer]
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f23e236]:
+    - button [ref=f23e238] [cursor=pointer]: ×

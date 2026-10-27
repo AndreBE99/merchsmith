@@ -1,0 +1,449 @@
+[    2315ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[    2391ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/system-parameters:0
+[    2895ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/system-parameters:0
+[    3413ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[    3418ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/system-parameters:0
+[    3419ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/system-parameters:0
+[    3543ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[    3925ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/system-parameters:0
+[    4429ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/api/system-parameters:0
+[    7109ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3001/auth/:0
+[   16503ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[   18156ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[   18219ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[   18487ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[   18598ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[  236113ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[  236369ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[  258193ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[  258400ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[  643891ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[  644916ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[  645521ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[  645619ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[  646113ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[  646251ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[  646286ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  646790ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  647305ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[  647309ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  647310ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  647315ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/auth/me:0
+[  647715ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[  647814ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  648317ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  745201ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[  746454ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[  746531ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[  746769ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[  746884ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[  754902ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[  755892ms] [ERROR] [webpack-dev-server] Errors while compiling. Reload prevented. @ http://localhost:4000/polyfills.js:6317
+[  755892ms] [ERROR] [webpack-dev-server] ERROR
+src/app/pages/projects/view-project/view-project.component.ts:529:28 - error TS2345: Argument of type 'PublicOrganization | { name: string; productName: string; isPlatform: boolean; } | null' is not assignable to parameter of type 'PublicOrganization | null | undefined'.
+  Type '{ name: string; productName: string; isPlatform: boolean; }' is missing the following properties from type 'PublicOrganization': organizationId, slug, strapline, parameters
+
+529           open(shareTitle, projectOrganization || publicOrganization);
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ @ http://localhost:4000/polyfills.js:6317
+[  913707ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[  914821ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[  914878ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[  914910ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  915413ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  915918ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[  915920ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  915920ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  916030ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[  916423ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[  916927ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 1127329ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 1127585ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 1127698ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[ 1203583ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 1203788ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 1563827ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1564256ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1564921ms] [ERROR] Error loading notifications: {message: undefined, references: undefined, exception: BaseHttp Exception, status: 0} @ http://localhost:4000/main.js:13906
+[ 1564921ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/notifications:0
+[ 1566219ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1567009ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1570557ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1571225ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1602118ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1602823ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1604026ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1604908ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1608480ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1609028ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1613485ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1614032ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 1615960ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 1617814ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[ 1617865ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 1617927ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1618431ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1618937ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 1618938ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1618939ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1618941ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/auth/me:0
+[ 1619135ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/devtest/auth/signin:0
+[ 1619441ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1619943ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1623938ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1624442ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1624946ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1629951ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1630455ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1630959ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1635964ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1636468ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1636970ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1641975ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1642477ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1642981ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1647987ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1648490ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1648994ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1653998ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1654501ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1655004ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1660010ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1660514ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1661018ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1666023ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1666526ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1667030ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1669697ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 1670605ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[ 1670659ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 1670700ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1671205ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1671714ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 1671718ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1671719ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1671826ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/devtest/auth/signin:0
+[ 1672223ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1672725ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1676713ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1677216ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1677720ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1677728ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1678231ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1678735ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1682723ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1683225ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1683728ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1683737ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1684239ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1684743ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1688730ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1689232ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1689735ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1689744ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1690246ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1690748ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1694737ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1695240ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1695743ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1695750ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1696252ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1696754ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1700744ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1701246ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1701749ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1701757ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1702259ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1702761ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1706755ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1707260ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1707763ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1712766ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1713269ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1713770ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1718775ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1719279ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1719781ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/organizations/public/devtest:0
+[ 1995054ms] [INFO] Autofocus processing was blocked because a document already has a focused element. @ http://localhost:4000/devtest/icon-image-libraries:0
+[ 2215307ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 2215575ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 2809994ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 2810098ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 2810409ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 2812174ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 2812877ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 2813135ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 2814929ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 2815425ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 2816331ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 2816439ms] [ERROR] Error checking unread contact requests: {message: undefined, references: undefined, exception: BaseHttp Exception, status: 0} @ http://localhost:4000/main.js:12487
+[ 2816441ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/contact-requests:0
+[ 2816441ms] [ERROR] Error loading notifications: {message: undefined, references: undefined, exception: BaseHttp Exception, status: 0} @ http://localhost:4000/main.js:13908
+[ 2816442ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/notifications:0
+[ 3093295ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3093307ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3093898ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3094844ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3096075ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3096419ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3099656ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3099974ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3101096ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3110157ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3110443ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3110665ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3112113ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3112406ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3112631ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3116502ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3117044ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3140100ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3140110ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3140191ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3141467ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3142098ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3143070ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3144889ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3146471ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3146534ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3149904ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3151474ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3151538ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3154911ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3184339ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3184577ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3185056ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3186782ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3186868ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3187541ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3189464ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3190590ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3191871ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3194468ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3195593ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3196876ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3199473ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3201880ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3202222ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3204367ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3204479ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3206885ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3209055ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3209484ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3255938ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3256227ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3256454ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3257082ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3257739ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3258580ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3260199ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3260485ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3262109ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 3423469ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 3425379ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[ 3425471ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 3425843ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 3858604ms] [INFO] [webpack-dev-server] Nothing changed. @ http://localhost:4000/polyfills.js:6309
+[ 3862708ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 3863334ms] [INFO] [webpack-dev-server] Nothing changed. @ http://localhost:4000/polyfills.js:6309
+[ 4843142ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4843624ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4843634ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4844911ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4845639ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4845771ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4849591ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4849919ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4850040ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4854588ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4854657ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4855107ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4860033ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4860093ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4862354ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4866305ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4866652ms] [ERROR] Error checking unread contact requests: {message: undefined, references: undefined, exception: BaseHttp Exception, status: 0} @ http://localhost:4000/main.js:12487
+[ 4866654ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/contact-requests:0
+[ 4866655ms] [ERROR] Error loading notifications: {message: undefined, references: undefined, exception: BaseHttp Exception, status: 0} @ http://localhost:4000/main.js:13908
+[ 4866655ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/notifications:0
+[ 4869500ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4871771ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4873255ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4876009ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4879312ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4882445ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4885445ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4886692ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4892418ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4893600ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4894785ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4901320ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4901850ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4902776ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4907984ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4910146ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4912621ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4915983ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4918744ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4919010ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4922699ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4927290ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4927752ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4930036ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4933532ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4935293ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4938804ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4941459ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4943321ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4946322ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4951024ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4951444ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4953081ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4957740ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4959663ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4962716ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4966682ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4967776ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4971061ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4974382ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4974582ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4980332ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4981140ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4983396ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4986642ms] [ERROR] Error checking unread contact requests: {message: undefined, references: undefined, exception: BaseHttp Exception, status: 0} @ http://localhost:4000/main.js:12487
+[ 4986642ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/contact-requests:0
+[ 4986643ms] [ERROR] Error loading notifications: {message: undefined, references: undefined, exception: BaseHttp Exception, status: 0} @ http://localhost:4000/main.js:13908
+[ 4986643ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/notifications:0
+[ 4989713ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4990103ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4991624ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4997530ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4997567ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 4999755ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5004406ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5006266ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5008918ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5013920ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5014778ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5016648ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5021684ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5023197ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5023259ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5029840ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5030078ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5031754ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5037464ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5037749ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5038002ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5044589ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5045314ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5045493ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5052317ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5052399ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5053966ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5061141ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5061216ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5061347ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5067754ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5070886ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5071107ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5076886ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5078511ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5081010ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5085704ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5085973ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5090758ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5093622ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5095280ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5097873ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5099802ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5102382ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 5104597ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5105926ms] [ERROR] WebSocket connection to 'ws://localhost:4001/socket.io/?EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:4000/vendor.js:133736
+[ 5105945ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[ 5106159ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 5106300ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5106803ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5107311ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 5107312ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5107313ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5107323ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/auth/me:0
+[ 5107817ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5108104ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[ 5108323ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5148809ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 5150922ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[ 5151072ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 5151130ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5151631ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5152139ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 5152141ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5152143ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5152255ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[ 5152645ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5153150ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5258441ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 5260894ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[ 5260982ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 5261038ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5261544ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5262055ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 5262058ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5262061ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5262562ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5262617ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[ 5263066ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5369913ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 5371304ms] [ERROR] [webpack-dev-server] Errors while compiling. Reload prevented. @ http://localhost:4000/polyfills.js:6317
+[ 5371304ms] [ERROR] [webpack-dev-server] ERROR
+src/app/pages/icon-image-libraries/icon-image-libraries.component.ts:251:30 - error TS2339: Property '_id' does not exist on type '{}'.
+
+251         if (result && result._id) {
+                                 ~~~
+ @ http://localhost:4000/polyfills.js:6317
+[ 5371304ms] [ERROR] [webpack-dev-server] ERROR
+src/app/pages/icon-image-libraries/icon-image-libraries.component.ts:252:44 - error TS2345: Argument of type '{}' is not assignable to parameter of type 'IconLibrary'.
+  Type '{}' is missing the following properties from type 'IconLibrary': _id, name, type, visibility, iconCount
+
+252           this.openManageLibraryForLibrary(result);
+                                               ~~~~~~
+ @ http://localhost:4000/polyfills.js:6317
+[ 5748953ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 5749992ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[ 5750164ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 5750220ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5750723ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5751230ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 5751231ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5751232ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5751344ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[ 5751737ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5752241ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5870259ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 5871728ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[ 5871814ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 5871866ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5872369ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5872887ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 5872889ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5872890ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5873005ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[ 5873393ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 5873897ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 6330541ms] [INFO] [webpack-dev-server] App updated. Recompiling... @ http://localhost:4000/polyfills.js:6309
+[ 6331427ms] [INFO] [webpack-dev-server] App updated. Reloading... @ http://localhost:4000/polyfills.js:6309
+[ 6331517ms] [INFO] [webpack-dev-server] Server started: Hot Module Replacement disabled, Live Reloading enabled, Progress disabled, Overlay enabled. @ http://localhost:4000/polyfills.js:6309
+[ 6331587ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 6332090ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 6332597ms] [LOG] Angular is running in development mode. @ http://localhost:4000/vendor.js:86208
+[ 6332600ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 6332603ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 6332722ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://localhost:4000/auth/signin:0
+[ 6333106ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 6333610ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:4001/api/system-parameters:0
+[ 8385183ms] [INFO] [webpack-dev-server] Disconnected! @ http://localhost:4000/polyfills.js:6309
+[ 8385185ms] [INFO] [webpack-dev-server] Trying to reconnect... @ http://localhost:4000/polyfills.js:6309
+[ 9401368ms] [INFO] [webpack-dev-server] Disconnected! @ http://localhost:4000/polyfills.js:6309
+[ 9401369ms] [INFO] [webpack-dev-server] Trying to reconnect... @ http://localhost:4000/polyfills.js:6309
+[10378879ms] [INFO] [webpack-dev-server] Disconnected! @ http://localhost:4000/polyfills.js:6309
+[10378883ms] [INFO] [webpack-dev-server] Trying to reconnect... @ http://localhost:4000/polyfills.js:6309

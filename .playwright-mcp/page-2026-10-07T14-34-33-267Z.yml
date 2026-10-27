@@ -1,0 +1,240 @@
+- generic [ref=f7e1]:
+  - button "Open Next.js Dev Tools" [ref=f7e13] [cursor=pointer]
+  - alert [ref=f7e17]
+  - generic [ref=f7e19]:
+    - banner [ref=f7e20]:
+      - generic [ref=f7e21]:
+        - heading [level=6] [ref=f7e283]: Test Distributor
+        - generic [ref=f7e28]:
+          - textbox [ref=f7e284]:
+            - /placeholder: Search products, projects…
+          - group [aria-hidden]
+        - generic [ref=f7e34]:
+          - button [ref=f7e285] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f7e40]: "2"
+          - button [expanded] [ref=f7e286] [cursor=pointer]
+    - complementary [ref=f7e287]:
+      - navigation [ref=f7e48]:
+        - link [ref=f7e288] [cursor=pointer]:
+          - /url: /
+        - link [ref=f7e289] [cursor=pointer]:
+          - /url: /store
+        - link [ref=f7e290] [cursor=pointer]:
+          - /url: /projects
+        - link [ref=f7e291] [cursor=pointer]:
+          - /url: /orders
+        - link [ref=f7e292] [cursor=pointer]:
+          - /url: /organisations
+        - button [ref=f7e293] [cursor=pointer]
+        - link [ref=f7e294] [cursor=pointer]:
+          - /url: /users
+        - link [ref=f7e295] [cursor=pointer]:
+          - /url: /chats
+        - link [ref=f7e296] [cursor=pointer]:
+          - /url: /calendar
+        - link [ref=f7e297] [cursor=pointer]:
+          - /url: /calls
+        - link [ref=f7e298] [cursor=pointer]:
+          - /url: /emails
+        - link [ref=f7e299] [cursor=pointer]:
+          - /url: /finance
+        - link [ref=f7e300] [cursor=pointer]:
+          - /url: /settings
+    - main [ref=f7e106]:
+      - generic [ref=f7e108]:
+        - generic [ref=f7e109]: Test Distributor
+        - generic [ref=f7e110]: ›
+        - generic [ref=f7e111]: Dashboard
+      - generic [ref=f7e114]:
+        - generic [ref=f7e115]:
+          - generic [ref=f7e116]:
+            - heading [level=1] [ref=f7e301]: Good morning, Distributor
+            - generic [ref=f7e118]: Distributor Admin · Test Distributor
+          - generic [ref=f7e119]:
+            - link [ref=f7e302] [cursor=pointer]:
+              - /url: /projects
+              - text: Open project view
+            - link [ref=f7e303] [cursor=pointer]:
+              - /url: /store
+              - text: Browse store
+        - generic [ref=f7e131]:
+          - generic [ref=f7e132]:
+            - generic [ref=f7e133]: Open orders
+            - generic [ref=f7e134]: "0"
+            - generic [ref=f7e135]: 1 ready to order
+          - generic [ref=f7e138]:
+            - generic [ref=f7e139]: Awaiting approval
+            - generic [ref=f7e140]: "2"
+            - generic [ref=f7e141]: 2 urgent
+          - generic [ref=f7e304]:
+            - generic [ref=f7e143]: GMV this month
+            - generic [ref=f7e144]: —
+            - generic [ref=f7e145]: Needs order dates
+          - generic [ref=f7e146]:
+            - generic [ref=f7e147]: Avg. margin
+            - generic [ref=f7e148]: 50%
+            - generic [ref=f7e149]: on 2 approved prices
+        - generic [ref=f7e152]:
+          - generic [ref=f7e153]:
+            - generic [ref=f7e154]:
+              - generic [ref=f7e155]:
+                - heading [level=3] [ref=f7e305]: Project pipeline
+                - link [ref=f7e306] [cursor=pointer]:
+                  - /url: /projects
+                  - text: Open projects ›
+              - generic [ref=f7e158]:
+                - generic [ref=f7e159]:
+                  - generic [ref=f7e160]: "2"
+                  - text: Idea
+                - generic [ref=f7e161]:
+                  - generic [ref=f7e162]: "3"
+                  - text: In progress
+                - generic [ref=f7e163]:
+                  - generic [ref=f7e164]: "1"
+                  - text: Ready to order
+                - generic [ref=f7e165]:
+                  - generic [ref=f7e166]: "0"
+                  - text: Ordered
+                - generic [ref=f7e167]:
+                  - generic [ref=f7e168]: "0"
+                  - text: Delivered
+            - generic [ref=f7e169]:
+              - generic [ref=f7e170]:
+                - heading [level=3] [ref=f7e307]: Top customers
+                - link [ref=f7e308] [cursor=pointer]:
+                  - /url: /organisations?tab=customer
+                  - text: Organisations ›
+              - generic [ref=f7e174]:
+                - generic [ref=f7e175]: Test Customer
+                - generic [ref=f7e176]: £8.6k
+          - generic [ref=f7e179]:
+            - generic [ref=f7e180]:
+              - heading [level=3] [ref=f7e309]: Your tasks
+              - generic [ref=f7e183]: Across active projects
+              - generic [ref=f7e184]: Nothing waiting on you — every open stage is with a customer or supplier.
+            - generic [ref=f7e185]:
+              - heading [level=3] [ref=f7e310]: Recent activity
+              - generic [ref=f7e188]:
+                - link [ref=f7e311] [cursor=pointer]:
+                  - /url: /projects/qa-xd-notebook-end-to-end-2026-09-14
+                  - generic [ref=f7e190]: DA
+                  - generic [ref=f7e191]:
+                    - text: Distributor Admin (Test) two supplier sample stage done — QA XD Notebook End-to-End 2026-09-14
+                    - generic [ref=f7e192]: 20h ago
+                - link [ref=f7e312] [cursor=pointer]:
+                  - /url: /projects/autumn-giveaway-testing
+                  - generic [ref=f7e194]: DA
+                  - generic [ref=f7e195]:
+                    - text: Distributor Admin (Test) updated Notebook Pro — Autumn Giveaway Testing
+                    - generic [ref=f7e196]: 11d ago
+                - link [ref=f7e313] [cursor=pointer]:
+                  - /url: /projects/autumn-giveaway-testing
+                  - generic [ref=f7e198]: DA
+                  - generic [ref=f7e199]:
+                    - text: Distributor Admin (Test) updated Notebook Pro — Autumn Giveaway Testing
+                    - generic [ref=f7e200]: 11d ago
+                - link [ref=f7e314] [cursor=pointer]:
+                  - /url: /projects/autumn-giveaway-testing
+                  - generic [ref=f7e202]: DA
+                  - generic [ref=f7e203]:
+                    - text: Distributor Admin (Test) updated Notebook Pro — Autumn Giveaway Testing
+                    - generic [ref=f7e204]: 11d ago
+                - link [ref=f7e315] [cursor=pointer]:
+                  - /url: /projects/autumn-giveaway-testing
+                  - generic [ref=f7e206]: DA
+                  - generic [ref=f7e207]:
+                    - text: Distributor Admin (Test) updated Notebook Pro — Autumn Giveaway Testing
+                    - generic [ref=f7e208]: 11d ago
+      - generic [ref=f7e210]:
+        - generic [ref=f7e211]:
+          - generic [ref=f7e212]:
+            - link [ref=f7e316] [cursor=pointer]:
+              - /url: /store/pages/contact
+              - text: Let's Talk.
+            - paragraph [ref=f7e214]: Sustainable promotional merchandise, branded in-house and delivered on time.
+          - generic [ref=f7e215]:
+            - heading [level=4] [ref=f7e317]: Company
+            - link [ref=f7e318] [cursor=pointer]:
+              - /url: /store/pages/about
+              - text: About us
+            - link [ref=f7e319] [cursor=pointer]:
+              - /url: /store/pages/environment
+              - text: Environmental footprint
+            - link [ref=f7e320] [cursor=pointer]:
+              - /url: /store/pages/value-chain
+              - text: Value chain
+            - link [ref=f7e321] [cursor=pointer]:
+              - /url: /store/pages/people
+              - text: People & culture
+          - generic [ref=f7e221]:
+            - heading [level=4] [ref=f7e322]: Let us help
+            - link [ref=f7e323] [cursor=pointer]:
+              - /url: /store/pages/faq
+              - text: FAQ
+            - link [ref=f7e324] [cursor=pointer]:
+              - /url: /store/pages/terms
+              - text: Terms & conditions
+            - link [ref=f7e325] [cursor=pointer]:
+              - /url: /store/pages/privacy
+              - text: Privacy
+            - link [ref=f7e326] [cursor=pointer]:
+              - /url: /store/pages/returns
+              - text: Returns
+            - link [ref=f7e327] [cursor=pointer]:
+              - /url: /store/pages/contact
+              - text: Contact us
+        - generic [ref=f7e228]:
+          - generic [ref=f7e229]:
+            - heading [level=4] [ref=f7e328]: Stay in touch
+            - paragraph [ref=f7e231]: Product drops, sustainability news and the occasional good idea. No more than monthly.
+          - generic [ref=f7e232]:
+            - textbox [ref=f7e329]:
+              - /placeholder: Your work email
+            - button [ref=f7e330] [cursor=pointer]: Sign up
+        - generic [ref=f7e241]:
+          - generic [ref=f7e242]: Accredited
+          - generic [ref=f7e243]: New accreditation
+        - generic [ref=f7e264]:
+          - generic [ref=f7e265]:
+            - generic [ref=f7e266]: © 2026 Test Distributor
+            - link [ref=f7e336] [cursor=pointer]:
+              - /url: /store/pages/cookies
+              - text: Cookie policy
+            - link [ref=f7e337] [cursor=pointer]:
+              - /url: /store/pages/accessibility
+              - text: Accessibility
+            - generic [ref=f7e269]: Powered by Merchsmith
+          - generic [ref=f7e270]: Secured by Stripe
+  - button [aria-hidden] [ref=f7e341] [cursor=pointer]
+  - dialog [aria-hidden]
+  - complementary [aria-hidden] [ref=f7e278]:
+    - button [ref=f7e280] [cursor=pointer]: ×
+  - menu [ref=f7e344]:
+    - generic [ref=f7e350]:
+      - generic [ref=f7e351]: Distributor Admin (Test)
+      - paragraph [ref=f7e352]: Distributor Admin · Test Distributor
+    - menuitem "My profile" [ref=f7e353] [cursor=pointer]
+    - menuitem "Notifications" [ref=f7e360] [cursor=pointer]
+    - generic "Account settings will be available soon" [ref=f7e367]:
+      - menuitem "Account settings Soon" [disabled]:
+        - generic: Account settings
+        - generic: Soon
+    - generic [ref=f7e368]:
+      - paragraph [ref=f7e370]: Switch profile
+      - menuitem "Platform admin admin@platform.com" [disabled]:
+        - generic:
+          - generic: Platform admin
+          - paragraph: admin@platform.com
+      - menuitem "Distributor admin admin@distributor.com" [disabled]:
+        - generic:
+          - generic: Distributor admin
+          - paragraph: admin@distributor.com
+      - menuitem "Switching… admin@supplier.com" [active] [ref=f7e398] [cursor=pointer]:
+        - generic [ref=f7e383]:
+          - generic [ref=f7e384]: Switching…
+          - paragraph [ref=f7e385]: admin@supplier.com
+      - menuitem "Customer admin admin@customer.com" [disabled]:
+        - generic:
+          - generic: Customer admin
+          - paragraph: admin@customer.com
+    - menuitem "Sign out" [ref=f7e391] [cursor=pointer]

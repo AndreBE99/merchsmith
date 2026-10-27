@@ -1,15 +1,24 @@
 /* org-page.js — renders the Organisations hub + detail drawer */
 (function(){
   const D = window.ORG_DATA;
-  const av = n => { const u=window.MSAvatar&&MSAvatar.url(n); return u?`<img src="${u}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:n.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase(); };
-  const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const P = window.MSPEOPLE;
+  Object.defineProperty(D,'team',{configurable:true,get(){ return (D.mojoTeams||[]).flatMap(t=>t.users); }});
+  if(P){
+    P.hydrate('mojo', D.mojoTeams);
+    D.customers.forEach(c=>{ P.hydrate(c.id, c.teams); P.hydrateOrg(c.id, c); });
+    D.suppliers.forEach(s=>{ P.hydrateContacts(s.id, s.contacts=s.contacts||[]); P.hydrateOrg(s.id, s); });
+  }
+  const av = n => { const u=window.MSPEOPLE?MSPEOPLE.photo({n}):(window.MSAvatar&&MSAvatar.url(n)); return u?`<img src="${u}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:n.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase(); };
+  const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const chip = st => st==='active'
     ? '<span class="statuschip sc-active">Active</span>'
     : '<span class="statuschip sc-pending">Pending</span>';
   const userCount = o => o.teams ? o.teams.reduce((a,t)=>a+t.users.length,0) : (o.contacts?o.contacts.length:0);
   const supKind = k => k==='branding'?'Branding':(k==='both'?'Product + Branding':'Product');
   const supLogo = k => k==='branding'?'l-brand':(k==='both'?'l-both':'l-prod');
-  const orgMark = (name,init) => (window.MSLOGOS&&MSLOGOS.svg) ? MSLOGOS.svg(name,40) : esc(init||'');
+  const orgMark = (name,init) => { const o=[...D.customers,...D.suppliers].find(x=>x.name===name);
+    if(o&&o.logo) return `<img src="${o.logo}" alt="" style="width:100%;height:100%;object-fit:contain">`;
+    return (window.MSLOGOS&&MSLOGOS.svg) ? MSLOGOS.svg(name,40) : esc(init||''); };
   const allUsers = o => o.teams ? o.teams.flatMap(t=>t.users) : (o.contacts||[]);
 
   // ---- user registry: stamp every user with a uid + org context so rows open a profile ----
@@ -31,6 +40,8 @@
   // deep-link a tab via #tab=customers|suppliers|team
   function applyTabHash(){ const m=(location.hash.match(/tab=(\w+)/)||[])[1]; if(!m) return; const t=document.querySelector('.tab[data-tab="'+m+'"]'); if(t) t.onclick(); }
   window.addEventListener('hashchange', applyTabHash); applyTabHash();
+  (function(){ let k=(location.hash.split('&')[0]||''); window.addEventListener('hashchange',()=>{
+    const n=(location.hash.split('&')[0]||''); if(n!==k){ k=n; window.scrollTo(0,0); } }); })();
 
   // ---- customer cards ----
   function custCard(c){
@@ -47,6 +58,7 @@
       <div class="oavs">${us.map(u=>`<span class="av">${av(u.n)}</span>`).join('')}<span class="more">${userCount(c)} ${userCount(c)===1?'user':'users'}</span></div>
     </div>`;
   }
+  window.__custCard=custCard;
   document.getElementById('custGrid').innerHTML = D.customers.map(custCard).join('');
 
   // ---- supplier cards ----
@@ -55,8 +67,7 @@
       <div class="ocard-top"><div class="ologo brandmark">${orgMark(s.name,s.initials)}</div>
         <div style="flex:1"><h3>${esc(s.name)}</h3><div class="otype">Supplier · ${supKind(s.kind)}</div></div>${chip(s.status)}</div>
       <div class="obody">
-        <div class="orow"><span class="k">Lead time</span><span class="v">${s.lead}</span></div>
-        <div class="orow"><span class="k">Product feed</span><span class="v">${s.products?s.products.toLocaleString()+' products':'Manual'}</span></div>
+        <div class="orow"><span class="k">Product feed</span><span class="v">${s.products?s.products.toLocaleString()+' declared':'Manual'}</span></div>
         <div class="orow"><span class="k">Contacts</span><span class="v">${s.contacts.length}</span></div>
       </div>
       <div class="oavs">${s.contacts.slice(0,4).map(u=>`<span class="av">${av(u.n)}</span>`).join('')}<span class="more">${s.contacts.length} ${s.contacts.length===1?'contact':'contacts'}</span></div>
@@ -65,96 +76,181 @@
   document.getElementById('supGrid').innerHTML = D.suppliers.map(supCard).join('');
 
   // ---- team ----
+  const CTYPE={team:'distributor',cust:'customer',sup:'supplier'};
+  function chatMeta(uid){ const r=UREG[uid]; if(!r) return null; return {name:r.u.n,title:r.u.title,photo:r.u.photo,orgName:r.ctx.orgName,orgType:CTYPE[r.ctx.kind]||'customer'}; }
+  function chatBtn(u,uid){ if(!window.MSChat||u.status==='deactivated'||!uid) return '';
+    const m=chatMeta(uid); if(!m||(MSChat.me()&&MSChat.me().name===u.n)) return '';
+    const ok=MSChat.reachable(m);
+    return `<span class="uchat${ok?'':' off'}" role="button" tabindex="0" data-uchat="${uid}" title="${ok?'Message '+esc(u.n.split(' ')[0]):'Not one of your contacts'}" aria-label="${ok?'Message '+esc(u.n):'Not one of your contacts'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8 8 0 0 1-11.8 7L4 20l1.5-5.2A8 8 0 1 1 21 11.5z"/></svg></span>${u.email&&['admin','distributor'].includes(window.MSID&&MSID.current?MSID.current():'distributor')?`<span class="uchat" role="button" tabindex="0" data-email-to="${esc(JSON.stringify({name:u.n,email:u.email,org:m.orgName}))}" title="Email ${esc(u.n.split(' ')[0])}" aria-label="Email ${esc(u.n)}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg></span>`:''}`; }
   function urow(u, ctx){
     const uid = (ctx && typeof ctx==='object') ? reg(u, ctx) : (u._uid||'');
-    return `<div class="urow urow-link" data-uid="${uid}"><span class="av">${av(u.n)}</span>
+    return `<div class="urow urow-link ${u.status==='deactivated'?'u-deact':''}" data-uid="${uid}"><span class="av">${av(u.n)}</span>
       <div class="ui"><b>${esc(u.n)}</b><span>${esc(u.title)} · ${u.email?esc(u.email):'no email'}</span></div>
+      ${chatBtn(u,uid)}
       <span class="rolechip">${esc(u.role)}</span>
-      <span class="um">${u.status==='invited'?'Invited':esc(u.last)}</span></div>`;
+      <span class="um">${u.status==='deactivated'?'<span class="st-deact">Deactivated</span>':u.status==='invited'?'Invited':esc(u.last)}</span></div>`;
   }
-  document.getElementById('teamWrap').innerHTML =
-    `<div class="teamblock"><div class="th"><b>Mojo Promotions · internal team</b><span>${D.team.length} members</span></div>
-      ${D.team.map(urow).join('')}
-      <button class="addline"><svg class="icn" style="width:15px;height:15px"><use href="#i-plus"/></svg>Invite team member</button></div>`;
+  // "Your team" lives in its own left-nav section (Merchsmith Team.html); the tab that
+  // duplicated it here was removed, so this host may legitimately not exist.
+  { const tw=document.getElementById('teamWrap'); if(tw) tw.innerHTML=teamWrapHTML(); }
 
   // ---- detail drawer ----
   const scrim=document.getElementById('scrim'), drawer=document.getElementById('drawer');
   function openDrawer(html){ drawer.innerHTML=html; scrim.classList.add('open'); drawer.classList.add('open'); document.body.style.overflow='hidden';
-    drawer.querySelectorAll('[data-x]').forEach(b=>b.onclick=close); }
+    drawer.querySelectorAll('[data-x]').forEach(b=>b.onclick=close);
+    if(window.MSNOTES) drawer.querySelectorAll('[data-entkey]').forEach(h=>MSNOTES.wire(h,h.dataset.entkey)); }
   function close(){ scrim.classList.remove('open'); drawer.classList.remove('open'); document.body.style.overflow=''; }
   scrim.onclick=close;
 
+  // organisation totals — same six figures as a customer user's "At a glance"
+  const numv=s=>+String(s==null?'':s).replace(/[^0-9.]/g,'')||0, gbpv=n=>'£'+Math.round(n).toLocaleString('en-GB');
+  function custGlance(c){ const L=(c.teams||[]).flatMap(t=>t.users||[]), orders=+c.totalOrders||0, all=numv(c.totalSpend), y=numv(c.spend12);
+    const rec=L.filter(u=>u.stats&&u.stats.approvals!=null), appr=c.approvalsGiven!=null?c.approvalsGiven:rec.length?rec.reduce((n,u)=>n+u.stats.approvals,0):Math.round((+c.projects||0)*2.5);
+    const K=[['Projects',+c.projects||0],['Orders',orders],['All time spend',gbpv(all)],['12 month spend',c.spend12!=null&&c.spend12!==''&&c.spend12!=='—'?gbpv(y):'—'],['Approvals given',appr],['Average order',orders?gbpv(all/orders):'—']];
+    if(!document.getElementById('ogKpiCss')){ const s=document.createElement('style'); s.id='ogKpiCss'; s.textContent='.og-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;} .og-kpis>a{display:block;text-decoration:none;color:var(--ink);border:1px solid var(--line-soft);border-radius:12px;padding:10px 12px;background:#fff;transition:border-color .15s,box-shadow .15s;} .og-kpis>a:hover{border-color:var(--periwinkle);box-shadow:0 4px 14px rgba(40,44,80,.08);} .og-kpis>a:hover span{color:var(--periwinkle-deep);}'+'.onb-fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;} .onb-fold>summary::-webkit-details-marker{display:none;} .onb-fold>summary h4{margin:0;flex:1;display:flex;align-items:center;gap:8px;} .onb-fold>summary h4::before{content:"";width:7px;height:7px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:rotate(-45deg);transition:transform .15s;} .onb-fold[open]>summary h4::before{transform:rotate(45deg);} .onb-fold[open]>summary{margin-bottom:8px;} '+'.onb-l{display:flex;flex-direction:column;gap:4px;} .onb-r{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;font-size:13.5px;padding:6px 0;border-top:1px solid var(--paper-2);} .onb-r:first-child{border-top:0;} .onb-r i{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:800;color:#fff;} .onb-r.ok i{background:var(--green-deep,#1d7c4d);border-color:var(--green-deep,#1d7c4d);} .onb-r small{font-size:12px;color:var(--muted);white-space:nowrap;} .onb-r:not(.ok) span{color:var(--ink-3);} .onb-n{font-size:12.5px;color:var(--muted);margin:8px 0 0;line-height:1.5;}'+'.kc{display:flex;flex-direction:column;gap:6px;} .kc-row{display:flex;align-items:center;gap:11px;border:1px solid var(--line-soft);border-radius:12px;padding:9px 12px;background:#fff;} .kc-row[data-kcuser]{cursor:pointer;} .kc-row[data-kcuser]:hover{border-color:var(--periwinkle);} .kc-row .av{width:34px;height:34px;border-radius:50%;overflow:hidden;flex:none;display:grid;place-items:center;background:var(--paper-2);} .kc-t{flex:1;min-width:0;display:flex;flex-direction:column;} .kc-t b{font-size:14px;} .kc-t i{font-style:normal;font-size:12px;color:var(--muted);} .kc-row em{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;border-radius:6px;padding:3px 8px;white-space:nowrap;background:var(--paper-2);color:var(--ink-3);} .kc-row.cust{border-color:color-mix(in srgb,var(--spearmint) 55%,#fff);background:color-mix(in srgb,var(--spearmint) 8%,#fff);} .kc-row.cust em{background:color-mix(in srgb,var(--spearmint) 30%,#fff);color:#1d6b58;} .kc-row.dist{border-color:var(--periwinkle);background:var(--tint-peri);} .kc-row.dist em{background:var(--periwinkle-deep);color:#fff;} .kc-h{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);margin:6px 0 0;}'+' .og-kpis b{display:block;font-family:var(--serif);font-weight:500;font-size:20px;line-height:1.2;} .og-kpis span{font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);} @media(max-width:420px){.og-kpis{grid-template-columns:repeat(2,minmax(0,1fr));}}'; document.head.appendChild(s); }
+    const P='Merchsmith Projects.html?customer='+encodeURIComponent(c.name), OR='Merchsmith Orders.html?customer='+encodeURIComponent(c.id), LK=[P,OR,OR,OR,P+'&status=approved',OR];
+    return '<div class="dwr-sec"><div class="sec-hd"><h4>At a glance</h4></div><div class="og-kpis">'+K.map(([l,v],i)=>'<a href="'+esc(LK[i])+'"><b>'+esc(v)+'</b><span>'+esc(l)+' ›</span></a>').join('')+'</div></div>'+keyContacts(c); }
+  // who's who: the customer's main contact, their main contact at Mojo, and every account manager looking after their people
+  function keyContacts(c){ const L=(c.teams||[]).flatMap(t=>(t.users||[]).map(u=>Object.assign({_team:t.name},u))).filter(u=>u.status!=='deactivated');
+    const main=L.find(u=>u.n===c.contactName)||L.find(u=>u.main)||L.find(u=>u.role==='Admin')||L[0];
+    const A=window.MSAM, org=A?A.get(c.id):null, per={}; if(A) L.forEach(u=>{ const a=A.getUser(c.id,u); if(a){ (per[a.n]=per[a.n]||{a,n:0}).n++; } });
+    const row=(u,sub,tag,cls,uid)=>'<div class="kc-row'+(cls?' '+cls:'')+'"'+(uid?' data-kcuser="'+esc(uid)+'"':'')+'><span class="av">'+av(u.n)+'</span><span class="kc-t"><b>'+esc(u.n)+'</b><i>'+esc(sub)+'</i></span>'+(tag?'<em>'+esc(tag)+'</em>':'')+'</div>';
+    const ams=Object.values(per).sort((x,y)=>y.n-x.n);
+    return '<div class="dwr-sec"><div class="sec-hd"><h4>Key contacts</h4>'+(A?'<a class="seclink" href="#" data-kcam="'+esc(c.id)+'">Change main contact ›</a>':'')+'</div><div class="kc">'
+      +(main?row(main,[main.title||main.role,c.name].filter(Boolean).join(' · '),'Customer main contact','cust',main.email||main.n):'')
+      +(org?row(org,[org.title||'Account Manager','Mojo Promotions'].join(' · '),'Your main contact','dist'):'')
+      +(ams.length?'<div class="kc-h">Account managers · '+ams.length+'</div>'+ams.map(x=>row(x.a,(x.a.title||'Account Manager')+' · looks after '+x.n+' '+(x.n===1?'person':'people'),org&&x.a.n===org.n?'Main':'','')).join(''):'')
+      +'</div></div>'; }
+  function onbBlock(c){ const M=window.MSONB; if(!M||M.legacy(c.id)||c.status==='draft') return ''; const s=M.state(c.id), p=M.progress(c.id), fd=d=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+    const last=(s.reminders||[]).slice(-1)[0];
+    return '<details class="dwr-sec onb-fold"><summary class="sec-hd"><h4>Onboarding · '+(p>=100?'complete':p+'%')+'</h4>'+(p<100?'<a class="seclink" href="#" data-onbrem="'+esc(c.id)+'">Send reminder ›</a>':'')+'</summary><div class="onb-l">'
+      +M.ORG_STEPS.map(([k,l])=>{ const d=s.steps[k]; return '<div class="onb-r'+(d?(d.skipped?' sk':' ok'):'')+'"><i>'+(d&&!d.skipped?'✓':'')+'</i><span>'+esc(l)+'</span><small>'+(d?esc(d.by)+' · '+fd(d.at):'Not done')+'</small></div>'; }).join('')
+      +'</div><p class="onb-n">'+(s.finished?'Finished '+fd(s.finished)+' by '+esc(s.finishedBy||''):s.started?'Started '+fd(s.started)+'. Ordering opens when every step is done.':'Not started yet. The main contact hasn’t opened their invitation.')+(last?' Last reminder sent '+fd(last.at)+(last.auto?' (automatic)':'')+'.':' Reminders go automatically after 3 and 7 days without progress.')+'</p></details>'; }
   function custDrawer(c){
     return `<div class="dwr-head"><div class="ologo brandmark">${orgMark(c.name,c.initials)}</div>
       <div><h2 style="font-family:var(--serif);font-weight:500;font-size:23px;margin:0">${esc(c.name)}</h2>
       <div style="font-size:13px;color:var(--text-soft);margin-top:2px">Customer organisation · since ${c.since}</div></div>
       <button class="dwr-x" data-x>×</button></div>
     <div class="dwr-body">
+      ${custGlance(c)}
+      ${onbBlock(c)}
       <div class="dwr-sec"><div class="sec-hd"><h4>Overview</h4><div style="display:flex;gap:8px"><button class="editbtn ghostbtn" data-ghost="${c.id}">Ghost customer</button><button class="editbtn" data-editorg="cust:${c.id}">Edit</button></div></div>${flagBanner(c)}<div class="kv">
         <span class="k">Domain</span><span class="v">${esc(c.domain)}</span>
         <span class="k">Address</span><span class="v">${esc(c.address||'—')}</span>
         <span class="k">Status</span><span class="v">${c.status==='active'?'Active':'Pending invite'}</span>
         <span class="k">Projects</span><span class="v">${c.projects}</span>
         <span class="k">Standing discount</span><span class="v">${c.standingDiscount}</span>
-        <span class="k">Payment terms</span><span class="v">${esc(c.paymentTerms||'—')}</span>
-        <span class="k">Credit limit</span><span class="v">${esc(c.creditLimit||'—')} ${c.creditUsed?`<small style="color:var(--muted)">(${esc(c.creditUsed)} used)</small>`:''}</span>
-        <span class="k">Delivery addresses</span><span class="v">${c.addresses}</span>
       </div></div>
-      ${ordersBlock(c,'cust')}
-      <div class="dwr-sec"><a class="btn" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--periwinkle-deep);color:#fff;border-radius:11px;padding:12px;font-weight:700;text-decoration:none" href="Merchsmith Projects.html?customer=${encodeURIComponent(c.name)}">View ${esc(c.name)}'s projects ›</a></div>
+      <div class="dwr-sec"><div class="sec-hd"><h4>Trading terms</h4>${c.status==='draft'?'':`<button class="editbtn" data-editterms="${esc(c.id)}">Edit terms</button>`}</div><div class="kv">
+        <span class="k">Payment terms</span><span class="v">${esc(c.paymentTerms||'—')}${window.MSTERMS&&MSTERMS.pending(c.id)?` <button class="ot-terms" onclick="MSTERMS.open('${esc(MSTERMS.pending(c.id).id)}')">Terms to approve</button>`:''}</span>
+        <span class="k">Credit limit</span><span class="v">${esc(c.creditLimit||'None')} ${c.creditUsed?`<small style="color:var(--muted)">(${esc(c.creditUsed)} used)</small>`:''}</span>
+        <span class="k">VAT applicable</span><span class="v">${c.vatApplicable===false?'No':'Yes'}</span>
+      </div></div>
+      <div class="dwr-sec"><h4>Delivery</h4><div class="kv">
+        <span class="k">Delivery addresses</span><span class="v">${Array.isArray(c.addresses)?(c.addresses.length?c.addresses.map(a=>`<span style="display:block">${esc(a.title?a.title+': ':'')}${esc(window.MSADDR?MSADDR.text(a):(a.address||''))}</span>`).join(''):'—'):esc(c.addresses==null?'—':c.addresses)}</span>
+        <span class="k">Last order</span><span class="v">${esc(c.lastOrder||'—')}</span>
+      </div></div>
       ${serviceBlock(c)}
-      ${productsBlock(c.products,'Products ordered')}
       <div class="dwr-sec"><h4>Teams &amp; users</h4>
         ${c.teams.map(t=>`<div class="teamblock"><div class="th"><b>${esc(t.name)}</b><span>${t.users.length} ${t.users.length===1?'user':'users'}</span></div>
           ${t.users.map(urow).join('')}
           <button class="addline"><svg class="icn" style="width:15px;height:15px"><use href="#i-plus"/></svg>Add user to ${esc(t.name)}</button></div>`).join('')}
-        <button class="addline"><svg class="icn" style="width:15px;height:15px"><use href="#i-plus"/></svg>Add team</button>
+        <button class="addline"><svg class="icn" style="width:15px;height:15px"><use href="#i-plus"/></svg>Manage teams</button>
       </div>
       ${commentsBlock(c,'cust:'+c.id)}
     </div>`;
   }
+  /* Supplier panel (distributor view). Reads the supplier's shared organisation record — the
+     one BagWorks edits in its Organisation profile and Platform Admin edits — and the live
+     catalogue for what this distributor actually stocks from them. */
+  const SUPKINDS=[['product','Product (blanks)'],['branding','Branding only'],['both','Product + branding']];
+  function supRangeStats(s){
+    if(!window.MSCAT||!MSCAT.all) return null;
+    const mine=MSCAT.all().filter(p=>p.supplier===s.name);
+    const inRange=mine.filter(p=>MSCAT.distInRange(p.id)), rec=mine.filter(p=>p.curated);
+    const log=(MSCAT.curLog?MSCAT.curLog():[]).filter(e=>e.supplier===s.name).slice(0,5);
+    const imp=(MSCAT.importLog?MSCAT.importLog():[]).filter(e=>(e.supplier||e.name)===s.name)[0]||null;
+    return {total:mine.length,inRange,rec,log,imp};
+  }
   function supDrawer(s){
-    return `<div class="dwr-head"><div class="ologo brandmark">${orgMark(s.name,s.initials)}</div>
-      <div><h2 style="font-family:var(--serif);font-weight:500;font-size:23px;margin:0">${esc(s.name)}</h2>
-      <div style="font-size:13px;color:var(--text-soft);margin-top:2px">${supKind(s.kind)} supplier · since ${s.since}</div></div>
-      <button class="dwr-x" data-x>×</button></div>
+    if(P&&P.hydrateOrg) P.hydrateOrg(s.id,s);
+    _curSupId=s.id;
+    const R=supRangeStats(s), book=P&&P.addrBook?P.addrBook(s):[];
+    const approved=window.MSCAT&&MSCAT.distSupplierOk?MSCAT.distSupplierOk(s.name):true;
+    const live=s.contacts.filter(u=>u.status!=='deactivated').length;
+    const fmtD=iso=>{ const d=new Date(iso); return isNaN(d)?'':d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); };
+    const kv=(k,v)=>`<span class="k">${k}</span><span class="v">${v?esc(v):'<i class="sd-unset">Not set</i>'}</span>`;
+    const ACT={proposed:'proposed for Recommended',approved:'became Recommended',declined:'declined for Recommended',tier:'moved tier',removed:'left Recommended'};
+    return `<div class="sd-head">
+        <div class="ologo brandmark sd-logo">${s.logo?`<img src="${esc(s.logo)}" alt="">`:orgMark(s.name,s.initials)}</div>
+        <div class="sd-ht"><h2>${esc(s.name)}</h2>
+          <div class="sd-meta"><span class="sd-pill ${s.status==='active'?'ok':''}">${s.status==='active'?'Active':'Pending invite'}</span><span>${supKind(s.kind)} supplier</span>${s.region?`<span>${esc(s.region)}</span>`:''}</div></div>
+        <button class="dwr-x" data-x>×</button></div>
     <div class="dwr-body">
-      <div class="dwr-sec"><div class="sec-hd"><h4>Overview</h4><button class="editbtn" data-editorg="sup:${s.id}">Edit</button></div>${flagBanner(s)}<div class="kv">
-        <span class="k">Domain</span><span class="v">${esc(s.domain)}</span>
-        <span class="k">Address</span><span class="v">${esc(s.address||'—')}</span>
-        <span class="k">Type</span><span class="v">${s.kind==='branding'?'Branding only':(s.kind==='both'?'Product + Branding':'Product (blanks)')}</span>
-        <span class="k">Lead time</span><span class="v">${s.lead}</span>
-        <span class="k">Days in lieu</span><span class="v">${supLieuLabel(s)}</span>
-        <span class="k">Payment terms</span><span class="v">${esc(s.paymentTerms||'—')}</span>
-        <span class="k">Product feed</span><span class="v">${s.products?s.products.toLocaleString()+' products (API)':'Manual — decoration only'}</span>
-        <span class="k">Status</span><span class="v">${s.status==='active'?'Active':'Pending invite'}</span>
-      </div></div>
+      ${flagBanner(s)}
+      <div class="sd-stats">
+        <a class="sd-stl" href="Merchsmith Store.html?supplier=${encodeURIComponent(s.name)}"><b>${R?R.total.toLocaleString():(s.products||0).toLocaleString()}</b><span>In the catalogue ›</span></a>
+        <a class="sd-stl" href="Merchsmith Distributor Settings.html#tab=storerange&supplier=${encodeURIComponent(s.name)}"><b>${R?R.inRange.length.toLocaleString():'—'}</b><span>In your range ›</span></a>
+        <a class="sd-stl" href="Merchsmith Store.html?supplier=${encodeURIComponent(s.name)}&rec=1"><b>${R?R.rec.length.toLocaleString():'—'}</b><span>Recommended ›</span></a>
+        <a class="sd-stl" href="Merchsmith Orders.html?supplier=${encodeURIComponent(s.name)}"><b>${esc(String(s.since||'—'))}</b><span>Supplier since · orders ›</span></a>
+      </div>
+
+      <details class="dwr-sec sd-fold" open><summary><h4>Details</h4><span class="sd-sumr"><button class="editbtn" data-supedit="${s.id}">Edit organisation</button><span class="sd-chev"></span></span></summary>
+        <div class="kv">
+          ${kv('Legal name',s.legalName)}${kv('Company number',s.companyNo)}${kv('VAT number',s.vat)}
+          ${kv('Domain',s.domain&&s.domain!=='—'?s.domain:'')}${kv('Website',s.website)}${kv('Phone',s.phone)}
+          ${kv('Main contact',[s.contactName,s.contactEmail].filter(Boolean).join(' · '))}
+          <span class="k">Type</span><span class="v">${esc((SUPKINDS.find(k=>k[0]===s.kind)||[,''])[1])}</span>
+          ${(s.specialisms||[]).length?`<span class="k">Specialisms</span><span class="v">${s.specialisms.map(t=>`<span class="sd-tag">${esc(t)}</span>`).join(' ')}</span>`:''}
+        </div>
+        ${s.about?`<p class="sd-about">${esc(s.about)}</p>`:''}
+        <div class="sd-addrs"><div class="sd-sub">Addresses</div>
+          ${book.length?book.map(a=>`<div class="sd-addr${a.isDefault?' def':''}"><b>${esc(a.title||'Address')}${a.isDefault?'<span>Default</span>':''}</b><em>${esc((P.lineText(a)||[]).join(', '))}</em></div>`).join('')
+            :'<p class="sd-none">No addresses yet.</p>'}</div>
+      </details>
+
+      <details class="dwr-sec sd-fold" open><summary><h4>Your relationship</h4><span class="sd-chev"></span></summary>
+        <div class="kv">
+          <span class="k">Status</span><span class="v">${approved?'<span class="sd-ok">Approved supplier</span>':'<span class="sd-no">Not approved — products hidden from your store</span>'}</span>
+          <span class="k">Working together since</span><span class="v">${esc(String(s.since||'—'))}</span>
+          <span class="k">Product feed</span><span class="v">${s.products?'API feed · '+s.products.toLocaleString()+' products declared':'Manual — decoration only'}${R?' · '+R.total.toLocaleString()+' imported so far':''}${R&&R.imp&&R.imp.at?' · last import '+fmtD(R.imp.at):''}</span>
+          <span class="k">Payment terms</span><span class="v">${esc(s.paymentTerms||'—')}</span>
+          <span class="k">Days in lieu</span><span class="v"><span class="lieuctl-row">
+            <span class="mini-step" data-suplieu="${s.id}"><button data-d="-1">−</button><span class="v">${supLieuEff(s)}</span><button data-d="1">+</button></span>
+            <span class="lieuwd">working days</span>${s.lieu==null?'<span class="lieudef">Default</span>':`<button class="useoverride" data-suplieudef="${s.id}">Use default</button>`}</span></span>
+          ${[['unbranded','Unbranded sample lead time'],['branded','Branded sample lead time']].map(([t,lb])=>{ const ML=window.MSLead; if(!ML||!ML.supSampleLead) return ''; const v=ML.supSampleLead(s.name,t), def=ML.supSampleIsDefault(s.name,t);
+            return `<span class="k">${lb}${def?' <small style="font-weight:600;color:var(--muted)">(default)</small>':''}</span><span class="v"><span class="lieuctl-row"><span class="mini-step smp-step" data-supsmp="${s.id}" data-smpt="${t}"><button data-d="-1">−</button><span class="v">${v}</span><button data-d="1">+</button></span><span class="lieuwd">working day${v===1?'':'s'}</span>${def?'<span class="lieudef">Default</span>':`<button class="useoverride" data-supsmpdef="${s.id}" data-smpt="${t}">Use default</button>`}</span></span>`; }).join('')}
+        </div>
+      </details>
+
+      <details class="dwr-sec sd-fold" open><summary><h4>People · ${live} active</h4><span class="sd-sumr"><button class="editbtn" data-supinvite="${s.id}">＋ Invite</button><span class="sd-chev"></span></span></summary>
+        <div class="teamblock">${s.contacts.length?s.contacts.map(urow).join(''):'<p class="sd-none">No one here yet.</p>'}</div>
+      </details>
+
+      ${R?`<details class="dwr-sec sd-fold"><summary><h4>In your range · ${R.inRange.length.toLocaleString()}</h4><span class="sd-chev"></span></summary>
+        ${R.inRange.length?`<div class="sd-prods">${R.inRange.slice(0,8).map(p=>`<a class="sd-prod" href="Merchsmith Store.html#product=${encodeURIComponent(p.id)}">
+            <span class="sd-pimg">${p.image?`<img src="${esc(p.image)}" alt="" loading="lazy" onerror="this.remove()">`:''}</span>
+            <span><b>${esc(p.name)}</b><em>${p.curated?(p.promoted?'Featured':'Recommended'):'Added by you'}</em></span></a>`).join('')}</div>
+          ${R.inRange.length>8?`<a class="seclink" href="Merchsmith Distributor Settings.html#tab=storerange">See all ${R.inRange.length.toLocaleString()} in Product range ›</a>`:''}`
+          :'<p class="sd-none">None of this supplier\'s products are in your store yet.</p>'}
+        ${R.log.length?`<div class="sd-sub" style="margin-top:14px">Recent Recommended changes</div>${R.log.map(e=>`<div class="sd-log"><span>${fmtD(e.at)}</span><b>${esc(e.name)}</b> ${ACT[e.act]||e.act}</div>`).join('')}`:''}
+      </details>`:''}
+
       ${ordersBlock(s,'sup')}
       ${serviceBlock(s)}
-      ${supProductListBlock(s)}
-      <div class="dwr-sec"><h4>Days in lieu (delivery buffer)</h4>
-        <p style="font-size:13px;color:var(--text-soft);margin:0 0 12px">Working days added to this supplier's lead time to form the customer lead time. Leave on default to follow the distributor's global setting.</p>
-        <div class="lieuctl-row">
-          <div class="mini-step" data-suplieu="${s.id}"><button data-d="-1">−</button><span class="v">${supLieuEff(s)}</span><button data-d="1">+</button></div>
-          <span class="lieuwd">working days</span>
-          ${s.lieu==null?'<span class="lieudef">Default</span>':`<button class="useoverride" data-suplieudef="${s.id}">Use default</button>`}
-        </div></div>
-      <div class="dwr-sec"><h4>What this supplier does</h4>
-        <div style="background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:6px 16px">
-          <div class="feedline"><span>Manage product feed &amp; manual products</span><b>${s.products?'API + manual':'Manual'}</b></div>
-          <div class="feedline"><span>Receive orders</span><b>Yes</b></div>
-          <div class="feedline"><span>Upload proofs for distributor</span><b>${s.kind==='branding'||s.kind==='both'?'Yes':'—'}</b></div>
-          <div class="feedline"><span>Reply to stock / delivery / quote enquiries</span><b>Yes</b></div>
-        </div>
-      </div>
-      <div class="dwr-sec"><h4>Contacts</h4>
-        <div class="teamblock">${s.contacts.map(urow).join('')}
-          <button class="addline"><svg class="icn" style="width:15px;height:15px"><use href="#i-plus"/></svg>Add contact</button></div>
-        <div class="todo">⚑ To revisit: whether the customer side can add a supplier contact, and what suppliers may see.</div>
-      </div>
       ${commentsBlock(s,'sup:'+s.id)}
     </div>`;
   }
+  // one editor for the organisation, shared with its own profile and Platform Admin
+  document.addEventListener('click',e=>{
+    const ed=e.target.closest('[data-supedit]'); if(ed){ e.preventDefault(); e.stopPropagation();
+      const s=D.suppliers.find(x=>x.id===ed.dataset.supedit); if(!s||!P) return;
+      P.editOrg(s.id,s,()=>{ openDrawer(supDrawer(s)); refreshSupCards(); window.dispatchEvent(new CustomEvent('ms-org-updated',{detail:{key:s.id}})); },
+        [{k:'region',label:'Region'},{k:'paymentTerms',label:'Payment terms'}],{companyNo:true,specialisms:true,kinds:SUPKINDS}); return; }
+    const inv=e.target.closest('[data-supinvite]'); if(inv){ e.preventDefault(); e.stopPropagation();
+      const s=D.suppliers.find(x=>x.id===inv.dataset.supinvite); if(!s) return; _curSupId=s.id;
+      addUserForm({scope:'supplier',title:'Invite to '+s.name,onAdd:u=>{ s.contacts.push(u); openDrawer(supDrawer(s)); refreshSupCards(); }}); }
+  },true);
 
   document.addEventListener('click', e=>{
     const card=e.target.closest('.ocard'); if(!card) return;
@@ -186,7 +282,6 @@
         ${field('Domain','foDom','placeholder="northwind.com"')}
         <div id="fsupextra" style="display:none">
           <div class="fm-f"><span>Supplier type</span><div class="fm-seg sm" id="fskind"><button type="button" class="on" data-k="product">Product</button><button type="button" data-k="branding">Branding</button></div></div>
-          ${field('Default lead time (working days)','foLead','type="number" value="7" min="1"')}
         </div>
         <div id="fcustextra">${field('Standing discount %','foDisc','type="number" value="5" min="0" max="100"','Optional — applied to this customer&rsquo;s prices')}</div>
         <div class="fm-head2">First user</div>
@@ -212,7 +307,7 @@
         document.getElementById('custGrid').innerHTML=D.customers.map(custCard).join('');
         document.querySelector('.tab[data-tab="customers"] .ct').textContent=D.customers.length;
       } else {
-        D.suppliers.unshift({id,name,initials:av(name),kind:skind,domain:dom,status:'pending',lead:(m.wrap.querySelector('#foLead').value||'7')+' working days',feed:'Manual',products:0,since:'2026',contacts:[u]});
+        D.suppliers.unshift({id,name,initials:av(name),kind:skind,domain:dom,status:'pending',feed:'Manual',products:0,since:'2026',contacts:[u]});
         document.getElementById('supGrid').innerHTML=D.suppliers.map(supCard).join('');
         document.querySelector('.tab[data-tab="suppliers"] .ct').textContent=D.suppliers.length;
       }
@@ -221,38 +316,33 @@
   }
 
   function addUserForm(opts){
-    // opts: {scope:'customer'|'team'|'supplier', org, team, onAdd}
-    const m=modal(`<div class="fm-head"><h3>${opts.title}</h3><button class="dwr-x" data-fx>×</button></div>
-      <div class="fm-body">
-        ${field('Full name','fuN','placeholder="Full name"')}
-        ${field('Job title','fuT','placeholder="e.g. Marketing Coordinator"')}
-        ${field('Email','fuE','type="email" placeholder="name@company.com"')}
-        ${field('Telephone','fuP','placeholder="+44 …"')}
-        <label class="fm-f"><span>Role</span><select id="fuR">${(ROLES[opts.scope]||['Buyer']).map(r=>`<option>${r}</option>`).join('')}</select></label>
-      </div>
-      <div class="fm-foot"><button class="btn ghost" data-fx>Cancel</button><button class="btn" id="fuSave">Send invite</button></div>`);
-    m.wrap.querySelector('#fuSave').onclick=()=>{
-      const n=m.wrap.querySelector('#fuN').value.trim(); if(!n){ m.wrap.querySelector('#fuN').focus(); return; }
-      opts.onAdd({n,role:m.wrap.querySelector('#fuR').value,title:m.wrap.querySelector('#fuT').value.trim()||m.wrap.querySelector('#fuR').value,email:m.wrap.querySelector('#fuE').value.trim(),tel:m.wrap.querySelector('#fuP').value.trim(),last:'Invited',status:'invited'});
-      m.shut(); toast('Invite sent to '+n);
-    };
+    // opts: {scope:'customer'|'team'|'supplier', title, onAdd}
+    if(!P) return;
+    const cust=currentCust(), sup=currentSup();
+    const orgKey = opts.scope==='team'?'mojo':opts.scope==='customer'?(cust&&cust.id):(sup&&sup.id);
+    const orgType = opts.scope==='team'?'distributor':opts.scope;
+    const team = opts.scope==='customer'?opts.title.replace('Add user to ','').trim():(opts.scope==='supplier'?'Contacts':'Internal team');
+    const peers = opts.scope==='team'?D.team:opts.scope==='customer'?(cust?cust.teams.flatMap(t=>t.users):[]):(sup?sup.contacts:[]);
+    P.userForm({ title:opts.title, kind:opts.scope==='customer'?'cust':opts.scope==='supplier'?'sup':'team', orgType, peers,
+      onSave:f=>{ const u=P.addUser(orgKey,team,Object.assign({title:f.title||f.role},f)); opts.onAdd(u); } });
   }
 
   // header + toolbar "add" buttons
-  document.getElementById('addOrgBtn').onclick=addOrgForm;
-  document.querySelectorAll('.toolbar .btn.ghost').forEach(b=>{ if(/Add customer|Add supplier|Invite team/.test(b.textContent)) b.onclick=e=>{ e.preventDefault();
-    if(/customer/i.test(b.textContent)) addOrgForm();
-    else if(/team/i.test(b.textContent)) addUserForm({scope:'team',title:'Invite team member',onAdd:u=>{ D.team.push(u); document.getElementById('teamWrap').innerHTML=teamWrapHTML(); wireTeamAdds(); document.querySelector('.tab[data-tab="team"] .ct').textContent=D.team.length; }});
+  (document.getElementById('addOrgBtn')||{}).onclick=addOrgForm;
+  document.querySelectorAll('.toolbar .btn.ghost').forEach(b=>{ if(/Add customer/.test(b.textContent)&&window.MSCUSTADD&&!MSCUSTADD.canAdd()){ b.disabled=true; b.title='Only admins and account managers can add customers'; }
+    if(/Add customer|Add supplier|Invite team/.test(b.textContent)) b.onclick=e=>{ e.preventDefault();
+    if(/customer/i.test(b.textContent)){ if(window.MSCUSTADD) MSCUSTADD.open(); else addOrgForm(); }
+    else if(/team/i.test(b.textContent)) addUserForm({scope:'team',title:'Invite team member',onAdd:u=>{ D.team.push(u); {const tw=document.getElementById('teamWrap'); if(tw) tw.innerHTML=teamWrapHTML();} wireTeamAdds(); {const tc=document.querySelector('.tab[data-tab="team"] .ct'); if(tc) tc.textContent=D.team.length;} }});
   }; });
 
   // delegated: add-user / add-contact / add-team inside drawers + team panel
   document.addEventListener('click', e=>{
     const a=e.target.closest('.addline'); if(!a) return;
     const txt=a.textContent.trim();
-    if(/Invite team member/.test(txt)){ addUserForm({scope:'team',title:'Invite team member',onAdd:u=>{ D.team.push(u); document.getElementById('teamWrap').innerHTML=teamWrapHTML(); wireTeamAdds(); document.querySelector('.tab[data-tab="team"] .ct').textContent=D.team.length; }}); return; }
+    if(/Invite team member/.test(txt)){ addUserForm({scope:'team',title:'Invite team member',onAdd:u=>{ D.team.push(u); {const tw=document.getElementById('teamWrap'); if(tw) tw.innerHTML=teamWrapHTML();} wireTeamAdds(); {const tc=document.querySelector('.tab[data-tab="team"] .ct'); if(tc) tc.textContent=D.team.length;} }}); return; }
     const cust=currentCust();
     if(cust && /Add user to/.test(txt)){ const tname=txt.replace('Add user to ','').trim(); const team=cust.teams.find(t=>t.name===tname); addUserForm({scope:'customer',title:'Add user to '+tname,onAdd:u=>{ team.users.push(u); openDrawer(custDrawer(cust)); refreshCustCards(); }}); return; }
-    if(cust && /Add team/.test(txt)){ const name=prompt('Team / department name:'); if(name){ cust.teams.push({name:name.trim(),users:[]}); openDrawer(custDrawer(cust)); } return; }
+    if(cust && /Manage teams|Add team/.test(txt)){ if(P) P.manageTeams(cust.id,cust.teams,()=>{ openDrawer(custDrawer(cust)); refreshCustCards(); },'Team'); return; }
     const sup=currentSup();
     if(sup && /Add contact/.test(txt)){ addUserForm({scope:'supplier',title:'Add contact',onAdd:u=>{ sup.contacts.push(u); openDrawer(supDrawer(sup)); refreshSupCards(); }}); return; }
   });
@@ -317,6 +407,7 @@
     return src.slice(0, 1+(h%Math.min(3,src.length))).map(p=>({name:p.name, orders:1+((h+p.name.length)%6), qty:Math.round((p.qty||1000)/(2+h%3)), value:p.value}));
   }
   function userCommentsBlock(u,uid){
+    if(window.MSNOTES&&UREG[uid]){ const k='user:'+orgKeyOf(UREG[uid])+':'+(String(u.email||'').trim().toLowerCase()||String(u.n||'').trim().toLowerCase()); return `<div class="dwr-sec" data-entkey="${esc(k)}">${MSNOTES.panelHTML(k)}</div>`; }
     u._comments=u._comments||[];
     const pinned=u._comments.filter(c=>c.pinned), rest=u._comments.filter(c=>!c.pinned);
     const row=c=>`<div class="cmt ${c.pinned?'pinned':''}"><div class="cmt-h"><span class="cmt-av">${av(c.who)}</span><b>${esc(c.who)}</b><span class="cmt-role">${esc(c.role||'')}</span><span class="cmt-when">${esc(c.when)}</span><button class="cmt-pin" data-upin="${uid}:${u._comments.indexOf(c)}" title="${c.pinned?'Unpin':'Pin'}">${c.pinned?'★':'☆'}</button></div><p>${esc(c.text)}</p></div>`;
@@ -327,6 +418,10 @@
       <div class="cmt-add"><input type="text" class="cmt-input" placeholder="Add a note about this user…" data-ucmtkey="${uid}"><button class="btn sm" data-ucmtsend="${uid}">Post</button></div></div>`;
   }
   function fakeActivity(u, ctx){
+    if(P){ const key=ctx.kind==='team'?'mojo':(ctx.org&&ctx.org.id);
+      const L=P.activity(key,u).map(e=>({t:(P.LBL[e.action]||e.action)+(e.detail?' — '+e.detail:''),
+        d:new Date(e.at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+' · by '+e.actor}));
+      return L.length?L:[{t:'No recorded activity yet',d:'Changes made from now on appear here'}]; }
     if(u.status==='invited') return [{t:'Invitation sent',d:'Pending acceptance'}];
     if(ctx.kind==='sup') return [
       {t:'Replied to a stock enquiry — Eco Wheat-Straw Cable',d:'2 days ago'},
@@ -347,12 +442,12 @@
     const perms=PERMS[u.role]||[];
     const acts=fakeActivity(u,ctx);
     const logoCls = ctx.kind==='cust'?'l-cust':(ctx.kind==='sup'?supLogo(rec.ctx.org&&rec.ctx.org.kind):'l-cust');
-    return `<div class="dwr-head"><div class="ologo ${logoCls}" style="border-radius:50%">${initials(u.n)}</div>
+    return `<div class="dwr-head"><div class="ologo ${logoCls}" style="border-radius:50%;overflow:hidden">${av(u.n)}</div>
       <div><h2 style="font-family:var(--serif);font-weight:500;font-size:23px;margin:0">${esc(u.n)}</h2>
       <div style="font-size:13px;color:var(--text-soft);margin-top:2px">${esc(u.title)} · ${esc(u.role)}</div></div>
       <button class="dwr-x" data-x>×</button></div>
     <div class="dwr-body">
-      <div class="prof-status ${u.status==='invited'?'inv':'act'}">${u.status==='invited'?'Invitation pending':'Active · '+esc(u.last)}</div>
+      <div class="prof-status ${u.status==='invited'?'inv':'act'}">${u.status==='deactivated'?'Deactivated — kept for history':u.status==='invited'?'Invitation pending':'Active · '+esc(u.last)}</div>
       <div class="dwr-sec"><h4>Organisation</h4><div class="kv">
         <span class="k">Organisation</span><span class="v">${esc(ctx.orgName)}</span>
         <span class="k">Type</span><span class="v">${esc(ctx.orgType)}</span>
@@ -372,12 +467,14 @@
       ${userStatsBlock(u,ctx)}
       ${userServiceBlock(u,ctx)}
       ${productsBlock(userProducts(u,ctx), ctx.kind==='sup'?'Products handled':'Products ordered')}
-      <div class="dwr-sec"><h4>Recent activity</h4>
-        <div class="acts">${acts.map(a=>`<div class="actrowp"><div class="dot"></div><div><b>${a.t}</b><span>${a.d}</span></div></div>`).join('')}</div></div>
+      ${window.MSNOTES?'':`<div class="dwr-sec"><h4>Recent activity</h4>
+        <div class="acts">${acts.map(a=>`<div class="actrowp"><div class="dot"></div><div><b>${a.t}</b><span>${a.d}</span></div></div>`).join('')}</div></div>`}
       ${userCommentsBlock(u,uid)}
       <div class="dwr-sec prof-foot">
-        <button class="btn ghost sm" data-editu="${uid}">Edit user</button>
-        ${u.status==='invited'?`<button class="btn ghost sm" data-resend="${uid}">Resend invite</button>`:`<button class="btn ghost sm danger" data-removeu="${uid}">Remove from org</button>`}
+        ${canEditRec(rec)?`<button class="btn ghost sm" data-editu="${uid}">Edit user</button>`:''}
+        ${!canEditRec(rec)?'':u.status==='invited'?`<button class="btn ghost sm" data-resend="${uid}">Resend invite</button>`
+          :u.status==='deactivated'?`<button class="btn ghost sm" data-reactu="${uid}">Reactivate</button>`
+          :`<button class="btn ghost sm danger" data-removeu="${uid}">Deactivate</button>`}
         <button class="btn ghost sm" data-backu="${uid}">‹ Back to ${esc(ctx.orgName)}</button>
       </div>
     </div>`;
@@ -385,13 +482,37 @@
   function openProfile(uid){
     openDrawer(profileDrawer(uid));
     const back=drawer.querySelector('[data-backu]'); if(back) back.onclick=()=>{ const rec=UREG[uid]; if(rec.ctx.kind==='cust') openDrawer(custDrawer(rec.ctx.org)); else if(rec.ctx.kind==='sup') openDrawer(supDrawer(rec.ctx.org)); else close(); };
-    const rm=drawer.querySelector('[data-removeu]'); if(rm) rm.onclick=()=>{ const rec=UREG[uid]; if(!confirm('Remove '+rec.u.n+' from '+rec.ctx.orgName+'?')) return; removeUser(uid); };
-    const ed=drawer.querySelector('[data-editu]'); if(ed) ed.onclick=()=>toast('Edit user — form would open here');
+    const rm=drawer.querySelector('[data-removeu]'); if(rm) rm.onclick=()=>{ const rec=UREG[uid]; if(!lastAdminOk(rec)) return;
+      if(!confirm('Deactivate '+rec.u.n+'?\n\nTheir history is kept and they can no longer sign in. You can reactivate them later.')) return;
+      P.setStatus(orgKeyOf(rec),rec.u,'deactivated'); afterPeopleChange(rec); openProfile(uid); toast(rec.u.n+' deactivated'); };
+    const ra=drawer.querySelector('[data-reactu]'); if(ra) ra.onclick=()=>{ const rec=UREG[uid]; P.setStatus(orgKeyOf(rec),rec.u,'active'); afterPeopleChange(rec); openProfile(uid); toast(rec.u.n+' reactivated'); };
+    const ed=drawer.querySelector('[data-editu]'); if(ed) ed.onclick=()=>editUser(uid);
     const rs=drawer.querySelector('[data-resend]'); if(rs) rs.onclick=()=>toast('Invite resent to '+UREG[uid].u.n);
+  }
+  const orgKeyOf = rec => rec.ctx.kind==='team'?'mojo':(rec.ctx.org&&rec.ctx.org.id);
+  const orgTypeOf = rec => rec.ctx.kind==='team'?'distributor':rec.ctx.kind==='cust'?'customer':'supplier';
+  const canEditRec = rec => !P || P.canEdit(rec.ctx.kind, rec.u);
+  function peersOf(rec){ const k=rec.ctx.kind; return k==='team'?D.team:k==='cust'?rec.ctx.org.teams.flatMap(t=>t.users):rec.ctx.org.contacts; }
+  function lastAdminOk(rec){ if(rec.u.role!=='Admin') return true;
+    const n=peersOf(rec).filter(x=>x.role==='Admin'&&x.status!=='deactivated').length;
+    if(n<=1){ toast('Make someone else an Admin first — every organisation needs one'); return false; } return true; }
+  function afterPeopleChange(rec){ const k=rec.ctx.kind;
+    if(k==='cust'){ refreshCustCards(); } else if(k==='sup'){ refreshSupCards(); }
+    else { const tw=document.getElementById('teamWrap'); if(tw) tw.innerHTML=teamWrapHTML(); } }
+  function editUser(uid){ const rec=UREG[uid]; if(!rec||!P) return; const {u,ctx}=rec;
+    const teams=ctx.kind==='cust'?ctx.org.teams:null;
+    P.userForm({ title:'Edit '+u.n, user:u, kind:ctx.kind, orgType:orgTypeOf(rec), peers:peersOf(rec), orgKey:orgKeyOf(rec),
+      teamNames:teams?teams.map(t=>t.name):[], team:ctx.team,
+      onSave:f=>{ if(f.role&&f.role!=='Admin'&&u.role==='Admin'&&!lastAdminOk(rec)) delete f.role;
+        P.saveUser(orgKeyOf(rec),u,f);
+        if(teams&&f.team&&f.team!==ctx.team){ P.log(orgKeyOf(rec),u,'team',ctx.team+' → '+f.team); const from=teams.find(t=>t.name===ctx.team), to=teams.find(t=>t.name===f.team);
+          if(from&&to){ from.users.splice(from.users.indexOf(u),1); to.users.push(u); ctx.team=f.team; } }
+        afterPeopleChange(rec); openProfile(uid); },
+      onStatus:to=>{ if(to==='deactivated'&&!lastAdminOk(rec)) return; P.setStatus(orgKeyOf(rec),u,to); afterPeopleChange(rec); openProfile(uid); } });
   }
   function removeUser(uid){
     const rec=UREG[uid]; if(!rec) return; const {ctx}=rec;
-    if(ctx.kind==='team'){ const i=D.team.indexOf(rec.u); if(i>=0)D.team.splice(i,1); document.getElementById('teamWrap').innerHTML=teamWrapHTML(); document.querySelector('.tab[data-tab="team"] .ct').textContent=D.team.length; close(); }
+    if(ctx.kind==='team'){ const i=D.team.indexOf(rec.u); if(i>=0)D.team.splice(i,1); {const tw=document.getElementById('teamWrap'); if(tw) tw.innerHTML=teamWrapHTML();} {const tc=document.querySelector('.tab[data-tab="team"] .ct'); if(tc) tc.textContent=D.team.length;} close(); }
     else if(ctx.kind==='cust'){ const t=ctx.org.teams.find(t=>t.name===ctx.team); if(t){ const i=t.users.indexOf(rec.u); if(i>=0)t.users.splice(i,1);} refreshCustCards(); openDrawer(custDrawer(ctx.org)); }
     else { const i=ctx.org.contacts.indexOf(rec.u); if(i>=0)ctx.org.contacts.splice(i,1); refreshSupCards(); openDrawer(supDrawer(ctx.org)); }
     toast(rec.u.n+' removed');
@@ -400,6 +521,7 @@
   document.addEventListener('click', e=>{
     const upin=e.target.closest('[data-upin]'); if(upin){ const parts=upin.dataset.upin.split(':'); const idx=+parts.pop(); const uid=parts.join(':'); const rec=UREG[uid]; if(rec&&rec.u._comments&&rec.u._comments[idx]){ rec.u._comments[idx].pinned=!rec.u._comments[idx].pinned; openProfile(uid); } return; }
     const usend=e.target.closest('[data-ucmtsend]'); if(usend){ const uid=usend.dataset.ucmtsend; const inp=document.querySelector(`.cmt-input[data-ucmtkey="${uid}"]`); const v=inp&&inp.value.trim(); if(!v) return; const rec=UREG[uid]; if(rec){ rec.u._comments=rec.u._comments||[]; rec.u._comments.push({who:'Jess Doyle',role:'Admin',when:'Just now',text:v,pinned:false}); openProfile(uid); toast('Note added'); } return; }
+    const uc=e.target.closest('[data-uchat]'); if(uc){ e.preventDefault(); e.stopPropagation(); if(!uc.classList.contains('off')){ const m=chatMeta(uc.dataset.uchat); if(m) MSChat.chatWith(m); } return; }
     const row=e.target.closest('.urow-link'); if(!row) return;
     if(e.target.closest('a')) return; // let mailto/tel links work
     if(row.dataset.uid) openProfile(row.dataset.uid);
@@ -442,6 +564,7 @@
       <tbody>${s.productList.map((p,i)=>`<tr><td>${esc(p.name)}<small>${esc(p.sku)}</small></td><td>${p.orders}</td><td>${esc(p.value)}</td><td>${p.inStore?'<span class="instore">In store</span>':`<button class="addstore" data-addstore="${s.id}:${i}">+ Add to store</button>`}</td></tr>`).join('')}</tbody></table></div>`;
   }
   function commentsBlock(o,key){
+    if(window.MSNOTES){ const k='org:'+o.id; return `<div class="dwr-sec" data-entkey="${esc(k)}">${MSNOTES.panelHTML(k)}</div>`; }
     o.comments=o.comments||[];
     const pinned=o.comments.filter(c=>c.pinned), rest=o.comments.filter(c=>!c.pinned);
     const row=(c,idx)=>`<div class="cmt ${c.pinned?'pinned':''}"><div class="cmt-h"><span class="cmt-av">${av(c.who)}</span><b>${esc(c.who)}</b><span class="cmt-role">${esc(c.role||'')}</span><span class="cmt-when">${esc(c.when)}</span><button class="cmt-pin" data-pin="${key}:${o.comments.indexOf(c)}" title="${c.pinned?'Unpin':'Pin'}">${c.pinned?'★':'☆'}</button></div><p>${esc(c.text)}</p></div>`;
@@ -457,6 +580,10 @@
     const pin=e.target.closest('[data-pin]'); if(pin){ const parts=pin.dataset.pin.split(':'); const idx=+parts.pop(); const o=orgByKey(parts.join(':')); if(o&&o.comments[idx]){ o.comments[idx].pinned=!o.comments[idx].pinned; reopen(o); } return; }
     const send=e.target.closest('[data-cmtsend]'); if(send){ const key=send.dataset.cmtsend; const inp=document.querySelector(`.cmt-input[data-cmtkey="${key}"]`); const v=inp&&inp.value.trim(); if(!v) return; const o=orgByKey(key); if(o){ o.comments=o.comments||[]; o.comments.push({who:'Jess Doyle',role:'Admin',when:'Just now',text:v,pinned:false}); if(window.MSComments){ const isC=key.split(':')[0]==='cust'; MSComments.add({text:v, ctxType:'org', ctxLabel:o.name, deepLink:'Merchsmith Organisations.html#tab='+(isC?'customers':'suppliers')}); } reopen(o); toast('Comment added'); } return; }
     const ast=e.target.closest('[data-addstore]'); if(ast){ const [sid,i]=ast.dataset.addstore.split(':'); const s=D.suppliers.find(x=>x.id===sid); if(s&&s.productList[+i]){ s.productList[+i].inStore=true; openDrawer(supDrawer(s)); toast(s.productList[+i].name+' added to store'); } return; }
+    const orm=e.target.closest('[data-onbrem]'); if(orm&&window.MSONB){ e.preventDefault(); const c=D.customers.find(x=>x.id===orm.dataset.onbrem); MSONB.remind(c.id,false); openDrawer(custDrawer(c)); toast('Reminder sent to '+c.name); return; }
+    const kam=e.target.closest('[data-kcam]'); if(kam&&window.MSAM){ e.preventDefault(); const c=D.customers.find(x=>x.id===kam.dataset.kcam); MSAM.pick(c.id,()=>openDrawer(custDrawer(c))); return; }
+    const kcu=e.target.closest('[data-kcuser]'); if(kcu){ const c=D.customers.find(x=>(x.teams||[]).some(t=>(t.users||[]).some(u=>(u.email||u.n)===kcu.dataset.kcuser))); const u=c&&c.teams.flatMap(t=>t.users).find(u=>(u.email||u.n)===kcu.dataset.kcuser);
+      const q2={name:u&&u.n,email:u&&u.email,org:c&&c.name}; const go=()=>window.MSUSER&&MSUSER.open(q2); if(window.MSUSER) go(); else { const s=document.createElement('script'); s.src='dist-users.js?v=18'; s.onload=go; document.body.appendChild(s); } return; }
     const ords=e.target.closest('[data-orders]'); if(ords){ e.preventDefault(); toast('Orders list would open here'); return; }
   });
 
@@ -465,6 +592,8 @@
   function supLieuEff(s){ return s.lieu==null ? globalLieu() : s.lieu; }
   function supLieuLabel(s){ return s.lieu==null ? globalLieu()+' (default)' : s.lieu+' (override)'; }
   document.addEventListener('click', e=>{
+    const sst=e.target.closest('.smp-step'); if(sst){ const s=currentSup(); const btn=e.target.closest('button'); if(!s||!btn||!window.MSLead) return; const t=sst.dataset.smpt; MSLead.setSupSampleLead(s.name,t,MSLead.supSampleLead(s.name,t)+(+btn.dataset.d)); openDrawer(supDrawer(s)); toast(s.name+' '+t+' sample lead: '+MSLead.supSampleLead(s.name,t)+' working days'); return; }
+    const ssd=e.target.closest('[data-supsmpdef]'); if(ssd){ const s=currentSup(); if(s&&window.MSLead){ MSLead.setSupSampleLead(s.name,ssd.dataset.smpt,null); openDrawer(supDrawer(s)); toast(s.name+' uses the default '+ssd.dataset.smpt+' sample lead'); } return; }
     const step=e.target.closest('.mini-step'); 
     if(step){ const s=currentSup(); if(!s) return; const btn=e.target.closest('button'); if(!btn) return;
       const cur=supLieuEff(s); s.lieu=Math.max(0, cur + (+btn.dataset.d)); openDrawer(supDrawer(s)); refreshSupCards(); toast(s.name+' days in lieu: '+s.lieu); return; }
@@ -479,6 +608,7 @@
       else { const s=D.suppliers.find(x=>x.id===id); if(s) editSupForm(s); }
       return;
     }
+    const et=e.target.closest('[data-editterms]'); if(et&&window.MSTERMS){ const c=D.customers.find(x=>x.id===et.dataset.editterms); if(c) MSTERMS.edit(c,()=>openDrawer(custDrawer(c))); return; }
     const g=e.target.closest('[data-ghost]'); if(g){ const c=D.customers.find(x=>x.id===g.dataset.ghost); if(c) ghostCustomerFlow(c); }
   });
   function ghostCustomerFlow(c){
@@ -498,35 +628,47 @@
   function editCustForm(c){
     const m=modal(`<div class="fm-head"><h3>Edit customer</h3><button class="dwr-x" data-fx>×</button></div>
       <div class="fm-body">
+        <div class="fm-f"><span>Logo</span><div class="pp-avf"><span class="pp-logo" data-logobox>${c.logo?'<img src="'+c.logo+'" alt="">':esc(c.initials||'')}</span><div><div class="pp-avbtns"><label class="pp-btn ghost sm">Upload logo<input type="file" accept="image/*" data-logofile hidden></label><button type="button" class="pp-btn ghost sm" data-logoclr ${c.logo?'':'hidden'}>Remove</button></div><span class="pp-hint">PNG with a transparent background works best</span></div></div></div>
         ${field('Organisation name','ecN','value="'+esc(c.name)+'"')}
+        ${field('Address','ecA','value="'+esc(c.address||'')+'"')}
         ${field('Domain','ecD','value="'+esc(c.domain)+'"')}
         ${field('Standing discount %','ecDisc','type="number" min="0" max="100" value="'+(parseFloat(c.standingDiscount)||0)+'"')}
         <label class="fm-f"><span>Status</span><select id="ecS"><option value="active"${c.status==='active'?' selected':''}>Active</option><option value="pending"${c.status!=='active'?' selected':''}>Pending invite</option></select></label>
       </div>
       <div class="fm-foot"><button class="btn ghost" data-fx>Cancel</button><button class="btn" id="ecSave">Save changes</button></div>`);
+    let _logo; { const box=m.wrap.querySelector('[data-logobox]'), clr=m.wrap.querySelector('[data-logoclr]');
+      m.wrap.querySelector('[data-logofile]').onchange=async e=>{ try{ _logo=await P.readLogo(e.target.files[0]); box.innerHTML='<img src="'+_logo+'" alt="">'; clr.hidden=false; }catch(err){ toast(err.message); } };
+      clr.onclick=()=>{ _logo=''; box.textContent=c.initials||''; clr.hidden=true; }; }
     m.wrap.querySelector('#ecSave').onclick=()=>{
       const nm=m.wrap.querySelector('#ecN').value.trim(); if(!nm){ m.wrap.querySelector('#ecN').focus(); return; }
-      c.name=nm; c.initials=av(nm); c.domain=m.wrap.querySelector('#ecD').value.trim()||'—';
+      c.name=nm; c.initials=P?P.initials(nm):nm.slice(0,2).toUpperCase(); c.domain=m.wrap.querySelector('#ecD').value.trim()||'—';
       const d=m.wrap.querySelector('#ecDisc').value; c.standingDiscount=(d===''?'0':d)+'%'; c.status=m.wrap.querySelector('#ecS').value;
+      c.address=m.wrap.querySelector('#ecA').value.trim();
+      if(P){ const f={name:c.name,initials:c.initials,domain:c.domain,standingDiscount:c.standingDiscount,status:c.status,address:c.address};
+        if(_logo!==undefined) f.logo=_logo; P.saveOrg(c.id,c,f); }
       refreshCustCards(); openDrawer(custDrawer(c)); m.shut(); toast('Customer updated');
     };
   }
   function editSupForm(s){
     const m=modal(`<div class="fm-head"><h3>Edit supplier</h3><button class="dwr-x" data-fx>×</button></div>
       <div class="fm-body">
+        <div class="fm-f"><span>Logo</span><div class="pp-avf"><span class="pp-logo" data-logobox>${s.logo?'<img src="'+s.logo+'" alt="">':esc(s.initials||'')}</span><div><div class="pp-avbtns"><label class="pp-btn ghost sm">Upload logo<input type="file" accept="image/*" data-logofile hidden></label><button type="button" class="pp-btn ghost sm" data-logoclr ${s.logo?'':'hidden'}>Remove</button></div><span class="pp-hint">PNG with a transparent background works best</span></div></div></div>
         ${field('Supplier name','esN','value="'+esc(s.name)+'"')}
         ${field('Domain','esD','value="'+esc(s.domain)+'"')}
         <div class="fm-f"><span>Supplier type</span><div class="fm-seg sm" id="esK"><button type="button" class="${s.kind==='product'?'on':''}" data-k="product">Product</button><button type="button" class="${s.kind==='branding'?'on':''}" data-k="branding">Branding</button></div></div>
-        ${field('Lead time (working days)','esLead','type="number" min="1" value="'+(parseInt(s.lead)||7)+'"')}
         <label class="fm-f"><span>Status</span><select id="esS"><option value="active"${s.status==='active'?' selected':''}>Active</option><option value="pending"${s.status!=='active'?' selected':''}>Pending invite</option></select></label>
       </div>
       <div class="fm-foot"><button class="btn ghost" data-fx>Cancel</button><button class="btn" id="esSave">Save changes</button></div>`);
+    let _logo; { const box=m.wrap.querySelector('[data-logobox]'), clr=m.wrap.querySelector('[data-logoclr]');
+      m.wrap.querySelector('[data-logofile]').onchange=async e=>{ try{ _logo=await P.readLogo(e.target.files[0]); box.innerHTML='<img src="'+_logo+'" alt="">'; clr.hidden=false; }catch(err){ toast(err.message); } };
+      clr.onclick=()=>{ _logo=''; box.textContent=s.initials||''; clr.hidden=true; }; }
     let kind=s.kind;
     m.wrap.querySelectorAll('#esK button').forEach(b=>b.onclick=()=>{ kind=b.dataset.k; m.wrap.querySelectorAll('#esK button').forEach(x=>x.classList.toggle('on',x===b)); });
     m.wrap.querySelector('#esSave').onclick=()=>{
       const nm=m.wrap.querySelector('#esN').value.trim(); if(!nm){ m.wrap.querySelector('#esN').focus(); return; }
-      s.name=nm; s.initials=av(nm); s.domain=m.wrap.querySelector('#esD').value.trim()||'—'; s.kind=kind;
-      s.lead=(m.wrap.querySelector('#esLead').value||'7')+' working days'; s.status=m.wrap.querySelector('#esS').value;
+      s.name=nm; s.initials=P?P.initials(nm):nm.slice(0,2).toUpperCase(); s.domain=m.wrap.querySelector('#esD').value.trim()||'—'; s.kind=kind;
+      if(P){ const f={name:s.name,initials:s.initials,domain:s.domain,kind:s.kind}; if(_logo!==undefined) f.logo=_logo; P.saveOrg(s.id,s,f); }
+      s.status=m.wrap.querySelector('#esS').value;
       refreshSupCards(); openDrawer(supDrawer(s)); m.shut(); toast('Supplier updated');
     };
   }
@@ -550,6 +692,9 @@
   function domainHit(q,dom){ q=(q||'').toLowerCase().trim(); if(!dom) return false; if(q.includes('@')) q=q.split('@')[1]; return q.length>3 && (q===dom || dom.includes(q) || q.includes(dom)); }
   function matchSuppliers(q){ if(!q || q.trim().length<2) return []; return DISCOVER.map(s=>({s, score:nameScore(q,s.name), dom:domainHit(q,s.domain)})).filter(r=>r.score>=80||r.dom).sort((a,b)=>b.score-a.score); }
 
+  // deep link from Product range → "Connect a supplier"
+  (function(){ if(/[#&?]connect=1/.test(location.hash+location.search))
+    setTimeout(()=>{ try{ openConnect(); }catch(e){} },600); })();
   function openConnect(){
     const m=modal(`<button class="fm-x" data-fx>&times;</button>
       <h3 class="fm-h">Connect a supplier</h3>

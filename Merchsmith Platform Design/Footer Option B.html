@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Footer option B — Compact utility footer</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js?v=10"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#fff;font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.optbadge{position:fixed;top:14px;left:14px;z-index:50;background:var(--ink);color:#fff;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-radius:999px;padding:7px 15px;}
+.stub{max-width:1280px;margin:0 auto;padding:70px 34px 50px;}
+.stub h1{font-family:var(--serif);font-weight:500;font-size:30px;margin:0 0 8px;}
+.stub p{font-size:14px;color:var(--text-soft);max-width:60ch;margin:0;}
+.stubgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px;}
+.stubgrid div{aspect-ratio:1;background:var(--paper);border:1px solid var(--line-soft);border-radius:12px;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--line);letter-spacing:.05em;text-transform:uppercase;}
+
+/* ============ FOOTER — option B: compact utility ============
+   Two tight rows. This is a logged-in tool, so the footer stays out of the way:
+   everything present, nothing shouting. About a third the height of option A. */
+.ft{background:var(--periwinkle-deep);color:#fff;font-family:var(--sans);}
+.ft a{color:#fff;text-decoration:none;}
+.ft .in{max-width:1280px;margin:0 auto;padding:0 34px;}
+
+.ft-r1{display:flex;align-items:flex-start;justify-content:space-between;gap:26px 44px;flex-wrap:wrap;padding:26px 0 20px;}
+.lgroup{display:flex;align-items:baseline;gap:10px 18px;flex-wrap:wrap;}
+.lgroup h4{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.5;margin:0;white-space:nowrap;}
+.lgroup a{font-size:13px;opacity:.85;}
+.lgroup a:hover{opacity:1;text-decoration:underline;}
+.ft-right{display:flex;align-items:center;gap:14px;margin-left:auto;}
+.talklink{display:inline-flex;align-items:center;gap:7px;font-family:var(--serif);font-weight:500;font-size:18px;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:1px;}
+.talklink:hover{border-color:#fff;}
+.soc{display:flex;gap:7px;}
+.soc a{width:29px;height:29px;border-radius:50%;background:rgba(255,255,255,.13);display:grid;place-items:center;transition:background .15s;}
+.soc a:hover{background:rgba(255,255,255,.26);}
+.soc svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.75;}
+
+.ft-r2{border-top:1px solid rgba(255,255,255,.13);padding:14px 0 16px;display:flex;align-items:center;justify-content:space-between;gap:14px 26px;flex-wrap:wrap;}
+.accrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.acc{height:26px;min-width:56px;padding:0 9px;border-radius:5px;background:rgba(255,255,255,.1);display:grid;place-items:center;text-align:center;font-size:8px;font-weight:800;letter-spacing:.04em;line-height:1.15;text-transform:uppercase;opacity:.8;}
+.pay{display:flex;align-items:center;gap:7px;}
+.pay .stripe{font-size:11px;font-weight:800;opacity:.68;margin-right:2px;}
+.card{height:19px;padding:0 6px;border-radius:3px;background:#fff;color:#1a2340;font-size:7.5px;font-weight:800;display:grid;place-items:center;}
+.exitlink{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;opacity:.82;}
+.exitlink:hover{opacity:1;text-decoration:underline;}
+.exitlink svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.9;}
+.ft-meta{display:flex;align-items:center;gap:7px 16px;flex-wrap:wrap;font-size:11.5px;opacity:.55;}
+.ft-meta a:hover{opacity:1;text-decoration:underline;}
+</style>
+</head>
+<body>
+<span class="optbadge">Option B · Compact utility footer</span>
+
+<div class="stub">
+  <h1>Best sellers</h1>
+  <p>Page content sits above — the footer is what we're looking at. Scroll down.</p>
+  <div class="stubgrid"><div>product</div><div>product</div><div>product</div><div>product</div></div>
+</div>
+
+<footer class="ft">
+  <div class="in">
+    <div class="ft-r1">
+      <div class="lgroup">
+        <h4>Company</h4>
+        <a href="#">About us</a>
+        <a href="#">Environmental footprint</a>
+        <a href="#">Value chain</a>
+        <a href="#">People &amp; culture</a>
+      </div>
+      <div class="lgroup">
+        <h4>Let us help</h4>
+        <a href="#">FAQ</a>
+        <a href="#">Terms &amp; conditions</a>
+        <a href="#">Privacy</a>
+        <a href="#">Returns</a>
+        <a href="#">Contact us</a>
+      </div>
+      <div class="ft-right">
+        <a class="talklink" href="#">Let's Talk.</a>
+        <div class="soc">
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h2V5h-2a3 3 0 0 0-3 3v2H9v3h2v6h3v-6h2.5l.5-3H14V8.5a.5.5 0 0 1 .5-.5z"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7M7 7v0M11 17v-4a2 2 0 0 1 4 0v4"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="3.5"/><path d="M11 10l4 2-4 2z" fill="currentColor" stroke="none"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ft-r2">
+      <div class="accrow">
+        <span class="acc">Certified<br>B Corp</span>
+        <span class="acc">Ecologi</span>
+        <span class="acc">Climate<br>positive</span>
+        <span class="acc">bpma</span>
+        <span class="acc">Living<br>Wage</span>
+      </div>
+      <div class="pay">
+        <span class="stripe">Stripe</span>
+        <span class="card">VISA</span><span class="card">MC</span><span class="card">MAESTRO</span><span class="card">AMEX</span>
+      </div>
+      <a class="exitlink" href="#">mojopromotions.com
+        <svg viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8M18 14v5H5V6h5"/></svg>
+      </a>
+      <div class="ft-meta">
+        <span>© 2026 Mojo Promotions</span>
+        <a href="#">Cookies</a>
+        <a href="#">Accessibility</a>
+        <span>Powered by Merchsmith</span>
+      </div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

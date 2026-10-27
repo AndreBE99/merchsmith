@@ -1,0 +1,730 @@
+[      76ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[     115ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[     222ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[     223ms] [LOG] [Fast Refresh] done in 101ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[    2995ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/91105616-360c-4449-bd81-ce0742755ee3/line-items:0
+[    3084ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e/line-items:0
+[    3482ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/line-items:0
+[    4822ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/91105616-360c-4449-bd81-ce0742755ee3/line-items:0
+[    4973ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e/line-items:0
+[    5330ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/line-items:0
+[   17466ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[   17474ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[   29138ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[   29154ms] [LOG] [Fast Refresh] done in 118ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[   32185ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/project-line-items?project_ids=361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e%2C91105616-360c-4449-bd81-ce0742755ee3%2Ca407ad51-b9ab-4f89-a5a8-317a1b5593db%2C36df9605-41b9-4701-b368-0a158a5251f4%2C1e83e29b-cb3d-4ac1-a0cb-a2eda4b0aebf%2C9e27255d-876f-4d99-979c-64d8c7100496%2C49abe67a-fa70-41fc-ab6b-7080219b8f80%2C6354308d-bf66-4e6b-aefb-402eb8e67465%2C2e8d050f-12e7-4575-8ae5-57c6ea94aebb&include_archived=true:0
+[   33894ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/project-line-items?project_ids=361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e%2C91105616-360c-4449-bd81-ce0742755ee3%2Ca407ad51-b9ab-4f89-a5a8-317a1b5593db%2C36df9605-41b9-4701-b368-0a158a5251f4%2C1e83e29b-cb3d-4ac1-a0cb-a2eda4b0aebf%2C9e27255d-876f-4d99-979c-64d8c7100496%2C49abe67a-fa70-41fc-ab6b-7080219b8f80%2C6354308d-bf66-4e6b-aefb-402eb8e67465%2C2e8d050f-12e7-4575-8ae5-57c6ea94aebb&include_archived=true:0
+[  105784ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  105816ms] [LOG] [Fast Refresh] done in 133ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  106893ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e/line-items?include_archived=true:0
+[  108741ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e/line-items?include_archived=true:0
+[  119004ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/project-line-items?project_ids=361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e%2C91105616-360c-4449-bd81-ce0742755ee3%2Ca407ad51-b9ab-4f89-a5a8-317a1b5593db%2C36df9605-41b9-4701-b368-0a158a5251f4%2C1e83e29b-cb3d-4ac1-a0cb-a2eda4b0aebf%2C9e27255d-876f-4d99-979c-64d8c7100496%2C49abe67a-fa70-41fc-ab6b-7080219b8f80%2C6354308d-bf66-4e6b-aefb-402eb8e67465%2C2e8d050f-12e7-4575-8ae5-57c6ea94aebb&include_archived=true:0
+[  121021ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/project-line-items?project_ids=361d17ae-2cd8-4de8-9d3d-29dc85f4eb3e%2C91105616-360c-4449-bd81-ce0742755ee3%2Ca407ad51-b9ab-4f89-a5a8-317a1b5593db%2C36df9605-41b9-4701-b368-0a158a5251f4%2C1e83e29b-cb3d-4ac1-a0cb-a2eda4b0aebf%2C9e27255d-876f-4d99-979c-64d8c7100496%2C49abe67a-fa70-41fc-ab6b-7080219b8f80%2C6354308d-bf66-4e6b-aefb-402eb8e67465%2C2e8d050f-12e7-4575-8ae5-57c6ea94aebb&include_archived=true:0
+[  233579ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/line-items?include_archived=true:0
+[  235489ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/line-items?include_archived=true:0
+[  318688ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  318693ms] [LOG] [Fast Refresh] done in 107ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  786525ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  786581ms] [LOG] [Fast Refresh] done in 157ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  809188ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[  809247ms] [LOG] [Fast Refresh] done in 160ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1292973ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1293023ms] [LOG] [Fast Refresh] done in 153ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1307751ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1307787ms] [LOG] [Fast Refresh] done in 108ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1309161ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/line-items?include_archived=true:0
+[ 1311012ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/line-items?include_archived=true:0
+[ 1319130ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1319154ms] [LOG] [Fast Refresh] done in 120ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1323730ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1323747ms] [LOG] [Fast Refresh] done in 89ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1336664ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1336675ms] [LOG] [Fast Refresh] done in 114ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1345728ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1345742ms] [LOG] [Fast Refresh] done in 69ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1356473ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1356481ms] [LOG] [Fast Refresh] done in 77ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1372324ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1372331ms] [LOG] [Fast Refresh] done in 64ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1377911ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1377922ms] [LOG] [Fast Refresh] done in 68ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1395945ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1396004ms] [LOG] [Fast Refresh] done in 143ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[ 1965169ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[16476011ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me/environment/settings:0
+[16476024ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/delivery-confirmations:0
+[16476025ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me/permissions:0
+[16476044ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/brief:0
+[16476045ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me:0
+[16476052ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db:0
+[16476071ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/organisations/95fa776b-ccbb-4b48-9ae9-8c06b002d970:0
+[16476089ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/projects/a407ad51-b9ab-4f89-a5a8-317a1b5593db/line-items?include_archived=true:0
+[17615314ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me:0
+[17615321ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me/permissions:0
+[18379829ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me:0
+[18380049ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3001/api/me/permissions:0
+[18383528ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[18384538ms] [LOG] [Fast Refresh] done in 1158ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[19229571ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19230574ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19231576ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19232579ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19233583ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19238587ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19243595ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19248616ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19253646ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19258711ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19263804ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[19268947ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=yjs08vFUbSBvGkfQf-KEA' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_client_08wy1pj._.js:13422
+[22065270ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22065303ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22143173ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22143173ms] [LOG] [Fast Refresh] done in 103ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22157395ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22158371ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22158372ms] [LOG] [Fast Refresh] done in 1074ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22158987ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22159003ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22159171ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22159209ms] [LOG] [Fast Refresh] done in 138ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22171706ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22171729ms] [LOG] [Fast Refresh] done in 55ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22274139ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22274480ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22274482ms] [LOG] [Fast Refresh] done in 442ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22274861ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22275070ms] [LOG] [Fast Refresh] done in 310ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22275221ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22275237ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22288825ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22289220ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22289220ms] [LOG] [Fast Refresh] done in 494ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22289615ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22289738ms] [LOG] [Fast Refresh] done in 224ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22289859ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22289877ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22364443ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22364473ms] [LOG] [Fast Refresh] done in 131ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22409569ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22409920ms] [LOG] [Fast Refresh] done in 272ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22410107ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22410481ms] [LOG] [Fast Refresh] done in 474ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22410778ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22411698ms] [LOG] [Fast Refresh] done in 1021ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22411809ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22413427ms] [LOG] [Fast Refresh] done in 1718ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22413664ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22413686ms] [LOG] [Fast Refresh] done in 123ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22413793ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22414478ms] [LOG] [Fast Refresh] done in 785ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22417687ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22417707ms] [LOG] [Fast Refresh] done in 40ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22474847ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22475423ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:3318
+[22475549ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:3318
+[22475550ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22475635ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:3318
+[22475637ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/?_rsc=gfxzpiekG9oOh5nb:0
+[22475655ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22475694ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/?_rsc=gfxzpiekG9oOh5nb:0
+[22475723ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:3318
+[22475744ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/:0
+[22475903ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/162a_react-dom_1hsf_h5._.js:15305
+[22475933ms] Error: ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./src/app/(protected)/store/all/page.tsx:11:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at Object.getCompilationErrors (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1186:59)
+    at DevBundlerService.getCompilationError (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/dev/next-dev-server.js:720:42)
+    at DevServer.findPageComponents (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/dev/next-dev-server.js:690:43)
+    at async DevServer.renderErrorToResponseImpl (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/base-server.js:1753:26)
+[22475952ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22475972ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22476041ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22476074ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22476159ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22476204ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22492434ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22492464ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22516975ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22517324ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22517325ms] [ERROR] ./src/app/(protected)/store/page.tsx:12:1
+Module not found: Can't resolve './components/StoreDepartmentListing'
+  10 | ...me } from './components/StoreHome';
+  11 | ...ctionView } from './components/StoreSectionV...
+> 12 | ...partmentListing } from './components/StoreDe...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | ...eadcrumbNav } from './components/StoreBreadc...
+  14 | ...
+  15 | ...artment(sections: StoreSection[], department...
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22517356ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/:0
+[22517391ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/162a_react-dom_1hsf_h5._.js:15305
+[22517400ms] Error: ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./src/app/(protected)/store/all/page.tsx:11:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at Object.getCompilationErrors (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1186:59)
+    at DevBundlerService.getCompilationError (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/dev/next-dev-server.js:720:42)
+    at DevServer.findPageComponents (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/dev/next-dev-server.js:690:43)
+    at async DevServer.renderErrorToResponseImpl (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/base-server.js:1753:26)
+[22517404ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22517420ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22517420ms] [ERROR] ./src/app/(protected)/store/page.tsx:12:1
+Module not found: Can't resolve './components/StoreDepartmentListing'
+  10 | ...me } from './components/StoreHome';
+  11 | ...ctionView } from './components/StoreSectionV...
+> 12 | ...partmentListing } from './components/StoreDe...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | ...eadcrumbNav } from './components/StoreBreadc...
+  14 | ...
+  15 | ...artment(sections: StoreSection[], department...
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22517460ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22517460ms] [ERROR] ./src/app/(protected)/store/page.tsx:12:1
+Module not found: Can't resolve './components/StoreDepartmentListing'
+  10 | ...me } from './components/StoreHome';
+  11 | ...ctionView } from './components/StoreSectionV...
+> 12 | ...partmentListing } from './components/StoreDe...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | ...eadcrumbNav } from './components/StoreBreadc...
+  14 | ...
+  15 | ...artment(sections: StoreSection[], department...
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22517514ms] [ERROR] ./src/app/(protected)/store/all/page.tsx:11:1
+Module not found: Can't resolve '../components/StoreAllProductsListing'
+   9 | ...rumbBand } from '../../BreadcrumbBandProvider';
+  10 | ...dcrumbNav } from '../components/StoreBreadcr...
+> 11 | ...roductsListing } from '../components/StoreAl...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | ...
+  13 | ...ction StoreAllProductsPage() {
+  14 | ...seRouter();
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22517514ms] [ERROR] ./src/app/(protected)/store/page.tsx:12:1
+Module not found: Can't resolve './components/StoreDepartmentListing'
+  10 | ...me } from './components/StoreHome';
+  11 | ...ctionView } from './components/StoreSectionV...
+> 12 | ...partmentListing } from './components/StoreDe...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | ...eadcrumbNav } from './components/StoreBreadc...
+  14 | ...
+  15 | ...artment(sections: StoreSection[], department...
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22517562ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22528644ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22528968ms] [LOG] [Fast Refresh] done in 333ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22529082ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22529180ms] [LOG] [Fast Refresh] done in 199ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22529645ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22529664ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22554105ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22554135ms] [LOG] [Fast Refresh] done in 44ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22593377ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22593396ms] [LOG] [Fast Refresh] done in 86ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22784710ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22785068ms] [LOG] [Fast Refresh] done in 317ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22785206ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22785242ms] [LOG] [Fast Refresh] done in 136ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22785626ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22785648ms] [LOG] [Fast Refresh] done in 123ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22785749ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22785778ms] [LOG] [Fast Refresh] done in 129ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22795212ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22795241ms] [LOG] [Fast Refresh] done in 130ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22845224ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22845343ms] [ERROR] ./src/app/(protected)/store/components/StoreListing.tsx:10:8
+the name `CloseIcon` is defined multiple times
+   8 | import ViewListIcon from '@mui/icons-material/V...
+   9 | import TuneIcon from '@mui/icons-material/Tune';
+> 10 | import CloseIcon from '@mui/icons-material/Close';
+     |        ^^^^^^^^^
+  11 | import { useStoreProducts, useStoreColours } fr...
+  12 | import type { StoreProduct } from '@/features/s...
+  13 | import type { StoreSection, StoreDepartment } f...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:3318
+[22845519ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/?_rsc=gfxzpiekG9oOh5nb:0
+[22845557ms] [ERROR] ./src/app/(protected)/store/components/StoreListing.tsx:10:8
+the name `CloseIcon` is defined multiple times
+   8 | import ViewListIcon from '@mui/icons-material/V...
+   9 | import TuneIcon from '@mui/icons-material/Tune';
+> 10 | import CloseIcon from '@mui/icons-material/Close';
+     |        ^^^^^^^^^
+  11 | import { useStoreProducts, useStoreColours } fr...
+  12 | import type { StoreProduct } from '@/features/s...
+  13 | import type { StoreSection, StoreDepartment } f...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:3318
+[22845611ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/:0
+[22845693ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/162a_react-dom_1hsf_h5._.js:15305
+[22845726ms] Error: ./src/app/(protected)/store/components/StoreListing.tsx:10:8
+the name `CloseIcon` is defined multiple times
+   8 | import ViewListIcon from '@mui/icons-material/V...
+   9 | import TuneIcon from '@mui/icons-material/Tune';
+> 10 | import CloseIcon from '@mui/icons-material/Close';
+     |        ^^^^^^^^^
+  11 | import { useStoreProducts, useStoreColours } fr...
+  12 | import type { StoreProduct } from '@/features/s...
+  13 | import type { StoreSection, StoreDepartment } f...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+
+    at <unknown> (Error: ./src/app/(protected)/store/components/StoreListing.tsx:10:8)
+    at Object.getCompilationErrors (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1186:59)
+    at DevBundlerService.getCompilationError (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/dev/next-dev-server.js:720:42)
+    at DevServer.findPageComponents (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/dev/next-dev-server.js:690:43)
+    at async DevServer.renderErrorToResponseImpl (file:///Users/AndreBE99/Codes/Merchsmith/merchsmith-frontend/node_modules/.pnpm/next@16.2.7_@babel+core@7.29.7_@opentelemetry+api@1.9.1_@playwright+test@1.60.0_react-d_d3c95b1f79898e5e974dd00710a0b176/node_modules/next/dist/server/base-server.js:1753:26)
+[22845739ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22845757ms] [ERROR] ./src/app/(protected)/store/components/StoreListing.tsx:10:8
+the name `CloseIcon` is defined multiple times
+   8 | import ViewListIcon from '@mui/icons-material/V...
+   9 | import TuneIcon from '@mui/icons-material/Tune';
+> 10 | import CloseIcon from '@mui/icons-material/Close';
+     |        ^^^^^^^^^
+  11 | import { useStoreProducts, useStoreColours } fr...
+  12 | import type { StoreProduct } from '@/features/s...
+  13 | import type { StoreSection, StoreDepartment } f...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22845758ms] [ERROR] ./src/app/(protected)/store/components/StoreListing.tsx:10:8
+the name `CloseIcon` is defined multiple times
+   8 | import ViewListIcon from '@mui/icons-material/V...
+   9 | import TuneIcon from '@mui/icons-material/Tune';
+> 10 | import CloseIcon from '@mui/icons-material/Close';
+     |        ^^^^^^^^^
+  11 | import { useStoreProducts, useStoreColours } fr...
+  12 | import type { StoreProduct } from '@/features/s...
+  13 | import type { StoreSection, StoreDepartment } f...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component Browser]
+    ./src/app/(protected)/store/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component SSR]
+    ./src/app/(protected)/store/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22845811ms] [ERROR] ./src/app/(protected)/store/components/StoreListing.tsx:10:8
+the name `CloseIcon` is defined multiple times
+   8 | import ViewListIcon from '@mui/icons-material/V...
+   9 | import TuneIcon from '@mui/icons-material/Tune';
+> 10 | import CloseIcon from '@mui/icons-material/Close';
+     |        ^^^^^^^^^
+  11 | import { useStoreProducts, useStoreColours } fr...
+  12 | import type { StoreProduct } from '@/features/s...
+  13 | import type { StoreSection, StoreDepartment } f...
+
+Ecmascript file had an error
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Client Component Browser]
+    ./src/app/(protected)/store/all/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(protected)/store/components/StoreListing.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Client Component SSR]
+    ./src/app/(protected)/store/all/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1945
+[22853477ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22853544ms] [LOG] [Fast Refresh] done in 51ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22853659ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22853659ms] [LOG] [Fast Refresh] done in 102ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_1539k48._.js:1226
+[22854151ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22854168ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22863986ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22864005ms] [LOG] [Fast Refresh] done in 49ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22945181ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22945208ms] [LOG] [Fast Refresh] done in 78ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22977528ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22977550ms] [LOG] [Fast Refresh] done in 45ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22988480ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22988499ms] [LOG] [Fast Refresh] done in 64ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22997869ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[22998060ms] [LOG] [Fast Refresh] done in 86ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[23009319ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[23009337ms] [LOG] [Fast Refresh] done in 50ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[23034956ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[23034972ms] [LOG] [Fast Refresh] done in 62ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[23151383ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[23151397ms] [LOG] [Fast Refresh] done in 84ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[23160147ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477
+[23160171ms] [LOG] [Fast Refresh] done in 49ms @ http://localhost:3000/_next/static/chunks/0nfi_next_dist_17bfwp1._.js:2477

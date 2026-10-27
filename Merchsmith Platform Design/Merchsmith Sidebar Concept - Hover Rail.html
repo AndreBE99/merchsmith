@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sidebar concept — hover rail</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script src="theme.js?v=10"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper,#F4F5F8);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+
+/* header — matched to the store */
+.header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:60;}
+.brand{display:flex;align-items:center;gap:14px;}
+.mojo{font-family:"Fredoka",var(--sans);font-weight:600;font-size:28px;line-height:1;color:var(--flare);}
+.headtools{display:flex;align-items:center;gap:14px;}
+.headtools .it{position:relative;color:var(--ink-2);cursor:pointer;}
+.headtools .icn{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.headtools .badge{position:absolute;top:-6px;right:-7px;background:var(--flare);color:#fff;font-size:9.5px;font-weight:800;border-radius:999px;min-width:15px;height:15px;display:grid;place-items:center;padding:0 3px;}
+.account .av{width:30px;height:30px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px;}
+.account{background:none;border:0;padding:0;cursor:pointer;}
+
+/* ===== the concept: a permanent icon rail with hover flyouts =====
+   The rail never expands, so the content area never shifts. Every section —
+   including single-destination ones — answers on hover with a panel, so the
+   interaction is predictable rather than "some icons open, some just go". */
+.layout{display:flex;align-items:stretch;min-height:calc(100vh - 57px);}
+.rail{flex:none;width:68px;background:#fff;border-right:1px solid var(--line-soft);
+  position:sticky;top:0;height:calc(100vh - 57px);display:flex;flex-direction:column;
+  padding:14px 0 12px;z-index:50;}
+.rail-nav{display:flex;flex-direction:column;gap:4px;padding:0 12px;}
+.rbtn{position:relative;width:44px;height:44px;border:0;background:none;border-radius:12px;cursor:pointer;
+  display:grid;place-items:center;color:var(--ink-3);transition:background .14s,color .14s;}
+.rbtn .sbi{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.rbtn:hover,.rbtn.hot{background:var(--paper);color:var(--periwinkle-deep);}
+.rbtn.active{color:var(--periwinkle-deep);background:var(--tint-peri,#eceefb);}
+/* active marker on the rail edge, so the current section is legible with no labels */
+.rbtn.active::before{content:"";position:absolute;left:-12px;top:11px;bottom:11px;width:3px;border-radius:0 3px 3px 0;background:var(--periwinkle-deep);}
+.rbtn .dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--flare);border:1.5px solid #fff;}
+.rail-foot{margin-top:auto;padding:12px 12px 0;border-top:1px solid var(--line-soft);display:flex;justify-content:center;}
+.rail-foot img{height:20px;width:auto;opacity:.75;}
+
+/* flyout */
+.fly{position:fixed;left:68px;z-index:55;min-width:228px;background:#fff;border:1px solid var(--line-soft);
+  border-radius:14px;box-shadow:0 18px 46px rgba(20,22,45,.17);padding:12px;
+  opacity:0;transform:translateX(-6px);pointer-events:none;transition:opacity .15s,transform .15s;}
+.fly.on{opacity:1;transform:none;pointer-events:auto;}
+/* invisible bridge across the gap, so a diagonal mouse path does not dismiss it */
+.fly::before{content:"";position:absolute;left:-14px;top:0;width:14px;height:100%;}
+.fly h4{font-family:var(--sans);font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin:2px 0 8px;padding:0 10px;}
+.fly a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 10px;border-radius:9px;
+  font-size:14px;font-weight:600;color:var(--ink-2);text-decoration:none;white-space:nowrap;}
+.fly a:hover{background:var(--paper);color:var(--periwinkle-deep);}
+.fly a.active{background:var(--paper);color:var(--periwinkle-deep);font-weight:700;}
+.fly a .cnt{font-size:11px;font-weight:800;color:var(--muted);}
+.fly a.active .cnt{color:var(--periwinkle-deep);}
+.fly .sep{height:1px;background:var(--line-soft);margin:7px 10px;}
+.fly .go{font-size:12px;font-weight:700;color:var(--periwinkle-deep);padding:7px 10px 3px;display:block;text-decoration:none;}
+.fly .go:hover{text-decoration:underline;}
+
+/* demo content */
+.main{flex:1;min-width:0;padding:34px 40px 70px;}
+.wrap{width:100%;max-width:none;}
+.kick{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--periwinkle-deep);margin-bottom:10px;}
+h1{font-family:var(--serif);font-weight:500;font-size:38px;letter-spacing:-.015em;margin:0 0 12px;}
+.lede{font-size:16px;line-height:1.6;color:var(--ink-2);margin:0 0 30px;max-width:66ch;}
+h2{font-family:var(--serif);font-weight:500;font-size:22px;margin:34px 0 10px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:14px;padding:18px 20px;}
+.card h3{font-size:14.5px;font-weight:800;margin:0 0 7px;}
+.card p{font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:0;}
+.note{background:#fff;border:1px solid var(--line-soft);border-left:3px solid var(--periwinkle);border-radius:12px;
+  padding:16px 20px;font-size:13.5px;line-height:1.65;color:var(--ink-2);margin-top:14px;}
+.note b{color:var(--ink);}
+ul.clean{margin:8px 0 0;padding-left:20px;}
+ul.clean li{font-size:13.5px;line-height:1.6;color:var(--ink-2);margin-bottom:8px;}
+ul.clean li b{color:var(--ink);}
+.try{display:inline-flex;align-items:center;gap:9px;background:var(--periwinkle-deep);color:#fff;font-size:13.5px;
+  font-weight:700;border-radius:999px;padding:10px 18px;text-decoration:none;margin-top:6px;}
+.try svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="s-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5zM9 7a3 3 0 0 1 6 0"/></symbol>
+  <symbol id="s-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3"/></symbol>
+</defs></svg>
+
+<header class="header">
+  <div class="brand" data-identity-lockup></div>
+  <div class="headtools">
+    <a class="it" href="Merchsmith Basket.html" title="Basket"><svg class="icn"><use href="#s-bag"/></svg><span class="badge">3</span></a>
+    <span class="it" title="Search"><svg class="icn"><use href="#s-search"/></svg></span>
+    <button class="account it" title="Account"><span class="av">JD</span></button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="rail" id="rail">
+    <nav class="rail-nav" id="railNav"></nav>
+    <div class="rail-foot"><img src="assets/merchsmith-wordmark.svg" alt="Merchsmith" onerror="this.remove()"></div>
+  </aside>
+
+  <main class="main">
+    <div class="wrap">
+      <div class="kick">Navigation concept</div>
+      <h1>The hover rail</h1>
+      <p class="lede"><b>Now live across the platform.</b> The rail stays narrow permanently and every section answers on hover with a panel of its destinations. This page is kept as the rationale for the change; the rail on the left is the shipped one.</p>
+
+      <h2>Why it might be better</h2>
+      <div class="cards">
+        <div class="card"><h3>The page never moves</h3><p>Nothing expands in place, so the content area keeps a fixed width. Wide tables — the master projects view especially — stop reflowing every time someone opens the menu.</p></div>
+        <div class="card"><h3>Two levels, one gesture</h3><p>Today a collapsed icon has to be clicked to expand, then clicked again to reach a sub-page. Here the whole section is visible after one hover, so any destination is a single click.</p></div>
+        <div class="card"><h3>Always the same</h3><p>Every icon opens a panel, including single-destination ones. Nothing is hidden behind "which icons expand and which just navigate".</p></div>
+      </div>
+
+      <h2>What it gives up</h2>
+      <div class="note">
+        <b>Labels are gone at rest.</b> Icons alone carry the navigation, which is fine for daily users and harder for new ones — the panel header names the section, but only once you are already hovering. <b>Hover does not exist on touch</b>, so tablets need the tap-to-open fallback (built in here). And a panel that appears without being asked for can feel twitchy, so the open is delayed slightly and a hidden bridge spans the gap, letting the pointer cut the corner without the panel vanishing.
+      </div>
+
+      <h2>Details worth noticing</h2>
+      <ul class="clean">
+        <li><b>The active section</b> keeps a tinted icon and a marker on the rail edge, so the current location is readable with no labels.</li>
+        <li><b>Counts sit in the panel</b> — open projects, unread chats — rather than needing a second badge system.</li>
+        <li><b>Keyboard works</b>: tab to an icon and the panel opens on focus; Escape closes it.</li>
+        <li><b>Click the icon itself</b> to go straight to the section's main page without choosing from the panel.</li>
+      </ul>
+
+      <a class="try" href="Merchsmith Distributor Projects.html">See the current sidebar for comparison
+        <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </main>
+</div>
+
+<div class="fly" id="fly" role="menu"></div>
+
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script src="chrome.js?v=2"></script>
+<script>
+(function(){
+  const I={
+    dash:'<path d="M4 20h16M7 20v-6M12 20V9M17 20v-10"/>',
+    store:'<path d="M4 9.5 5.5 5h13L20 9.5M4 9.5h16M4 9.5v10.5h16V9.5M4 9.5a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0M9 20v-5h4v5"/>',
+    merch:'<path d="M12 3 20 7.5v9L12 21l-8-4.5v-9zM4 7.5 12 12l8-4.5M12 12v9"/>',
+    org:'<path d="M4 21V6l6-2.5V21M10 21V8.5L20 6v15M4 21h17M8 8H6m4 0H8m-2 3.5H6m4 0H8M6 15h2m6-4.5h2m-2 4h2"/>',
+    people:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 6a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/>',
+    chat:'<path d="M21 11.5a8 8 0 0 1-11.8 7L4 20l1.5-5.2A8 8 0 1 1 21 11.5z"/>',
+    doc:'<path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13h6M9 16.5h6"/>',
+    gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.6M12 18.8v2.6M21.4 12h-2.6M5.2 12H2.6M18.6 5.4l-1.8 1.8M7.2 16.8l-1.8 1.8M18.6 18.6l-1.8-1.8M7.2 7.2 5.4 5.4"/>'
+  };
+  // every section carries a panel, even single-destination ones, so the rule never varies
+  const NAV=[
+    {k:'dash',  ic:I.dash,  t:'Dashboard',     go:'Merchsmith Home.html',
+     links:[['Overview','Merchsmith Home.html'],['Your activity','Merchsmith Home.html#activity']]},
+    {k:'store', ic:I.store, t:'Store',         go:'Merchsmith Store.html',
+     links:[['Browse store','Merchsmith Store.html'],['Store range','Merchsmith Distributor Settings.html#tab=storerange'],['Store settings','Merchsmith Distributor Settings.html#tab=storehome']]},
+    {k:'proj',  ic:I.merch, t:'Projects',      go:'Merchsmith Distributor Projects.html', dot:true,
+     links:[['All customer projects','Merchsmith Distributor Projects.html','24'],['Autumn Giveaways','Merchsmith Project - Autumn Giveaways.html'],['Gallery view','Merchsmith Gallery.html'],['Create a project','Merchsmith Create Project.html']]},
+    {k:'orgs',  ic:I.org,   t:'Organisations', go:'Merchsmith Organisations.html',
+     links:[['Overview','Merchsmith Organisations.html'],['Customers','Merchsmith Organisations.html#tab=customers','18'],['Suppliers','Merchsmith Organisations.html#tab=suppliers','7']]},
+    {k:'team',  ic:I.people,t:'Team',          go:'Merchsmith Team.html',
+     links:[['Your team','Merchsmith Team.html'],['Roles & permissions','Merchsmith Team.html#roles']]},
+    {k:'chat',  ic:I.chat,  t:'Chats',         go:'Merchsmith Chats.html', dot:true,
+     links:[['All chats','Merchsmith Chats.html','3'],['Unread','Merchsmith Chats.html#unread','3']]},
+    {k:'fin',   ic:I.doc,   t:'Finance',       go:'#',
+     links:[['Invoices','#finance=invoices'],['Credit limit','#finance=credit']]},
+    {k:'set',   ic:I.gear,  t:'Settings',      go:'Merchsmith Distributor Settings.html',
+     links:[['General','Merchsmith Distributor Settings.html'],['Branding','Merchsmith Distributor Settings.html#tab=branding'],['Footer','Merchsmith Distributor Settings.html#tab=footer'],['Pages','Merchsmith Distributor Settings.html#tab=pages']]}
+  ];
+  const ACTIVE='proj';   // this concept page stands in for the projects area
+  const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const nav=document.getElementById('railNav'), fly=document.getElementById('fly');
+
+  NAV.forEach(s=>{
+    const b=document.createElement('a');
+    b.className='rbtn'+(s.k===ACTIVE?' active':''); b.href=s.go; b.dataset.k=s.k;
+    b.setAttribute('aria-label',s.t);
+    b.innerHTML=`<svg class="sbi" viewBox="0 0 24 24">${s.ic}</svg>${s.dot?'<span class="dot"></span>':''}`;
+    nav.appendChild(b);
+  });
+
+  let openK=null, tOpen=null, tShut=null;
+  function panel(s,btn){
+    fly.innerHTML=`<h4>${esc(s.t)}</h4>`+s.links.map(([l,h,c])=>
+      `<a href="${esc(h)}" role="menuitem">${esc(l)}${c?`<span class="cnt">${esc(c)}</span>`:''}</a>`).join('')
+      +(s.go&&s.go!=='#'?`<div class="sep"></div><a class="go" href="${esc(s.go)}">Go to ${esc(s.t)} →</a>`:'');
+    const r=btn.getBoundingClientRect();
+    fly.style.top='0px'; fly.classList.add('on');            // measure at full height
+    const h=fly.getBoundingClientRect().height;
+    fly.style.top=Math.round(Math.max(66,Math.min(r.top-6,window.innerHeight-h-14)))+'px';
+    openK=s.k;
+    nav.querySelectorAll('.rbtn').forEach(x=>x.classList.toggle('hot',x.dataset.k===s.k));
+  }
+  function show(k,btn){ clearTimeout(tShut); const s=NAV.find(x=>x.k===k); if(!s) return;
+    if(openK===k){ fly.classList.add('on'); return; }
+    clearTimeout(tOpen); tOpen=setTimeout(()=>panel(s,btn), openK?40:150); }   // slower first open, instant between
+  function hide(){ clearTimeout(tOpen); tShut=setTimeout(()=>{ fly.classList.remove('on'); openK=null;
+    nav.querySelectorAll('.rbtn').forEach(x=>x.classList.remove('hot')); }, 180); }
+
+  nav.addEventListener('mouseover',e=>{ const b=e.target.closest('.rbtn'); if(b) show(b.dataset.k,b); });
+  nav.addEventListener('mouseleave',hide);
+  fly.addEventListener('mouseenter',()=>clearTimeout(tShut));
+  fly.addEventListener('mouseleave',hide);
+  nav.addEventListener('focusin',e=>{ const b=e.target.closest('.rbtn'); if(b){ clearTimeout(tOpen); panel(NAV.find(x=>x.k===b.dataset.k),b); } });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ clearTimeout(tOpen); fly.classList.remove('on'); openK=null; } });
+
+  // touch: no hover, so the first tap opens the panel and the link inside does the navigating
+  if(matchMedia('(hover:none)').matches){
+    nav.addEventListener('click',e=>{ const b=e.target.closest('.rbtn'); if(!b) return;
+      if(openK!==b.dataset.k){ e.preventDefault(); clearTimeout(tOpen); panel(NAV.find(x=>x.k===b.dataset.k),b); } });
+    document.addEventListener('click',e=>{ if(!e.target.closest('.rbtn')&&!e.target.closest('.fly')){ fly.classList.remove('on'); openK=null; } });
+  }
+  window.addEventListener('resize',()=>{ fly.classList.remove('on'); openK=null; });
+})();
+</script>
+</body>
+</html>

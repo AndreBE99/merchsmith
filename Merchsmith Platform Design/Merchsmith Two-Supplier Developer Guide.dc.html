@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Merchsmith — Two-supplier workflow · Developer guide</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&amp;family=Mulish:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#f6f5f2;color:#1e2033;font-family:Mulish,system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:#4b50c0;text-decoration:underline;text-underline-offset:2px;}
+a:hover{color:#2f3390;}
+code{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.86em;background:#eceef9;color:#2f3390;border-radius:5px;padding:1px 5px;}
+</style>
+</helmet>
+
+<div style="background:#fff;border-bottom:1px solid #e4e7ec;">
+  <div style="max-width:1120px;margin:0 auto;padding:30px clamp(18px,4vw,40px) 26px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+    <div style="max-width:720px;">
+      <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#667085;">Developer guide · Orders &amp; suppliers</div>
+      <h1 style="font-family:'EB Garamond',serif;font-weight:500;font-size:clamp(32px,4.4vw,46px);line-height:1.08;margin:8px 0 10px;letter-spacing:-.01em;">Two-supplier workflow</h1>
+      <p style="margin:0;font-size:15.5px;line-height:1.6;color:#475467;text-wrap:pretty;">How a product made by two suppliers moves through the platform: one supplies the unbranded (blank) product, a second decorates it and delivers to the customer. This covers the rules, every screen involved, the data stored and the functions to call.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#667085;text-align:right;">
+      <span>Source: <code>two-supplier.js</code> (<code>window.MSTWO</code>)</span>
+      <span>Status: prototype, data in localStorage</span>
+      <span><a href="Merchsmith Developer Index.html">← Developer Index</a></span>
+    </div>
+  </div>
+</div>
+
+<div style="max-width:1120px;margin:0 auto;padding:28px clamp(18px,4vw,40px) 80px;display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:36px;align-items:start;">
+
+  <nav style="position:sticky;top:20px;display:flex;flex-direction:column;gap:2px;font-size:13.5px;">
+    <div style="font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#98a2b3;margin:0 0 8px 10px;">On this page</div>
+    <a href="#overview" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">1. Overview</a>
+    <a href="#who" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">2. Who sees what</a>
+    <a href="#lifecycle" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">3. Lifecycle</a>
+    <a href="#setup" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">4. Setting a product up</a>
+    <a href="#project" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">5. Project stage</a>
+    <a href="#order" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">6. Order stage</a>
+    <a href="#lane" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">7. Blank stock lane</a>
+    <a href="#money" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">8. Money &amp; documents</a>
+    <a href="#changes" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">9. Amendments &amp; problems</a>
+    <a href="#suppliers" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">10. Supplier views</a>
+    <a href="#data" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">11. Data model</a>
+    <a href="#api" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">12. MSTWO API</a>
+    <a href="#hooks" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">13. Where it hooks in</a>
+    <a href="#live" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">14. Going live</a>
+    <a href="#test" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">15. Try it</a>
+  </nav>
+
+  <main style="display:flex;flex-direction:column;gap:22px;min-width:0;">
+
+    <section id="overview" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">1. Overview</h2>
+      <p style="margin:0 0 14px;font-size:15px;line-height:1.65;color:#344054;">Some products are bought unbranded from one supplier and branded by another. For example, the Recycled Cotton Tote is supplied blank by <b>BagWorks UK</b> and screen-printed by <b>Veloce Print</b>. The platform treats this as one product line for the customer, and as two linked supplier jobs for the distributor.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+        <div style="background:#f9fafb;border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#667085;">Blank supplier</div>
+          <b style="display:block;font-size:16px;margin:4px 0;">Supplies the unbranded product</b>
+          <span style="font-size:13.5px;color:#475467;line-height:1.5;">Gets its own PO. Ships to the decorator’s goods-in, never to the customer, and never sees the customer’s name.</span>
+        </div>
+        <div style="background:#f9fafb;border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#667085;">Decorator</div>
+          <b style="display:block;font-size:16px;margin:4px 0;">Brands it and delivers</b>
+          <span style="font-size:13.5px;color:#475467;line-height:1.5;">Owns the main order line and PO, produces the proof, books the blank stock in and ships to the customer.</span>
+        </div>
+        <div style="background:#f9fafb;border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#667085;">Distributor</div>
+          <b style="display:block;font-size:16px;margin:4px 0;">Runs both jobs</b>
+          <span style="font-size:13.5px;color:#475467;line-height:1.5;">Sends both POs, checks both acknowledgements, watches the handover and matches both invoices.</span>
+        </div>
+      </div>
+      <div style="margin-top:14px;background:#fff8e6;border:1px solid #f5d98f;border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.55;color:#5c4400;"><b>Key rule:</b> the decorator can’t start production until the blank stock is booked in (and not on hold) and the proof is approved. <code>MSTWO.ready(orderId, lineIdx)</code> enforces this.</div>
+    </section>
+
+    <section id="who" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;">2. Who sees what</h2>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px;">
+          <thead><tr style="text-align:left;color:#667085;font-size:11px;text-transform:uppercase;letter-spacing:.05em;"><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">Role</th><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">Sees</th><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">Never sees</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;vertical-align:top;"><b>Customer</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;vertical-align:top;color:#344054;">One product, one flow, combined dates and one price.</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;vertical-align:top;color:#344054;">That there are two suppliers, the blank lane, supplier names or costs.</td></tr>
+            <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;vertical-align:top;"><b>Distributor</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;vertical-align:top;color:#344054;">Everything: both suppliers, the Suppliers editor, both POs, the blank lane, risk warnings, both invoices and the cost split.</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;vertical-align:top;color:#344054;">—</td></tr>
+            <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;vertical-align:top;"><b>Decorator</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;vertical-align:top;color:#344054;">Its own PO (branding only), an <i>Incoming blank stock</i> panel with the blank supplier’s tracking, and the Book in stock step.</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;vertical-align:top;color:#344054;">The blank supplier’s prices to the distributor, and the customer’s prices.</td></tr>
+            <tr><td style="padding:10px;vertical-align:top;"><b>Blank supplier</b></td><td style="padding:10px;vertical-align:top;color:#344054;">Only its blank stock PO: the decorator’s goods-in address, the decorator’s PO ref and quantities including overs. It can acknowledge and add tracking.</td><td style="padding:10px;vertical-align:top;color:#344054;">The customer’s name, customer prices, branding and the rest of the order. Nothing is shown until its PO has been sent.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="lifecycle" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 6px;">3. Lifecycle</h2>
+      <p style="margin:0 0 16px;font-size:14.5px;color:#475467;line-height:1.6;">The two lanes run in parallel after the order is placed and meet at <b>Booked in</b>.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#667085;margin-bottom:10px;">Project (distributor + customer)</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;">
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Mark product as two-supplier</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Two quotes (blank + decoration)</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Combined lead time → order-by date</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Two-stage sample</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Proof from decorator</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Order placed</span>
+          </div>
+        </div>
+        <div style="border:1px solid #e3e8ef;background:#f5f7fa;border-radius:12px;padding:14px 16px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#667085;margin-bottom:10px;">Blank stock lane (blank supplier)</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;">
+            <span style="background:#fff;border:1px solid #d0d5dd;border-radius:999px;padding:5px 12px;font-weight:700;"><code>todo</code> Blank PO to send</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#fff;border:1px solid #d0d5dd;border-radius:999px;padding:5px 12px;font-weight:700;"><code>sent</code> Blank PO sent</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#fff;border:1px solid #d0d5dd;border-radius:999px;padding:5px 12px;font-weight:700;"><code>ack</code> Acknowledged + dispatch date</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#fff;border:1px solid #d0d5dd;border-radius:999px;padding:5px 12px;font-weight:700;"><code>shipped</code> Tracking to decorator</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#1e2033;color:#fff;border-radius:999px;padding:5px 12px;font-weight:700;"><code style="background:#3b3e55;color:#fff;">booked</code> Booked in at decorator</span>
+          </div>
+        </div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#667085;margin-bottom:10px;">Decorator lane (main order line)</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;">
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Order received</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Check &amp; send</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Acknowledged</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Proof received</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Checked &amp; confirmed</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#fef3f2;color:#b42318;border:1px dashed #fda29b;border-radius:999px;padding:5px 12px;font-weight:700;">Gate: blank stock booked in</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">In production</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Dispatched</span><span style="color:#98a2b3;">→</span>
+            <span style="background:#eceef9;color:#2f3390;border-radius:999px;padding:5px 12px;font-weight:700;">Delivered</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="setup" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">4. Setting a product up</h2>
+      <h3 style="font-size:16px;margin:0 0 6px;">Registry: which products are two-supplier</h3>
+      <p style="margin:0 0 10px;font-size:14.5px;line-height:1.6;color:#344054;"><code>MSTWO.get(name, proj)</code> resolves in this order: <b>project override</b> (<code>ms-two-proj</code>) → <b>store default</b> (<code>ms-two-prod</code>) → <b>seed</b> (Recycled Cotton Tote: BagWorks UK → Veloce Print). An entry of <code>{off:true}</code> switches it off at that level. It returns <code>{blank, brand, overs, transit, brandLead, blankLead}</code> or <code>null</code>.</p>
+      <ul style="margin:0 0 14px;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>Store default:</b> the <i>Suppliers</i> box on a store product page (distributor only) calls <code>MSTWO.editor(name)</code> → <code>setProd</code>.</li>
+        <li><b>Per project:</b> the “2 suppliers · A → B” chip in the product pop-out’s row (distributor only) calls <code>MSTWO.editor(name, proj)</code> → <code>setProj</code>, with a “Reset to store default” option.</li>
+        <li><b>Defaults:</b> overs 3%, transit 2 working days, decorator lead 5 WD, blank supplier lead 6 WD (<code>DEF</code>), overridden by the decorator’s directory settings.</li>
+        <li><b>Decorator list:</b> only suppliers whose directory entry accepts external stock are offered as decorators.</li>
+      </ul>
+      <figure style="margin:0 0 18px;"><img src="assets/dev/two-supplier-editor.png" alt="Suppliers editor window for the Recycled Cotton Tote" style="display:block;max-width:560px;width:100%;border:1px solid #e4e7ec;border-radius:12px;"><figcaption style="font-size:12.5px;color:#667085;margin-top:6px;">Suppliers editor (<code>MSTWO.editor</code>): blank supplier, decorator, overs, transit and both lead times.</figcaption></figure>
+      <h3 style="font-size:16px;margin:0 0 6px;">Supplier directory: decorating &amp; goods in</h3>
+      <p style="margin:0 0 10px;font-size:14.5px;line-height:1.6;color:#344054;">Stored in <code>ms-sup-decor[supplier]</code>: <code>accepts</code> (external stock), goods-in address lines, standard overs %, decorating lead and goods-in notes (e.g. delivery hours). The supplier edits it from <a href="Merchsmith Supplier Portal.html">Supplier Portal</a> → Profile → Decorating &amp; goods in. The distributor edits it from the order page’s supplier card → <i>Decorating &amp; goods in</i> (<code>MSTWO.decorEditor</code>). It feeds the blank PO’s deliver-to address and notes, plus the registry defaults.</p>
+      <figure style="margin:0;"><img src="assets/dev/two-supplier-decorator.png" alt="Decorating and goods in settings for Veloce Print" style="display:block;max-width:560px;width:100%;border:1px solid #e4e7ec;border-radius:12px;"><figcaption style="font-size:12.5px;color:#667085;margin-top:6px;">Decorator settings (<code>MSTWO.decorEditor</code> / <code>decorCfg</code> / <code>goodsIn</code>).</figcaption></figure>
+    </section>
+
+    <section id="project" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">5. Project stage</h2>
+      <p style="margin:0 0 12px;font-size:14.5px;line-height:1.6;color:#344054;">Built into the <a href="Merchsmith Project - Autumn Giveaways.html">project page</a> and the product pop-out (<code>product-modal.js</code>). The pop-out’s <code>d.twoSupplier</code> reads the registry live.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;">
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Lead time &amp; order-by date</b><p style="margin:6px 0 0;font-size:13.5px;line-height:1.55;color:#475467;">Blank lead + transit + decorator lead + the decorator’s days in lieu. That total feeds the order-by and estimated supplier dates. The delivering supplier (<code>supplierName</code>) is the decorator. The row shows “· 2 suppliers”, with the breakdown on hover.</p></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Pricing</b><p style="margin:6px 0 0;font-size:13.5px;line-height:1.55;color:#475467;"><code>priceCalc</code> adds carriage for blanks to the decorator (the matrix’s “Delivery — blanks to decorator” row), saved to <code>ms-pm-spec.costs.carriage</code>. On orders it becomes a “Carriage to decorator” cost row on the blank PO, not the decorator’s.</p></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Two quotes</b><p style="margin:6px 0 0;font-size:13.5px;line-height:1.55;color:#475467;">Price → locked prices with “Two-supplier” on. The blank supplier quotes blank per unit + carriage (<code>cUnb_</code>, <code>cDeliv_</code>). The decorator quotes decoration per unit + setup. <code>reqState</code> stays <code>'partial'</code> until both have replied, and <code>applyCard('price', …)</code> won’t advance until then.</p></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Two-stage sample</b><p style="margin:6px 0 0;font-size:13.5px;line-height:1.55;color:#475467;">Sample → Branded (distributor only) shows a tracker: blank sample ordered → sent to decorator → branded → sent to customer. Steps have Mark done / Undo, stored in <code>ms-two-smp</code>.</p></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Stock checks</b><p style="margin:6px 0 0;font-size:13.5px;line-height:1.55;color:#475467;">Requests and replies go to the blank supplier (<code>stockSupplier</code>). Distributors see “Stock is held by &lt;blank supplier&gt;” on the Stock tab.</p></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Proof</b><p style="margin:6px 0 0;font-size:13.5px;line-height:1.55;color:#475467;">Always produced by the decorator. The customer approves it as normal. There’s no change to the customer-facing Design tab.</p></div>
+      </div>
+    </section>
+
+    <section id="order" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">6. Order stage</h2>
+      <p style="margin:0 0 12px;font-size:14.5px;line-height:1.6;color:#344054;">On the <a href="Merchsmith Orders.html#order=o1010">order page</a> (<code>order-detail.js</code>), <code>twoL(l)</code> is true for two-supplier lines (not samples). <code>supOf(l)</code> returns the <b>decorator</b> for the line, and the <b>blank supplier</b> for unbranded samples. So the decorator owns the main PO, the step bar, acknowledgement, proof, dispatch and tracking.</p>
+      <ul style="margin:0 0 14px;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>Decorator PO:</b> prices exclude the blank product and carriage rows. The print and Check &amp; send show an “Incoming blank stock” warning with the blank supplier’s name and PO.</li>
+        <li><b>PO key migration:</b> <code>ops()</code> adds missing supplier PO keys and drops empty unsent ones when a line changes to two-supplier.</li>
+        <li><b>Production gate:</b> the decorator’s “acknowledge approved proof / start production” is blocked until <code>MSTWO.ready()</code>.</li>
+        <li><b>Split deliveries:</b> <code>MSSPLIT.supplierOf</code> returns the decorator, so its carriage rates and limits apply.</li>
+      </ul>
+      <figure style="margin:0;"><img src="assets/dev/two-supplier-item.png" alt="A two-supplier product card on the order page" style="display:block;width:100%;border:1px solid #e4e7ec;border-radius:12px;"><figcaption style="font-size:12.5px;color:#667085;margin-top:6px;">MS-1059 · Recycled Cotton Tote: decorator step bar, blank stock lane (grey panel) and three document columns.</figcaption></figure>
+    </section>
+
+    <section id="lane" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">7. Blank stock lane</h2>
+      <p style="margin:0 0 12px;font-size:14.5px;line-height:1.6;color:#344054;">Rendered by <code>MSTWO.laneHTML(o, i, role, ctx)</code> under the item’s next-step panel, for distributors and decorators only. Its actions are wired by <code>MSTWO.wire(root, role)</code> through <code>data-tw</code> / <code>data-twk="orderId:lineIdx"</code>. State lives in <code>ms-two-lane[orderId][lineIdx]</code>.</p>
+      <figure style="margin:0 0 16px;"><img src="assets/dev/two-supplier-lane.png" alt="Blank stock lane with four steps" style="display:block;width:100%;border:1px solid #e4e7ec;border-radius:12px;"><figcaption style="font-size:12.5px;color:#667085;margin-top:6px;">Blank stock lane before the blank PO is sent.</figcaption></figure>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px;min-width:680px;">
+          <thead><tr style="text-align:left;color:#667085;font-size:11px;text-transform:uppercase;letter-spacing:.05em;"><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">Action (<code>data-tw</code>)</th><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">Who</th><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">Sets</th><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">Notes</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>send</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Distributor</td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>st:'sent', overs, sentAt, sentBy, msg</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">Overs is editable. Quantities are rounded up per variant (<code>withOvers</code>, e.g. 300 → 309 at 3%). Delivers to the decorator’s goods-in and quotes the decorator’s PO.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>oa</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Blank supplier / distributor</td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>st:'ack', oa:{ref, dispatch, file, at, by, checked}</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">Dispatch date to the decorator. Tick-to-match checks it against the PO.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>trk</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Blank supplier / distributor</td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>st:'shipped', trk:{courier, no, at, by}</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">Courier links come from <code>CURL</code>. Shown to the decorator as incoming stock.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>book</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Decorator / distributor</td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>st:'booked', book:{rows, recv, dmg, sent, short, hold, note, at, by}</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">Received and damaged counts per variant. If good stock is short: hold production and ask for the rest (<code>hold:true</code>), or proceed.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>inv</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Distributor</td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>inv:{no, amount, diff, file, at}</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">Matched to sent qty × blank unit + carriage (<code>blankCost</code>). The button is also in the Blank supplier documents column.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>chase</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Distributor</td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">activity log</td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">Templated messages depend on the current step.</td></tr>
+            <tr><td style="padding:9px 10px;"><code>print</code></td><td style="padding:9px 10px;">Anyone with the lane</td><td style="padding:9px 10px;">—</td><td style="padding:9px 10px;color:#475467;"><code>MSTWO.printPO(ctx)</code>: blank stock PO with no customer name.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px;background:#fef3f2;border:1px solid #fecdca;border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.55;color:#7a271a;"><b>Delivery at risk:</b> shown when the blank supplier’s dispatch date + transit falls after <i>needed at decorator by</i>, which is <code>MSTWO.needBy</code> (the decorator’s supplier date − decorator lead).</div>
+      <figure style="margin:16px 0 0;"><img src="assets/dev/two-supplier-send-po.png" alt="Send blank stock PO window" style="display:block;max-width:560px;width:100%;border:1px solid #e4e7ec;border-radius:12px;"><figcaption style="font-size:12.5px;color:#667085;margin-top:6px;">Send blank stock PO: recipient, goods-in, overs, needed-by and per-variant quantities.</figcaption></figure>
+    </section>
+
+    <section id="money" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">8. Money &amp; documents</h2>
+      <ul style="margin:0 0 14px;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>Customer:</b> one sell price and one VAT invoice per product at dispatch, as for any other line.</li>
+        <li><b>Decorator cost:</b> branding only (<code>supCost</code>), also used for its invoice match.</li>
+        <li><b>Blank supplier cost:</b> sent quantity including overs × blank unit + carriage (<code>MSTWO.blankCost</code>). Blank PO number: <code>MSTWO.blankPO(ctx)</code>, e.g. <code>PO-1059-2-B</code>.</li>
+        <li><b>Costs &amp; margin:</b> sell price − blank cost − carriage − branding cost.</li>
+        <li><b>Documents:</b> each two-supplier product has three columns: Customer, Decorator and Blank supplier. Blank supplier documents use keys <code>twpo:i</code> (blank PO), <code>twoa:i</code> (acknowledgement) and <code>twinv:i</code> (invoice). Each column has a status bar with the invoice match and an Upload / Replace invoice button.</li>
+      </ul>
+      <figure style="margin:0;"><img src="assets/dev/two-supplier-docs.png" alt="Three document columns: Customer, Decorator, Blank supplier" style="display:block;width:100%;border:1px solid #e4e7ec;border-radius:12px;"><figcaption style="font-size:12.5px;color:#667085;margin-top:6px;">Product documents for a two-supplier line.</figcaption></figure>
+    </section>
+
+    <section id="changes" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">9. Amendments &amp; problems</h2>
+      <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>Quantity or variant change</b> (approved amendment) calls <code>MSTWO.amended()</code>:
+          <ul style="padding-left:18px;">
+            <li><b>Before the blanks ship:</b> the lane goes back to “Revised blank stock order · waiting for acknowledgement”, and the blank supplier re-acknowledges.</li>
+            <li><b>After shipping or booking in:</b> a red “agree any extra or returned stock with &lt;blank supplier&gt;” step, cleared with <i>Mark sorted</i>.</li>
+          </ul>
+        </li>
+        <li><b>Artwork-only changes</b> only affect the decorator. The blank PO is untouched.</li>
+        <li><b>Short or damaged stock</b> is handled at Book in: hold production and ask for the rest, or proceed with what arrived.</li>
+        <li><b>Cancellation:</b> cancelling the line creates a PO cancellation document for the decorator. Blank-supplier cancellation isn’t built yet, see <a href="#live">Going live</a>.</li>
+      </ul>
+    </section>
+
+    <section id="suppliers" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">10. Supplier views</h2>
+      <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>Blank supplier’s order page:</b> in supplier role, if the signed-in supplier is only the blank supplier on the order, <code>MSTWO.blankPage</code> renders just its PO. That shows goods-in, the decorator’s PO ref, variants with overs, and Unit / Total columns with carriage. It has acknowledge and tracking actions. It shows “Nothing to action yet” until the PO is sent.</li>
+        <li><b>Decorator’s order page:</b> the normal supplier view plus the <i>Incoming blank stock</i> lane and Book in stock.</li>
+        <li><b>Supplier Orders list:</b> <code>MSTWO.stockListHTML(supplier, orders)</code> adds “Blank stock you’re sending” (blank supplier) and “Incoming blank stock” (decorator) panels above the list. Neither shows customer names.</li>
+        <li><b>Demo limit:</b> the demo supplier login is always BagWorks UK, so the decorator panel can only be tested once there are real supplier logins.</li>
+      </ul>
+    </section>
+
+    <section id="data" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;">11. Data model</h2>
+      <p style="margin:0 0 12px;font-size:14px;color:#475467;line-height:1.6;">All in localStorage for the prototype. Each key maps to a table or column in the real backend.</p>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:680px;">
+          <thead><tr style="text-align:left;color:#667085;font-size:11px;text-transform:uppercase;letter-spacing:.05em;"><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">Key</th><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">Shape</th><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">Backend suggestion</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>ms-two-prod</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>{productName: {blank, brand, overs, transit, brandLead, blankLead} | {off:true}}</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">product_supply_routes (distributor, product, blank_supplier_id, decorator_id, …)</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>ms-two-proj</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>{projectId: {productName: {…} | {off:true}}}</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">project_line.supply_route (override)</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>ms-sup-decor</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>{supplier: {accepts, goodsIn:[lines], overs, lead, notes}}</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">supplier.decorating_profile</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>ms-two-lane</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>{orderId: {lineIdx: {st, overs, sentAt, oa, trk, book, inv, rev}}}</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">blank_purchase_orders + blank_po_events</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>ms-two-smp</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>{projectId: {productName: {step: timestamp}}}</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#475467;">sample_jobs (two stages)</td></tr>
+            <tr><td style="padding:9px 10px;"><code>ms-pm-spec</code> · <code>costs.carriage</code></td><td style="padding:9px 10px;">carriage to decorator for the line</td><td style="padding:9px 10px;color:#475467;">quote_lines (per supplier)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="api" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;">12. <code style="font-size:.8em;">window.MSTWO</code> API</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px;font-size:13px;">
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>get(name, proj)</code><div style="color:#475467;margin-top:4px;">Resolved supply route or <code>null</code>.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>setProd(name, v)</code> · <code>setProj(proj, name, v)</code><div style="color:#475467;margin-top:4px;">Save the store default / project override.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>editor(name, proj?)</code><div style="color:#475467;margin-top:4px;">Opens the Suppliers window.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>decorEditor(supplier, onDone)</code> · <code>decorCfg(s)</code> · <code>goodsIn(s)</code><div style="color:#475467;margin-top:4px;">Decorator directory settings.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>laneHTML(o, i, role, ctx)</code> · <code>wire(root, role)</code><div style="color:#475467;margin-top:4px;">Render and wire the blank stock lane.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>lane(orderId, i)</code> · <code>ready(orderId, i)</code><div style="color:#475467;margin-top:4px;">Lane state, and the production gate.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>blankPO(ctx)</code> · <code>blankCost(ctx)</code> · <code>needBy(ctx)</code><div style="color:#475467;margin-top:4px;">PO number, cost with overs + carriage, needed-at-decorator date.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>printPO(ctx)</code><div style="color:#475467;margin-top:4px;">Printable blank stock PO.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>blankPage(root, o, supplier)</code><div style="color:#475467;margin-top:4px;">Blank supplier’s own order page.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>stockListHTML(supplier, orders)</code><div style="color:#475467;margin-top:4px;">Supplier Orders list panels.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>amended(orderId, i, change)</code><div style="color:#475467;margin-top:4px;">Called by the amendment flow on qty or variant changes.</div></div>
+      </div>
+      <p style="margin:12px 0 0;font-size:13px;color:#667085;"><code>ctx</code> comes from <code>ctxFor(line, i)</code> in <code>order-detail.js</code>: the line, its state, the route (<code>two</code>), variants (<code>vs</code>), cost rows and the decorator PO.</p>
+    </section>
+
+    <section id="hooks" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;">13. Where it hooks in</h2>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:620px;">
+          <thead><tr style="text-align:left;color:#667085;font-size:11px;text-transform:uppercase;letter-spacing:.05em;"><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">File</th><th style="padding:8px 10px;border-bottom:1px solid #e4e7ec;">What it does with two-supplier lines</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>order-detail.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#344054;"><code>TWO</code>, <code>twoL</code>, <code>supOf</code>, <code>ctxFor</code>, <code>supCost</code>, lane placement, production gate, PO print warning, three-column documents (<code>twpo/twoa/twinv</code>), PO key migration in <code>ops()</code>.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>product-modal.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#344054;"><code>d.twoSupplier</code> from the registry, the “2 suppliers” row chip, <code>priceCalc</code> carriage, two quotes (<code>reqState</code>), the sample tracker and the Stock note.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>Merchsmith Project - Autumn Giveaways.html</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#344054;">Combined lead time and order-by date, <code>supplierName</code> = decorator, <code>stockSupplier</code> = blank supplier.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>split-delivery.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#344054;"><code>MSSPLIT.supplierOf</code> → decorator, for carriage and limits.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>order-amend.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#344054;">Calls <code>MSTWO.amended()</code> when an approved amendment changes qty or variants.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>order-page.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;color:#344054;">Supplier Orders list: <code>MSTWO.stockListHTML</code>.</td></tr>
+            <tr><td style="padding:9px 10px;"><code>Merchsmith Store.html</code> · <code>Merchsmith Supplier Portal.html</code></td><td style="padding:9px 10px;color:#344054;">Store product page Suppliers box; supplier profile → Decorating &amp; goods in.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="live" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;">14. Going live</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;">
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Backend</b>
+          <ul style="margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.6;color:#475467;">
+            <li>Two PO records per line, linked (the blank PO references the decorator PO).</li>
+            <li>Real emails to each supplier contact. The blank PO email goes out with no customer data.</li>
+            <li>Supplier logins scoped per PO. The blank supplier can only read its PO and the decorator’s goods-in.</li>
+            <li>Events: acknowledged, shipped (courier webhook), booked in → recompute <code>ready</code>.</li>
+            <li>Scheduled check for <i>delivery at risk</i>, with a notification to the account manager.</li>
+          </ul>
+        </div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Not built yet</b>
+          <ul style="margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.6;color:#475467;">
+            <li>PO cancellation document for the blank supplier when a two-supplier line is cancelled.</li>
+            <li>Decorator’s Incoming stock list with a separate decorator login (the demo is BagWorks only).</li>
+            <li>Returns of leftover overs to the blank supplier.</li>
+            <li>Partial deliveries of blank stock (several shipments per blank PO).</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin:14px 0 0;font-size:13.5px;color:#475467;">Full status log: <a href="HANDOVER.md">HANDOVER.md</a> → “Two-supplier lines”.</p>
+    </section>
+
+    <section id="test" style="background:#1e2033;color:#fff;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;color:#fff;">15. Try it</h2>
+      <ol style="margin:0;padding-left:20px;font-size:14.5px;line-height:1.8;color:#e4e7ec;">
+        <li>Sign in as the distributor and open <a href="Merchsmith Orders.html#order=o1010" style="color:#c7caf5;">MS-1059</a> (Recycled Cotton Tote, BagWorks UK → Veloce Print).</li>
+        <li>In the grey <b>Blank stock</b> panel, click <b>Send blank stock PO</b>. Change overs to see quantities round up per variant, then send.</li>
+        <li>Use the next buttons to add the acknowledgement (set a late dispatch date to trigger <i>Delivery at risk</i>), then tracking, then <b>Book in stock</b>. Try entering damaged units.</li>
+        <li>Check that the decorator’s production step unlocks only after booking in.</li>
+        <li>Upload a blank supplier invoice from the Blank supplier documents column and check the match against the PO.</li>
+        <li>Switch to the supplier role (BagWorks UK) to see the blank-only order page and the “Blank stock you’re sending” panel on <a href="Merchsmith Orders.html" style="color:#c7caf5;">Orders</a>.</li>
+        <li>Open the tote in <a href="Merchsmith Project - Autumn Giveaways.html" style="color:#c7caf5;">Autumn Giveaways</a> to see the “2 suppliers” chip, two quotes, lead time breakdown and the sample tracker.</li>
+      </ol>
+      <p style="margin:14px 0 0;font-size:13px;color:#98a2b3;">Testing changes saved browser data. Download a backup first (Admin → Settings → Data backup).</p>
+    </section>
+
+  </main>
+</div>
+</x-dc>
+</body>
+</html>

@@ -6,6 +6,10 @@
 :root{
   /* ---- brand palette ---- */
   --periwinkle:#7B85C5; --periwinkle-deep:#5860A6; --periwinkle-ink:#3C4279;
+
+  /* one horizontal gutter for every full-bleed page: content column, breadcrumb band
+     and footer all use it, so everything shares a single left edge */
+  --page-gutter:clamp(20px,2.5vw,36px);
   --spearmint:#36C0A0; --flare:#FF2E17; --sky:#0097D8; --blossom:#FFA2A5; --zest:#FFEB3D; --sprout:#9FD792;
 
   /* ---- neutrals ---- */

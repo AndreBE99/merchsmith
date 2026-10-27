@@ -48,33 +48,37 @@
 
   // ---- mutable state ----
   const S={
-    pcol:new Set(['Black','White']),
-    bmode:'spot', bcol:new Set(['Black','White']),
+    pcol:new Set(),
+    bmode:'spot', bcol:new Set(),
     logos:new Set(['l-black','l-white']),
     sampReq:true, sampType:'unbranded',
-    country:0, mode:'nofail',
+    country:null, mode:null,
     openItems:new Set(),
-    items:[
-      {id:'it1',type:'Recycled notebook',cat:'Notebooks',qty:500,unit:3.20},
-      {id:'it2',type:'Biodegradable pen',cat:'Pens',qty:1000,unit:0.50},
-      {id:'it3',type:'Eco mini power bank',cat:'Tech',qty:250,unit:9.40}
-    ]
+    items:[]
   };
   let step=0, launched=false;
 
   /* ---------- draft ---------- */
   function serialize(){ return { v:1, step, name:$('#fName').value, use:$('#fUse').value, desc:$('#fDesc').value,
-    budget:$('#fBudget').value, qty:$('#fQty').value, date:$('#fDate').value, pos:$('#fPos').value,
+    budget:$('#fBudget').value, qty:$('#fQty').value, date:$('#fDate').value, pos:$('#fPos').value, bnotes:($('#fBNotes')||{}).value||'',
     mode:S.mode, country:S.country, bmode:S.bmode, sampReq:S.sampReq, sampType:S.sampType,
     pcol:[...S.pcol], bcol:[...S.bcol], logos:[...S.logos], items:S.items }; }
   let draftT; function saveDraft(){ clearTimeout(draftT); draftT=setTimeout(()=>{ try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(serialize())); }catch(e){} const n=$('#cpDraft'); if(n){ n.textContent='Draft saved'; n.classList.add('show'); clearTimeout(saveDraft._b); saveDraft._b=setTimeout(()=>n.classList.remove('show'),1400);} },350); }
+  // leaving via the left menu: confirm, save the draft, then go
+  window.__cpSaveNow=()=>{ if(launched) return; try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(serialize())); }catch(e){} };
+  document.addEventListener('click',e=>{ const a=e.target.closest&&e.target.closest('a[href]'); if(!a||launched||a.closest('.cp')||a.closest('.cp-leave')) return; const href=a.getAttribute('href'); if(!href||href==='#'||href.startsWith('#')||a.target==='_blank') return;
+    e.preventDefault(); e.stopPropagation(); const nm=($('#fName')&&$('#fName').value.trim())||'your project';
+    const w=document.createElement('div'); w.className='cp-leave'; w.innerHTML=`<div class="cp-lv" role="dialog" aria-modal="true" aria-labelledby="cpLvT"><span class="cp-lvi"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg></span><h3 id="cpLvT">Leave project setup?</h3><p>We’ll save <b>${String(nm).replace(/</g,'&lt;')}</b> as a draft in Your Projects, so you can pick it up where you left off.</p><div class="cp-lvf"><button type="button" class="cp-lvb" data-lvx>Cancel</button><button type="button" class="cp-lvb pri" data-lvok>Save draft &amp; continue</button></div></div>`;
+    document.body.appendChild(w); requestAnimationFrame(()=>w.classList.add('on')); const close=()=>{ w.classList.remove('on'); setTimeout(()=>w.remove(),180); };
+    w.querySelector('[data-lvx]').onclick=close; w.addEventListener('mousedown',ev=>{ if(ev.target===w) close(); }); const k=ev=>{ if(ev.key==='Escape'){ close(); document.removeEventListener('keydown',k); } }; document.addEventListener('keydown',k);
+    w.querySelector('[data-lvok]').onclick=()=>{ window.__cpSaveNow(); location.href=href; }; w.querySelector('[data-lvok]').focus(); },true);
   function clearDraft(){ launched=true; try{ localStorage.setItem(DRAFT_KEY,''); }catch(e){} }
   function loadDraft(){ try{ const d=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null'); return (d&&d.v)?d:null; }catch(e){ return null; } }
   function applyDraft(d){
     $('#fName').value=d.name||''; $('#fUse').value=d.use||''; $('#fDesc').value=d.desc||'';
     if(d.budget!=null)$('#fBudget').value=d.budget; if(d.qty!=null)$('#fQty').value=d.qty;
-    if(d.date)$('#fDate').value=d.date; if(d.pos!=null)$('#fPos').value=d.pos;
-    S.mode=d.mode||'nofail'; S.country=d.country||0; S.bmode=d.bmode||'spot';
+    if(d.date)$('#fDate').value=d.date; if(d.pos!=null)$('#fPos').value=d.pos; if(d.bnotes!=null&&$('#fBNotes'))$('#fBNotes').value=d.bnotes;
+    S.mode=d.mode||null; S.country=d.country==null?null:d.country; S.bmode=d.bmode||'spot';
     S.sampReq=d.sampReq!==false; S.sampType=d.sampType||'unbranded';
     if(d.pcol)S.pcol=new Set(d.pcol); if(d.bcol)S.bcol=new Set(d.bcol); if(d.logos)S.logos=new Set(d.logos);
     if(Array.isArray(d.items)&&d.items.length)S.items=d.items;
@@ -94,7 +98,7 @@
   /* ---------- shared controls ---------- */
   function chipRow(host, list, sel, attr){
     host.innerHTML=list.map(c=>{const name=c.name||c;const hex=c.hex||PCHEX[name]||'#bbb';const on=sel.has(name);const pt=c.pantone?`<small class="chip-pant">${c.pantone}</small>`:'';return `<button type="button" class="chip ${on?'on':''}" data-${attr}="${name}"><i style="background:${hex};${String(hex).toUpperCase()==='#FFFFFF'?'box-shadow:inset 0 0 0 1px var(--hair)':''}"></i><span class="chip-nm">${name}${pt}</span></button>`;}).join('');
-    host.querySelectorAll('[data-'+attr+']').forEach(b=>b.onclick=()=>{ const v=b.dataset[attr]; if(sel.has(v)){ if(sel.size>1)sel.delete(v); } else sel.add(v); b.classList.toggle('on',sel.has(v)); saveDraft(); });
+    host.querySelectorAll('[data-'+attr+']').forEach(b=>b.onclick=()=>{ const v=b.dataset[attr]; if(sel.has(v)) sel.delete(v); else sel.add(v); b.classList.toggle('on',sel.has(v)); saveDraft(); });
   }
   // brand colours block — reflects the current mode (spot=pick swatches, mono=single black, full/none=info)
   function renderBcol(){
@@ -157,7 +161,7 @@
       <div class="ic-grid">
         <div class="ic-f"><label>Product colour</label>${pcol}<span class="ic-def">${ov.colour?'Overridden':'Inheriting project colours'}</span></div>
         <div class="ic-f"><label>Delivery date</label><input type="date" class="ic-in" data-ovdate="${it.id}" value="${ov.deliveryISO||''}"><span class="ic-def">${ov.deliveryISO?'Overridden':'Default · '+fmtDate($('#fDate')?$('#fDate').value:'')}</span></div>
-        <div class="ic-f"><label>Ships to</label><select class="ic-in" data-ovcountry="${it.id}"><option value="">Default · ${COUNTRIES[S.country]}</option>${COUNTRIES.map((c,i)=>`<option value="${i}" ${ov.country===i?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div class="ic-f"><label>Ships to</label><select class="ic-in" data-ovcountry="${it.id}"><option value="">Default · ${S.country==null?'not set':COUNTRIES[S.country]}</option>${COUNTRIES.map((c,i)=>`<option value="${i}" ${ov.country===i?'selected':''}>${c}</option>`).join('')}</select></div>
         <div class="ic-f"><label>Sample</label>${samp}</div>
       </div>
       <div class="ic-f"><label>Branding</label>${bseg}${bchips}</div>
@@ -186,11 +190,10 @@
     const host=$('#fItems');
     host.innerHTML=S.items.map(it=>`<div class="itemwrap" data-id="${it.id}">
       <div class="item">
-        <input class="iin iname" data-k="type" value="${esc(it.type)}" placeholder="Product type">
-        <select class="iin" data-k="cat">${CATEGORIES.map(c=>`<option ${it.cat===c?'selected':''}>${c}</option>`).join('')}</select>
+        ${it.prod?`<div class="iprod"><span class="iprod-th" style="background-image:url('assets/products/${esc(it.prod.img)}.png')"></span><span class="iprod-t"><b>${esc(it.prod.name)}</b><small>${esc(it.prod.ref)} · ${esc(it.prod.supplier)}</small></span><button type="button" class="iprod-x" data-unpick title="Change product">Change</button></div>`:`<input class="iin iname" data-k="type" value="${esc(it.type)}" placeholder="Product type, e.g. Recycled tote">`}
         <input class="iin" data-k="qty" type="number" min="1" step="25" value="${it.qty}">
         <div class="unitwrap"><span>£</span><input data-k="unit" type="number" min="0" step="0.05" value="${(+it.unit).toFixed(2)}"><span>/u</span></div>
-        <button class="icust ${S.openItems.has(it.id)?'on':''}" title="Specify this product's needs"><svg class="icn" style="width:17px;height:17px"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.6M12 18.8v2.6M2.6 12h2.6M18.8 12h2.6M5.4 5.4l1.8 1.8M16.8 16.8l1.8 1.8M18.6 5.4l-1.8 1.8M7.2 16.8l-1.8 1.8"/></svg></button>
+        <button class="icust ${S.openItems.has(it.id)?'on':''}" title="Product settings" aria-label="Product settings"><svg class="icn" viewBox="0 0 24 24" style="width:17px;height:17px"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
         <button class="idel" title="Remove">×</button>
       </div>
       <div class="itemstatus">${ovSummary(it)}</div>
@@ -200,6 +203,7 @@
       const it=getItem(row.dataset.id);
       row.querySelectorAll('.item [data-k]').forEach(inp=>inp.oninput=()=>{ const k=inp.dataset.k; it[k]=(k==='qty'||k==='unit')?(+inp.value||0):inp.value; runbar(); saveDraft(); });
       row.querySelector('.icust').onclick=()=>{ if(S.openItems.has(it.id))S.openItems.delete(it.id); else S.openItems.add(it.id); renderItems(); };
+      const un=row.querySelector('[data-unpick]'); if(un) un.onclick=()=>{ it.type=it.prod?it.prod.name:''; delete it.prod; renderItems(); saveDraft(); };
       row.querySelector('.idel').onclick=()=>{ S.items=S.items.filter(x=>x.id!==it.id); S.openItems.delete(it.id); renderItems(); runbar(); saveDraft(); };
       wireCustom(row, it);
     });
@@ -236,13 +240,15 @@
     step=n; renderSteps();
     panels.forEach(p=>{ if(p!==next){ p.hidden=true; p.classList.remove('in'); } });
     next.hidden=false;
-    next.classList.remove('in','shown'); void next.offsetWidth; next.classList.add('in');
+    const back=n<(showStep._prev==null?n:showStep._prev); showStep._prev=n; next.classList.remove('in','shown','back'); void next.offsetWidth; next.classList.add('in'); if(back) next.classList.add('back');
+    (function(){ let pr=document.getElementById('cpProg'); const st=document.getElementById('cpSteps'); if(!pr&&st){ pr=document.createElement('div'); pr.id='cpProg'; pr.className='cp-prog'; pr.innerHTML='<i></i>'; st.after(pr); } if(pr) requestAnimationFrame(()=>{ pr.firstChild.style.width=(n/(STEPS.length-1)*100)+'%'; }); })();
+    if(n===STEPS.length-1&&!matchMedia('(prefers-reduced-motion: reduce)').matches){ const cf=document.createElement('div'); cf.className='cp-confetti'; const col=['#ec018c','#ff5cb3','#12b76a','#f5b041','#0a84c6']; for(let k=0;k<36;k++){ const i=document.createElement('i'); i.style.left=(Math.random()*100)+'vw'; i.style.background=col[k%col.length]; i.style.setProperty('--dx',(Math.random()*120-60)+'px'); i.style.setProperty('--r',(Math.random()*720-360)+'deg'); i.style.animationDelay=(Math.random()*.4)+'s'; cf.appendChild(i); } document.body.appendChild(cf); setTimeout(()=>cf.remove(),2300); }
     clearTimeout(showStep._t); showStep._t=setTimeout(()=>next.classList.add('shown'), 1150);
     $('#cpScroll').scrollTop=0;
     $('#btnBack').style.visibility = n===0 ? 'hidden' : 'visible';
     $('#cpFoot').style.display = n===STEPS.length-1 ? 'none' : 'flex';
     const last = n===STEPS.length-2;
-    $('#btnNext').innerHTML = (last?'Review project':'Continue')+'<svg class="icn" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    $('#btnNext').innerHTML = (last?'Review project':'Continue')+'<svg class="icn" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
     if(n===STEPS.length-1) buildReview();
     hint(); saveDraft();
   }
@@ -262,14 +268,14 @@
     $('#revTitle').textContent=`“${name}” is ready.`;
     $('#rvDesc').textContent=$('#fDesc').value.trim()||'No description added.';
     $('#rvUse').textContent=$('#fUse').value.trim()||'—';
-    $('#rvBudget').textContent=gbp(+$('#fBudget').value||0);
+    $('#rvBudget').textContent=$('#fBudget').value?gbp(+$('#fBudget').value):'Not set';
     $('#rvDate').textContent=fmtDate($('#fDate').value)+(S.mode==='nofail'?' · no-fail':' · approx');
     $('#rvCountry').textContent=COUNTRIES[S.country];
     $('#rvQty').textContent=(+$('#fQty').value||0).toLocaleString()+' / item';
-    $('#rvPcol').innerHTML=[...S.pcol].map(c=>`<span class="rev-sw" style="background:${PCHEX[c]||'#bbb'}" title="${c}"></span>`).join('')||'<span style="color:var(--muted)">—</span>';
+    $('#rvPcol').innerHTML=S.pcol.size?`<span class="rev-chips">${[...S.pcol].map(c=>`<span class="rev-chip"><i style="background:${PCHEX[c]||'#bbb'}"></i>${esc(c)}</span>`).join('')}</span>`:'<span style="color:var(--muted)">Not set</span>';
     $('#rvBrand').textContent=brandLabel();
-    $('#rvBcol').innerHTML=(S.bmode==='spot')?[...S.bcol].map(c=>`<span class="rev-sw" style="background:${(BC[c]||{}).hex||'#bbb'}" title="${c} · ${pant(c)}"></span>`).join('')
-      :(S.bmode==='mono'?'<span class="rev-sw" style="background:#1a1a1e" title="Mono"></span> <span style="color:var(--muted);font-size:12px">Mono</span>':'<span style="color:var(--muted);font-size:12px">n/a</span>');
+    $('#rvBcol').innerHTML=(S.bmode==='spot')?`<span class="rev-chips">${[...S.bcol].map(c=>`<span class="rev-chip"><i style="background:${(BC[c]||{}).hex||'#bbb'}"></i>${esc(c)}${pant(c)?` <small>${esc(pant(c))}</small>`:''}</span>`).join('')}</span>`
+      :(S.bmode==='mono'?'<span class="rev-chips"><span class="rev-chip"><i style="background:#1a1a1e"></i>Mono</span></span>':'<span style="color:var(--muted);font-size:12px">n/a</span>');
     $('#rvPos').textContent=$('#fPos').value.trim()||'—';
     $('#rvLogos').innerHTML=S.logos.size?[...S.logos].map(id=>{const l=LOGO[id];return l?`<span class="rev-lg" style="background:${l.bg};color:${l.fg}">${CUSTOMER.toLowerCase()}</span>`:'';}).join(''):'<span style="color:var(--muted);font-size:12px">None — artwork chosen later</span>';
     $('#rvSample').textContent=sampleLabel()+(isDist?'':' · set by AM');
@@ -294,7 +300,7 @@
       campaign:{ description:$('#fDesc').value.trim(), merchUse:$('#fUse').value.trim(), budget:+$('#fBudget').value||0, attachments:[] },
       defaults:{ delivery:{iso:$('#fDate').value,mode:S.mode}, country:S.country,
         productColours:[...S.pcol], brandMode:S.bmode, brandColours:[...S.bcol], customColours:[],
-        positions:$('#fPos').value.trim(), logos:[...S.logos],
+        positions:$('#fPos').value.trim(), brandNotes:(($('#fBNotes')||{}).value||'').trim(), logos:[...S.logos],
         sample:{required:S.sampReq,type:S.sampType}, sustainabilityMin:6, expectedQty:+$('#fQty').value||1000 },
       items:S.items.map(it=>{ const o={id:it.id,type:it.type,cat:it.cat,qty:+it.qty||0,unit:+it.unit||0}; if(it.over&&Object.keys(it.over).length)o.over=it.over; if(it.notes)o.notes=it.notes; if(it.artwork&&it.artwork.length)o.artwork=it.artwork; return o; })
     };
@@ -312,7 +318,7 @@
 
   /* ---------- init ---------- */
   function init(){
-    const draft=loadDraft(); if(draft){ applyDraft(draft); }
+    const qs=new URLSearchParams(location.search), fresh=qs.has('new'); const draft=fresh?null:loadDraft(); if(draft){ applyDraft(draft); } if(fresh){ step=0; try{ history.replaceState(null,'',location.pathname); }catch(e){} }
     renderSteps();
     chipRow($('#fPcol'), PRODUCT_COLOURS, S.pcol, 'pcol');
     chipRow($('#fBcol'), BRAND_COLOURS, S.bcol, 'bcol');
@@ -330,8 +336,15 @@
     seg('fSampReq', v=>{ S.sampReq=(v==='1'); $('#fSampType').classList.toggle('dim',!S.sampReq); });
     seg('fSampType', v=>S.sampType=v);
     renderSample();
-    $('#fAddItem').onclick=()=>{ const it={id:'it'+Date.now(),type:'',cat:'Eco',qty:+$('#fQty').value||500,unit:1.00}; S.items.push(it); renderItems(); const rows=document.querySelectorAll('#fItems .itemwrap'); const last=rows[rows.length-1]; if(last){ const n=last.querySelector('.iname'); if(n)n.focus(); } saveDraft(); };
-    ['#fName','#fUse','#fDesc','#fBudget','#fQty','#fDate','#fPos'].forEach(s=>{ const el=$(s); if(el)el.addEventListener('input',saveDraft); });
+    let addMode='describe';
+    const am=$('#fAddMode'); if(am) am.querySelectorAll('button').forEach(b=>b.onclick=()=>{ addMode=b.dataset.v; am.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); $('#fFind').hidden=addMode!=='exact'; $('#fAddItem').hidden=addMode!=='describe'; if(addMode==='exact') $('#fFindQ').focus(); });
+    $('#fAddItem').onclick=()=>{ const it={id:'it'+Date.now(),type:'',qty:+$('#fQty').value||500,unit:1.00}; S.items.push(it); renderItems(); const rows=document.querySelectorAll('#fItems .itemwrap'); const last=rows[rows.length-1]; if(last){ const n=last.querySelector('.iname'); if(n)n.focus(); } saveDraft(); };
+    const PRODS=((window.STORE&&STORE.products)||[]).map(p=>({id:p.id,ref:(p.id||'').toUpperCase(),name:p.name,supplier:p.supplier||'',img:p.img||p.dept||'tech',price:p.priceGuide||0,moq:p.moq||0,cat:p.cat||''}));
+    const fq=$('#fFindQ'), fr=$('#fFindR');
+    const drawFind=()=>{ const q=fq.value.trim().toLowerCase(); if(!q){ fr.innerHTML=''; fr.hidden=true; return; } fr.hidden=false; const L=PRODS.filter(p=>(p.name+' '+p.ref+' '+p.supplier+' '+p.cat).toLowerCase().includes(q)).slice(0,8);
+      fr.innerHTML=L.length?L.map(p=>`<button type="button" class="fres" data-pick="${esc(p.id)}"><span class="fres-th" style="background-image:url('assets/products/${esc(p.img)}.png')"></span><span class="fres-t"><b>${esc(p.name)}</b><small>${esc(p.ref)} · ${esc(p.supplier)}${p.moq?' · MOQ '+p.moq:''}</small></span><em>${p.price?'from £'+(+p.price).toFixed(2):''}</em><i>Add</i></button>`).join(''):'<p class="fres-none">No products match “'+esc(fq.value)+'”.</p>'; };
+    if(fq){ fq.oninput=drawFind; drawFind(); fr.onclick=e=>{ const b=e.target.closest('[data-pick]'); if(!b) return; const p=PRODS.find(x=>x.id===b.dataset.pick); const it={id:'it'+Date.now(),type:p.name,qty:Math.max(p.moq||0,+$('#fQty').value||500),unit:+(+p.price||1).toFixed(2),prod:{id:p.id,ref:p.ref,name:p.name,supplier:p.supplier,img:p.img}}; S.items.push(it); renderItems(); saveDraft(); b.classList.add('added'); b.querySelector('i').textContent='Added ✓'; setTimeout(()=>{ b.classList.remove('added'); b.querySelector('i').textContent='Add'; },1200); }; }
+    ['#fName','#fUse','#fDesc','#fBudget','#fQty','#fDate','#fPos','#fBNotes'].forEach(s=>{ const el=$(s); if(el)el.addEventListener('input',saveDraft); });
     $('#fBudget').addEventListener('input',runbar);
     $('#fName').addEventListener('input',hint);
     $('#btnNext').onclick=next;

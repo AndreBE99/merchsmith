@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — Emails</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script>if(/[?&]scope=platform\b/.test(location.search)) window.MS_SCOPE='platform';</script>
+<script src="theme.js?v=10"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+a{color:var(--periwinkle-deep);} a:hover{color:var(--periwinkle-ink);}
+.header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
+.main{width:100%;max-width:none;padding:28px var(--page-gutter) 90px;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px var(--page-gutter);}
+.crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
+.crumb .sep{opacity:.6;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:36px;line-height:1;margin:0;}
+.psub{font-size:14px;color:var(--text-soft);margin-top:9px;max-width:680px;line-height:1.55;}
+</style>
+</head>
+<body>
+<header class="header"><div class="brand" data-identity-lockup></div><div class="headtools"></div></header>
+<div class="crumbband"><div class="crumb"><span class="crumb-org">Mojo Promotions</span><span class="sep">›</span><span class="here">Emails</span></div></div>
+<div class="main">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap"><h1 class="ptitle">Emails</h1><button class="pp-btn" id="emNew" hidden onclick="window.MSEMAIL&&MSEMAIL.compose()">+ New email</button></div>
+  <div id="emRoot"></div>
+</div>
+<script src="logos.js"></script>
+<script src="avatars.js"></script>
+<script src="identity.js"></script>
+<script>(function(){var o={distributor:'Mojo Promotions',customer:'Citrix',supplier:'BagWorks UK',admin:'Merchsmith'};var id=(window.MSID&&MSID.current&&MSID.current())||'distributor';document.querySelectorAll('.crumb-org').forEach(function(e){e.textContent=o[id]||o.distributor;});})();</script>
+<script src="names.js?v=2"></script>
+<script src="address.js?v=1"></script>
+<script src="people.js?v=19"></script>
+<script src="store-domain.js?v=3"></script>
+<script src="sidebar.js?v=26"></script>
+<script src="chrome.js?v=3"></script>
+<script src="org-profile.js?v=14"></script>
+<script src="emails.js?v=9"></script>
+<script>
+(function(){ let n=0; const iv=setInterval(()=>{ if(window.MSEMAIL&&window.MSChat||n++>30){ clearInterval(iv); if(window.MSEMAIL){ MSEMAIL.mount(document.getElementById('emRoot')); if(['admin','distributor'].includes(window.MSID&&MSID.current?MSID.current():'distributor')) document.getElementById('emNew').hidden=false; } } },80); })();
+</script>
+</body>
+</html>

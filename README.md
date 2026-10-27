@@ -70,9 +70,10 @@ git submodule update --init --recursive
 ```bash
 cd merchsmith-backend
 pnpm install
-cp .env.example .env   # y completar las variables (ver su propio README/CLAUDE.md)
+doppler setup           # una vez: proyecto merchsmith-backend, config dev (las variables viven en Doppler)
 pnpm prisma:generate
-pnpm start:dev          # http://localhost:3001, Swagger en /api/docs
+pnpm start:dev          # http://localhost:3001, Swagger en /api/docs (arranca con `doppler run --`)
+pnpm prisma:migrate     # migraciones pendientes (también con Doppler; `prisma` a secas ya no ve variables)
 ```
 
 **Frontend** (`merchsmith-frontend/`):
@@ -80,8 +81,8 @@ pnpm start:dev          # http://localhost:3001, Swagger en /api/docs
 ```bash
 cd merchsmith-frontend
 pnpm install
-cp .env.example .env.local   # y completar las variables
-pnpm dev                # http://localhost:3000
+doppler setup           # una vez: proyecto merchsmith-frontend, config dev
+pnpm dev                # http://localhost:3000 (arranca con `doppler run --`)
 ```
 
 El frontend llama a `GET /api/me` contra el backend apenas hay login, así que conviene tener el backend corriendo primero.
@@ -103,7 +104,7 @@ El frontend llama a `GET /api/me` contra el backend apenas hay login, así que c
 
 ## Cosas importantes
 
-- **Secretos**: nunca se versionan `.env` / `.env.local` (solo sus `.env.example`). Cada paquete documenta sus variables en su propio `CLAUDE.md`/`README.md`. `SUPABASE_SERVICE_ROLE_KEY` en particular nunca debe salir del backend.
+- **Secretos**: viven en Doppler (proyectos `merchsmith-backend` y `merchsmith-frontend`, config `dev`); ya no hay `.env` locales. Una variable nueva se añade a Doppler y a su `.env.example` (solo nombres). Nunca se versionan `.env` / `.env.local`. Cada paquete documenta sus variables en su propio `CLAUDE.md`/`README.md`. `SUPABASE_SERVICE_ROLE_KEY` en particular nunca debe salir del backend.
 - **Convención de ramas**: `dev` es la rama de integración en ambos paquetes (con `main` y `release` como ramas separadas). Las ramas de trabajo usan prefijo `feat/` o `fix/` seguido de una descripción corta (ej. `feat/store-filters`, `fix/feed-sync-dedupe-and-single-sync-lock`).
 - **Versionado**: no hay versionado semántico formal entre paquetes; el "estado oficial" del producto es simplemente el par de commits (backend, frontend) que la raíz tiene fijados como submodules en un momento dado.
 - **graphify-out/**: cada paquete y la raíz versionan `graph.json` (y en los paquetes también `GRAPH_REPORT.md`, `manifest.json`, `.graphify_labels.json` + `.sig`) pero **no** archivos locales a la máquina (`.graphify_python`, `.graphify_root`, `cache/`, `cost.json`, backups diarios) ni `graph.html` (se regenera desde `graph.json` con `graphify export html`).

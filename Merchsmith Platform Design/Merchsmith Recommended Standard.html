@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — how we choose Recommended products</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<script>window.MS_SCOPE='platform';</script>
+<script src="theme.js?v=10"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper,#F4F5F8);font-family:var(--sans);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:var(--periwinkle-ink,#3C4279);}
+a:hover{color:var(--periwinkle-deep);}
+.icn{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,2.5vw,36px);}
+
+/* ---- masthead ---- */
+.mast{background:var(--periwinkle-ink,#3C4279);color:#fff;position:relative;overflow:hidden;}
+.mast::before{content:"";position:absolute;inset:0;
+  background:url('assets/merchsmith-outline-art.svg') no-repeat 32% 46%/auto 200%;opacity:.2;}
+.mast .wrap{position:relative;z-index:1;padding-top:58px;padding-bottom:54px;}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:20px;}
+.eyebrow img{height:15px;width:auto;display:block;}
+.eyebrow span{padding:2px 8px;border-radius:5px;background:rgba(255,255,255,.2);letter-spacing:.09em;}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(36px,4.6vw,58px);line-height:1.04;letter-spacing:-.02em;margin:0 0 16px;max-width:19ch;}
+.lede{font-size:17px;line-height:1.62;max-width:64ch;margin:0;}
+.lede + .lede{margin-top:12px;}
+
+/* ---- sections ---- */
+section{padding:56px 0;}
+section.alt{background:#fff;}
+.sechd{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;}
+.secnum{font-family:var(--serif);font-size:15px;color:var(--periwinkle-deep);font-weight:500;}
+h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,2.6vw,34px);letter-spacing:-.015em;margin:0;}
+.sub{font-size:15px;color:var(--ink-2);max-width:72ch;margin:10px 0 30px;}
+
+/* criteria */
+.crit{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:2px;background:var(--line-soft);border:1px solid var(--line-soft);border-radius:16px;overflow:hidden;}
+.crit > div{background:#fff;padding:24px 22px;}
+.crit .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--tint-peri,#eceefb);color:var(--periwinkle-deep);margin-bottom:14px;}
+.crit .ic .icn{width:20px;height:20px;}
+.crit h3{font-family:var(--serif);font-weight:500;font-size:20px;margin:0 0 7px;}
+.crit p{font-size:13.5px;color:var(--ink-2);margin:0 0 12px;line-height:1.58;}
+.crit ul{margin:0;padding-left:17px;}
+.crit li{font-size:12.5px;color:var(--text-soft);margin-bottom:5px;}
+
+/* process steps */
+.steps{display:grid;gap:2px;background:var(--line-soft);border:1px solid var(--line-soft);border-radius:16px;overflow:hidden;}
+.step{background:#fff;display:grid;grid-template-columns:76px 1fr;gap:22px;padding:24px 24px;align-items:start;}
+@media(max-width:620px){.step{grid-template-columns:1fr;gap:10px;}}
+.stepn{font-family:var(--serif);font-size:38px;line-height:1;color:var(--periwinkle);font-weight:500;}
+.step h3{font-family:var(--serif);font-weight:500;font-size:21px;margin:0 0 6px;}
+.step p{font-size:14px;color:var(--ink-2);margin:0;max-width:74ch;}
+.step .who{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--periwinkle-deep);background:var(--tint-peri,#eceefb);border-radius:999px;padding:3px 10px;margin-top:11px;}
+
+/* pull quote */
+.pull{background:var(--periwinkle-ink,#3C4279);color:#fff;border-radius:18px;padding:38px clamp(24px,4vw,48px);}
+.pull p{font-family:var(--serif);font-size:clamp(21px,2.3vw,28px);line-height:1.35;letter-spacing:-.01em;margin:0;max-width:40ch;}
+.pull span{display:block;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:18px;}
+
+/* tiers */
+.tiers{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:760px){.tiers{grid-template-columns:1fr;}}
+.tier{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:26px 24px;}
+.tier.feat{border-color:var(--periwinkle);box-shadow:0 2px 14px rgba(88,96,166,.12);}
+.tiertag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;border-radius:999px;padding:3px 10px;margin-bottom:12px;
+  color:var(--periwinkle-deep);border:1px solid currentColor;}
+.tier .fee{font-family:var(--serif);font-size:38px;line-height:1;letter-spacing:-.02em;margin:0 0 4px;}
+.tier .per{font-size:12.5px;color:var(--ink-3);font-weight:700;}
+.tier p{font-size:13.5px;color:var(--ink-2);margin:14px 0 0;}
+.tier ul{margin:12px 0 0;padding-left:18px;}
+.tier li{font-size:13px;color:var(--ink-2);margin-bottom:6px;}
+
+/* terms */
+.terms{display:grid;gap:12px;}
+.term{background:#fff;border:1px solid var(--line-soft);border-radius:13px;padding:17px 20px;display:grid;grid-template-columns:34px 1fr;gap:15px;align-items:start;}
+.term .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--tint-peri,#eceefb);color:var(--periwinkle-deep);}
+.term b{display:block;font-size:14.5px;margin-bottom:3px;}
+.term span{font-size:13.5px;color:var(--ink-2);}
+.notebox{margin-top:16px;background:#fbeccd;border-radius:13px;padding:15px 19px;display:flex;gap:12px;align-items:flex-start;}
+.notebox svg{width:18px;height:18px;stroke:#9a6b1f;fill:none;stroke-width:1.9;flex:none;margin-top:2px;}
+.notebox p{margin:0;font-size:13.5px;color:#6f4d13;}
+.notebox b{color:#4a3208;}
+
+.foot{background:var(--periwinkle-ink,#3C4279);color:#fff;font-size:12.5px;}
+.foot .wrap{padding:22px 0;display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;}
+.foot a{color:#fff;}
+@media print{.mast::before{display:none;}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="r-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-7 5-12 14-12 0 9-5 13-11 13a3.6 3.6 0 0 1-3-1zM7 17c2-4 5-6 9-7"/></symbol>
+<symbol id="r-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 5.5l4 4M4 20l1-4L16 5a2.1 2.1 0 0 1 3 3L8 19l-4 1z"/></symbol>
+<symbol id="r-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.5 5.9.8-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.8l5.9-.8z"/></symbol>
+<symbol id="r-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l9 9-8 8zM7.5 7.5v.01"/></symbol>
+<symbol id="r-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+<symbol id="r-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+<symbol id="r-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+<symbol id="r-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6zM10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="r-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></symbol>
+<symbol id="r-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3zM12 10v4M12 17v0"/></symbol>
+</defs></svg>
+
+<header class="mast">
+  <div class="wrap">
+    <span class="eyebrow"><img src="assets/merchsmith-wordmark-white.png" alt="Merchsmith"><span>Recommended range</span></span>
+    <h1>Nothing gets recommended because someone paid for it.</h1>
+    <p class="lede">The Recommended range is the shortlist a distributor can trade from on day one without checking anything themselves. That only works if the bar is real, so every product on it has been through the same assessment: seen, handled, branded, costed and timed.</p>
+    <p class="lede">This page sets out how that assessment works, what it costs a supplier, and the terms that come with a placement.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="sechd"><span class="secnum">01</span><h2>The five things we assess</h2></div>
+    <p class="sub">Every product is scored against the same five. A product can be excellent on four and still not make the range — the weakest one decides it, because it is the one that will fail a customer.</p>
+    <div class="crit">
+      <div>
+        <span class="ic"><svg class="icn"><use href="#r-leaf"/></svg></span>
+        <h3>Sustainability</h3>
+        <p>Claims are checked against documents, not marketing copy. We want to know what it is made of, who made it, and what happens at the end of its life.</p>
+        <ul>
+          <li>Certification evidence, not logos</li>
+          <li>Recycled content verified at source</li>
+          <li>Factory audit status</li>
+          <li>Packaging and end-of-life route</li>
+        </ul>
+      </div>
+      <div>
+        <span class="ic"><svg class="icn"><use href="#r-brand"/></svg></span>
+        <h3>Brandability</h3>
+        <p>A product only earns its place if a logo looks right on it. We brand a sample before deciding, because print area on a spec sheet rarely matches print area in the hand.</p>
+        <ul>
+          <li>Print area measured, not quoted</li>
+          <li>Surface tested per method</li>
+          <li>Colour behaviour on the material</li>
+          <li>Origination cost proportionate</li>
+        </ul>
+      </div>
+      <div>
+        <span class="ic"><svg class="icn"><use href="#r-star"/></svg></span>
+        <h3>Uniqueness</h3>
+        <p>The range is a shortlist, not a catalogue. If three suppliers offer near-identical stock we take the best one, and we keep space for products that give a distributor something to say.</p>
+        <ul>
+          <li>Judged against what is already in</li>
+          <li>Design or function worth noting</li>
+          <li>Not a generic import rebadged</li>
+        </ul>
+      </div>
+      <div>
+        <span class="ic"><svg class="icn"><use href="#r-tag"/></svg></span>
+        <h3>Price</h3>
+        <p>Not the cheapest — the right price for what it is. We check that the cost holds at real quantities and that a distributor can make a fair margin without the end price looking silly.</p>
+        <ul>
+          <li>Breaks tested at working volumes</li>
+          <li>Decoration and setup included</li>
+          <li>Margin viable at both ends</li>
+          <li>Benchmarked against the category</li>
+        </ul>
+      </div>
+      <div>
+        <span class="ic"><svg class="icn"><use href="#r-clock"/></svg></span>
+        <h3>Lead time</h3>
+        <p>A quoted lead time is a claim until it has survived a real order. We hold suppliers to the figure they give us, and the range reflects what actually happens, not what was promised.</p>
+        <ul>
+          <li>Verified against delivery history</li>
+          <li>Stock depth and restock cadence</li>
+          <li>Branding time counted in</li>
+          <li>Behaviour under a rush reviewed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sechd"><span class="secnum">02</span><h2>How a product gets there</h2></div>
+    <p class="sub">The order matters. We meet the people who make it before we assess the product, because most of what goes wrong later is a factory problem rather than a product one.</p>
+    <div class="steps">
+      <div class="step"><span class="stepn">1</span><div>
+        <h3>We meet the manufacturer</h3>
+        <p>In person wherever we can, at the factory where we can get there. We want to see the line, understand capacity, and know who we call when an order is at risk. A supplier we cannot reach on a bad day does not belong in a range other people trade from.</p>
+        <span class="who">Merchsmith product team</span>
+      </div></div>
+      <div class="step"><span class="stepn">2</span><div>
+        <h3>We use the product</h3>
+        <p>Samples go into real use — carried, washed, charged, dropped, refilled. Weeks, not minutes. Most rejections happen here, and usually for something that no specification would have told us.</p>
+        <span class="who">Merchsmith product team</span>
+      </div></div>
+      <div class="step"><span class="stepn">3</span><div>
+        <h3>We brand it ourselves</h3>
+        <p>Every candidate is decorated before a decision, in the methods a customer would actually ask for. It tells us what the print area really is, how the surface takes ink, and whether the result is something we would be happy to put a client's logo on.</p>
+        <span class="who">Merchsmith product team</span>
+      </div></div>
+      <div class="step"><span class="stepn">4</span><div>
+        <h3>We cost it honestly</h3>
+        <p>Cost price, decoration, setup, carriage and the breaks that matter at working volumes. We model what a distributor would sell it for and check the margin stands up at both ends.</p>
+        <span class="who">Merchsmith commercial</span>
+      </div></div>
+      <div class="step"><span class="stepn">5</span><div>
+        <h3>We apply the experience</h3>
+        <p>Years of orders tell you things testing cannot: which categories generate complaints, which factories slip in Q4, which products look superb and are returned anyway. That history is the last filter, and it overrules a good score.</p>
+        <span class="who">Merchsmith product team</span>
+      </div></div>
+      <div class="step"><span class="stepn">6</span><div>
+        <h3>The supplier approves the placement</h3>
+        <p>If a product passes, we propose it to the supplier with its tier and terms — and, from Phase 2, its monthly charge. Nothing appears in any distributor's store until they accept.</p>
+        <span class="who">Supplier decision</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="pull">
+      <p>A supplier can pay to be assessed sooner. No supplier can pay to pass.</p>
+      <span>The rule the range depends on</span>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="sechd"><span class="secnum">03</span><h2>The two tiers</h2></div>
+    <p class="sub">Both tiers clear the same assessment. The difference is placement, not standard: Featured products surface first in search and are eligible for the homepage and best-seller positions.</p>
+    <div class="tiers">
+      <div class="tier">
+        <span class="tiertag">Recommended</span>
+        <div class="fee">£5<span class="per"> / product / month</span></div>
+        <p>Included in the Recommended range that every distributor can trade from by default.</p>
+        <ul>
+          <li>Appears in the default store range</li>
+          <li>Full product data maintained by Merchsmith</li>
+          <li>Ranked normally in search and category pages</li>
+        </ul>
+      </div>
+      <div class="tier feat">
+        <span class="tiertag">Featured</span>
+        <div class="fee">£60<span class="per"> / product / month</span></div>
+        <p>Everything above, plus priority placement across the storefront.</p>
+        <ul>
+          <li>Sorts above standard products in listings</li>
+          <li>Eligible for homepage and best-seller placements</li>
+          <li>Carries a Featured badge on the product card</li>
+          <li>Excluded from fully bespoke distributor ranges</li>
+        </ul>
+      </div>
+    </div>
+    <div class="notebox">
+      <svg><use href="#r-warn"/></svg>
+      <p><b>Placement is free during MVP.</b> Recommended and Featured are a curation flag we set to influence store visibility — no supplier is charged. The fees below are a <b>Phase 2</b> model, built into the platform and switched on later. Until then, everything described here runs without a charge, so suppliers can see exactly how it will work before it costs anything.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sechd"><span class="secnum">04</span><h2>Terms of a placement</h2></div>
+    <p class="sub">Short, and the same for everyone.</p>
+    <div class="terms">
+      <div class="term"><span class="ic"><svg class="icn"><use href="#r-check"/></svg></span><div>
+        <b>Approval first</b>
+        <span>Merchsmith proposes a placement with its tier and charge. It goes live only once the supplier accepts, and a supplier may decline without affecting anything else in their account.</span>
+      </div></div>
+      <div class="term"><span class="ic"><svg class="icn"><use href="#r-cal"/></svg></span><div>
+        <b>Charged in whole months</b>
+        <span>Placement is billed by the month, never pro-rated: a month started is a month charged. Withdrawing a product costs one further whole month — pull it half way through its third month and four months are charged. There is no term beyond that.</span>
+      </div></div>
+      <div class="term"><span class="ic"><svg class="icn"><use href="#r-card"/></svg></span><div>
+        <b>Monthly, by direct debit</b>
+        <span>Fees are collected monthly by Stripe Direct Debit against the mandate on the supplier's account. One invoice per month covering every placement, itemised by product.</span>
+      </div></div>
+      <div class="term"><span class="ic"><svg class="icn"><use href="#r-clock"/></svg></span><div>
+        <b>Leave whenever</b>
+        <span>A supplier can withdraw a product at any time, and Merchsmith can remove one at any time if it stops meeting the standard. Either way the closing whole month applies and nothing further is charged.</span>
+      </div></div>
+      <div class="term"><span class="ic"><svg class="icn"><use href="#r-bell"/></svg></span><div>
+        <b>Changes are published</b>
+        <span>Every addition, tier change and removal is dated and written to a change log that suppliers and distributors can both see. A distributor whose store loses a product is told, so they can add it back to their own range if they want to keep selling it.</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <span>© 2026 Merchsmith · Recommended range selection standard</span>
+    <span><a href="Merchsmith Supplier Portal.html">Supplier portal</a> · <a href="Merchsmith Admin.html">Platform admin</a></span>
+  </div>
+</footer>
+</body>
+</html>

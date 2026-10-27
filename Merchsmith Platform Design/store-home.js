@@ -19,10 +19,10 @@
    on top, so a "reset" always restores the shipped homepage.
    ============================================================ */
 window.MSHOME = (function(){
-  const KEY='ms-store-home';
+  const KEY = window.MS_SCOPE==='platform' ? 'ms-store-home:platform' : 'ms-store-home';
 
   // ---- shipped defaults: these mirror the store's original homepage exactly ----
-  const DEFAULT_ORDER=['hero','usps','marquee','statement','bestsellers','spotlight','ecoband','discover','brands','quotes','recent','steps','faq','newsletter'];
+  const DEFAULT_ORDER=['hero','usps','marquee','statement','bestsellers','ecoband','discover','brands','quotes','recent','steps','faq','newsletter'];
   const DEFAULTS={
     hero:{ label:'Hero banner', on:true,
       headline:'Good merch, for brands that mean it.',
@@ -39,7 +39,6 @@ window.MSHOME = (function(){
       pre:'We brand the most beautiful, ', hl:'sustainable', post:' products so your brand shines in real life.',
       linkText:'View all products', linkHref:'#section=essentials' },
     bestsellers:{ label:'Best sellers', on:true, heading:'Our best sellers', productIds:[] },
-    spotlight:{ label:'Spotlight product', on:true, heading:'In the spotlight' },
     ecoband:{ label:'Sustainability band', on:true, bg:'',
       heading:'Merch that means it.',
       body:'Every product carries a sustainability score so you can choose with confidence — recycled, biodegradable and responsibly made, with the impact made clear.',
@@ -77,8 +76,9 @@ window.MSHOME = (function(){
 
   let OV=null; // overrides { order?:[], sections:{ id:{on?,…} } }
   function load(){ if(OV) return OV; try{ const s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s&&typeof s==='object') OV=s; }catch(e){} if(!OV) OV={sections:{}}; if(!OV.sections)OV.sections={};
-    // migration m1: 'spotlight' section shipped after some stores saved a custom order — insert it once
-    if(OV.order&&OV.order.length&&!OV._m1){ OV._m1=1; if(!OV.order.some(id=>String(id).split('~')[0]==='spotlight')){ const i=OV.order.indexOf('bestsellers'); OV.order.splice(i<0?Math.min(5,OV.order.length):i+1,0,'spotlight'); } save(); }
+    // migration m2: the Spotlight tier was retired, so its homepage section has no source —
+    // strip it from any saved order (m1 previously inserted it, so this supersedes it)
+    if(OV.order&&OV.order.length&&!OV._m2){ OV._m2=1; OV.order=OV.order.filter(id=>String(id).split('~')[0]!=='spotlight'); if(OV.sections) delete OV.sections.spotlight; save(); }
     return OV; }
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(load())); }catch(e){} }
 

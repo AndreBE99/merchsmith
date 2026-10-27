@@ -27,7 +27,7 @@
           <div class="trend">${d.trend.map(v=>`<span class="bar" style="height:${v}%"></span>`).join('')}</div></div>
         <div class="card"><div class="card-h"><h3>Top distributors by GMV</h3><a href="Merchsmith Admin.html">View all ›</a></div>${ranks(d.leaderboard)}</div>
       </div><div>
-        <div class="card"><h3>Needs attention</h3><p class="ch-sub">Billing, risk &amp; trials</p>${tlist(d.tasks)}</div>
+        <div class="card"><h3>Needs attention</h3><p class="ch-sub">Billing, risk &amp; onboarding</p>${tlist(d.tasks)}</div>
         <div class="card"><h3>System health</h3><div class="health">${d.health.map(h=>`<div class="hrow"><span>${esc(h.k)}</span><b>${esc(h.v)}</b></div>`).join('')}</div></div>
         <div class="card"><h3>Recent activity</h3>${alist(d.activity)}</div>
       </div></div>`;
@@ -81,7 +81,7 @@
   function greet(d,actions){
     const hr=new Date().getHours(); const g=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
     return `<div class="greet"><div><h1>${g}, ${esc(d.who.split(' ')[0])}</h1>
-      <div class="sub">${esc(d.role)} · ${esc(d.org)} · here's what needs you today.</div></div>
+      <div class="sub">${esc(d.role)} · ${esc(d.org)}</div></div>
       <div class="actions">${actions.join('')}</div></div>`;
   }
 

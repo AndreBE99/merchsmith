@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchsmith — My profile</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script src="theme.js?v=10"></script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px var(--page-gutter);}
+.crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;}
+.crumb .sep{opacity:.6;}
+.main{width:100%;max-width:none;padding:30px var(--page-gutter) 90px;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1;letter-spacing:-.01em;margin:0 0 22px;}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;align-items:start;}
+@media(max-width:980px){.cols{grid-template-columns:1fr;}}
+.card{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:22px 24px;}
+.card + .card{margin-top:16px;}
+.card h2{font-family:var(--serif);font-weight:500;font-size:21px;margin:0 0 4px;}
+.card .sub{font-size:13px;color:var(--ink-3);margin:0 0 16px;}
+.idrow{display:flex;align-items:center;gap:20px;margin-bottom:20px;flex-wrap:wrap;}
+.bigav{width:104px;height:104px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-size:36px;font-weight:800;overflow:hidden;flex:none;}
+.bigav img{width:100%;height:100%;object-fit:cover;}
+.idrow b{display:block;font-size:20px;font-family:var(--serif);font-weight:500;}
+.idrow span.meta{font-size:13px;color:var(--ink-3);}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;}
+@media(max-width:620px){.grid{grid-template-columns:1fr;}}
+.f{display:grid;gap:5px;}
+.f span{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);}
+.f input{font-family:var(--sans);font-size:14px;color:var(--ink);border:1.5px solid var(--line-soft);border-radius:10px;padding:10px 12px;background:#fff;}
+.f input:focus{outline:0;border-color:var(--periwinkle);}
+.f input[readonly]{background:var(--paper);color:var(--ink-3);}
+.btn{font-family:var(--sans);font-size:13.5px;font-weight:800;color:#fff;background:var(--periwinkle-deep);border:0;border-radius:10px;padding:10px 18px;cursor:pointer;}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line-soft);}
+.btn.ghost:hover{border-color:var(--periwinkle);}
+.btn.sm{font-size:12px;padding:7px 12px;border-radius:8px;}
+.savebar{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:9px 16px;font-size:13.5px;}
+.kv .k{color:var(--ink-3);font-weight:700;}
+.kv .v{color:var(--ink);font-weight:700;text-align:right;}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid var(--paper-2);}
+.tog:last-child{border-bottom:0;}
+.tog b{display:block;font-size:13.5px;}
+.tog span{font-size:12px;color:var(--ink-3);}
+.sw{position:relative;width:40px;height:23px;border-radius:999px;background:var(--line-soft);border:0;cursor:pointer;flex:none;transition:background .15s;}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s;}
+.sw[aria-checked="true"]{background:var(--periwinkle-deep);}
+.sw[aria-checked="true"]::after{left:20px;}
+.note{font-size:12px;color:var(--ink-3);margin:12px 0 0;}
+</style>
+</head>
+<body>
+<header class="header"><div class="brand" data-identity-lockup></div></header>
+<div class="crumbband"><div class="crumb"><span class="here">My profile</span></div></div>
+
+<main class="main">
+  <h1 class="ptitle">My profile</h1>
+  <div class="cols">
+    <div>
+      <div class="card">
+        <h2>Your details</h2>
+        <p class="sub">How you appear to your team and on projects, comments and notes.</p>
+        <div class="idrow">
+          <span class="bigav" id="pfAv"></span>
+          <div><b id="pfName"></b><span class="meta" id="pfMeta"></span>
+            <div class="btns"><label class="btn ghost sm">Upload photo<input type="file" accept="image/*" id="pfFile" hidden></label>
+              <button class="btn ghost sm" id="pfClear" hidden>Remove photo</button></div></div>
+        </div>
+        <div class="grid">
+          <label class="f"><span>Full name</span><input id="fN"></label>
+          <label class="f"><span>Job title</span><input id="fT"></label>
+          <label class="f"><span>Email</span><input id="fE" type="email"></label>
+          <label class="f"><span>Telephone</span><input id="fP"></label>
+        </div>
+        <div class="savebar"><button class="btn ghost" id="pfReset">Discard changes</button><button class="btn" id="pfSave">Save profile</button></div>
+      </div>
+
+      <div class="card">
+        <h2>Notifications</h2>
+        <p class="sub">Choose how you hear about approvals, comments and orders.</p>
+        <div id="pfNotify"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h2>Organisation</h2>
+        <p class="sub">Set by an admin in your organisation.</p>
+        <div class="kv" id="pfOrg"></div>
+      </div>
+      <div class="card">
+        <h2>Sign-in &amp; security</h2>
+        <p class="sub">Handled by your organisation's sign-in once the platform goes live.</p>
+        <div id="pfSec"></div>
+        <p class="note">Password changes and two-factor set-up connect to the live sign-in service; in this prototype the switches record your preference only.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script src="sidebar.js?v=26"></script>
+<script src="chrome.js?v=3"></script>
+<script src="avatars.js"></script>
+<script src="product-notes.js?v=5"></script>
+<script src="names.js?v=2"></script>
+<script src="address.js?v=1"></script>
+<script src="people.js?v=11"></script>
+<script>
+(function(){
+  const P=window.MSPEOPLE, id=MSID.current(), base=MSID.all[id]||{};
+  const ORG={distributor:'Mojo Promotions',customer:'Citrix',supplier:'BagWorks UK',admin:'Merchsmith'}[id]||'—';
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  let pic; // undefined unchanged · '' removed · data URL new
+  function cur(){ const g=MSID.get(); const m=P.me(id);
+    return {n:g.who||'', title:m.title||g.title||g.role||'', email:m.email||g.email||'', tel:m.tel||g.tel||'',
+      notify:Object.assign({email:true,sms:false,weekly:true,mentions:true},m.notify||{}), sec:Object.assign({twofa:false},m.sec||{})}; }
+  function paintAv(n,url){ const a=document.getElementById('pfAv');
+    a.innerHTML=url?`<img src="${esc(url)}" alt="">`:esc(P.initials(n)); document.getElementById('pfClear').hidden=!url; }
+  function load(){ const c=cur(); pic=undefined;
+    document.getElementById('pfName').textContent=c.n;
+    document.getElementById('pfMeta').textContent=(c.title?c.title+' · ':'')+ORG;
+    ['fN','fT','fE','fP'].forEach((k,i)=>document.getElementById(k).value=[c.n,c.title,c.email,c.tel][i]);
+    paintAv(c.n,P.photo({n:c.n,photo:base.photo}));
+    const T=[['email','Email','Approvals, comments and order updates'],['mentions','When I\'m @mentioned','Notes and comments that name you'],['sms','Text messages','Urgent deadlines and delivery changes only'],['weekly','Weekly digest','A Monday summary of your projects']];
+    document.getElementById('pfNotify').innerHTML=T.map(([k,l,d])=>`<div class="tog"><div><b>${l}</b><span>${d}</span></div><button class="sw" role="switch" aria-checked="${!!c.notify[k]}" data-n="${k}" aria-label="${l}"></button></div>`).join('');
+    document.getElementById('pfSec').innerHTML=`<div class="tog"><div><b>Two-factor sign-in</b><span>A code from your phone at each sign-in</span></div><button class="sw" role="switch" aria-checked="${!!c.sec.twofa}" data-s="twofa" aria-label="Two-factor sign-in"></button></div>
+      <div class="tog"><div><b>Password</b><span>Last changed — not recorded in the prototype</span></div><button class="btn ghost sm" id="pfPw">Change</button></div>`;
+    document.getElementById('pfOrg').innerHTML=`<span class="k">Organisation</span><span class="v">${esc(ORG)}</span>
+      <span class="k">Role</span><span class="v">${esc(P.normRole(base.role||'—'))}</span><span class="k">Signed in as</span><span class="v">${esc(base.label||id)}</span>`;
+    document.querySelectorAll('[data-n],[data-s]').forEach(b=>b.onclick=()=>{ b.setAttribute('aria-checked',b.getAttribute('aria-checked')!=='true'); });
+    document.getElementById('pfPw').onclick=()=>P.toast('Password changes connect to the live sign-in service');
+  }
+  document.getElementById('pfFile').onchange=async e=>{ try{ pic=await P.readPhoto(e.target.files[0]); paintAv(document.getElementById('fN').value,pic); }catch(err){ P.toast(err.message); } };
+  document.getElementById('pfClear').onclick=()=>{ pic=''; paintAv(document.getElementById('fN').value,null); };
+  document.getElementById('pfReset').onclick=load;
+  if(window.MSNAME) MSNAME.upgrade(document.getElementById('fN'),{pref:true});
+  document.getElementById('pfSave').onclick=()=>{
+    const n=document.getElementById('fN').value.trim(); if(!n){ document.getElementById('fN').focus(); return; }
+    const email=document.getElementById('fE').value.trim();
+    if(email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ document.getElementById('fE').focus(); P.toast('That email address does not look right'); return; }
+    const notify={}, sec={};
+    document.querySelectorAll('[data-n]').forEach(b=>notify[b.dataset.n]=b.getAttribute('aria-checked')==='true');
+    document.querySelectorAll('[data-s]').forEach(b=>sec[b.dataset.s]=b.getAttribute('aria-checked')==='true');
+    const f={n,title:document.getElementById('fT').value.trim(),email,tel:document.getElementById('fP').value.trim(),notify,sec};
+    const prevName=MSID.get().who;
+    if(pic!==undefined) f.photo=pic;
+    // a photo already uploaded under the old name follows a rename
+    if(pic===undefined&&prevName&&prevName!==n){ const old=P.photo({n:prevName}); if(old&&/^data:/.test(old)) f.photo=old; }
+    if(window.MSNAME){ const np=MSNAME.parts(document.getElementById('fN')); if(np.firstName!==undefined){ if(!np.firstName){ document.querySelector('[data-nm="first"]').focus(); P.toast('Add a first name'); return; } Object.assign(f,np); } }
+    P.saveMe(id,f);
+    if(pic===''){ try{ const s=JSON.parse(localStorage.getItem('ms-people')||'{}'); if(s.photos){ delete s.photos[n.toLowerCase()]; localStorage.setItem('ms-people',JSON.stringify(s)); } }catch(e){} }
+    P.toast('Profile saved'); setTimeout(()=>location.reload(),600);
+  };
+  load();
+})();
+</script>
+</body>
+</html>

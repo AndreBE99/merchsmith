@@ -71,7 +71,7 @@
     panel.innerHTML=`<div class="imp-page">
       <div class="imp-pagehd">
         <button class="imp-back" data-ix><svg class="icn" style="width:15px;height:15px;transform:rotate(180deg)"><use href="#a-arr"/></svg>${S.supId?'Back to supplier':'Back to products'}</button>
-        <div class="imp-pagetitle"><h1 class="ptitle">Import products</h1><p class="psub">Bring a supplier's catalogue into the platform — upload a feed, map it to the platform fields, preview, and import.</p></div>
+        <div class="imp-pagetitle"><h1 class="ptitle">Import products</h1></div>
       </div>
       <div class="imp-steps" id="impSteps"></div>
       <div class="imp-body" id="impBody"></div>

@@ -30,8 +30,7 @@
       {k:'linkText',t:'text',label:'Link label'},
       {k:'linkHref',t:'text',label:'Link URL'}
     ],
-    bestsellers:[{k:'heading',t:'text',label:'Heading'},{k:'productIds',t:'curate',label:'Curated products'}],
-    spotlight:[{k:'heading',t:'text',label:'Tag line'}],
+    bestsellers:[{k:'heading',t:'text',label:'Heading'},{k:'productIds',t:'curate',label:'Chosen products'}],
     ecoband:[
       {k:'heading',t:'text',label:'Heading'},
       {k:'bg',t:'color',label:'Background colour',options:[['','Green (default)','#1f8a5b'],['#5860A6','Periwinkle','#5860A6'],['#222222','Ink','#222222'],['#6f7390','Slate','#6f7390']]},
@@ -59,8 +58,7 @@
     ],
     newsletter:[{k:'heading',t:'text',label:'Heading'}]
   };
-  const NOTE={ bestsellers:'Pick the exact products to feature, in order. Leave empty to auto-pick your best sellers by usage — Featured and Spotlight products get a placement boost automatically.',
-    spotlight:'Shows products on the Spotlight placement tier (rotating if several). Nothing renders if no product is on Spotlight — or if your range is fully bespoke, which carries no promoted placements.',
+  const NOTE={ bestsellers:'Pick the exact products to feature, in order. Leave empty to auto-pick your best sellers by usage — Featured products get a placement boost automatically.',
     recent:'Products are chosen automatically from your live range (most recently added).' };
   // icon choices for trust badges (store SVG symbols)
   const ICONS=[['s-leaf','Leaf / eco'],['s-print','Proof / print'],['s-truck','Delivery'],['s-check','Check'],['s-bag','Bag'],['s-store','Store'],['s-search','Search'],['s-plus','Plus'],['s-arr','Arrow']];
@@ -126,16 +124,14 @@
     const ord=MSHOME.order();
     const shown=ord.filter(id=>MSHOME.isOn(id)).length;
     p.innerHTML=`
-      <div class="card">
-        <div class="card-h"><h2>Store homepage</h2><span class="tag">${shown} of ${ord.length} sections shown</span></div>
-        <p class="sh-intro">Show, hide, reorder and edit each section of your customer-facing store homepage. Changes save instantly and appear on the live store. Use the toggle to hide a section, the arrows to reorder, and <b>Edit</b> to change the copy.</p>
-        <div class="sh-prefrow">
-          <div class="sh-name"><b>Only show products with an image</b><span>Hides any product without a photo from every store listing until one is added.</span></div>
-          <button class="sh-tog ${MSHOME.getPref&&MSHOME.getPref('imgOnly')?'on':''}" id="shImgOnly" role="switch" aria-checked="${!!(MSHOME.getPref&&MSHOME.getPref('imgOnly'))}"></button>
-        </div>
-        <div class="sh-actions"><a class="btn sm" href="Merchsmith Store.html" target="_blank">Preview store \u2197</a><button class="btn ghost sm" id="shResetAll">Reset homepage to default</button></div>
-      </div>
-      <div class="sh-cards">${ord.map((id,i)=>card(id,i,ord.length)).join('')}</div>`;
+      <div class="sh-cards">${ord.map((id,i)=>card(id,i,ord.length)).join('')}</div>
+      <div class="sh-foot"><button class="btn ghost sm" id="shResetAll">Reset homepage to default</button></div>`;
+    // "Preview store" sits top-right, level with the page title, while this panel is open
+    const ttl=document.getElementById('setTitle'); if(ttl){ let row=ttl.parentElement.classList.contains('sh-titlerow')?ttl.parentElement:null;
+      if(!row){ row=document.createElement('div'); row.className='sh-titlerow'; ttl.before(row); row.appendChild(ttl);
+        const a=document.createElement('a'); a.id='shPreview'; a.className='btn sm'; a.target='_blank'; a.rel='noopener'; a.textContent='Preview store \u2197'; row.appendChild(a);
+        new MutationObserver(()=>{ a.hidden=p.hidden; }).observe(p,{attributes:true,attributeFilter:['hidden']}); }
+      const pv=document.getElementById('shPreview'); pv.href='Merchsmith Store.html'+(window.MS_SCOPE==='platform'?'?store=merchsmith':''); pv.hidden=p.hidden; }
     wire();
   }
   function confirmInline(msg, cb){
@@ -189,7 +185,9 @@
     .sh-intro{font-size:13.5px;color:var(--ink-2,#55524a);line-height:1.55;margin:6px 0 14px;max-width:70ch;}
     .sh-actions{display:flex;gap:10px;flex-wrap:wrap;}
     .sh-prefrow{display:flex;align-items:center;gap:14px;border:1.5px solid var(--line-soft,#e5e3dd);border-radius:12px;padding:12px 15px;margin:0 0 14px;background:var(--paper,#F4F5F8);}
-    .sh-cards{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
+    .sh-foot{display:flex;justify-content:flex-start;margin:22px 0 0;padding-top:18px;border-top:1px solid var(--line-soft);}
+  .sh-titlerow{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;} .sh-titlerow #shPreview{white-space:nowrap;flex:none;text-decoration:none;align-self:center;} .sh-titlerow #shPreview[hidden]{display:none;}
+  .sh-cards{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
     .sh-card{border:1.5px solid var(--line-soft,#e5e3dd);border-radius:14px;background:#fff;overflow:hidden;transition:border-color .14s;}
     .sh-card.sh-open{border-color:var(--periwinkle,#9aa3d8);}
     .sh-card.sh-off{background:var(--paper-2,#f6f6fb);}

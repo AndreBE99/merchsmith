@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mojo Promotions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script src="theme.js?v=10"></script>
+<script src="store-appearance.js?v=4"></script>
+<script>if(!/[?&]store=merchsmith\b/.test(location.search)&&window.MSAPPEAR) MSAPPEAR.apply();</script>
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#fff;font-family:var(--sans);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
+a{color:var(--periwinkle-deep);}
+a:hover{color:var(--ink);}
+.icn{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+
+/* store header + breadcrumb band — matched to Merchsmith Store.html so the
+   content pages sit in the same chrome as the rest of the store */
+.header{background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
+.brand{display:flex;align-items:center;gap:14px;}
+.mojo{font-family:"Fredoka",var(--sans);font-weight:600;font-size:28px;line-height:1;color:var(--flare);}
+.headtools{display:flex;align-items:center;gap:14px;}
+.headtools .it{position:relative;color:var(--ink-2);cursor:pointer;}
+.headtools .icn{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.headtools .badge{position:absolute;top:-6px;right:-7px;background:var(--flare);color:#fff;font-size:9.5px;font-weight:800;border-radius:999px;min-width:15px;height:15px;display:grid;place-items:center;padding:0 3px;}
+.account{background:none;border:0;padding:0;cursor:pointer;}
+.account .av{width:30px;height:30px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px;}
+.storeband{background:var(--slate,#51768c);color:#fff;padding:13px var(--page-gutter);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.crumb{font-size:13.5px;font-weight:600;display:flex;gap:8px;align-items:center;}
+.crumb a{text-decoration:none;cursor:pointer;color:#fff;}
+.crumb a:hover{text-decoration:underline;}
+.crumb .here{font-weight:700;}
+.crumb .sep{opacity:.6;}
+.storecats{display:flex;gap:20px;font-size:14px;font-weight:600;}
+.storecats a{text-decoration:none;cursor:pointer;color:#fff;opacity:.92;}
+.storecats a:hover{opacity:1;}
+
+.wrap{width:100%;max-width:none;padding:0 var(--page-gutter);}
+
+/* hero */
+.phero{padding:56px 0 34px;border-bottom:1px solid var(--line-soft);}
+.pkick{font-size:10.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:13px;}
+.phero h1{font-family:var(--serif);font-weight:500;font-size:46px;line-height:1.08;letter-spacing:-.02em;margin:0 0 14px;text-wrap:pretty;}
+@media(max-width:700px){.phero h1{font-size:34px;}}
+.pstand{font-size:17px;line-height:1.6;color:var(--ink-2);max-width:62ch;margin:0;text-wrap:pretty;}
+.previewed{font-size:12.5px;color:var(--muted);font-weight:600;margin:16px 0 0;}
+
+/* editorial sections */
+.psec{padding:40px 0;border-bottom:1px solid var(--paper-2);display:grid;grid-template-columns:1fr;gap:26px;}
+.psec.hasimg{grid-template-columns:1.25fr 1fr;align-items:start;gap:40px;}
+@media(max-width:820px){.psec.hasimg{grid-template-columns:1fr;}}
+.psec h2{font-family:var(--serif);font-weight:500;font-size:26px;letter-spacing:-.01em;margin:0 0 12px;}
+.psec p{font-size:15px;line-height:1.7;color:var(--ink-2);margin:0;max-width:66ch;text-wrap:pretty;}
+.pimg{aspect-ratio:4/3;background:var(--paper);border:1px solid var(--line-soft);border-radius:13px;display:grid;place-items:center;text-align:center;padding:20px;}
+.pimg span{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--line);line-height:1.5;}
+
+/* stat band */
+.pstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);border-radius:14px;overflow:hidden;margin:40px 0;}
+.pstat{background:#fff;padding:22px 20px;}
+.pstat b{display:block;font-family:var(--serif);font-weight:500;font-size:30px;letter-spacing:-.015em;line-height:1.1;color:var(--periwinkle-deep);}
+.pstat span{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+
+/* cta */
+.pcta{background:var(--paper);border-radius:16px;padding:34px 32px;margin:40px 0 64px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+.pcta h3{font-family:var(--serif);font-weight:500;font-size:26px;margin:0 0 6px;}
+.pcta p{font-size:14px;color:var(--ink-2);margin:0;max-width:52ch;}
+.btn{display:inline-flex;align-items:center;gap:9px;background:var(--periwinkle-deep);color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;border:0;border-radius:10px;padding:12px 22px;cursor:pointer;text-decoration:none;}
+.btn:hover{filter:brightness(1.08);color:#fff;}
+.btn.ghost{background:none;color:var(--periwinkle-deep);border:1.5px solid var(--line-soft);}
+.btn.ghost:hover{border-color:var(--periwinkle-deep);filter:none;}
+
+/* legal clauses */
+.plegal{display:grid;grid-template-columns:230px minmax(0,1fr);gap:44px;padding:38px 0 60px;}
+@media(max-width:860px){.plegal{grid-template-columns:1fr;gap:26px;}}
+.ptoc{position:sticky;top:78px;align-self:start;}
+.ptoc h4{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 11px;}
+.ptoc a{display:block;font-size:13px;color:var(--ink-2);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid var(--line-soft);line-height:1.4;}
+.ptoc a:hover{border-color:var(--periwinkle);color:var(--periwinkle-deep);}
+.pclause{padding-bottom:28px;scroll-margin-top:90px;}
+.pclause h2{font-size:17px;font-weight:800;margin:0 0 8px;display:flex;gap:11px;}
+.pclause h2 i{font-style:normal;color:var(--muted);font-weight:700;flex:none;}
+.pclause p{font-size:14.5px;line-height:1.7;color:var(--ink-2);margin:0;max-width:66ch;white-space:pre-line;}
+.ptodo{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#9a6b1f;background:#fbeccd;border-radius:999px;padding:2px 9px;margin-bottom:7px;}
+
+/* faq */
+.pfaq{padding:30px 0 60px;}
+.pfgroup{margin-bottom:34px;}
+.pfgroup h2{font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;}
+.pq{border-bottom:1px solid var(--line-soft);}
+.pq summary{cursor:pointer;list-style:none;padding:16px 34px 16px 0;font-size:15.5px;font-weight:700;position:relative;}
+.pq summary::-webkit-details-marker{display:none;}
+.pq summary::after{content:'';position:absolute;right:6px;top:22px;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .18s;}
+.pq[open] summary::after{transform:rotate(-135deg);}
+.pq summary:hover{color:var(--periwinkle-deep);}
+.pq .pa{font-size:14.5px;line-height:1.7;color:var(--ink-2);padding:0 40px 18px 0;margin:0;max-width:70ch;}
+
+/* contact */
+.pcontact{display:grid;grid-template-columns:1.15fr 1fr;gap:48px;padding:38px 0 64px;}
+@media(max-width:820px){.pcontact{grid-template-columns:1fr;gap:32px;}}
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.fld input,.fld textarea,.fld select{width:100%;font-family:var(--sans);font-size:14px;color:var(--ink);background:#fff;border:1.5px solid var(--line-soft);border-radius:10px;padding:11px 13px;}
+.fld textarea{min-height:120px;resize:vertical;}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:0;border-color:var(--periwinkle);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:540px){.frow{grid-template-columns:1fr;}}
+.sent{background:var(--tint-green);border:1px solid var(--green-deep);border-radius:12px;padding:20px 22px;}
+.sent b{display:block;font-size:15px;margin-bottom:4px;}
+.sent span{font-size:13.5px;color:var(--ink-2);}
+.cdetail{background:var(--paper);border-radius:14px;padding:24px;}
+.cdetail h3{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;}
+.cdetail .row{display:flex;gap:11px;align-items:flex-start;font-size:14px;color:var(--ink-2);padding:7px 0;}
+.cdetail .row svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;color:var(--periwinkle-deep);flex:none;margin-top:3px;}
+.cdetail .row a{text-decoration:none;font-weight:600;}
+.cdetail address{font-style:normal;white-space:pre-line;line-height:1.6;}
+.cdetail hr{border:0;border-top:1px solid var(--line-soft);margin:18px 0;}
+
+/* edit hint */
+.pedit{max-width:1080px;margin:0 auto;padding:12px 30px 0;}
+.pedit a{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;}
+.pedit a:hover{color:var(--periwinkle-deep);}
+.pmiss{max-width:620px;margin:80px auto;text-align:center;}
+.pmiss h1{font-family:var(--serif);font-weight:500;font-size:30px;margin:0 0 10px;}
+.pmiss p{color:var(--ink-2);font-size:15px;}
+</style>
+<style id="noImgLine">/* store product cards: no hairline or shadow around the image cards (the polish pass added one) */
+html.ui-polish .pcard,html.ui-polish .pcard:hover{border:0!important;box-shadow:none!important;}</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="s-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l1 13H5zM9 7a3 3 0 0 1 6 0"/></symbol>
+  <symbol id="s-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3"/></symbol>
+</defs></svg>
+
+<header class="header">
+  <div class="brand" data-identity-lockup></div>
+  <div class="headtools">
+    <a class="it" href="Merchsmith Basket.html" title="Basket"><svg class="icn"><use href="#s-bag"/></svg><span class="badge">3</span></a>
+    <span class="it" title="Search"><svg class="icn"><use href="#s-search"/></svg></span>
+    <button class="account it" title="Account"><span class="av">JD</span></button>
+  </div>
+</header>
+
+<div class="storeband">
+  <div class="crumb" id="crumb"></div>
+  <nav class="storecats">
+    <a href="Merchsmith Store.html">Back to store</a>
+  </nav>
+</div>
+
+<main id="main"></main>
+
+<div class="pedit" id="editHint"></div>
+
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script src="sidebar.js?v=26"></script>
+<script src="site-content.js"></script>
+<script src="chrome.js?v=3"></script>
+<script>
+(function(){
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const slug=(new URLSearchParams(location.search)).get('p')||'about';
+  const p=window.MSSITE?MSSITE.page(slug):null;
+  const main=document.getElementById('main');
+
+  if(!p){
+    main.innerHTML=`<div class="pmiss"><h1>Page not found</h1>
+      <p>No content page is registered as <b>${esc(slug)}</b>. Add it in Distributor Settings → Pages.</p>
+      <p><a href="Merchsmith Store.html">Back to the store</a></p></div>`;
+    const crm=document.getElementById('crumb');
+    if(crm) crm.innerHTML='<span class="here">Page not found</span>';
+    return;
+  }
+  document.title=p.title+' · Mojo Promotions';
+
+  // breadcrumb: [section] › this page
+  const cr=document.getElementById('crumb');
+  if(cr) cr.innerHTML=(p.nav?`<span>${esc(p.nav)}</span><span class="sep">›</span>`:'')
+    +`<span class="here">${esc(p.title)}</span>`;
+
+  const TODO_RE=/Replace this with your own wording\.|needs your own wording/;
+  const hero=(extra)=>`<div class="phero"><div class="wrap">
+      ${p.nav?`<div class="pkick">${esc(p.nav)}</div>`:''}
+      <h1>${esc(p.title)}</h1>
+      ${p.standfirst?`<p class="pstand">${esc(p.standfirst)}</p>`:''}
+      ${extra||''}
+    </div></div>`;
+
+  function editorial(){
+    const secs=(p.sections||[]).map(s=>`<div class="psec ${s.img?'hasimg':''}">
+        <div><h2>${esc(s.h)}</h2><p>${esc(s.body)}</p></div>
+        ${s.img?'<div class="pimg"><span>Image<br>drop one in here</span></div>':''}
+      </div>`).join('');
+    const stats=(p.stats||[]).length?`<div class="pstats">${p.stats.map(s=>
+        `<div class="pstat"><b>${esc(s.v)}</b><span>${esc(s.l)}</span></div>`).join('')}</div>`:'';
+    const cta=p.cta?`<div class="pcta"><div><h3>${esc(p.cta.h)}</h3><p>${esc(p.cta.b)}</p></div>
+        <a class="btn" href="${MSSITE.url('contact')}">${esc(p.cta.t)}</a></div>`:'';
+    return hero()+`<div class="wrap">${secs}${stats}${cta}</div>`;
+  }
+
+  function legal(){
+    const cl=p.clauses||[];
+    const id=i=>'c'+i;
+    const toc=`<nav class="ptoc"><h4>On this page</h4>${cl.map((c,i)=>
+        `<a href="#${id(i)}">${esc(c.h)}</a>`).join('')}</nav>`;
+    const body=`<div>${cl.map((c,i)=>`<section class="pclause" id="${id(i)}">
+        <h2><i>${i+1}.</i>${esc(c.h)}</h2>
+        ${TODO_RE.test(c.body)?'<span class="ptodo">Needs your wording</span><br>':''}
+        <p>${esc(c.body)}</p></section>`).join('')}</div>`;
+    const rev=p.reviewed?`<p class="previewed">Last reviewed ${esc(p.reviewed)}</p>`
+                        :`<p class="previewed">Not yet reviewed — set a review date in Settings once the wording is signed off.</p>`;
+    return hero(rev)+`<div class="wrap"><div class="plegal">${toc}${body}</div></div>`;
+  }
+
+  function faq(){
+    const gs=(p.groups||[]).map(g=>`<div class="pfgroup"><h2>${esc(g.h)}</h2>
+      ${(g.items||[]).map(it=>`<details class="pq"><summary>${esc(it.q)}</summary>
+          <p class="pa">${esc(it.a)}</p></details>`).join('')}</div>`).join('');
+    return hero()+`<div class="wrap"><div class="pfaq">${gs}</div></div>`;
+  }
+
+  function contact(){
+    const c=(window.MSChrome?MSChrome.footerCfg().contact:null)||{};
+    const form=`<form id="cform">
+      <div class="frow">
+        <div class="fld"><label for="cn">Your name</label><input id="cn" required></div>
+        <div class="fld"><label for="cc">Company</label><input id="cc"></div>
+      </div>
+      <div class="frow">
+        <div class="fld"><label for="ce">Email</label><input id="ce" type="email" required></div>
+        <div class="fld"><label for="cp">Phone</label><input id="cp"></div>
+      </div>
+      <div class="fld"><label for="cs">What is this about?</label>
+        <select id="cs"><option>A new project</option><option>An existing order</option>
+          <option>Becoming a supplier</option><option>Something else</option></select></div>
+      <div class="fld"><label for="cm">Your message</label><textarea id="cm" required></textarea></div>
+      <button class="btn" type="submit">Send enquiry</button>
+    </form>`;
+    const offices=(p.offices||[]).map(o=>`<h3>${esc(o.h)}</h3><address>${esc(o.body)}</address><hr>`).join('');
+    const detail=`<div class="cdetail">
+      ${c.email?`<div class="row"><svg viewBox="0 0 24 24"><path d="M3 7l9 6 9-6M3 7h18v10H3z"/></svg><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></div>`:''}
+      ${c.phone?`<div class="row"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a15 15 0 0 1-15-15z"/></svg><a href="tel:${esc(String(c.phone).replace(/\s/g,''))}">${esc(c.phone)}</a></div>`:''}
+      ${p.hours?`<div class="row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${esc(p.hours)}</div>`:''}
+      <hr>${offices}
+      <h3>Already a client?</h3>
+      <div class="row"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM4 9h16"/></svg>
+        Raise it against the project so your account manager sees it in context.</div>
+    </div>`;
+    return hero()+`<div class="wrap"><div class="pcontact"><div id="cwrap">${form}</div>${detail}</div></div>`;
+  }
+
+  main.innerHTML=({editorial,legal,faq,contact}[p.type]||editorial)();
+
+  const cf=document.getElementById('cform');
+  if(cf) cf.addEventListener('submit',e=>{ e.preventDefault();
+    if(!cf.checkValidity()){ cf.reportValidity(); return; }
+    document.getElementById('cwrap').innerHTML=`<div class="sent"><b>Thanks — message sent.</b>
+      <span>We will come back to you within one working day. In the prototype nothing is actually transmitted.</span></div>`;
+  });
+
+  // distributor-only affordance: jump straight to this page's editor
+  const role=window.MSID?MSID.current():'distributor';
+  if(role==='distributor'||role==='admin'){
+    document.getElementById('editHint').innerHTML=
+      `<a href="Merchsmith Distributor Settings.html#tab=pages&p=${encodeURIComponent(slug)}">
+        <svg class="icn" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M14.5 5.5l4 4M4 20l1-4L16 5a2.1 2.1 0 0 1 3 3L8 19l-4 1z"/></svg>
+        Edit this page${MSSITE.isEdited(slug)?'':' — showing default content'}</a>`;
+  }
+  const wm=document.getElementById('wm');
+  if(role==='admin') wm.textContent='Merchsmith';
+})();
+</script>
+</body>
+</html>

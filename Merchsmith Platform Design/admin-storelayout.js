@@ -18,8 +18,7 @@
     const secs=MSSTORE.sections();
     if(openSec===null && secs[0]) openSec=secs[0].id;
     p.innerHTML=`
-      <div class="phead"><h1 class="ptitle">Store layout</h1><div style="display:flex;gap:8px"><a class="btn ghost" href="Merchsmith Store.html">View store ↗</a><button class="btn" id="slAddSec">＋ New section</button></div></div>
-      <p class="psub">The store's top navigation. Each <b>section</b> (Essentials, Treats…) holds <b>departments</b> (Bags, Tech…) which list products. Edits here drive the live store — no more dead links.</p>
+      <div class="phead"><h1 class="ptitle">Store layout</h1><div style="display:flex;gap:8px"><a class="btn ghost" href="Merchsmith Store.html?store=merchsmith">View default store ↗</a><button class="btn" id="slAddSec">＋ New section</button></div></div>
       <div class="sl-cols">
         <div class="sl-secs">${secs.map((s,i)=>secCard(s,i,secs.length)).join('')}</div>
         <div class="sl-detail" id="slDetail">${detail(openSec)}</div>
