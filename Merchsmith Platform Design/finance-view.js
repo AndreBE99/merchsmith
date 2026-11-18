@@ -68,8 +68,8 @@
             ${[...(CARDS()?[['uk','UK / European card',window.MSINT?MSINT.feeLabel('uk'):'1.5% card fee'],['noneu','Non UK / European card',window.MSINT?MSINT.feeLabel('noneu'):'3% card fee']]:[]),['bacs','Bank transfer','No fee']].map(([k,l,f])=>`<button class="fn-meth${checkout.method===k?' on':''}" data-fmeth="${k}"><span class="fn-radio"></span><div><b>${l}</b><span>${f}</span></div>${k!=='bacs'?'<span class="fn-cards"><i>VISA</i><i>MC</i><i>AMEX</i></span>':''}</button>`).join('')}</div>
             ${checkout.method==='bacs'?`<div class="fn-bank"><div class="fn-bgrid">${[['Account name',BANK.name],['Bank',BANK.bank],['Sort code',BANK.sort],['Account number',BANK.acc],['IBAN',BANK.iban],['BIC / SWIFT',BANK.bic],['Reference',window.MSFIN?MSFIN.refFor('',checkout.po):(checkout.po||'Your order reference')]].map(([k,v])=>`<div><span>${k}</span><b>${esc(v)}</b></div>`).join('')}</div>${BANK.note?`<p class="fn-muted">${esc(BANK.note)}</p>`:''}
                 ${(()=>{ const B=window.MSBACS; if(!B) return '<p class="fn-muted">Production starts once payment has cleared.</p>'; const crit=B.critical(O.getBasket()), dl=B.deadline(); return `<div class="fn-warn${crit?' crit':''}" style="margin:12px 0 8px"><b>Pay by ${esc(B.label(dl))}${crit?' · Critical':''}</b><span>${crit?'Your order has a specified or critical delivery date.':''} Payment must clear within ${B.hours()} hour${B.hours()>1?'s':''} to keep the delivery dates agreed on your project. Production starts once payment has cleared.</span></div>`; })()}<button class="fn-ghost sm" data-fproforma>${I('dl')}Download pro-forma invoice</button></div>`
-            :`<div class="fn-cardform"><p class="fn-sec">${I('check')}Your bank may ask you to confirm the payment with a code. They’ll never ask you to share it.</p>
-                <div class="fn-grid"><label class="fn-f fn-w2"><span>Card number</span><input placeholder="1234 5678 9012 3456" inputmode="numeric"></label><label class="fn-f fn-w2"><span>Name on card</span><input></label>
+            :`<div class="fn-cardform"><p class="fn-sec">${I('check')}Business (commercial) cards only. Personal debit and credit cards are declined.</p><p class="fn-sec">${I('check')}Your bank may ask you to confirm the payment with a code. They’ll never ask you to share it.</p>
+                <div class="fn-grid"><label class="fn-f fn-w2"><span>Card number</span><input data-fcn placeholder="1234 5678 9012 3456" inputmode="numeric"></label><p class="fn-cerr" data-fcerr hidden></p><label class="fn-f fn-w2"><span>Name on card</span><input></label>
                 <label class="fn-f"><span>Expiry</span><input placeholder="MM/YY"></label><label class="fn-f"><span>Security code</span><input placeholder="123" inputmode="numeric"></label></div>
                 <label class="fn-chk"><input type="checkbox"><span>Save card for future orders</span></label></div>`}
             <p class="fn-muted">We can’t accept personal credit cards or cheques.</p>`:''}
@@ -128,7 +128,10 @@
     const orderOpts=extra=>Object.assign({ placedBy:O.ADDR.name, address:groups.filter(g=>g.addr).map(g=>addrLines(g.addr).join(', ')).join(' · '), po:checkout.po, reference:checkout.ref,
       billing:addrLines(checkout.billing).join(', '), invoiceTo:checkout.invoice, poFile:checkout.poFile?checkout.poFile.name:null },extra);
     const ask=q('[data-fask]'); if(ask) ask.onclick=()=>ctx.place(orderOpts({payment:'Awaiting credit approval · '+acct.terms,status:'approval',approval:{over:t.dTot-avail}}));
-    q('#placeBtn').onclick=()=>{ if(!ready) return; ackThen(()=>{
+    q('#placeBtn').onclick=()=>{ if(!ready) return;
+      // business (commercial) cards only: the card processor reports the card type; prototype: numbers starting 4000 act as personal cards
+      const cn=q('[data-fcn]'), ce=q('[data-fcerr]'); if(checkout.pay!=='account'&&checkout.method!=='bacs'&&cn){ const d=(cn.value||'').replace(/\D/g,''); if(/^4000/.test(d)){ ce.textContent='This looks like a personal card. Mojo Promotions can only accept business (commercial) cards. Use a company card or choose bank transfer.'; ce.hidden=false; cn.focus(); return; } ce.hidden=true; }
+      ackThen(()=>{
       ctx.place(orderOpts({ ...(checkout.pay!=='account'&&checkout.method==='bacs'&&window.MSBACS?{payBy:MSBACS.deadline().toISOString(),payCrit:MSBACS.critical(O.getBasket())}:{}), payment: checkout.pay==='account'?'On account · '+acct.terms:(checkout.method==='bacs'?'Bank transfer (awaiting payment)':'Paid by card'), onAccount:checkout.pay==='account', method:checkout.pay==='account'?'account':checkout.method, terms:acct.terms, cardFee:fee }));
       if(checkout.pay==='account'&&window.MSCUSTACCT) MSCUSTACCT.useCredit(CUST,t.dTot); }); };
   };
@@ -143,18 +146,20 @@
     c.onchange=()=>{ g.disabled=!c.checked; }; w.querySelector('[data-ackx]').onclick=close; w.addEventListener('mousedown',e=>{ if(e.target===w) close(); });
     document.addEventListener('keydown',function k(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown',k); } });
     g.onclick=()=>{ if(!c.checked) return; close(); go(); }; c.focus(); }
-  function proforma(t,checkout){ const w=window.open('','_blank'); if(!w) return; const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-    const rows=O.getBasket().map(l=>{ const q=O.lineQty(l), unit=l.each*(1-(l.discountPct||0)/100); return `<tr><td>${esc(l.name)}${l.kind==='sample'?' (sample)':''}</td><td>${q.toLocaleString('en-GB')}</td><td>${gbp(unit)}</td><td>${gbp(O.lineItemCost(l))}</td></tr>`; }).join('');
-    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Pro-forma invoice</title><style>
-      @page{size:A4;margin:18mm} body{font:13px/1.5 "Mulish",Arial,sans-serif;color:#1e2033;margin:0}
-      h1{font:500 30px "EB Garamond",Georgia,serif;margin:0 0 4px} .top{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #4E5BA6;padding-bottom:14px;margin-bottom:18px}
-      .muted{color:#667085} table{width:100%;border-collapse:collapse;margin:18px 0} th,td{text-align:left;padding:8px 6px;border-bottom:1px solid #e4e7ec} th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#667085}
-      td:nth-child(n+2),th:nth-child(n+2){text-align:right} .tot{margin-left:auto;width:280px} .tot div{display:flex;justify-content:space-between;padding:4px 0} .tot .g{font-weight:800;font-size:16px;border-top:2px solid #1e2033;margin-top:6px;padding-top:8px}
-      .bank{background:#f4f5fb;border-radius:10px;padding:14px 16px;margin-top:22px} .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}</style></head><body>
-      <div class="top"><div><h1>Pro-forma invoice</h1><div class="muted">Issued ${today} · payment required before production</div></div><div style="text-align:right"><b>Mojo Promotions Ltd</b><div class="muted">orders@mojopromotions.co.uk</div></div></div>
-      <div class="cols"><div><div class="muted">Bill to</div>${addrLines(checkout.billing).map(x=>esc(x)).join('<br>')}</div><div><div class="muted">Invoice contact</div>${esc(checkout.invoice.name)}<br>${esc(checkout.invoice.email)}${checkout.po?`<br><br><span class="muted">PO</span> ${esc(checkout.po)}`:''}</div></div>
-      <table><thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table>
-      <div class="tot"><div><span>Subtotal</span><span>${gbp(t.dNet)}</span></div><div><span>VAT</span><span>${gbp(t.dVat)}</span></div><div class="g"><span>Total due</span><span>${gbp(t.dTot)}</span></div></div>
-      <div class="bank"><b>Pay by bank transfer</b><br>${BANK.name} · ${BANK.bank}<br>Sort code ${BANK.sort} · Account ${BANK.acc}<br>IBAN ${BANK.iban} · BIC ${BANK.bic}<br>Reference: ${esc(checkout.po||'your order reference')}</div>
-      <script>setTimeout(()=>print(),300)<\/script></body></html>`); w.document.close(); }
+  function proforma(t,checkout){ const w=window.open('','_blank'); if(!w) return; const today=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    const L=O.getBasket(), AL=a=>a?(Array.isArray(a.lines)?a.lines:addrLines(a)):[], ref=checkout.po||checkout.ref||'';
+    const no=MSPRO.number('basket:'+L.map(l=>l.id).join(',')), NT=(()=>{ try{ return JSON.parse(localStorage.getItem('ms-basket-addr-notes')||'{}'); }catch(e){ return {}; } })();
+    const dq=d=>window.MSSPLIT&&MSSPLIT.dropQty?MSSPLIT.dropQty(d):Object.values(d.alloc||{}).reduce((a,v)=>a+(+v||0),0);
+    const items=L.map(l=>{ const q=O.lineQty(l), unit=l.each*(1-(l.discountPct||0)/100), subs=(l.charges||[]).filter(c=>+c.amt).map(c=>({label:c.label,qty:+c.qty||1,unit:c.unit!=null?+c.unit:+c.amt,amount:+c.amt}));
+      if(+l.additional&&!subs.length) subs.push({label:'Setup and extras',qty:1,unit:+l.additional,amount:+l.additional});
+      if(+l.deliveryCost) subs.push({label:l.drops&&l.drops.length>1?'Delivery · '+l.drops.length+' addresses':'UK mainland delivery',qty:1,unit:+l.deliveryCost,amount:+l.deliveryCost});
+      return {project:l.project||'',name:l.name,kind:l.kind,sku:l.sku||'',qty:q,unit,amount:O.lineItemCost(l),branding:l.kind==='sample'?(l.proof==='unbranded'?'Unbranded sample':'Branded sample'):(l.proof==='unbranded'?'Unbranded':(l.brandingText||'Branded to your approved proof')),
+        colours:(l.rows||[]).filter(r=>r.qty).map(r=>({c:r.c,qty:r.qty})),deliverBy:l.deliveryDate||'ASAP',subs,
+        deliver:(l.drops&&l.drops.length>1?l.drops.map(d=>({name:(d.address||{}).name||'',lines:AL(d.address),qty:dq(d),split:Object.entries(d.alloc||{}).map(([c,q])=>({c,qty:+q||0})),date:d.date||'',notes:[]})):[{name:(l.address||{}).name||'',lines:AL(l.address),notes:((NT[l.id]||[]).map(n=>n.text)).concat(l.address&&l.address.note?[l.address.note]:[])}]).filter(a=>a.lines.length)}; });
+    const dAddr=[]; L.forEach(l=>(l.drops&&l.drops.length?l.drops.map(d=>d.address):[l.address]).forEach(ad=>{ if(!ad) return; const ln=AL(ad), key=ln.join('|'); if(!dAddr.some(z=>z.key===key)) dAddr.push({key,name:ad.name||'',lines:ln}); }));
+    const sub=items.reduce((a,it)=>a+it.amount+it.subs.reduce((q,s)=>q+s.amount,0),0), off=Math.round((sub-t.dNet)*100)/100, acct=acctOf();
+    w.document.write(MSPRO.render({no,date:today,orderRef:'Issued at checkout',po:checkout.po,terms:'Payment before production',contact:null,
+      invoiceTo:{name:org().name,lines:addrLines(checkout.billing).filter((z,i)=>!(i===0&&z===org().name)),fao:checkout.invoice&&checkout.invoice.name},
+      customer:Object.assign({name:O.ADDR&&O.ADDR.name,email:checkout.invoice&&checkout.invoice.email},MSPRO.person(O.ADDR&&O.ADDR.name)),items,extras:off>0.004?[{label:'Discount',amount:-off}]:[],
+      net:t.dNet,vat:t.dVat,vatRate:O.vatRate?O.vatRate():0.2,gross:t.dTot,custVat:acct.vatNo||'',payRef:ref||no,autoPrint:true})); w.document.close(); }
 })();

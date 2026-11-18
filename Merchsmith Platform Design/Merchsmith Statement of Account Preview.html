@@ -1,0 +1,43 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Statement of account preview</title>
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js?v=13"></script>
+<script src="store-feed.js?v=2"></script>
+<script src="proforma-doc.js?v=105"></script>
+</head><body>
+<script>
+/* Statement of account (D21), rendered by proforma-doc.js (kind:'soa'). ?ex=overdue | clear | long, or no ex = live statement saved from Customer Finance (localStorage ms-soa-doc). ?print=1 opens the print dialog. */
+const q=new URLSearchParams(location.search); let live=null; try{ live=JSON.parse(localStorage.getItem('ms-soa-doc')||'null'); }catch(e){}
+const EX=q.get('ex')||(live?'':'overdue');
+const base={kind:'soa',date:'Mon 26 Oct 2026',accountNo:'CITRIX-0042',terms:'30 days from invoice',creditLimit:15000,customer:{name:'Citrix',lines:['The Coachworks, 1st Floor','21 The Calls','Leeds','LS2 7EH'],fao:'Nina Holt, Accounts'},contactName:'Jess Doyle',contactEmail:'jess@mojopromotions.co.uk',payLink:'pay.mojopromotions.co.uk'};
+const I=(date,no,details,due,debit,note,tone)=>({date,type:'VAT invoice',no,details,due,debit,note,tone}), P=(date,no,details,credit)=>({date,type:'Payment',no,details,credit}), C=(date,no,details,credit)=>({date,type:'Credit note',no,details,credit});
+const EXS={
+  overdue:{no:'SOA-CITRIX-261026',period:'1 Sep – 26 Oct 2026',periodFrom:'1 Sep 2026',opening:1240.80,ageing:{current:3104.28,d30:2405.52,d60:0,d90:0,d90p:0},ledger:[
+    P('3 Sep 2026','PAY-830211','Bank transfer · ref CITRIX-0042',1240.80),
+    I('8 Sep 2026','INV-1037-01','Insulated Steel Cup · Autumn Giveaways','8 Oct 2026',612.00,'Overdue 18 days','r'),
+    I('15 Sep 2026','INV-1042-01','Recycled Cotton Tote · Autumn Giveaways','15 Oct 2026',2154.00,'Part paid · £300.00 received','a'),
+    P('20 Sep 2026','PAY-844120','Card payment',300.00),
+    I('20 Sep 2026','INV-1042-F1','Card payment fee (1.5%)','Paid',4.50,'Paid by card','g'),P('20 Sep 2026','PAY-844120','Card payment · fee',4.50),
+    C('2 Oct 2026','CN-1042-01','12 totes arrived with misprinted logos',0),
+    I('12 Oct 2026','INV-1051-01','Recycled Cotton Tote · Welcome Packs 2027','11 Nov 2026',2125.00),
+    I('19 Oct 2026','INV-1051-02','Lowton 3 in 1 Ball Pen · Welcome Packs 2027','18 Nov 2026',1017.68),
+    C('22 Oct 2026','CN-1051-01','Short delivery: 20 pens',0)]},
+  clear:{no:'SOA-CITRIX-260926',period:'1 Aug – 26 Sep 2026',periodFrom:'1 Aug 2026',opening:0,ageing:{current:0},ledger:[
+    I('4 Aug 2026','INV-1031-01','Eco Notebook · Summer Event','3 Sep 2026',845.00,'Paid','g'),P('28 Aug 2026','PAY-812004','Bank transfer',845.00),
+    I('19 Aug 2026','INV-1033-01','Bamboo Pen · Summer Event','18 Sep 2026',396.00,'Paid','g'),P('16 Sep 2026','PAY-821550','Bank transfer',396.00)]},
+  long:{no:'SOA-CITRIX-ALL',period:'All open items',opening:0,ageing:{current:6200,d30:2480,d60:1310,d90:760,d90p:420},ledger:[]}};
+// fix credit note values
+EXS.overdue.ledger[6].credit=60.48; EXS.overdue.ledger[9].credit=38.40;
+(function(){ const L=EXS.long.ledger, prods=['Recycled Cotton Tote','Lowton 3 in 1 Ball Pen','Insulated Steel Cup','Eco Wheat-Straw Charging Cable','Xoopar Pokket Wireless Mouse','Recycled Commuter Backpack','Ceramic Mug','Opticians Eye Occluder'];
+  for(let i=0;i<26;i++){ const m=3+Math.floor(i/4), dd=1+(i*5)%27, amt=Math.round((180+((i*137)%900))*100)/100; L.push(I(dd+' '+['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'][Math.min(7,m-3)]+' 2026','INV-'+(1001+i)+'-01',prods[i%prods.length]+' · '+['Spring Launch','Staff Kit','Summer Event','Autumn Giveaways'][i%4],'',amt,i<5?'Overdue':i<10?'':'',i<5?'r':'')); if(i%3===2) L.push(P(dd+' 2026','PAY-'+(700100+i),'Bank transfer',Math.round(amt*0.8*100)/100)); } })();
+(function(){ const L=EXS.long.ledger; let b=0; L.forEach(r=>{ b+=(+r.debit||0)-(+r.credit||0); }); b=Math.round(b*100)/100; const r2=n=>Math.round(n*100)/100, a={current:r2(b*.55),d30:r2(b*.22),d60:r2(b*.12),d90:r2(b*.07)}; a.d90p=r2(b-a.current-a.d30-a.d60-a.d90); EXS.long.ageing=a; })();
+const D=Object.assign({},base,EX?EXS[EX]:live);
+document.open(); document.write(MSPRO.render(D)); document.close();
+const EXS_KEYS=1;
+(function(){ const bar=document.createElement('div'); bar.setAttribute('data-noprint',''); bar.style.cssText='position:fixed;top:14px;right:14px;left:auto;max-width:calc(100vw - 28px);z-index:10;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;background:#1e2033;border-radius:18px;padding:4px;font:700 12.5px Mulish,Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25)';
+  [['Live account','',!!live],['Overdue & part paid','overdue'],['All paid','clear'],['Long history','long']].filter(o=>o[2]!==false).forEach(([l,e])=>{ const x=document.createElement('a'); x.textContent=l; x.href=location.pathname+(e?'?ex='+e:''); const on=EX===e; x.style.cssText='white-space:nowrap;text-decoration:none;border-radius:999px;padding:6px 12px;'+(on?'background:#fff;color:#1e2033':'color:#fff'); bar.appendChild(x); });
+  document.body.appendChild(bar); const st=document.createElement('style'); st.textContent='@media print{[data-noprint]{display:none!important}}'; document.head.appendChild(st); })();
+const strip=()=>document.querySelectorAll('link[rel=stylesheet]:not([href*="fonts.googleapis"]),style#ssCss').forEach(n=>n.remove()); strip(); setTimeout(strip,300); setTimeout(function(){ strip(); if(window.__pfBuild) __pfBuild(); },1200);
+if(q.get('print')==='1'){ (function(){ var go=function(){ setTimeout(function(){ window.print(); },2600); }; if(document.readyState==='complete') go(); else window.addEventListener('load',go); })(); }
+</script>
+</body></html>

@@ -145,6 +145,7 @@
         <span class="k">Payment terms</span><span class="v">${esc(c.paymentTerms||'—')}${window.MSTERMS&&MSTERMS.pending(c.id)?` <button class="ot-terms" onclick="MSTERMS.open('${esc(MSTERMS.pending(c.id).id)}')">Terms to approve</button>`:''}</span>
         <span class="k">Credit limit</span><span class="v">${esc(c.creditLimit||'None')} ${c.creditUsed?`<small style="color:var(--muted)">(${esc(c.creditUsed)} used)</small>`:''}</span>
         <span class="k">VAT applicable</span><span class="v">${c.vatApplicable===false?'No':'Yes'}</span>
+        <span class="k">VAT number</span><span class="v">${esc(((()=>{ try{ return window.MSCUSTACCT?MSCUSTACCT.get(c.id).vatNo:''; }catch(e){ return ''; } })())||'—')}</span>
       </div></div>
       <div class="dwr-sec"><h4>Delivery</h4><div class="kv">
         <span class="k">Delivery addresses</span><span class="v">${Array.isArray(c.addresses)?(c.addresses.length?c.addresses.map(a=>`<span style="display:block">${esc(a.title?a.title+': ':'')}${esc(window.MSADDR?MSADDR.text(a):(a.address||''))}</span>`).join(''):'—'):esc(c.addresses==null?'—':c.addresses)}</span>

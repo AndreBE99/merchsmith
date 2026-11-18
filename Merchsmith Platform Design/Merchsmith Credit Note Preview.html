@@ -1,0 +1,27 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Credit note preview</title>
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js?v=13"></script>
+<script src="proforma-doc.js?v=105"></script>
+</head><body>
+<script>
+/* Design preview for the credit note (D10), rendered by proforma-doc.js (kind:'credit'). Sample data only.
+   ?state=account | card | bank  (how the credit is settled) */
+const ST=(location.search.match(/state=(\w+)/)||[])[1]||'account';
+const HQ=['The Coachworks, 1st Floor','21 The Calls','Leeds','LS2 7EH'];
+const SET={account:['Credit on your account','Taken off what you owe on your account. If the invoice is already paid, it’s held as credit against your next invoice.'],card:['Refund to your card','Refunded to the card used to pay. It can take 3–5 working days to show on your statement.'],bank:['Refund by bank transfer','Refunded to the account you paid from within 5 working days.']}[ST];
+const D={kind:'credit',no:'CN-1051-01',date:'Wed 18 Nov 2026',against:'INV-1051-01',againstDate:'Thu 12 Nov 2026',orderRef:'MS-1051',po:'PO-CRT-2304',reason:'Damaged in transit',
+  settle:ST,note:'12 totes arrived with print damage; customer kept the rest.',settleTitle:SET[0],settleText:SET[1],refundRef:ST==='account'?'':'RF-1051-01',
+  invoiceTo:{name:'Citrix',lines:HQ,fao:'Nina Holt'},customer:{name:'Sara Kemp',email:'sara.kemp@citrix.com',tel:'0113 496 0021'},custVat:'GB 284 1937 06',
+  items:[{project:'Autumn Giveaways',name:'Recycled Cotton Tote · damaged units',sku:'BW-TOTE-01-BLA',qty:12,unit:2.95,amount:35.40,branding:'Front · Screenprint, 2 colours',colours:[{c:'Black',qty:12}],subs:[]},
+    {name:'Redelivery charge refunded',qty:1,unit:15,amount:15,colours:[],subs:[]}]};
+D.net=50.40; D.vat=10.08; D.gross=60.48; D.vatRate=.2;
+document.open(); document.write(MSPRO.render(D)); document.close();
+(function(){ const bar=document.createElement('div'); bar.setAttribute('data-noprint',''); bar.style.cssText='position:fixed;top:14px;right:14px;z-index:10;display:flex;gap:4px;background:#1e2033;border-radius:999px;padding:4px;font:700 12.5px Mulish,Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25)';
+  [['On account','account'],['Card refund','card'],['Bank refund','bank']].forEach(([l,q])=>{ const x=document.createElement('a'); x.textContent=l; x.href=location.pathname+(q==='account'?'':'?state='+q); const on=q===ST; x.style.cssText='white-space:nowrap;text-decoration:none;border-radius:999px;padding:6px 12px;'+(on?'background:#fff;color:#1e2033':'color:#fff'); bar.appendChild(x); });
+  document.body.appendChild(bar); const st=document.createElement('style'); st.textContent='@media print{[data-noprint]{display:none!important}}'; document.head.appendChild(st); })();
+const strip=()=>document.querySelectorAll('link[rel=stylesheet]:not([href*="fonts.googleapis"]),style#ssCss').forEach(n=>n.remove()); strip(); setTimeout(strip,300); setTimeout(function(){ strip(); if(window.__pfBuild) __pfBuild(); },1200);
+if(/[?&]print=1/.test(location.search)){ (function(){ var go=function(){ setTimeout(function(){ window.print(); },2600); }; if(document.readyState==='complete') go(); else window.addEventListener('load',go); })(); }
+
+</script>
+</body></html>

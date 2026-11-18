@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Merchsmith — Card payments, fees &amp; invoices · Developer guide</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&amp;family=Mulish:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+body{margin:0;background:#f6f5f2;color:#1e2033;font-family:Mulish,system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+a{color:#4b50c0;text-decoration:underline;text-underline-offset:2px;}
+a:hover{color:#2f3390;}
+code{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.86em;background:#eceef9;color:#2f3390;border-radius:5px;padding:1px 5px;}
+</style>
+</helmet>
+
+<div style="background:#fff;border-bottom:1px solid #e4e7ec;">
+  <div style="max-width:1120px;margin:0 auto;padding:30px clamp(18px,4vw,40px) 26px;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+    <div style="max-width:740px;">
+      <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#667085;">Developer guide · Finance &amp; payments · Oct 2026</div>
+      <h1 style="font-family:'EB Garamond',serif;font-weight:500;font-size:clamp(32px,4.4vw,46px);line-height:1.08;margin:8px 0 10px;letter-spacing:-.01em;">Card payments, fees &amp; invoice documents</h1>
+      <p style="margin:0;font-size:15.5px;line-height:1.6;color:#475467;text-wrap:pretty;">How customers and distributors pay pro formas and VAT invoices by card or bank transfer, how the card transaction fee is charged without changing an issued VAT invoice, and how the pro forma, VAT invoice, card fee invoice and credit note documents are built.</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:13px;">
+      <a href="Merchsmith Pay.html" style="background:#1e2033;color:#fff;text-decoration:none;border-radius:999px;padding:8px 14px;font-weight:700;white-space:nowrap;flex:none;">Open the pay page</a>
+      <a href="Merchsmith Orders.html#order=d3042" style="background:#fff;color:#1e2033;text-decoration:none;border:1px solid #d0d5dd;border-radius:999px;padding:8px 14px;font-weight:700;white-space:nowrap;flex:none;">Demo order MS-1044</a>
+    </div>
+  </div>
+</div>
+
+<div style="max-width:1120px;margin:0 auto;padding:28px clamp(18px,4vw,40px) 80px;display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:36px;align-items:start;">
+
+  <nav style="position:sticky;top:20px;display:flex;flex-direction:column;gap:2px;font-size:13.5px;">
+    <a href="#rules" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">1. The rules</a>
+    <a href="#who" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">2. Who sees what</a>
+    <a href="#flows" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">3. Payment flows</a>
+    <a href="#fee" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">4. The card fee</a>
+    <a href="#revision" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">5. Pro forma revisions</a>
+    <a href="#part" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">6. Part payments</a>
+    <a href="#refunds" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">7. Refunds &amp; credit notes</a>
+    <a href="#paypage" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">8. The pay page</a>
+    <a href="#docs" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">9. Documents</a>
+    <a href="#finance" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">10. Finance tables</a>
+    <a href="#data" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">11. Data model</a>
+    <a href="#api" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">12. APIs</a>
+    <a href="#hooks" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">13. Where it hooks in</a>
+    <a href="#live" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">14. Going live</a>
+    <a href="#test" style="text-decoration:none;color:#344054;padding:6px 10px;border-radius:8px;">15. Try it</a>
+  </nav>
+
+  <main style="display:flex;flex-direction:column;gap:22px;min-width:0;">
+
+    <section id="rules" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">1. The rules</h2>
+      <p style="margin:0 0 14px;font-size:15px;line-height:1.65;color:#344054;">A customer may choose bank transfer or be on account when they order, so no card fee is added. If they later pay by card, the fee has to be charged. Issued VAT invoices can’t be changed, so the fee is never added to one. These rules were agreed with Merchsmith:</p>
+      <ol style="margin:0;padding-left:20px;font-size:14.5px;line-height:1.75;color:#344054;">
+        <li><b>Commercial cards only.</b> Distributors can’t accept personal cards, so <b>every</b> card payment carries the fee. Personal cards are declined.</li>
+        <li><b>The fee has its own VAT invoice</b>, raised at the moment a card payment succeeds (tax point = payment date). Failed or abandoned payments raise nothing.</li>
+        <li><b>Pro forma switched to card → a revision.</b> The same number with a suffix (<code>PF-53003-R2</code>); the previous one is marked superseded. Switching back to bank transfer issues another revision.</li>
+        <li><b>Part payments are allowed.</b> An invoice can be part paid; the balance carries on and the fee applies only to the amount paid by card.</li>
+        <li><b>Refunds return the fee in proportion.</b> A credit note against a card-paid invoice refunds that share of the fee.</li>
+        <li><b>Pay links work without logging in</b>: secure, expiring, view and pay only.</li>
+        <li><b>Checkout stays as it is</b>: a card payment at checkout still adds the fee to the order total. It now runs the same commercial-card check.</li>
+      </ol>
+      <div style="margin-top:14px;background:#fffaeb;border:1px solid #fedf89;border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.55;color:#7a2e0e;"><b>Legal:</b> UK rules ban surcharging consumer-type cards. Charging only commercial cards, at no more than the processor’s cost, is the basis of these rules. Merchsmith is confirming this with its advisers. The fee also carries 20% VAT, as it’s part of the price of the supply.</div>
+    </section>
+
+    <section id="who" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;">2. Who sees what</h2>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px;">
+          <thead><tr style="text-align:left;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#667085;"><th style="padding:8px 10px;border-bottom:1.5px solid #1e2033;">Who</th><th style="padding:8px 10px;border-bottom:1.5px solid #1e2033;">Where</th><th style="padding:8px 10px;border-bottom:1.5px solid #1e2033;">What they can do</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Customer (signed in)</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Finance → Invoices (Pay / Pay invoices), Finance menu → Pay invoices, order page pro forma block</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Pay any outstanding documents for their organisation; switch a pro forma to card or back.</td></tr>
+            <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Guest (emailed link)</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Pay link in invoice / pro forma emails (<code>&amp;guest=1</code>)</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Pay that account’s outstanding documents. Must give first name, last name and email for the receipt. No side menu, search or account tools.</td></tr>
+            <tr><td style="padding:10px;border-bottom:1px solid #f2f4f7;"><b>Distributor / admin</b></td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Finance → Customer invoices: card icon per row and bulk “Take card payment”; Finance menu → Take a card payment</td><td style="padding:10px;border-bottom:1px solid #f2f4f7;">Take a card payment for a customer (customer picker, “taken by” recorded, receipt to the customer contact entered).</td></tr>
+            <tr><td style="padding:10px;"><b>Supplier</b></td><td style="padding:10px;">—</td><td style="padding:10px;">Not involved.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="flows" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 6px;">3. Payment flows</h2>
+      <p style="margin:0 0 16px;font-size:14.5px;color:#475467;line-height:1.6;">Every flow below lands on the same pay page and records one payment in the ledger.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;">
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">A · Upfront order, switch to card</b><ol style="margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.65;color:#344054;"><li>Order placed with bank transfer; pro forma <code>PF-53003</code> awaiting payment.</li><li>Order page → <b>Pay by card instead</b> → confirm.</li><li><code>MSPAY.revise(o,'card')</code> issues <code>PF-53003-R2</code> (fee shown), logs “superseded” in the order activity, opens the pay page with R2 ticked.</li><li>Card payment succeeds → order marked paid, fee invoice <code>INV-1044-F1</code> raised.</li></ol></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">B · On account, pay invoices by card</b><ol style="margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.65;color:#344054;"><li>Each product’s VAT invoice is raised at dispatch (unchanged).</li><li>Customer opens the pay link, Finance → Invoices, or the order’s “Invoices to pay”.</li><li>Ticks one or more invoices, optionally edits the amount (part payment), pays by commercial card.</li><li>One fee invoice for the whole payment; each invoice is paid or part paid.</li></ol></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">C · Bank transfer from the pay page</b><ol style="margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.65;color:#344054;"><li>Choose Bank transfer: bank details and one combined reference (<code>PAY-xxxxxx</code>).</li><li>“I’ve sent the transfer” records a <b>pending</b> payment. No fee.</li><li>Documents are marked paid when the distributor records the money in Finance (unchanged flow).</li></ol></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">D · Checkout (unchanged)</b><ol style="margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.65;color:#344054;"><li>Card at checkout adds the fee to the order total, as before.</li><li>New: “Business (commercial) cards only” and a card-type check on Place order. A personal card blocks with a message.</li></ol></div>
+      </div>
+    </section>
+
+    <section id="fee" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">4. The card fee</h2>
+      <ul style="margin:0 0 14px;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>Rate:</b> from Finance → Integrations → Stripe (<code>MSINT.stripe().fee.uk</code> / <code>.intl</code>), default 1.5% UK/EU and 3% outside Europe. The payer picks the card region on the pay page; the live build should read it from the card.</li>
+        <li><b>Base:</b> the amount being paid by card in this payment (the sum of the ticked amounts), not the documents’ full totals.</li>
+        <li><b>Gross to net:</b> the fee is treated as VAT-inclusive: <code>gross = amount × rate</code>, <code>net = gross ÷ 1.2</code>, <code>vat = gross − net</code>.</li>
+        <li><b>Numbering:</b> <code>INV-&lt;order no&gt;-F&lt;n&gt;</code>, using the first paid document’s order; <code>n</code> counts fee invoices already raised for that order.</li>
+        <li><b>Shown before paying:</b> selected total, “Card payment fee (1.5%, inc. VAT)”, total to pay. The Pay button shows the total.</li>
+      </ul>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;font-size:13px;">
+        <div style="background:#f6f5f2;border-radius:10px;padding:10px 12px;"><b>Example</b><div style="color:#475467;margin-top:4px;line-height:1.55;">£1,000 part of INV-1042-01 + £2,628 for PF-53003-R2 = £3,628 by card → fee £54.42 (net £45.35 + VAT £9.07) on INV-1042-F1.</div></div>
+        <div style="background:#f6f5f2;border-radius:10px;padding:10px 12px;"><b>Distributor absorbs the fee</b><div style="color:#475467;margin-top:4px;line-height:1.55;">If Stripe is set to absorb, checkout charges no fee. The pay page still uses the configured % (prototype); the live build should respect the setting (see Going live).</div></div>
+      </div>
+    </section>
+
+    <section id="revision" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">5. Pro forma revisions</h2>
+      <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>Numbers:</b> pro formas are numbered in sequence from <code>PF-53001</code> (<code>MSPRO.number('order:'+id)</code>, register <code>ms-pf-register</code>). The checkout pro forma number is adopted by the order when it’s placed, so it never changes.</li>
+        <li><b>Revisions:</b> <code>ms-pf-rev[orderId]</code> holds <code>[{rev, at, method, by, supersedes}]</code>. <code>MSPAY.pfNo(o)</code> returns <code>PF-53003</code> or <code>PF-53003-R2</code>.</li>
+        <li><b>R2 document:</b> shows the revision note (“R2 issued …, replaces PF-53003 (pay by card)”), the card fee, “Total to pay by card”, and a “Pay by business card” box. Bank details stay, as bank transfer is still possible without the fee.</li>
+        <li><b>Paying a superseded number:</b> money received against an earlier revision still counts towards the order (<code>outstanding()</code> sums all revisions).</li>
+      </ul>
+    </section>
+
+    <section id="part" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">6. Part payments</h2>
+      <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>Balance:</b> <code>MSPAY.paidOn(doc)</code> sums every paid ledger item for that document. Balance = document total − paid.</li>
+        <li><b>Status:</b> “Part paid” on the pay page, the VAT invoice (pill, Payment status box, “Invoice total / Paid to date / Balance due”), Finance → Customer invoices (chip and “£x paid · £y left”) and Customer Finance.</li>
+        <li><b>Fully paid:</b> when the paid amount reaches the total, <code>ms-order-ops[id].lines[i].invPaid</code> (VAT invoice) or <code>x.paid</code> (pro forma) is set.</li>
+        <li><b>Due dates and reminders</b> carry on against the balance. Finance’s Outstanding figure counts the balance, not the total.</li>
+      </ul>
+    </section>
+
+    <section id="refunds" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">7. Refunds &amp; credit notes</h2>
+      <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>Credit notes are their own document</b> (D10). VAT invoices no longer list credit notes.</li>
+        <li><b>Fee refund:</b> if the invoice being credited was paid by card, the credit note adds a line “Card payment fee refund” = <code>MSPAY.feeShare(invoice) × (credit gross ÷ invoice gross)</code>, capped at 100%. It’s added to the credit’s net, VAT and total.</li>
+        <li><b>Fee share:</b> each card payment’s fee is shared across the documents it paid in proportion to the amount paid on each.</li>
+        <li><b>How it’s settled</b> (shown on the credit note): on account → taken off what they owe or held as credit; card → refunded to the card; bank transfer → refunded within 5 working days.</li>
+      </ul>
+    </section>
+
+    <section id="paypage" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">8. The pay page</h2>
+      <p style="margin:0 0 12px;font-size:14.5px;line-height:1.6;color:#344054;"><a href="Merchsmith Pay.html">Merchsmith Pay.html</a> uses the platform header, side menu and footer (classes prefixed <code>pyp-</code> to avoid clashes).</p>
+      <div style="overflow-x:auto;margin-bottom:14px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:560px;">
+          <thead><tr style="text-align:left;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#667085;"><th style="padding:8px 10px;border-bottom:1.5px solid #1e2033;">Parameter</th><th style="padding:8px 10px;border-bottom:1.5px solid #1e2033;">Meaning</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>a</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Customer id (default <code>citrix</code>). Distributors switch with the Customer picker.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>d</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Document(s) to tick, comma-separated. Without it, overdue documents are ticked (or the first one).</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>k</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Link token. A wrong token shows “expired or isn’t valid” and disables paying. Stand-in for a signed, expiring token.</td></tr>
+            <tr><td style="padding:9px 10px;"><code>guest=1</code></td><td style="padding:9px 10px;">Guest view: hides <code>.ms-side</code>, <code>.ms-htools</code>, search; shows “Sign in to your account” and the link expiry; requires first name, last name, email.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>List:</b> <code>MSPAY.outstanding(cust)</code>: unpaid pro formas for upfront orders and dispatched, unpaid VAT invoices for on-account orders, overdue first. Each row: document, order, product, project, due, status, balance, editable amount.</li>
+        <li><b>Methods:</b> business card UK/EU, business card outside Europe, bank transfer.</li>
+        <li><b>Card area:</b> commercial-cards-only note, card fields, payer details (guest / distributor), error line, Pay button, “Powered by Stripe” and the Visa, Mastercard and Amex logos.</li>
+        <li><b>Receipt:</b> documents paid (part paid flagged), the fee line with its invoice number, “Download fee invoice”, and where the receipt was emailed.</li>
+        <li><b>Prototype only:</b> card numbers starting <code>4000</code> behave as personal cards and are declined.</li>
+      </ul>
+    </section>
+
+    <section id="docs" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">9. Documents</h2>
+      <p style="margin:0 0 12px;font-size:14.5px;line-height:1.6;color:#344054;">All four are produced by one renderer, <code>MSPRO.render(data)</code> in <code>proforma-doc.js</code>, which returns a full A4 HTML document. <code>kind</code> picks the document.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:14px;">
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.55;"><b>Pro forma</b> (D05 checkout, D07 order) · default kind<div style="color:#475467;margin-top:4px;">Awaiting payment / Paid, revision note, card fee block. <a href="Merchsmith Pro Forma Preview.html">Preview</a></div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.55;"><b>VAT invoice</b> (D08 / D08P) · <code>kind:'vat'</code><div style="color:#475467;margin-top:4px;">One per product at dispatch. Unpaid / Part paid / Paid / Overdue; variant and SKU rows; its own charges and delivery. <a href="Merchsmith VAT Invoice Preview.html">Preview</a></div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.55;"><b>Card fee invoice</b> · <code>kind:'vat'</code><div style="color:#475467;margin-top:4px;">Built by <code>MSPAY.feeDoc(payment)</code>: one line “Card payment fee”, notes listing what the payment covered, Paid.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.55;"><b>Credit note</b> (D10) · <code>kind:'credit'</code><div style="color:#475467;margin-top:4px;">Against invoice, reason, negative lines, fee refund line, how it’s settled. <a href="Merchsmith Credit Note Preview.html">Preview</a></div></div>
+      </div>
+      <h3 style="font-size:16px;margin:0 0 6px;">Layout</h3>
+      <ul style="margin:0 0 14px;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li>Real A4 pages (<code>@page{size:A4;margin:0}</code>, <code>section.page</code> 210 × 297mm). An inline paginator moves blocks into pages; a product never splits across pages.</li>
+        <li>Repeated on every page: header (logo, document title, number, VAT reg / “not a VAT invoice”, status pill, Page n / N), reference strip, Invoice to / Customer contact / Payment status row, item column headings, company footer.</li>
+        <li>Per product: number, name, SKU, qty, unit, amount; Project, Branding, Colours, Deliver by; variant rows (VAT invoice); Deliver to cards (split deliveries numbered with colour × qty, date and delivery notes); additional charges and delivery as their own rows.</li>
+      </ul>
+      <h3 style="font-size:16px;margin:0 0 6px;">Where the data comes from</h3>
+      <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>Distributor:</b> Organisation profile (legal name, company no., VAT no., address, contact), PDF or header logo (Branding), colourway (<code>--periwinkle-deep</code>), bank (Finance → Bank details).</li>
+        <li><b>Customer:</b> billing address, invoice contact, VAT number (new field in Organisations → Edit terms, <code>ms-cust-account[id].vatNo</code>), contact phone from their team record.</li>
+        <li><b>Lines:</b> new order lines carry the store SKU, delivery notes from checkout (and new-address instructions), charges with qty × unit, and the project.</li>
+      </ul>
+    </section>
+
+    <section id="finance" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 10px;">10. Finance tables</h2>
+      <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:#344054;">
+        <li><b>VAT invoice totals</b> come from <code>MSPAY.orderMoney(o)</code>, so they include each product’s own charges and delivery; order-level leftovers (older orders’ single delivery figure, rounding) stay on the last item dispatched.</li>
+        <li><b>New:</b> Part paid status and chip, “Card fee invoices” type and chip, card-paid invoices shown as Paid, Outstanding counts balances.</li>
+        <li><b>Distributor actions:</b> card icon per unpaid row and bulk “Take card payment” (one customer at a time) open the pay page with those documents ticked.</li>
+        <li><b>Accounting sync:</b> on a successful card payment, <code>MSINT.sync('inv', fee.no)</code> and <code>MSINT.sync('pay', payment.id)</code> register the fee invoice and the payment; fee rows show the sync icon.</li>
+      </ul>
+    </section>
+
+    <section id="data" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;">11. Data model</h2>
+      <p style="margin:0 0 12px;font-size:14px;color:#475467;line-height:1.6;">All in localStorage for the prototype. Each key maps to a table in the real backend.</p>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:620px;">
+          <thead><tr style="text-align:left;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#667085;"><th style="padding:8px 10px;border-bottom:1.5px solid #1e2033;">Key</th><th style="padding:8px 10px;border-bottom:1.5px solid #1e2033;">Shape</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;vertical-align:top;"><code>ms-payments</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>[{id, at, method:'card'|'bacs', region, items:[{doc, kind:'pf'|'vat', orderId, amount, balance}], total, fee:{no, net, vat, gross, pct}|null, status:'paid'|'pending', by, email, takenBy, ref, cust}]</code></td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;vertical-align:top;"><code>ms-pf-rev</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>{orderId:[{rev, at, method, by, supersedes}]}</code></td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;vertical-align:top;"><code>ms-pf-register</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>{next:53004, map:{'order:&lt;id&gt;'|'basket:&lt;lineIds&gt;': 'PF-53001'}}</code></td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;vertical-align:top;"><code>ms-order-ops[id]</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Adds <code>paid, paidBy, paidAt</code> (pro forma) and <code>lines[i].invPaid, invPaidAt</code> (VAT invoice); payments appended to <code>activity</code>.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;vertical-align:top;"><code>ms-cust-account[id]</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Adds <code>vatNo</code> (customer VAT number).</td></tr>
+            <tr><td style="padding:9px 10px;vertical-align:top;">Order lines</td><td style="padding:9px 10px;">Add <code>sku</code>, <code>deliveryNotes[]</code>, <code>charges[{label, qty, unit, amt}]</code>, <code>project</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="api" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;">12. APIs</h2>
+      <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#667085;margin:0 0 6px;"><code style="font-size:1em;">window.MSPAY</code> · payments.js</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px;font-size:13px;margin-bottom:16px;">
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>outstanding(cust)</code><div style="color:#475467;margin-top:4px;">Unpaid documents with balance, paid, due, status.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>pay({items, method, region, cust, by, email, takenBy})</code><div style="color:#475467;margin-top:4px;">Records the payment; for card raises the fee, marks documents paid, logs, notifies, syncs.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>paidOn(doc)</code> · <code>paymentsFor(doc)</code> · <code>feeShare(doc)</code><div style="color:#475467;margin-top:4px;">Amount paid, payments, fee share (gross) for a document.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>pfNo(o)</code> · <code>revise(o, method, by)</code> · <code>revs(o)</code> · <code>curRev(o)</code><div style="color:#475467;margin-top:4px;">Pro forma number and revisions.</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>feePct(region)</code> · <code>feeFor(amount, region)</code><div style="color:#475467;margin-top:4px;">Card fee rate and amount (gross).</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>feeDoc(payment)</code> · <code>payUrl(cust, doc, guest)</code> · <code>orderMoney(o)</code><div style="color:#475467;margin-top:4px;">Fee invoice HTML, pay link, an order’s pro forma / invoice totals.</div></div>
+      </div>
+      <div style="font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#667085;margin:0 0 6px;"><code style="font-size:1em;">window.MSPRO</code> · proforma-doc.js</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px;font-size:13px;">
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>render(data)</code><div style="color:#475467;margin-top:4px;">Full A4 document. Key fields: <code>kind, no, date, paid, paidOn, paidAmt, dueOn, overdue, revNote, cardFee, items[], net, vat, gross</code> (full list in the file header).</div></div>
+        <div style="border:1px solid #e4e7ec;border-radius:10px;padding:10px 12px;"><code>number(key)</code> · <code>adopt(from, to)</code> · <code>person(name)</code> · <code>dist()</code><div style="color:#475467;margin-top:4px;">Sequential pro forma numbers, carry a number to the placed order, contact phone / email, distributor identity.</div></div>
+      </div>
+    </section>
+
+    <section id="hooks" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;">13. Where it hooks in</h2>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:620px;">
+          <thead><tr style="text-align:left;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#667085;"><th style="padding:8px 10px;border-bottom:1.5px solid #1e2033;">File</th><th style="padding:8px 10px;border-bottom:1.5px solid #1e2033;">What</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>payments.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Ledger, fee, revisions, outstanding, fee invoice. Loaded on Orders, Pay, Finance, Distributor Settings, Customer Finance.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>proforma-doc.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Document renderer and paginator.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>order-detail.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Pro forma block (Pay by card instead / bank transfer instead, revisions), “Invoices to pay”, fee invoice rows; documents <code>pfi</code>, <code>vi:</code> (part paid, own charges), <code>fee:</code>, <code>cn:</code> (fee refund).</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>finance-view.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Checkout pro forma (D05) and the card-type check (<code>[data-fcn]</code>, <code>[data-fcerr]</code>).</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>finance-tables.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Customer invoices: totals, part paid, fee invoices, Take card payment.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>finance-integrations.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>payLink(no)</code> → guest pay page; Stripe fee settings; sync.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>order-data.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Place order: adopts the checkout pro forma number; lines carry sku, delivery notes, charges.</td></tr>
+            <tr><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;"><code>terms-approval.js</code> · <code>org-page.js</code></td><td style="padding:9px 10px;border-bottom:1px solid #f2f4f7;">Customer VAT number field and display.</td></tr>
+            <tr><td style="padding:9px 10px;"><code>sidebar.js</code></td><td style="padding:9px 10px;">Customer Finance → Pay invoices; distributor Finance → Take a card payment.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="live" style="background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;">14. Going live</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;">
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Stripe</b><ul style="margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.65;color:#344054;"><li>Use Stripe Connect on the distributor’s account; collect cards with Payment Element.</li><li>Commercial check from the card’s funding / product data before confirming; decline personal cards server-side.</li><li>Card region from the card country, not the payer’s choice.</li><li>Raise the fee invoice only from the <code>payment_intent.succeeded</code> webhook.</li><li>Respect “absorb fee” in Integrations.</li></ul></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Backend</b><ul style="margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.65;color:#344054;"><li>Payments, allocations (payment ↔ document, amount) and fee invoices as tables; balances computed server-side.</li><li>Invoice and pro forma numbering in one transaction-safe sequence.</li><li>Pay links: signed token (customer, documents, expiry 30 days), view and pay only, rate-limited.</li><li>Receipt emails to the payer (guest email or customer contact).</li></ul></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Accounting (Xero)</b><ul style="margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.65;color:#344054;"><li>Post the fee invoice as its own sales invoice.</li><li>Post one payment allocated across every document it paid, including part payments.</li><li>Credit notes with the fee refund line allocated against the fee invoice.</li></ul></div>
+        <div style="border:1px solid #e4e7ec;border-radius:12px;padding:14px 16px;"><b style="font-size:14.5px;">Still to decide</b><ul style="margin:8px 0 0;padding-left:18px;font-size:13.5px;line-height:1.65;color:#344054;"><li>Legal confirmation of commercial-card surcharging and the fee cap.</li><li>Whether bank transfers from the pay page auto-match via the bank feed.</li><li>Fee handling when a card payment is refunded by Stripe (not via a credit note).</li></ul></div>
+      </div>
+    </section>
+
+    <section id="test" style="background:#1e2033;color:#fff;border-radius:18px;padding:26px 28px;">
+      <h2 style="font-family:'EB Garamond',serif;font-weight:500;font-size:30px;margin:0 0 12px;color:#fff;">15. Try it</h2>
+      <ol style="margin:0;padding-left:20px;font-size:14.5px;line-height:1.8;color:#e4e7ec;">
+        <li>Open <a href="Merchsmith Orders.html#order=d3042" style="color:#c7caf5;">MS-1044</a> (Citrix, bank transfer, unpaid). In the Summary, click <b>Pay by card instead</b> and confirm. The pro forma becomes PF-…-R2.</li>
+        <li>Download the pro forma to see the revision note and the card fee.</li>
+        <li>On the pay page, also tick INV-1042-01, change its amount to 1000, enter a card number such as 4242 4242 4242 4242 and pay. Try 4000… to see the personal-card decline.</li>
+        <li>Download the fee invoice from the receipt. Back on the order, see the paid status and the fee invoice row.</li>
+        <li>Open <a href="Merchsmith Finance.html#tab=billing&amp;sub=cust" style="color:#c7caf5;">Finance → Customer invoices</a>: INV-1042-01 is Part paid; filter Card fee invoices.</li>
+        <li>As a distributor, use the card icon on any unpaid row to open “Take a card payment”. Add <code style="background:#2f3157;color:#e4e7ec;">?guest=1</code> to the pay page to see the emailed-link view.</li>
+      </ol>
+      <p style="margin:14px 0 0;font-size:13px;color:#b9bdd0;">Data is stored in this browser. Download a backup first (Admin → Settings → Data backup) if you want to keep the current state.</p>
+    </section>
+
+  </main>
+</div>
+</x-dc>
+</body>
+</html>

@@ -14,8 +14,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
-<script src="theme.js?v=10"></script>
+<script>window.MS_SCOPE='dist';</script>
+<script src="theme.js?v=13"></script>
 <script src="colour-map.js"></script>
+<script src="store-feed.js?v=2"></script>
 <style>
 @page{size:420mm 297mm;margin:0}
 html,body{margin:0;padding:0;background:#54566b;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -26,6 +28,9 @@ a{color:inherit} a:hover{color:inherit}
 <div style="font-family:var(--sans,'Inter',sans-serif);color:var(--ink,#23232a);">
   <div data-noprint="1" style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#2c2d3a;color:#fff;padding:12px 22px;font-size:13.5px;">
     <span><b>Quote {{ q.no }}</b> · A3 landscape · {{ q.pageCount }} pages</span>
+    <span style="display:flex;gap:4px;background:rgba(255,255,255,.1);border-radius:999px;padding:4px;">
+      <sc-for list="{{ exOpts }}" as="e" hint-placeholder-count="4"><a href="{{ e.href }}" style="white-space:nowrap;text-decoration:none;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700;background:{{ e.bg }};color:{{ e.fg }};">{{ e.label }}</a></sc-for>
+    </span>
     <span style="display:flex;gap:10px;">
       <button onClick="{{ back }}" style="font:inherit;font-size:13px;font-weight:700;border-radius:9px;padding:9px 16px;cursor:pointer;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3);white-space:nowrap;">← Back</button>
       <button onClick="{{ print }}" style="font:inherit;font-size:13px;font-weight:700;border:0;border-radius:9px;padding:9px 16px;cursor:pointer;background:var(--periwinkle-deep,#5860a6);color:#fff;white-space:nowrap;">Save as PDF / Print</button>
@@ -40,40 +45,41 @@ a{color:inherit} a:hover{color:inherit}
         <div>
           <div style="font-size:14px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:var(--periwinkle-deep,#5860a6);">Quote</div>
           <h1 style="font-family:var(--serif,'Fraunces',serif);font-weight:500;font-size:104px;line-height:.95;letter-spacing:-.02em;margin:18px 0 0;text-wrap:balance;">{{ cust.name }}</h1>
-          <div style="font-family:var(--serif,'Fraunces',serif);font-size:36px;line-height:1.2;color:#55555f;margin-top:14px;">{{ q.project }}</div>
+          <div style="font-family:var(--serif,'Fraunces',serif);font-size:36px;line-height:1.2;color:#55555f;margin-top:14px;"><a href="{{ q.projectHref }}" style="color:inherit;text-decoration:none;">{{ q.project }}</a></div>
         </div>
-        <div style="margin-top:44px;padding-top:24px;border-top:2px solid #23232a;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 32px;">
+        <div style="margin-top:30px;padding-top:22px;border-top:2px solid #23232a;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 32px;">
           <sc-for list="{{ q.meta }}" as="m" hint-placeholder-count="6">
             <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
               <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6a6a73;">{{ m.k }}</span>
               <span style="display:flex;align-items:center;gap:10px;font-size:19px;font-weight:600;line-height:1.3;"><sc-if value="{{ m.photo }}" hint-placeholder-val="{{ false }}"><img src="{{ m.photo }}" alt="{{ m.v }}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;display:block;flex:none;"></sc-if>{{ m.v }}</span>
-              <span style="font-size:15px;color:#55555f;">{{ m.sub }}</span>
+              <sc-if value="{{ m.subHref }}" hint-placeholder-val="{{ false }}"><a href="{{ m.subHref }}" style="font-size:15px;color:#55555f;text-decoration:none;">{{ m.sub }}</a></sc-if><sc-if value="{{ m.noSubHref }}" hint-placeholder-val="{{ true }}"><span style="font-size:15px;color:#55555f;">{{ m.sub }}</span></sc-if>
             </div>
           </sc-for>
         </div>
-        <div style="margin-top:auto;">
+        <div style="margin-top:auto;padding-top:24px;">
           <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:10px;border-bottom:1px solid #d8d6cf;white-space:nowrap;">
             <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6a6a73;">Summary at your quantities</span>
             <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6a6a73;">Ex VAT</span>
           </div>
           <sc-for list="{{ summary.rows }}" as="r" hint-placeholder-count="5">
-            <div style="display:grid;grid-template-columns:44px minmax(0,1fr) 120px 130px;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid #eeede8;font-size:16px;">
-              <span style="font-size:13px;font-weight:700;color:#8a8a93;">p.{{ r.page }}</span>
-              <span style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.name }}</span>
+            <div style="display:grid;grid-template-columns:44px minmax(0,1fr) 120px 130px;gap:12px;align-items:center;padding:3px 0;border-bottom:1px solid #eeede8;font-size:14px;">
+              <a href="{{ r.href }}" style="font-size:13px;font-weight:700;color:#8a8a93;text-decoration:none;">p.{{ r.page }}</a>
+              <span style="display:flex;align-items:center;gap:12px;min-width:0;width:100%;"><span style="width:30px;height:30px;flex:none;border-radius:6px;background:#f3f2ee;display:grid;place-items:center;overflow:hidden;"><img src="{{ r.img }}" alt="" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;"></span><a href="{{ r.href }}" style="flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:inherit;text-decoration:none;">{{ r.name }}</a></span>
               <span style="color:#55555f;text-align:right;">{{ r.qty }} units</span>
               <span style="font-weight:600;text-align:right;">{{ r.total }}</span>
             </div>
           </sc-for>
-          <div style="display:flex;justify-content:flex-end;gap:36px;padding-top:14px;font-size:16px;color:#55555f;">
-            <span>Total ex VAT <b style="color:#23232a;margin-left:8px;">{{ summary.ex }}</b></span>
-            <sc-if value="{{ q.vat }}" hint-placeholder-val="{{ true }}"><span>Total inc VAT <b style="color:#23232a;margin-left:8px;font-size:20px;">{{ summary.inc }}</b></span></sc-if>
+          <sc-if value="{{ summary.hasMore }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:44px minmax(0,1fr) 130px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid #eeede8;font-size:14px;color:#55555f;"><span></span><a href="{{ summary.moreHref }}" style="font-weight:600;color:inherit;text-decoration:none;">{{ summary.more }}</a><span style="font-weight:600;text-align:right;color:#23232a;">{{ summary.moreTotal }}</span></div></sc-if>
+          <div style="display:flex;flex-direction:column;width:380px;margin:6px 0 0 auto;font-size:16px;color:#55555f;">
+            <span style="display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:8px 0;border-bottom:1px solid #eeede8;"><span>Total ex VAT</span><b style="color:#23232a;font-size:20px;">{{ summary.ex }}</b></span>
+            <sc-if value="{{ q.vat }}" hint-placeholder-val="{{ true }}"><span style="display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:8px 0;border-bottom:1px solid #eeede8;"><span>VAT at 20%</span><span style="color:#23232a;font-size:20px;">{{ summary.vat }}</span></span><span style="display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:8px 0;border-bottom:1px solid #eeede8;border-bottom:0;"><span>Total inc VAT</span><span style="color:#23232a;font-size:20px;">{{ summary.inc }}</span></span></sc-if>
           </div>
         </div>
       </div>
 
       <div style="background:var(--periwinkle-deep,#5860a6);color:#fff;padding:76px 64px 64px;display:flex;flex-direction:column;min-width:0;">
         <div style="height:64px;display:flex;align-items:center;justify-content:flex-end;">
-          <sc-if value="{{ dist.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ dist.logo }}" alt="{{ dist.name }}" style="height:64px;width:auto;max-width:380px;object-fit:contain;object-position:right;display:block;filter:brightness(0) invert(1);"></sc-if>
+          <sc-if value="{{ dist.hasLogo }}" hint-placeholder-val="{{ true }}"><a href="{{ dist.webHref }}" style="display:block;"><img src="{{ dist.logo }}" alt="{{ dist.name }}" style="height:64px;width:auto;max-width:380px;object-fit:contain;object-position:right;display:block;filter:brightness(0) invert(1);"></a></sc-if>
           <sc-if value="{{ dist.noLogo }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--serif,'Fraunces',serif);font-size:38px;font-weight:500;color:#fff;">{{ dist.name }}</span></sc-if>
         </div>
         <div style="margin-top:auto;display:flex;flex-direction:column;">
@@ -82,7 +88,7 @@ a{color:inherit} a:hover{color:inherit}
             <sc-for list="{{ dist.address }}" as="a" hint-placeholder-count="3"><span>{{ a }}</span></sc-for>
           </div>
           <div style="display:flex;flex-direction:column;gap:2px;font-size:17px;line-height:1.45;margin-top:16px;">
-            <span>{{ dist.phone }}</span><span>{{ dist.email }}</span><span>{{ dist.web }}</span>
+            <a href="{{ dist.telHref }}" style="color:inherit;text-decoration:none;">{{ dist.phone }}</a><a href="{{ dist.mailHref }}" style="color:inherit;text-decoration:none;">{{ dist.email }}</a><a href="{{ dist.webHref }}" style="color:inherit;text-decoration:none;">{{ dist.web }}</a>
           </div>
           <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:15px;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.35);">
             <span>Company no.</span><b>{{ dist.companyNo }}</b>
@@ -90,7 +96,7 @@ a{color:inherit} a:hover{color:inherit}
           </div>
           <div style="display:flex;flex-wrap:wrap;align-items:center;gap:22px 30px;margin-top:34px;">
             <sc-for list="{{ accred }}" as="ac" hint-placeholder-count="4">
-              <sc-if value="{{ ac.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ ac.img }}" alt="{{ ac.name }}" style="height:{{ ac.h }}px;width:auto;display:block;"></sc-if>
+              <sc-if value="{{ ac.hasImg }}" hint-placeholder-val="{{ true }}"><a href="{{ ac.href }}" title="{{ ac.name }}" style="display:block;"><img src="{{ ac.img }}" alt="{{ ac.name }}" style="height:{{ ac.h }}px;width:auto;display:block;"></a></sc-if>
               <sc-if value="{{ ac.noImg }}" hint-placeholder-val="{{ false }}"><span style="display:flex;flex-direction:column;font-size:12px;line-height:1.25;border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:7px 12px;"><span style="text-transform:uppercase;letter-spacing:.08em;font-size:10.5px;">{{ ac.t }}</span><b>{{ ac.name }}</b></span></sc-if>
             </sc-for>
           </div>
@@ -99,7 +105,7 @@ a{color:inherit} a:hover{color:inherit}
     </section>
 
     <sc-for list="{{ products }}" as="p" hint-placeholder-count="2">
-      <section data-page="1" data-screen-label="{{ p.label }}" style="width:1587px;height:1122px;flex:none;display:flex;flex-direction:column;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.4);overflow:hidden;">
+      <section id="{{ p.anchor }}" data-page="1" data-screen-label="{{ p.label }}" style="width:1587px;height:1122px;flex:none;display:flex;flex-direction:column;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.4);overflow:hidden;">
         <div style="flex:1;min-height:0;display:flex;flex-direction:{{ p.dir }};">
           <div style="width:640px;flex:none;background:#f3f2ee;position:relative;display:flex;align-items:center;justify-content:center;padding:84px 64px;">
             <img src="{{ p.img }}" alt="{{ p.name }}" style="width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;display:block;">
@@ -112,42 +118,45 @@ a{color:inherit} a:hover{color:inherit}
             </sc-if>
           </div>
           <div style="flex:1;min-width:0;padding:60px 72px 34px;display:flex;flex-direction:column;">
-            <div style="display:flex;gap:14px;align-items:baseline;font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--periwinkle-deep,#5860a6);"><span>{{ p.sku }}</span><span style="color:#8a8a93;">{{ p.model }}</span></div>
+            <div style="display:flex;gap:14px;align-items:baseline;font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--periwinkle-deep,#5860a6);"><a href="{{ p.storeHref }}" style="color:inherit;text-decoration:none;">{{ p.sku }}</a><span style="color:#8a8a93;">{{ p.model }}</span></div>
             <h2 style="font-family:var(--serif,'Fraunces',serif);font-weight:500;font-size:50px;line-height:1.02;letter-spacing:-.015em;margin:10px 0 0;text-wrap:balance;">{{ p.name }}</h2>
-            <p style="font-size:16.5px;line-height:1.6;color:#45454f;margin:16px 0 0;max-width:74ch;text-wrap:pretty;">{{ p.blurb }}</p>
+            <div data-det="1" style="flex:1 1 auto;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column;">
+            <p style="font-size:16.5px;line-height:1.6;color:#45454f;margin:16px 0 0;max-width:74ch;text-wrap:pretty;">{{ p.blurb }}<sc-if value="{{ p.blurbMore }}" hint-placeholder-val="{{ false }}"> <a href="{{ p.storeHref }}" style="color:var(--periwinkle-deep,#5860a6);font-weight:700;text-decoration:none;white-space:nowrap;">See full description ↗</a></sc-if></p>
             <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 44px;margin-top:26px;">
               <div style="display:flex;flex-direction:column;">
                 <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding-bottom:8px;border-bottom:2px solid #23232a;">Product</span>
                 <div style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 16px;padding:9px 0;border-bottom:1px solid #eeede8;align-items:center;">
                   <span style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6a6a73;">Colours</span>
                   <span style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:15px;">
-                    <sc-for list="{{ p.swatches }}" as="s" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:6px;"><i style="width:15px;height:15px;border-radius:50%;background:{{ s.hex }};box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);display:inline-block;"></i>{{ s.name }}</span></sc-for>
+                    <sc-for list="{{ p.swatches }}" as="s" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:6px;"><i style="width:15px;height:15px;border-radius:50%;background:{{ s.hex }};box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);display:inline-block;"></i>{{ s.name }}</span></sc-for><sc-if value="{{ p.swMore }}" hint-placeholder-val="{{ false }}"><a href="{{ p.storeHref }}" style="color:var(--periwinkle-deep,#5860a6);font-weight:700;text-decoration:none;white-space:nowrap;">{{ p.swMore }}</a></sc-if>
                   </span>
                 </div>
                 <sc-for list="{{ p.specs }}" as="sp" hint-placeholder-count="5">
-                  <div style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 16px;padding:9px 0;border-bottom:1px solid #eeede8;align-items:baseline;">
+                  <div data-drop="2" style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 16px;padding:9px 0;border-bottom:1px solid #eeede8;align-items:baseline;">
                     <span style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6a6a73;">{{ sp.k }}</span>
-                    <span style="font-size:15px;line-height:1.4;">{{ sp.v }}</span>
+                    <span style="font-size:15px;line-height:1.4;">{{ sp.v }}<sc-if value="{{ sp.more }}" hint-placeholder-val="{{ false }}"> <a href="{{ sp.href }}" style="color:var(--periwinkle-deep,#5860a6);font-weight:700;text-decoration:none;white-space:nowrap;">{{ sp.more }}</a></sc-if></span>
                   </div>
                 </sc-for>
               </div>
               <div style="display:flex;flex-direction:column;">
                 <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding-bottom:8px;border-bottom:2px solid #23232a;">Branding</span>
                 <sc-for list="{{ p.brand }}" as="sp" hint-placeholder-count="4">
-                  <div style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 16px;padding:9px 0;border-bottom:1px solid #eeede8;align-items:baseline;">
+                  <div data-drop="2" style="display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 16px;padding:9px 0;border-bottom:1px solid #eeede8;align-items:baseline;">
                     <span style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6a6a73;">{{ sp.k }}</span>
-                    <span style="font-size:15px;line-height:1.4;">{{ sp.v }}</span>
+                    <span style="font-size:15px;line-height:1.4;">{{ sp.v }}<sc-if value="{{ sp.more }}" hint-placeholder-val="{{ false }}"> <a href="{{ sp.href }}" style="color:var(--periwinkle-deep,#5860a6);font-weight:700;text-decoration:none;white-space:nowrap;">{{ sp.more }}</a></sc-if></span>
                   </div>
                 </sc-for>
                 <sc-if value="{{ p.hasNotes }}" hint-placeholder-val="{{ false }}">
-                  <div style="margin-top:18px;background:#f7f6f2;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;">
+                  <div data-drop="1" style="margin-top:18px;background:#f7f6f2;border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;">
                     <span style="font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#6a6a73;">Please note</span>
-                    <sc-for list="{{ p.notes }}" as="n" hint-placeholder-count="1"><span style="font-family:var(--serif,'Fraunces',serif);font-size:16.5px;line-height:1.45;font-style:italic;">{{ n }}</span></sc-for>
+                    <sc-for list="{{ p.notes }}" as="n" hint-placeholder-count="1"><span style="font-family:var(--serif,'Fraunces',serif);font-size:16.5px;line-height:1.45;font-style:italic;">{{ n }}</span></sc-for><sc-if value="{{ p.notesMore }}" hint-placeholder-val="{{ false }}"><a href="{{ p.storeHref }}" style="font-size:14px;color:var(--periwinkle-deep,#5860a6);font-weight:700;text-decoration:none;white-space:nowrap;">{{ p.notesMore }}</a></sc-if>
                   </div>
                 </sc-if>
               </div>
             </div>
-            <div style="margin-top:auto;padding-top:22px;">
+              <a data-detmore="1" href="{{ p.storeHref }}" style="display:none;position:absolute;left:0;right:0;bottom:0;padding:26px 0 4px;background:linear-gradient(to bottom,rgba(255,255,255,0),#fff 55%);font-size:15px;color:var(--periwinkle-deep,#5860a6);font-weight:700;text-decoration:none;white-space:nowrap;">More details online ↗</a>
+            </div>
+            <div style="flex:none;margin-top:auto;padding-top:22px;">
               <sc-for list="{{ p.rows }}" as="row" hint-placeholder-count="5">
                 <div style="display:grid;grid-template-columns:200px repeat({{ p.cols }},minmax(0,1fr));border-bottom:1px solid {{ row.line }};">
                   <span style="font-size:{{ row.ls }}px;font-weight:{{ row.lw }};padding:9px 0;color:{{ row.lc }};">{{ row.label }}</span>
@@ -180,15 +189,25 @@ a{color:inherit} a:hover{color:inherit}
 class Component extends DCLogic {
   state = { m: null, zoom: 1 };
   componentDidMount() {
+    const ct = () => { try { if (window.MSTheme && MSTheme.applyDist) MSTheme.applyDist(); } catch (e) {} };
+    ct(); setTimeout(ct, 300); setTimeout(ct, 1200); this._ct = ct;
     this.load(); this.fit();
     this._fit = () => this.fit(); this._load = () => this.load();
     window.addEventListener('resize', this._fit);
     window.addEventListener('load', this._load);
-    window.addEventListener('storage', this._load);
+    window.addEventListener('storage', this._load); window.addEventListener('storage', ct);
     setTimeout(this._load, 400);
     // opened from a download link (#print=1): print once the logos and product images have loaded
     if (/print=1/.test(location.hash)) { history.replaceState(null, '', location.pathname + location.search); const go = () => Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))).then(() => setTimeout(() => window.print(), 400)); setTimeout(go, 1200); }
   }
+  componentDidUpdate() { clearTimeout(this._dt); this._dt = setTimeout(() => this.fitDetails(), 150); }
+  // safety net: when a product page's details don't fit, drop the notes first, then the lowest detail rows, and show one 'More details online' link
+  fitDetails() { document.querySelectorAll('[data-det]').forEach(d => { const m = d.querySelector('[data-detmore]'); d.querySelectorAll('[data-drop]').forEach(x => { if (x.dataset.d0 == null) x.dataset.d0 = x.style.display || ''; x.style.display = x.dataset.d0; }); if (m) m.style.display = 'none';
+      const over = () => d.scrollHeight > d.clientHeight + 2; if (!over()) return;
+      if (m) { m.style.display = 'block'; m.style.position = 'static'; m.style.background = 'none'; m.style.padding = '14px 0 0'; }
+      const notes = [...d.querySelectorAll('[data-drop="1"]')]; notes.forEach(x => { x.style.display = 'none'; });
+      const rows = [...d.querySelectorAll('[data-drop="2"]')]; let guard = 0;
+      while (over() && guard++ < 20) { const vis = rows.filter(x => x.style.display !== 'none'); if (!vis.length) break; const last = vis.reduce((a, b) => b.getBoundingClientRect().bottom > a.getBoundingClientRect().bottom ? b : a); last.style.display = 'none'; } }); }
   componentWillUnmount() {
     window.removeEventListener('resize', this._fit);
     window.removeEventListener('load', this._load);
@@ -203,7 +222,8 @@ class Component extends DCLogic {
     const int = n => Number(n || 0).toLocaleString('en-GB');
     const fD = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    let sheet = J('ms-project-sheet', null);
+    const EXK = (location.search.match(/[?&]ex=(\w+)/) || [])[1] || '';
+    let sheet = EXAMPLES[EXK] || J('ms-project-sheet', null);
     if (!sheet || !Array.isArray(sheet.items) || !sheet.items.length) sheet = SEED_SHEET;
 
     // distributor: profile record (people store overrides, skipping blanks) over the platform record
@@ -220,7 +240,7 @@ class Component extends DCLogic {
 
     const fc = J('ms-footer-cfg', null);
     const accred = ((fc && fc.accred) || ACCRED_DEF).filter(a => a.on !== false).map(a => ({
-      hasImg: !!a.img, noImg: !a.img, img: a.img || '', h: Math.round((a.hpx || 36) * 1.3), t: a.t || '', name: a.s || a.t || ''
+      hasImg: !!a.img, noImg: !a.img, img: a.img || '', h: Math.round((a.hpx || 36) * 1.3), t: a.t || '', name: a.s || a.t || '', href: a.url || ACC_URLS[a.s] || '#'
     }));
 
     const custId = String(sheet.client || 'Citrix').toLowerCase();
@@ -252,40 +272,43 @@ class Component extends DCLogic {
         row('Unit price inc. branding', b => gbp(b.unit)),
         row('UK delivery', b => b.delivery ? gbp(b.delivery) : 'Included'),
         ...addl.map(a => row(a.label || 'Additional charge', () => gbp((+a.qty || 0) * (+a.unit || 0)))),
-        row('Total ex VAT', b => gbp(ex(b)), vatOn ? {} : { ls: 15, lc: '#23232a', fs: 19, fw: 700, line: 'transparent' })
+        row('Total ex VAT', b => gbp(ex(b)), { ls: 15, lc: '#23232a', fs: 19, fw: 700, line: vatOn ? '#eeede8' : 'transparent' })
       ];
       if (vatOn) {
         rows.push(row('VAT at 20%', b => gbp(ex(b) * 0.2)));
-        rows.push(row('Total inc VAT', b => gbp(ex(b) * 1.2), { ls: 15, lc: '#23232a', fs: 19, fw: 700, line: 'transparent' }));
+        rows.push(row('Total inc VAT', b => gbp(ex(b) * 1.2), { line: 'transparent' }));
       }
       rows[0].cells.forEach((c, k) => { if (brk[k].current) c.tag = 'Your quantity'; });
+      const cut = (arr, n, noun) => { arr = arr || []; return { v: arr.slice(0, n).join(', '), more: arr.length > n ? '+' + (arr.length - n) + ' more ' + noun + ' ↗' : '' }; };
+      const SZ = cut(q.sizes, 5, 'sizes'), AC = cut(q.certs, 2, ''), ME = cut(q.methods, 3, 'methods'), PO = cut(q.positions, 2, 'positions');
       const specs = [
-        ['Sizes', (q.sizes || []).join(', ')],
+        ['Sizes', SZ.v, SZ.more],
         ['Dimensions', q.dims],
         ['Material', q.material],
         ['Country of origin', q.origin],
-        ['Accreditations', (q.certs || []).join(' · ')],
+        ['Accreditations', AC.v, AC.more.replace('more  ↗', 'more ↗')],
         ['Lead time', q.lead ? q.lead + ' working days from proof approval' : '']
-      ].filter(x => x[1]).map(([k, v]) => ({ k, v }));
+      ].filter(x => x[1]).map(([k, v, more]) => ({ k, v, more: more || '', href: '' }));
       const brand = [
-        ['Available methods', (q.methods || []).join(', ')],
-        ['Positions', (q.positions || []).join(' · ')],
+        ['Available methods', ME.v, ME.more],
+        ['Positions', PO.v, PO.more],
         ['Branding area', q.area ? (q.area + (/mm/i.test(q.area) ? '' : ' mm')) : '']
-      ].filter(x => x[1]).map(([k, v]) => ({ k, v }));
+      ].filter(x => x[1]).map(([k, v, more]) => ({ k, v, more: more || '', href: '' }));
       const colours = (q.colours && q.colours.length) ? q.colours : (it.colours || []);
       return {
-        name: it.name, sku: q.sku || '', model: q.model || '', blurb: it.blurb || q.blurb || '',
+        name: it.name, sku: q.sku || '', model: q.model || '', ...(() => { const b = String(it.blurb || q.blurb || ''); if (b.length <= 300) return { blurb: b, blurbMore: false }; const c = b.slice(0, 300); return { blurb: c.slice(0, c.lastIndexOf(' ')).replace(/[,.;:]$/, '') + '…', blurbMore: true }; })(),
         img: q.imgUrl || ('assets/products/' + (it.img || 'bag') + '.png'),
-        dir: i % 2 ? 'row-reverse' : 'row', page: i + 2,
+        dir: i % 2 ? 'row-reverse' : 'row', page: i + 2, anchor: 'page-' + (i + 2), storeHref: (() => { const P = (window.STORE && STORE.products) || [], lc = v => String(v || '').toLowerCase(); const sp = P.find(x => x.name === it.name) || P.find(x => [lc(q.id), lc(q.sku)].includes(lc(x.id))) || P.find(x => lc(x.sku) && lc(x.sku) === lc(q.sku)); return new URL('Merchsmith Store.html' + (sp ? '#product=' + encodeURIComponent(lc(sp.id)) : '#all'), location.href).href; })(),
         num: String(i + 1).padStart(2, '0') + ' / ' + String(items.length).padStart(2, '0'),
         label: String(i + 2).padStart(2, '0') + ' ' + it.name,
-        swatches: colours.map(n => ({ name: n, hex: hexOf(n) })),
+        swatches: colours.slice(0, 8).map(n => ({ name: n, hex: hexOf(n) })), swMore: colours.length > 8 ? '+' + (colours.length - 8) + ' more colours ↗' : '',
         specs, brand, rows, cols: brk.length,
         chosen: String(q.chosen || '').split(' · ').filter(Boolean), hasChosen: !!q.chosen,
-        notes: q.notes || [], hasNotes: !!(q.notes && q.notes.length),
+        notes: (q.notes || []).slice(0, 1), hasNotes: !!(q.notes && q.notes.length), notesMore: (q.notes || []).length > 1 ? '+' + (q.notes.length - 1) + ' more note' + (q.notes.length > 2 ? 's' : '') + ' ↗' : '',
         _cur: cur, _ex: ex(cur)
       };
     });
+    products.forEach(p => { p.specs.concat(p.brand).forEach(s => { s.href = p.storeHref; }); });
     const lit = (J('ms-sales-lit', []) || []).filter(x => x.on !== false && x.img).map((x, i) => ({
       img: x.img, title: x.title || '', label: String(items.length + 2 + i).padStart(2, '0') + ' ' + (x.title || 'Sales literature')
     }));
@@ -294,21 +317,24 @@ class Component extends DCLogic {
     const ownerPhoto = (J('ms-people', {}).photos || {})[owner.trim().toLowerCase()] || AVATARS[owner] || '';
     const m = {
       dist: { name: dist.name, legal: dist.legalName || dist.name, address: addr, phone: dist.phone, email: dist.contactEmail, web: dist.website,
+        telHref: 'tel:' + String(dist.phone || '').replace(/[^0-9+]/g, ''), mailHref: 'mailto:' + (dist.contactEmail || ''), webHref: dist.website ? (/^https?:/.test(dist.website) ? dist.website : 'https://' + dist.website) : '#',
         companyNo: dist.companyNo || '—', vat: dist.vat || '—', logo, hasLogo: !!logo, noLogo: !logo, logoFilter: tone === 'black' ? 'brightness(0)' : 'none' },
       cust: { name: sheet.client || 'Customer', logo: custLogo, hasLogo: !!custLogo, noLogo: !custLogo },
-      q: { no: qno, project: sheet.title || '', valid, vat: vatOn, pageCount: 1 + products.length + lit.length,
+      q: { no: qno, project: sheet.title || '', projectHref: new URL('Merchsmith Project - Autumn Giveaways.html', location.href).href, valid, vat: vatOn, pageCount: 1 + products.length + lit.length,
         meta: [
           { k: 'Quote number', v: qno, sub: '' },
           { k: 'Date', v: fD(today), sub: '' },
           { k: 'Valid until', v: valid, sub: '30 days from issue' },
-          { k: 'Prepared by', v: owner, sub: dist.contactEmail || '', photo: ownerPhoto },
+          { k: 'Prepared by', v: owner, sub: dist.contactEmail || '', photo: ownerPhoto, subHref: dist.contactEmail ? 'mailto:' + dist.contactEmail : '' },
           { k: 'Payment terms', v: terms, sub: vatOn ? 'Prices shown ex and inc VAT' : 'VAT not applicable' },
-          { k: 'Products', v: products.length + ' product' + (products.length === 1 ? '' : 's'), sub: 'One per page, from page 2' }
+          { k: 'Products', v: products.length + ' product' + (products.length === 1 ? '' : 's'), sub: '' }
         ] },
       accred,
-      summary: { rows: products.map(p => ({ page: p.page, name: p.name, qty: int(p._cur.qty), total: gbp(p._ex) })), ex: gbp(exT), inc: gbp(exT * 1.2) },
+      summary: { rows: products.slice(0, products.length > 10 ? 9 : 10).map(p => ({ page: p.page, href: '#page-' + p.page, img: p.img, name: p.name, qty: int(p._cur.qty), total: gbp(p._ex) })),
+        hasMore: products.length > 10, more: products.length > 10 ? '+ ' + (products.length - 9) + ' more products on pages ' + products[9].page + '–' + products[products.length - 1].page : '', moreHref: products.length > 10 ? '#page-' + products[9].page : '', moreTotal: products.length > 10 ? gbp(products.slice(9).reduce((a, p) => a + p._ex, 0)) : '', ex: gbp(exT), vat: gbp(exT * 0.2), inc: gbp(exT * 1.2) },
       products, lit
     };
+    m.q.meta.forEach(x => { x.noSubHref = !x.subHref; });
     if (logo && this._trimSrc === logo && this._trimmed) m.dist.logo = this._trimmed;
     this.setState({ m });
     if (logo && this._trimSrc !== logo) { this._trimSrc = logo; this._trimmed = null; this.trimLogo(logo); }
@@ -334,7 +360,10 @@ class Component extends DCLogic {
 
   renderVals() {
     const m = this.state.m || {};
+    const EXK = (location.search.match(/[?&]ex=(\w+)/) || [])[1] || '';
+    const exOpts = [['', 'Live project'], ['few', 'Few products'], ['many', 'Many products'], ['long', 'Long details']].map(([k, l]) => ({ label: l, href: location.pathname + (k ? '?ex=' + k : ''), bg: (EXAMPLES[EXK] ? EXK : '') === k ? '#fff' : 'transparent', fg: (EXAMPLES[EXK] ? EXK : '') === k ? '#2c2d3a' : '#fff' }));
     return Object.assign({}, m, {
+      exOpts,
       zoom: this.state.zoom,
       print: () => window.print(),
       back: () => { if (history.length > 1) history.back(); else window.close(); }
@@ -365,6 +394,12 @@ const SEED_SHEET = { title: 'Autumn Giveaways', client: 'Citrix', owner: 'Jess D
   { name: 'Eco Wheat-Straw Charging Cable', img: 'cable', qty: 100, each: 8.45, overall: 'progress', blurb: 'A 3-in-1 charging cable in a wheat-straw bio-plastic case, with USB-C, Lightning and Micro-USB tips.' },
   { name: 'Tech Travel Bag', img: 'bag', qty: 250, each: 16.40, overall: 'progress', blurb: 'A padded rPET travel bag with a laptop sleeve, cable pockets and a luggage pass-through.' }
 ] };
+const EXAMPLES = {
+  few: SEED_SHEET,
+  many: {"title":"Welcome Packs 2027","client":"Citrix","owner":"Jess Doyle","items":[{"name":"Eco Wheat-Straw Charging Cable","img":"cable","qty":100,"each":8.45,"overall":"progress","blurb":"3-in-1 charging cable in a wheat-straw case.","quote":{"breaks":[{"qty":100,"unit":8.45,"delivery":25,"current":true},{"qty":200,"unit":7.44,"delivery":34},{"qty":400,"unit":6.59,"delivery":43},{"qty":1000,"unit":5.58,"delivery":55}],"lead":10,"sku":"LM-CABLE-01","colours":["Natural","Black"],"methods":["Screenprint"],"positions":["Front (30 × 8 mm)"],"chosen":"Front: Screenprint, 2 colours","dims":"80 × 120 × 10mm","material":"Wheat-straw bio-plastic"}},{"name":"Tech Travel Bag","img":"bag","qty":250,"each":16.4,"overall":"progress","blurb":"Padded rPET travel bag with laptop sleeve.","quote":{"breaks":[{"qty":250,"unit":16.4,"delivery":30,"current":true},{"qty":500,"unit":14.43,"delivery":39},{"qty":1000,"unit":12.79,"delivery":48},{"qty":2500,"unit":10.82,"delivery":60}],"lead":10,"sku":"TECH-BAG","colours":["Charcoal","Navy"],"methods":["Embroidery"],"positions":["Front (180 × 180 mm)"],"chosen":"Front: Embroidery, 3 colours","material":"rPET"}},{"name":"Bamboo Ballpoint Pen","img":"pen","qty":1000,"each":0.62,"overall":"progress","blurb":"Bamboo barrel pen with blue ink.","quote":{"breaks":[{"qty":1000,"unit":0.62,"delivery":15,"current":true},{"qty":2000,"unit":0.55,"delivery":24},{"qty":4000,"unit":0.48,"delivery":33},{"qty":10000,"unit":0.41,"delivery":45}],"lead":10,"sku":"LM-PEN-03","colours":["Natural"],"methods":["Laser engraving"],"positions":["Barrel (40 × 6 mm)"],"chosen":"Barrel: Laser engraving"}},{"name":"Insulated Steel Bottle 500ml","img":"drinkware","qty":200,"each":9.8,"overall":"progress","blurb":"Double-walled bottle, keeps drinks cold for 24 hours.","quote":{"breaks":[{"qty":200,"unit":9.8,"delivery":25,"current":true},{"qty":400,"unit":8.62,"delivery":34},{"qty":800,"unit":7.64,"delivery":43},{"qty":2000,"unit":6.47,"delivery":55}],"lead":10,"sku":"DW-BOT-500","colours":["White","Black","Navy"],"methods":["Laser engraving","Pad print"],"positions":["Front (60 × 40 mm)"],"chosen":"Front: Laser engraving"}},{"name":"A5 Recycled Notebook","img":"book","qty":300,"each":3.2,"overall":"progress","blurb":"80-sheet lined notebook with a recycled card cover.","quote":{"breaks":[{"qty":300,"unit":3.2,"delivery":20,"current":true},{"qty":600,"unit":2.82,"delivery":29},{"qty":1200,"unit":2.5,"delivery":38},{"qty":3000,"unit":2.11,"delivery":50}],"lead":10,"sku":"NB-A5-REC","colours":["Kraft"],"methods":["Screenprint","Foil"],"positions":["Cover (100 × 60 mm)"],"chosen":"Cover: Foil, 1 colour"}},{"name":"Wireless Mouse","img":"mouse","qty":150,"each":7.95,"overall":"progress","blurb":"Slim 2.4GHz wireless mouse.","quote":{"breaks":[{"qty":150,"unit":7.95,"delivery":20,"current":true},{"qty":300,"unit":7,"delivery":29},{"qty":600,"unit":6.2,"delivery":38},{"qty":1500,"unit":5.25,"delivery":50}],"lead":10,"sku":"XP-MOUSE","colours":["Black","White"],"methods":["Pad print"],"positions":["Top (25 × 15 mm)"],"chosen":"Top: Pad print, 1 colour"}},{"name":"Desk Organiser","img":"desk","qty":100,"each":11.5,"overall":"progress","blurb":"Bamboo desk tidy with phone stand.","quote":{"breaks":[{"qty":100,"unit":11.5,"delivery":25,"current":true},{"qty":200,"unit":10.12,"delivery":34},{"qty":400,"unit":8.97,"delivery":43},{"qty":1000,"unit":7.59,"delivery":55}],"lead":10,"sku":"DSK-ORG","colours":["Natural"],"methods":["Laser engraving"],"positions":["Front (80 × 20 mm)"],"chosen":"Front: Laser engraving"}},{"name":"Seed Paper Kit","img":"garden","qty":500,"each":1.85,"overall":"progress","blurb":"Plantable wildflower seed card in a sleeve.","quote":{"breaks":[{"qty":500,"unit":1.85,"delivery":15,"current":true},{"qty":1000,"unit":1.63,"delivery":24},{"qty":2000,"unit":1.44,"delivery":33},{"qty":5000,"unit":1.22,"delivery":45}],"lead":10,"sku":"GRD-SEED","colours":["Natural"],"methods":["Digital print"],"positions":["Sleeve (90 × 50 mm)"],"chosen":"Sleeve: Digital print, full colour"}},{"name":"Recycled Cotton Tote","img":"bag","qty":500,"each":2.95,"overall":"progress","blurb":"Long-handled tote in 140gsm recycled cotton.","quote":{"breaks":[{"qty":500,"unit":2.95,"delivery":25,"current":true},{"qty":1000,"unit":2.6,"delivery":34},{"qty":2000,"unit":2.3,"delivery":43},{"qty":5000,"unit":1.95,"delivery":55}],"lead":10,"sku":"BW-TOTE-01","colours":["Natural","Black"],"methods":["Screenprint"],"positions":["Front (250 × 250 mm)"],"chosen":"Front: Screenprint, 2 colours"}},{"name":"Organic Cotton T-Shirt","img":"clothing","qty":200,"each":6.4,"overall":"progress","blurb":"180gsm organic cotton crew-neck tee.","quote":{"breaks":[{"qty":200,"unit":6.4,"delivery":25,"current":true},{"qty":400,"unit":5.63,"delivery":34},{"qty":800,"unit":4.99,"delivery":43},{"qty":2000,"unit":4.22,"delivery":55}],"lead":10,"sku":"CL-TEE-ORG","colours":["White","Black","Navy"],"sizes":["S","M","L","XL"],"methods":["Screenprint","DTF"],"positions":["Left chest (90 × 90 mm)"],"chosen":"Left chest: Screenprint, 1 colour"}},{"name":"Ceramic Mug 330ml","img":"drinkware","qty":250,"each":2.65,"overall":"progress","blurb":"Straight-sided mug, dishwasher safe.","quote":{"breaks":[{"qty":250,"unit":2.65,"delivery":20,"current":true},{"qty":500,"unit":2.33,"delivery":29},{"qty":1000,"unit":2.07,"delivery":38},{"qty":2500,"unit":1.75,"delivery":50}],"lead":10,"sku":"LG-MUG-330","colours":["White"],"methods":["Screenprint","Sublimation"],"positions":["Wrap (200 × 80 mm)"],"chosen":"Wrap: Sublimation, full colour"}},{"name":"Power Bank 5000mAh","img":"tech","qty":150,"each":9.2,"overall":"progress","blurb":"Slim power bank with USB-C in and out.","quote":{"breaks":[{"qty":150,"unit":9.2,"delivery":20,"current":true},{"qty":300,"unit":8.1,"delivery":29},{"qty":600,"unit":7.18,"delivery":38},{"qty":1500,"unit":6.07,"delivery":50}],"lead":10,"sku":"TC-PB-5K","colours":["Black","White"],"methods":["Pad print","Laser engraving"],"positions":["Front (50 × 20 mm)"],"chosen":"Front: Pad print, 1 colour"}},{"name":"Bamboo Toothbrush Set","img":"lifestyle","qty":300,"each":1.95,"overall":"progress","blurb":"Pack of two bamboo toothbrushes in a kraft box.","quote":{"breaks":[{"qty":300,"unit":1.95,"delivery":15,"current":true},{"qty":600,"unit":1.72,"delivery":24},{"qty":1200,"unit":1.52,"delivery":33},{"qty":3000,"unit":1.29,"delivery":45}],"lead":10,"sku":"LS-TB-BAM","colours":["Natural"],"methods":["Laser engraving"],"positions":["Handle (40 × 6 mm)"],"chosen":"Handle: Laser engraving"}},{"name":"Kraft Desk Pad A4","img":"book","qty":200,"each":4.1,"overall":"progress","blurb":"50-sheet tear-off desk pad on recycled paper.","quote":{"breaks":[{"qty":200,"unit":4.1,"delivery":20,"current":true},{"qty":400,"unit":3.61,"delivery":29},{"qty":800,"unit":3.2,"delivery":38},{"qty":2000,"unit":2.71,"delivery":50}],"lead":10,"sku":"NB-PAD-A4","colours":["Kraft"],"methods":["Digital print"],"positions":["Header (190 × 40 mm)"],"chosen":"Header: Digital print, full colour"}},{"name":"USB-C Cable Organiser","img":"cable","qty":250,"each":3.35,"overall":"progress","blurb":"Felt roll-up organiser with elastic loops.","quote":{"breaks":[{"qty":250,"unit":3.35,"delivery":15,"current":true},{"qty":500,"unit":2.95,"delivery":24},{"qty":1000,"unit":2.61,"delivery":33},{"qty":2500,"unit":2.21,"delivery":45}],"lead":10,"sku":"LM-ORG-01","colours":["Grey","Navy"],"methods":["Screenprint"],"positions":["Flap (50 × 30 mm)"],"chosen":"Flap: Screenprint, 1 colour"}}]},
+  long: {"title":"Staff Kit Refresh","client":"Citrix","owner":"Jess Doyle","items":[{"name":"Recycled Commuter Backpack","img":"bags","qty":250,"each":18.9,"overall":"progress","blurb":"Our best-selling backpack, made from 100% recycled PET (around 22 bottles per bag). It has a padded 15.6\" laptop sleeve, a quick-access front pocket with key clip, side bottle pockets, a hidden anti-theft back pocket and a luggage pass-through strap. The ergonomic, padded shoulder straps and breathable mesh back panel make it comfortable to carry all day, and the water-resistant base keeps contents dry. Supplied with a care label and swing tag explaining its recycled content.","quote":{"breaks":[{"qty":250,"unit":18.9,"delivery":35,"current":true},{"qty":500,"unit":16.63,"delivery":44},{"qty":1000,"unit":14.74,"delivery":53},{"qty":2500,"unit":12.47,"delivery":65}],"lead":10,"sku":"BW-PACK-22","model":"Commuter 22L","colours":["Black","Charcoal","Navy","Forest","Burgundy","Sand","Grey","Royal blue"],"sizes":["22 litres"],"dims":"300 × 450 × 160mm","material":"600D recycled PET, PU-coated base","origin":"Vietnam","certs":["GRS certified","OEKO-TEX Standard 100","PETA approved vegan"],"methods":["Embroidery","Screenprint","Transfer","Woven patch"],"positions":["Front pocket (120 × 80 mm)","Shoulder strap (60 × 20 mm)","Back panel (200 × 200 mm)"],"area":"120 × 80","chosen":"Front pocket: Embroidery, 4 colours · Shoulder strap: Transfer, 1 colour","notes":["Embroidery stitch count up to 10,000 included; larger logos are quoted separately.","Colours other than Black, Charcoal and Navy have a minimum of 100 per colour."],"additional":[{"label":"Individual polybag and swing tag","qty":250,"unit":0.35},{"label":"Second position setup","qty":1,"unit":35}]}},{"name":"Organic Cotton Hoodie","img":"clothing","qty":150,"each":21.5,"overall":"progress","blurb":"Heavyweight 320gsm organic cotton hoodie with brushed fleece inside, ribbed cuffs and hem, kangaroo pocket and flat drawcords. Unisex relaxed fit, pre-shrunk and garment dyed for a soft, lived-in feel. Available in ten colours and sizes XS to 3XL, with size breakdown confirmed at order.","quote":{"breaks":[{"qty":150,"unit":21.5,"delivery":30,"current":true},{"qty":300,"unit":18.92,"delivery":39},{"qty":600,"unit":16.77,"delivery":48},{"qty":1500,"unit":14.19,"delivery":60}],"lead":10,"sku":"CL-HOOD-ORG","colours":["Black","Heather grey","Navy","Bottle green","Burgundy","Stone","Sky blue","Lilac","Mustard","White"],"sizes":["XS","S","M","L","XL","2XL","3XL"],"material":"100% organic cotton, 320gsm","origin":"Bangladesh","certs":["GOTS","Fair Wear member","OEKO-TEX"],"methods":["Embroidery","Screenprint","DTF"],"positions":["Left chest (90 × 90 mm)","Back (280 × 350 mm)","Sleeve (70 × 250 mm)"],"chosen":"Left chest: Embroidery · Back: Screenprint, 3 colours","additional":[{"label":"Size-sort and fold, bagged by name","qty":150,"unit":0.45}]}},{"name":"Insulated Steel Bottle 500ml","img":"drinkware","qty":200,"each":9.8,"overall":"progress","blurb":"Double-walled vacuum insulated bottle that keeps drinks cold for 24 hours or hot for 12. Leak-proof bamboo lid, powder-coated finish and a gift box.","quote":{"breaks":[{"qty":200,"unit":9.8,"delivery":25,"current":true},{"qty":400,"unit":8.62,"delivery":34},{"qty":800,"unit":7.64,"delivery":43},{"qty":2000,"unit":6.47,"delivery":55}],"lead":10,"sku":"DW-BOT-500","colours":["White","Black","Navy","Red","Mint","Lilac"],"methods":["Laser engraving","Pad print","Wrap print"],"positions":["Front (60 × 40 mm)","Back (60 × 40 mm)"],"chosen":"Front: Laser engraving · Back: Laser engraving"}}]}
+};
+const ACC_URLS = { 'B Corporation': 'https://www.bcorporation.net', 'Ecologi workforce': 'https://ecologi.com', 'bpma': 'https://www.bpma.co.uk', 'Living Wage Employer': 'https://www.livingwage.org.uk' };
 </script>
 </body>
 </html>

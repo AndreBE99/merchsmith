@@ -33,6 +33,7 @@
   const KEY = 'ms-identity';
 
   function current(){ if(window.MS_SCOPE==='platform') return 'admin';
+    { const m=location.hash.match(/[#&]as=(customer|distributor|supplier|admin)\b/); if(m&&IDENTITIES[m[1]]) return m[1]; }
     try{ const v=localStorage.getItem(KEY); return IDENTITIES[v]?v:'distributor'; }catch(e){ return 'distributor'; } }
   function set(id){ if(!IDENTITIES[id]) return; try{ localStorage.setItem(KEY,id); }catch(e){}
     // keep legacy per-page role flags in sync so existing views pick it up

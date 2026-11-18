@@ -96,6 +96,8 @@
     getOrders:()=>orders, getOrder:id=>orders.find(o=>o.id===id),
     placeOrder(opts){
       const n=1052+orders.length, id='o'+(1003+orders.length);
+      // keep the checkout pro forma number on the order (proforma-doc.js register)
+      try{ if(window.MSPRO) MSPRO.adopt('basket:'+basket.map(l=>l.id).join(','),'order:'+id); }catch(e){}
       const o={ id, ref:'MS-'+n, po:opts.po||('PO-'+Date.now().toString().slice(-4)),
         placed:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),
         placedBy:opts.placedBy||'Jenny Watkins', project:'Autumn Giveaways', status:opts.status||'placed',
@@ -103,7 +105,9 @@
         net:totals().dNet, vat:totals().dVat, gross:totals().dTot, vatRate:vatRate(), gNet:totals().gNet, promo:(t0=>t0.promo&&!t0.promo.err?{code:t0.promo.code,desc:t0.promo.desc,off:t0.promo.off,delOff:t0.promo.delOff}:null)(totals()), customer:opts.customer||'citrix',
         billing:opts.billing||'', invoiceTo:opts.invoiceTo||null, reference:opts.reference||'', poFile:opts.poFile||null, method:opts.method||'',
         lines: basket.map(l=>({kind:l.kind,name:l.name,img:l.img,visual:l.visual||null,qty:lineQty(l),unit:l.each*(1-(l.discountPct||0)/100),listUnit:l.each,discountPct:l.discountPct||0,variant:(l.rows||[]).filter(r=>r.qty).map(r=>r.c).join(', '),colours:(l.rows||[]).filter(r=>r.qty).map(r=>({c:r.c,hex:r.hex||null,qty:r.qty})),grid:l.grid||null,sized:!!l.sized,branding:l.proof==='unbranded'?'Unbranded':'Branded',supplier:'Lumen Supplies',
-          project:l.project||'',address:l.address||null,drops:l.drops||null,dropCharges:l.dropCharges||null,baseDelivery:l.baseDelivery!=null?l.baseDelivery:null,deliveryDate:l.deliveryDate||'ASAP',orderBy:l.orderBy||'',charges:(l.charges||[]).map(c=>({label:c.label,amt:c.amt})),deliveryCost:l.deliveryCost||0,region:l.region||'UK'})),
+          project:l.project||'',address:l.address||null,drops:l.drops||null,dropCharges:l.dropCharges||null,baseDelivery:l.baseDelivery!=null?l.baseDelivery:null,deliveryDate:l.deliveryDate||'ASAP',orderBy:l.orderBy||'',charges:(l.charges||[]).map(c=>({label:c.label,amt:c.amt,qty:c.qty||1,unit:c.unit!=null?c.unit:c.amt})),deliveryCost:l.deliveryCost||0,region:l.region||'UK',
+          sku:l.sku||(()=>{ const p=((window.STORE&&STORE.products)||[]).find(x=>x.name===l.name); return p?String(p.id).toUpperCase():''; })(),
+          deliveryNotes:(()=>{ try{ return ((JSON.parse(localStorage.getItem('ms-basket-addr-notes')||'{}')[l.id])||[]).map(n=>n.text).concat(l.address&&l.address.note?[l.address.note]:[]); }catch(e){ return []; } })()})),
         delivery: gbp(40),
         stamps:[ {k:'placed',t:'Order placed',d:'Just now'},{k:'ack',t:'Acknowledged by supplier',d:'—'},{k:'prod',t:'In production',d:'—'},{k:'dispatch',t:'Dispatched',d:'—'},{k:'delivered',t:'Delivered',d:'—'} ] };
       orders.unshift(o); save(OKEY,orders); if(window.MSPROMO) MSPROMO.record(o); basket=[]; save(BKEY,basket); return o;

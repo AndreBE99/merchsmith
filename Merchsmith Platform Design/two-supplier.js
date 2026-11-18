@@ -66,7 +66,7 @@ window.MSTWO=window.MSTWO||(function(){
   const ST_LBL={todo:'Not sent',sent:'To acknowledge',ack:'To ship',shipped:'On its way',booked:'Booked in'};
   function stockListHTML(meS,orders){ const rows=[]; const spec=J('ms-pm-spec',{}), OPS=J('ms-order-ops',{});
     (orders||[]).forEach(o=>(o.lines||[]).forEach((l,i)=>{ if(l.kind==='sample') return; const t=get(l.name); if(!t) return; const L=lane(o.id,i); const role=t.blank===meS?'out':t.brand===meS?'in':null; if(!role||L.st==='todo') return;
-      const sp=(spec[l.name]||{}).supply||{}, d=parseDay(String(sp.supDisplay||'').replace(/\b(\d{1,2})(st|nd|rd|th)\b/,'$1')), nb=d?addWD(d,-(t.brandLead||5)):null, dp=((OPS[o.id]||{}).pos||{})[t.brand], po=(dp&&dp.no?dp.no:o.ref.replace('MS-','PO-'))+'-B';
+      const sp=(spec[l.name]||{}).supply||{}, d=parseDay(String(sp.supDisplay||'').replace(/\b(\d{1,2})(st|nd|rd|th)\b/,'$1')), nb=d?addWD(d,-(t.brandLead||5)):null, dp=(((OPS[o.id]||{}).lpo||{})[i])||((OPS[o.id]||{}).pos||{})[t.brand], po=(dp&&dp.no?dp.no:o.ref.replace('MS-','PO-'))+'-B';
       rows.push({o,i,l,t,L,role,nb,po,qty:Math.ceil((l.qty||0)*(1+(L.overs??t.overs)/100))}); }));
     if(!rows.length) return '';
     const out=rows.filter(r=>r.role==='out'), inn=rows.filter(r=>r.role==='in');

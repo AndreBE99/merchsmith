@@ -1,0 +1,79 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Purchase order preview</title>
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js?v=13"></script>
+<script src="store-feed.js?v=2"></script>
+<script src="proforma-doc.js?v=105"></script>
+<script src="po-terms.js?v=2"></script>
+</head><body>
+<script>
+/* Design preview for the supplier purchase order (D09), rendered by proforma-doc.js (kind:'po'). Sample data only; the real PO is built from the order when it's sent.
+   ?ex=1 split delivery (default) · ?ex=2 simple · ?ex=3 complex (two-supplier branding, repeat, 4 positions, 5 colours, 4 addresses) */
+const EX=(location.search.match(/[?&]ex=(\w+)/)||[])[1]||'1';
+const HQ=['Specsavers','89 Kent Road','Mapperley','Nottingham','NG3 6BN'];
+const BASE={kind:'po',date:'Fri 16 Oct 2026',sentOn:'Fri 16 Oct 2026',placedBy:'Jess Doyle',conditions:window.MSPOTERMS?MSPOTERMS.get():[]};
+const STEPS=(no,date,first)=>[['Acknowledge','Upload your order acknowledgement in the supplier portal with your confirmed dispatch date.'],first||['Send your proof','Upload your proof for approval. Don’t start production until it’s approved.'],['Dispatch','Deliver by '+date+'. Add the courier and tracking number in the portal when it ships.'],['Invoice','Upload one invoice for this PO, quoting '+no+'.']];
+const PILL='Proof & artwork files: download from the online order';
+const X={
+'1':{no:'PO-1051-02',orderRef:'MS-1051',supplier:'Pencom',deliverBy:'Tue 27 Oct 2026',agreedWith:'Pencom',noFail:true,quotedBy:'Pencom',
+  items:[{img:'assets/products/pen.png',name:'Lowton 3 in 1 Ball Pen',sku:'TPC921101',qty:1000,unit:1.38,amount:1380,
+    variants:[{c:'Silver',sku:'TPC921101-SLV',qty:500,hex:'#c0c4c8',stock:'2,140 in stock'},{c:'Black',sku:'TPC921101-BLK',qty:300,hex:'#1b1b1f',stock:'860 in stock'},{c:'Blue',sku:'TPC921101-BLU',qty:200,hex:'#2f5fb3',stock:'410 in stock'}],
+    sections:[{title:'Product details',rows:[['Dimensions','125 × 12mm'],['Description','Black ink refill. With white LED light. Supplied in clear sleeves with instruction manual.'],['Material','Aluminium barrel, ABS lid']]},
+      {title:'Branding details',pill:PILL,groups:[{title:'Position 1 · Lid, one side',rows:[['Method','Digital print'],['Print cols','Green PMS 2418C, Cool Grey 11C',null,[{n:'Green PMS 2418C',hex:'#00843d'},{n:'Cool Grey 11C',hex:'#53565a'}]],['Size','35 × 7mm'],['Artwork','specsavers-logo-fullcolour.pdf','']]},{title:'Position 2 · Barrel',rows:[['Method','Laser engraving'],['Print cols','Natural engrave',null,[{n:'Natural engrave',hex:'#c9b79c'}]],['Size','40 × 5mm'],['Artwork','specsavers-wordmark-1col.pdf','']]}]},
+      {title:'Instructions',text:'Supplied individually boxed. Pack 50 per inner carton, labelled by colour.'}],
+    warns:[['Must match the sample','A sample was sent to this customer (order MS-1032). The goods must match it.']],
+    deliver:[{name:'Jay Patel',label:'Nottingham',lines:HQ,qty:500,split:[{c:'Silver',qty:300},{c:'Black',qty:200}],date:'Tue 27 Oct',notes:['No fail','Service: Tracked, next working day','Deliver to reception, 8am–4pm']},{name:'Nina Holt',label:'Leeds HQ',lines:['The Coachworks, 21 The Calls','Leeds','LS2 7EH'],qty:300,split:[{c:'Silver',qty:200},{c:'Blue',qty:100}],date:'Wed 28 Oct',notes:['Service: Tracked, next working day']},{name:'Priya Shah',label:'Manchester office',lines:['No. 1 Spinningfields','Manchester','M3 3JE'],qty:200,split:[{c:'Black',qty:100},{c:'Blue',qty:100}],date:'Thu 29 Oct',notes:['Deliver to reception']}],
+    subs:[{label:'Setup',qty:1,unit:29.5,amount:29.5},{label:'Delivery · 3 addresses',qty:1,unit:35.55,amount:35.55}]}],
+  net:1380+29.5+35.55},
+'2':{no:'PO-1052-01',orderRef:'MS-1052',supplier:'Lumen Goods',deliverBy:'Fri 6 Nov 2026',quotedBy:'Lumen Goods',
+  items:[{img:'assets/products/drinkware.png',name:'Recycled Ceramic Mug 330ml',sku:'LG-MUG-330',qty:250,unit:2.65,amount:662.5,
+    variants:[{c:'White',sku:'LG-MUG-330-WHT',qty:250,hex:'#ffffff',stock:'4,800 in stock'}],
+    sections:[{title:'Product details',rows:[['Dimensions','95 × 82mm'],['Description','Straight-sided mug made with 30% recycled ceramic. Dishwasher safe.']]},
+      {title:'Branding details',pill:PILL,groups:[{title:'Position 1 · Front',rows:[['Method','Screen print'],['Print cols','PMS 300C',null,[{n:'PMS 300C',hex:'#005eb8'}]],['Size','70 × 50mm'],['Artwork','acme-logo-1col.pdf','']]}]}],
+    deliver:[{name:'Tom Reeve',label:'Acme Bristol',lines:['Acme Ltd','Temple Quay House','2 The Square','Bristol','BS1 6PN'],notes:['Required by Fri 6 Nov 2026','Service: Standard, 2–3 working days']}],
+    subs:[{label:'Setup',qty:1,unit:25,amount:25},{label:'Delivery',qty:1,unit:9.5,amount:9.5}]}],
+  net:662.5+25+9.5},
+'3':{no:'PO-1053-03',orderRef:'MS-1053',supplier:'PrintWorks Leeds',deliverBy:'Mon 2 Nov 2026',agreedWith:'PrintWorks Leeds',noFail:true,quotedBy:'PrintWorks Leeds',
+  items:[{img:'assets/products/bag.png',name:'Recycled Cotton Tote Bag',sku:'BW-TOTE-01',qty:2500,unit:0.85,amount:2125,
+    variants:[{c:'Natural',sku:'BW-TOTE-01-NAT',qty:900,hex:'#e9dfc8'},{c:'Black',sku:'BW-TOTE-01-BLK',qty:600,hex:'#1b1b1f'},{c:'Navy',sku:'BW-TOTE-01-NVY',qty:400,hex:'#1f2a4d'},{c:'Red',sku:'BW-TOTE-01-RED',qty:350,hex:'#c0392b'},{c:'Forest',sku:'BW-TOTE-01-FOR',qty:250,hex:'#2f5d3a'}],
+    sections:[{title:'Product details',rows:[['Dimensions','380 × 420mm, 70cm handles'],['Description','140gsm recycled cotton tote with long handles. Branding only: blank stock is supplied by BagWorks UK.'],['Material','Recycled cotton, 140gsm']]},
+      {title:'Branding details',pill:PILL,groups:[
+        {title:'Position 1 · Front',rows:[['Method','Screen print'],['Print cols','PMS 186C, White',null,[{n:'PMS 186C',hex:'#c8102e'},{n:'White',hex:'#ffffff'}]],['Size','250 × 250mm'],['Artwork','festival-front-2col.pdf','']]},
+        {title:'Position 2 · Back',rows:[['Method','Screen print'],['Print cols','White',null,[{n:'White',hex:'#ffffff'}]],['Size','200 × 120mm'],['Artwork','festival-back-1col.pdf','']]},
+        {title:'Position 3 · Gusset',rows:[['Method','Screen print'],['Print cols','PMS 186C',null,[{n:'PMS 186C',hex:'#c8102e'}]],['Size','60 × 30mm'],['Artwork','festival-gusset.pdf','']]},
+        {title:'Position 4 · Woven label',rows:[['Method','Woven label, sewn in'],['Print cols','Black on white',null,[{n:'Black',hex:'#1b1b1f'},{n:'White',hex:'#ffffff'}]],['Size','40 × 20mm'],['Artwork','festival-label.pdf','']]}]},
+      {title:'Instructions',text:'Print colours must match the approved pre-production sample exactly. Fold and pack in 25s, each bundle banded and labelled with colour and quantity. Outer cartons no heavier than 15kg and marked with the delivery address name. Please send photos of the first 10 printed bags for sign-off before running the full order.'}],
+    warns:[['Incoming blank stock','BagWorks UK is delivering 2,500 unbranded totes to your goods in on PO PO-1053-02, expected by Wed 21 Oct. Book them in on the supplier portal. Prices are for branding only.'],['Repeat order','You supplied this for order MS-0987. Goods and branding must match exactly. Please still send a proof.'],['No fail delivery','This must be delivered by Mon 2 Nov 2026. Tell us straight away if anything puts that date at risk.']],
+    deliver:[
+      {name:'Sam Okafor',label:'Festival site',lines:['Gate C, Production Office','Knebworth Park','Stevenage','SG3 6PY'],qty:1200,split:[{c:'Natural',qty:500},{c:'Black',qty:300},{c:'Red',qty:250},{c:'Forest',qty:150}],date:'Mon 2 Nov',notes:['No fail','Service: Pallet, booked delivery slot','Call Sam 30 minutes before arrival: 07700 900123']},
+      {name:'Lena Marsh',label:'London office',lines:['Acme Events','14 Tabernacle Street','London','EC2A 4LU'],qty:600,split:[{c:'Natural',qty:200},{c:'Navy',qty:250},{c:'Black',qty:150}],date:'Wed 28 Oct',notes:['Service: Tracked, next working day']},
+      {name:'Raj Gill',label:'Manchester office',lines:['Acme Events','Bridgewater House','58 Whitworth Street','Manchester','M1 6BB'],qty:450,split:[{c:'Natural',qty:200},{c:'Navy',qty:150},{c:'Black',qty:100}],date:'Thu 29 Oct',notes:['Goods in closes at 3pm']},
+      {name:'Dee Watts',label:'Edinburgh pop-up',lines:['Unit 7, Waverley Mall','Princes Street','Edinburgh','EH1 1BQ'],qty:250,split:[{c:'Red',qty:100},{c:'Forest',qty:100},{c:'Black',qty:50}],date:'Fri 30 Oct',notes:['Service: Tracked, next working day','Mall loading bay, ask security for Unit 7']}],
+    subs:[{label:'Setup · 4 positions',qty:4,unit:22.5,amount:90},{label:'Woven labels',qty:2500,unit:0.12,amount:300},{label:'Delivery · 4 addresses',qty:1,unit:168,amount:168}]}],
+  steps:STEPS('PO-1053-03','Mon 2 Nov 2026',['Book in the blanks','Book in the blank stock from BagWorks UK when it arrives, then upload your proof. Don’t start production until it’s approved.']),
+  net:2125+90+300+168}};
+X.blank={no:'PO-1053-02',orderRef:'MS-1053',supplier:'BagWorks UK',deliverBy:'Wed 21 Oct 2026',agreedWith:'BagWorks UK',quotedBy:'BagWorks UK',
+  items:[{img:'assets/products/bag.png',name:'Recycled Cotton Tote Bag · unbranded',sku:'BW-TOTE-01',qty:2500,unit:0.62,amount:1550,
+    variants:[{c:'Natural',sku:'BW-TOTE-01-NAT',qty:900,hex:'#e9dfc8',stock:'12,400 in stock'},{c:'Black',sku:'BW-TOTE-01-BLK',qty:600,hex:'#1b1b1f',stock:'8,150 in stock'},{c:'Navy',sku:'BW-TOTE-01-NVY',qty:400,hex:'#1f2a4d',stock:'3,020 in stock'},{c:'Red',sku:'BW-TOTE-01-RED',qty:350,hex:'#c0392b',stock:'1,900 in stock'},{c:'Forest',sku:'BW-TOTE-01-FOR',qty:250,hex:'#2f5d3a',stock:'760 in stock'}],
+    sections:[{title:'Product details',rows:[['Dimensions','380 × 420mm, 70cm handles'],['Description','Unbranded blank stock for branding by PrintWorks Leeds.']]},{title:'Instructions',text:'Unbranded. Deliver to PrintWorks Leeds goods in, quoting PO-1053-03 on the delivery note. No paperwork or prices in the boxes.'}],
+    warns:[['Blank stock for branding','These go to our decorator, PrintWorks Leeds, not to the customer. Pack by colour and label each carton with the colour and quantity.']],
+    deliver:[{name:'Goods in',label:'PrintWorks Leeds',lines:['Unit 12, Cross Green Industrial Estate','Leeds','LS9 0SG'],notes:['Required by Wed 21 Oct 2026','Service: Pallet','Goods in 8am–3pm, Mon–Fri']}],
+    subs:[{label:'Carriage to decorator',qty:1,unit:45,amount:45}]}],
+  steps:[['Acknowledge','Upload your order acknowledgement in the supplier portal with your confirmed dispatch date.'],['Check stock','Confirm every colour and quantity is in stock. No proof is needed for blank stock.'],['Dispatch','Deliver to PrintWorks Leeds by Wed 21 Oct 2026. Add the courier and tracking number in the portal.'],['Invoice','Upload one invoice for this PO, quoting PO-1053-02.']],
+  net:1550+45};
+X.additional={no:'PO-1051-02-A1',orderRef:'MS-1051',supplier:'Pencom',deliverBy:'Tue 27 Oct 2026',quotedBy:'Pencom',
+  items:[{img:'assets/products/pen.png',name:'Additional PO · Lowton 3 in 1 Ball Pen',sku:'TPC921101',qty:1,unit:0,amount:0,
+    sections:[{title:'Instructions',text:'Additional costs agreed with Amy Carter on Mon 19 Oct 2026, added to PO-1051-02. The original PO and its quantities are unchanged.'}],
+    subs:[{label:'Extra print colour on the lid',qty:1000,unit:0.08,amount:80},{label:'Extra setup',qty:1,unit:15,amount:15}]}],
+  steps:[['Acknowledge','Confirm these extra costs in the supplier portal.'],['No new proof','Unless we ask for one, keep to the approved proof for PO-1051-02.'],['Dispatch','Same delivery as PO-1051-02.'],['Invoice','Invoice these costs separately, quoting PO-1051-02-A1.']],
+  net:95};
+const D=Object.assign({},BASE,X[EX]||X['1']); if(!D.steps) D.steps=STEPS(D.no,D.deliverBy); D.net=Math.round(D.net*100)/100;
+document.open(); document.write(MSPRO.render(D)); document.close();
+(function(){ const bar=document.createElement('div'); bar.setAttribute('data-noprint',''); bar.style.cssText='position:fixed;top:14px;right:14px;z-index:10;display:flex;gap:4px;background:#1e2033;border-radius:999px;padding:4px;font:700 12.5px Mulish,Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25)';
+  [['1 · Split delivery','1'],['2 · Simple','2'],['3 · Complex','3']].forEach(([l,q])=>{ const x=document.createElement('a'); x.textContent=l; x.href=location.pathname+'?ex='+q; const on=q===(X[EX]?EX:'1'); x.style.cssText='white-space:nowrap;text-decoration:none;border-radius:999px;padding:6px 12px;'+(on?'background:#fff;color:#1e2033':'color:#fff'); bar.appendChild(x); });
+  document.body.appendChild(bar); const st=document.createElement('style'); st.textContent='@media print{[data-noprint]{display:none!important}}'; document.head.appendChild(st); })();
+const strip=()=>document.querySelectorAll('link[rel=stylesheet]:not([href*="fonts.googleapis"]),style#ssCss').forEach(n=>n.remove()); strip(); setTimeout(strip,300); setTimeout(function(){ strip(); if(window.__pfBuild) __pfBuild(); },1200);
+if(/[?&]print=1/.test(location.search)){ (function(){ var go=function(){ setTimeout(function(){ window.print(); },2600); }; if(document.readyState==='complete') go(); else window.addEventListener('load',go); })(); }
+
+</script>
+</body></html>

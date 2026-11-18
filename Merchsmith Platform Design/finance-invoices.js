@@ -30,7 +30,8 @@ window.MSFIN=window.MSFIN||(function(){
     O.forEach(o=>{ const x=X[o.id]||{};
       // a supplier's PO counts as sent once any of its lines has been checked & sent (the time lives on the line)
       const sentFor=s=>{ const ts=(o.lines||[]).map((l,i)=>{ const L=(x.lines||[])[i]||{}, sup=supOf(l); return sup===s&&L.t&&L.t.sent?+new Date(L.t.sent):0; }).filter(Boolean); return ts.length?Math.min(...ts):0; };
-      Object.entries(x.pos||{}).forEach(([s,p])=>{ if(!p) return; const sent=p.sentAt||sentFor(s)||null; if(!sent&&!p.invoice) return; rows.push({sup:s,po:p.no,o,inv:p.invoice,sent}); });
+      if(x.lpo) Object.entries(x.lpo).forEach(([li,p])=>{ const l=(o.lines||[])[+li], L=(x.lines||[])[+li]||{}; if(!p||!l) return; const sent=p.sentAt||(L.t&&L.t.sent)||null; if(!sent&&!p.invoice) return; rows.push({sup:supOf(l),po:p.no,o,inv:p.invoice,sent,item:l.name}); });
+      else Object.entries(x.pos||{}).forEach(([s,p])=>{ if(!p) return; const sent=p.sentAt||sentFor(s)||null; if(!sent&&!p.invoice) return; rows.push({sup:s,po:p.no,o,inv:p.invoice,sent}); });
       Object.entries(T[o.id]||{}).forEach(([li,t])=>{ if(!t||t.st==='todo') return; const l=(o.lines||[])[+li]||{}; rows.push({sup:(t.blank||'Blank supplier'),po:String(o.ref).replace('MS-','PO-')+'-'+(+li+1)+'-B',o,inv:t.inv,sent:t.sentAt,blank:l.name,diff:t.inv&&t.inv.diff}); }); });
     return rows.sort((a,b)=>new Date(b.sent||0)-new Date(a.sent||0)); }
 

@@ -144,10 +144,10 @@
     // logos are third-party trademarks — drop the actual files in via Settings → Footer (img)
     // and the emblem is replaced by the artwork.
     accred:[
-      {t:'Certified',s:'B Corporation',mark:'seal',img:'assets/accred-01.png',hpx:52,on:true},
-      {t:'Climate positive',s:'Ecologi workforce',mark:'leaf',img:'assets/accred-02.png',hpx:30,on:true},
-      {t:'Member',s:'bpma',mark:'rosette',img:'assets/accred-04.png',hpx:28,on:true},
-      {t:'Accredited',s:'Living Wage Employer',mark:'shield',img:'assets/accred-03.png',hpx:46,on:true},
+      {t:'Certified',s:'B Corporation',mark:'seal',img:'assets/accred-01.png',hpx:52,url:'https://www.bcorporation.net',on:true},
+      {t:'Climate positive',s:'Ecologi workforce',mark:'leaf',img:'assets/accred-02.png',hpx:30,url:'https://ecologi.com',on:true},
+      {t:'Member',s:'bpma',mark:'rosette',img:'assets/accred-04.png',hpx:28,url:'https://www.bpma.co.uk',on:true},
+      {t:'Accredited',s:'Living Wage Employer',mark:'shield',img:'assets/accred-03.png',hpx:46,url:'https://www.livingwage.org.uk',on:true},
     ],
     social:[
       {k:'x',t:'X',h:'',on:true},
@@ -185,7 +185,9 @@
     [/living wage|wage|accredit/i,      'shield', 'Accredited',     null],
     [/iso|certif/i,                     'seal',   'Certified',      null],
   ];
-  function accFill(a){
+  const ACC_URLS={'B Corporation':'https://www.bcorporation.net','Ecologi workforce':'https://ecologi.com','bpma':'https://www.bpma.co.uk','Living Wage Employer':'https://www.livingwage.org.uk'};
+  function accFill(a){ a=accFill0(a); if(a&&typeof a==='object'&&!a.url&&ACC_URLS[a.s]) a=Object.assign({},a,{url:ACC_URLS[a.s]}); return a; }
+  function accFill0(a){
     if(!a||typeof a!=='object') return a;
     if(a.mark&&(a.s||a.t)) return a;                       // already in the new shape
     const label=String(a.t||'').trim();
@@ -266,7 +268,7 @@
     };
     const accred=(c.accred||[]).filter(on);
     const accredRow=accred.length?`<div class="msf-accred">${accred.map(a=>a.img
-      ? `<span class="msf-acc has"><img src="${esc(a.img)}" alt="${esc([a.t,a.s].filter(Boolean).join(' '))}"${a.hpx?` style="height:${+a.hpx}px"`:''} onerror="this.parentNode.classList.remove('has');this.parentNode.innerHTML=this.parentNode.dataset.fb" data-fb="${esc(a.t)}"></span>`
+      ? `<${a.url?'a href="'+esc(a.url)+'" target="_blank" rel="noopener"':'span'} class="msf-acc has"><img src="${esc(a.img)}" alt="${esc([a.t,a.s].filter(Boolean).join(' '))}"${a.hpx?` style="height:${+a.hpx}px"`:''} onerror="this.parentNode.classList.remove('has');this.parentNode.innerHTML=this.parentNode.dataset.fb" data-fb="${esc(a.t)}"></${a.url?'a':'span'}>`
       : `<span class="msf-acc"><svg class="msf-mark" viewBox="0 0 24 24" aria-hidden="true">${MARKS[a.mark]||MARKS.seal}</svg><span class="msf-acctx"><b>${esc(a.t)}</b>${a.s?`<i>${esc(a.s)}</i>`:''}</span></span>`).join('')}</div>`:'';
 
     const social=(c.social||[]).filter(on);

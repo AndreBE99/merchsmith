@@ -97,6 +97,7 @@ window.MSTERMS=window.MSTERMS||(function(){
           <label class="ta-f"><span>Credit limit (£)</span><input data-ec value="${a.creditLimit?Math.round(a.creditLimit).toLocaleString('en-GB'):''}" placeholder="None" inputmode="numeric"></label></div>
         ${a.creditUsed?`<p class="ta-sm">${gbp(a.creditUsed)} currently used.</p>`:''}
         <div class="ta-grid"><div class="ta-f"><span>VAT applicable</span><div class="ta-seg" data-ev>${[['1','Yes'],['0','No']].map(([v,l])=>`<button type="button" data-v="${v}" class="${(a.vat?'1':'0')===v?'on':''}">${l}</button>`).join('')}</div></div>
+          <label class="ta-f"><span>Customer VAT number <i>shown on invoices</i></span><input data-evn value="${esc(a.vatNo||'')}" placeholder="e.g. GB 123 4567 89"></label>
           <div class="ta-f" data-epow><span>PO for on-account orders</span><select data-epo>${PO.map(([v,l])=>`<option value="${v}"${a.poLevel===v?' selected':''}>${l}</option>`).join('')}</select></div></div>
         <label class="ta-f"><span>Note <i>saved to the customer’s history${F.length?', and sent to Finance if approval is needed':''}</i></span><textarea data-en rows="2" placeholder="e.g. Annual review · order volume up 40%"></textarea></label>
         <div class="ta-info" data-eh></div>
@@ -112,8 +113,8 @@ window.MSTERMS=window.MSTERMS||(function(){
       q('[data-eok]').textContent=ask?'Send to Finance':'Save'; };
     q('[data-ep]').onchange=hint; q('[data-ec]').oninput=e=>{ const d=e.target.value.replace(/\D/g,''); e.target.value=d?(+d).toLocaleString('en-GB'):''; hint(); }; hint();
     q('[data-eok]').onclick=()=>{ const n=t(), note=q('[data-en]').value.trim(), ask=needs(n,cur)&&!fin, po=q('[data-epo]').value;
-      const side={}; if(vat!==a.vat) side.vat=vat; if(po!==a.poLevel) side.poLevel=po;
-      if(Object.keys(side).length&&window.MSCUSTACCT){ MSCUSTACCT.set(c.id,side); hist(c.id,'Trading terms changed by '+me()+': '+[side.vat!=null?'VAT '+(vat?'applicable':'not applicable'):'',side.poLevel?'PO '+PO.find(x=>x[0]===po)[1].toLowerCase():''].filter(Boolean).join(', ')+'.'); }
+      const side={}; if(vat!==a.vat) side.vat=vat; if(po!==a.poLevel) side.poLevel=po; const vn=(q('[data-evn]').value||'').trim().toUpperCase(); if(vn!==(a.vatNo||'')) side.vatNo=vn;
+      if(Object.keys(side).length&&window.MSCUSTACCT){ MSCUSTACCT.set(c.id,side); hist(c.id,'Trading terms changed by '+me()+': '+[side.vat!=null?'VAT '+(vat?'applicable':'not applicable'):'',side.poLevel?'PO '+PO.find(x=>x[0]===po)[1].toLowerCase():'',side.vatNo!=null?'VAT number '+(side.vatNo||'removed'):''].filter(Boolean).join(', ')+'.'); }
       const changed=n.payment!==cur.payment||n.credit!==cur.credit;
       if(changed&&ask){ request(c,n,{current:cur,note,force:true}); toast('Sent to Finance to approve'); }
       else if(changed){ apply(c.id,n); hist(c.id,'Trading terms changed by '+me()+': '+summary(cur)+' → '+summary(n)+'.'+(note?' Note: '+note:'')); toast('Terms updated for '+c.name); }

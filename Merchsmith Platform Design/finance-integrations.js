@@ -35,7 +35,8 @@ window.MSINT=window.MSINT||(function(){
     const m={synced:['ok','✓','In '+n+(s.ref?' as '+s.ref:'')],pending:['wait','⟳','Waiting to send to '+n],error:['bad','!','Not sent to '+n+': '+(s.err||'error')],skipped:['skip','–','Before the sync start date, not sent']}[s.st];
     return `<span class="int-sy ${m[0]}" title="${esc(m[2])}" aria-label="${esc(m[2])}">${m[1]}</span>`; }
   function retry(key){ const S=J(SK,{}); S[key]={st:'synced',ref:key,at:new Date().toISOString(),retried:true}; P(SK,S); }
-  const payLink=no=>'https://pay.merchsmith.com/mojo/'+encodeURIComponent(no);
+  // pay links in emails open the secure guest view of the pay page (payments.js); the live build serves this on the distributor's domain
+  const payLink=no=>window.MSPAY?MSPAY.payUrl('citrix',no,true):'https://pay.merchsmith.com/mojo/'+encodeURIComponent(no);
 
   /* ---------- Integrations tab ---------- */
   function tab(el){ if(!el) return; const c=cfg(), s=c.stripe, a=c.acct, pv=provider();

@@ -933,7 +933,7 @@ html .titlerow.stuck .avatars{transform:translateX(calc(var(--pt-w,0px) * -0.2))
 <script src="lead-times.js"></script>
 <script src="delivery-confirm.js"></script>
 <script src="image-slot.js"></script>
-<script src="product-modal.js?v=63"></script>
+<script src="product-modal.js?v=67"></script>
 <script>
 const ACT = ['Design','Price','Sample','Stock'];
 let ROLE = ['cust','dist'].includes(localStorage.getItem('ms-role')) ? localStorage.getItem('ms-role') : 'dist';
@@ -2066,8 +2066,8 @@ window.__currentModalProduct = () => (typeof pmIndex!=='undefined' ? ordered[pmI
 <script src="logos.js"></script>
 <script src="avatars.js"></script>
 <script src="identity.js"></script>
-<script src="sidebar.js?v=22"></script>
-<script src="chrome.js?v=3"></script>
+<script src="sidebar.js?v=28"></script>
+<script src="chrome.js?v=5"></script>
 <script src="comments.js"></script>
 <script src="project-brief.js"></script>
 <script>addEventListener('DOMContentLoaded',()=>{ const tr=document.querySelector('.titlerow'); if(!tr) return; const pt=tr.querySelector('.ptitle'); const set=()=>{ if(pt) document.documentElement.style.setProperty('--pt-w',pt.offsetWidth+'px'); document.documentElement.style.setProperty('--tr-h',tr.offsetHeight+'px'); }; new ResizeObserver(set).observe(tr); set();

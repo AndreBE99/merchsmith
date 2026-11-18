@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="components.css">
 <script>if(/[?&]store=merchsmith\b/.test(location.search)) window.MS_SCOPE='platform';</script>
 <script>if(/tab=billing/.test(location.hash)){ const m=location.hash.match(/sub=(\w+)/); location.replace('Merchsmith Finance.html'+(m?'#sub='+m[1]:'')); }</script>
-<script src="theme.js?v=10"></script>
+<script src="theme.js?v=13"></script>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
@@ -287,6 +287,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
     <button class="settab" data-panel="domain">Domain</button>
     <button class="settab" data-panel="warndrafts">Warning drafts</button>
     <button class="settab" data-panel="saleslit">Sales literature</button>
+    <button class="settab" data-panel="poterms">Purchasing terms</button>
     <button class="settab" data-panel="custdefaults">Customer defaults</button>
     <button class="settab" data-panel="subscription">Subscription</button>
   </div>
@@ -350,6 +351,8 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
   <div class="panel" id="panel-warndrafts" hidden><div id="warnDraftsMount" style="margin-top:22px"></div></div>
 
   <div class="panel" id="panel-saleslit" hidden><div id="salesLitMount"></div></div>
+
+  <div class="panel" id="panel-poterms" hidden><div id="poTermsMount"></div></div>
 
   <div class="panel" id="panel-custdefaults" hidden><div id="custDefMount"></div></div>
 
@@ -455,9 +458,11 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
 <script src="admin-data.js?v=8"></script>
 <script src="store-domain.js?v=3"></script>
 <script src="bacs-deadline.js?v=2"></script>
+<script src="po-lines.js?v=1"></script>
 <script src="two-supplier.js"></script>
-<script src="finance-tables.js?v=1"></script>
-<script src="finance-invoices.js?v=4"></script>
+<script src="payments.js?v=3"></script>
+<script src="finance-tables.js?v=5"></script>
+<script src="finance-invoices.js?v=5"></script>
 <script src="store-appearance.js?v=4"></script>
 <script src="billing.js?v=3"></script>
 <script src="markup.js?v=1"></script>
@@ -483,9 +488,9 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
 <script src="avatars.js"></script>
 <script src="people.js?v=19"></script>
 <script src="org-profile.js?v=14"></script>
-<script src="sidebar.js?v=26"></script>
+<script src="sidebar.js?v=28"></script>
 <script src="site-content.js"></script>
-<script src="chrome.js?v=3"></script>
+<script src="chrome.js?v=5"></script>
 <script>
 const ML=window.MSLead;
 const toast=(()=>{ const el=document.getElementById('toast'); let t; return ()=>{ el.classList.add('show'); clearTimeout(t); t=setTimeout(()=>el.classList.remove('show'),1400); }; })();
@@ -526,6 +531,7 @@ function showTab(name){ const b=document.querySelector('.settab[data-panel="'+na
   if(name==='discounts' && window.MSPROMO) MSPROMO.panel(document.getElementById('promoMount'));
   if(name==='warndrafts' && window.MSWARN) MSWARN.settings(document.getElementById('warnDraftsMount'));
   if(name==='searchins'){ const go=()=>window.MSSEARCH?MSSEARCH.insightsPanel(document.getElementById('searchInsMount')):setTimeout(go,150); go(); }
+  if(name==='poterms' && window.MSPOTERMS) MSPOTERMS.settings(document.getElementById('poTermsMount'));
   if(name==='saleslit' && window.MSSALESLIT) MSSALESLIT.settings(document.getElementById('salesLitMount'));
   if(name==='custdefaults' && window.MSCUSTDEF) MSCUSTDEF.settings(document.getElementById('custDefMount'));
   if(name==='appearance' && window.MSAPPEAR) MSAPPEAR.mount(document.getElementById('appearanceMount'));
@@ -619,6 +625,7 @@ function renderFooter(){
       <select class="w-mark" data-path="accred.${i}" data-k="mark" title="Emblem">${(window.MSChrome&&MSChrome.ACC_MARKS||['seal']).map(m=>`<option value="${m}" ${a.mark===m?'selected':''}>${m}</option>`).join('')}</select>
       <input type="text" class="w-q" data-path="accred.${i}" data-k="t" value="${fesc(a.t)}" placeholder="Certified">
       <input type="text" class="w-t" data-path="accred.${i}" data-k="s" value="${fesc(a.s)}" placeholder="Accreditation name">
+      <input type="url" class="w-u" data-path="accred.${i}" data-k="url" value="${fesc(a.url||'')}" placeholder="https:// link to their website" title="Link when the logo is clicked (footer and documents)" style="min-width:180px">
       <button class="upl" data-upl="${i}">${a.img?'Replace':'Upload'}</button>
       ${a.img?`<button class="upl" data-clr="${i}">Clear</button>`:''}
       <button class="xbtn" data-delacc="${i}">×</button></div>`).join('')}
@@ -1078,6 +1085,7 @@ if((location.hash.match(/tab=([a-z]+)/i)||[])[1]==='subscription') renderSubscri
 <script>(function(){ const p=document.getElementById('panel-warndrafts'); if(p&&!p.hidden&&window.MSWARN) MSWARN.settings(document.getElementById('warnDraftsMount')); })();</script>
 <script src="split-delivery.js?v=11"></script>
 <script src="sales-lit.js?v=1"></script>
+<script src="po-terms.js?v=2"></script>
 <script src="customer-defaults.js?v=2"></script>
 <script>(function(){ const p=document.getElementById('panel-custdefaults'); if(p&&!p.hidden&&window.MSCUSTDEF) MSCUSTDEF.settings(document.getElementById('custDefMount')); })();</script>
 <script>(function(){ const p=document.getElementById('panel-saleslit'); if(p&&!p.hidden&&window.MSSALESLIT) MSSALESLIT.settings(document.getElementById('salesLitMount')); })();</script>

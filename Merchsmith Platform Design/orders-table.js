@@ -87,7 +87,7 @@ window.MSORDTBL=window.MSORDTBL||(function(){
     const lastAct=times.length?new Date(Math.max(...times)):null;
     const cm=Object.values(C).flat().filter(m=>role==='customer'?m.aud==='customer':role==='supplier'?m.aud==='supplier'&&m.sup===me:true).length;
     const fl=role==='distributor'||role==='admin'?(window.MSOSOC&&MSOSOC.orderFlagState?MSOSOC.orderFlagState(o):{level:null}):{level:null};
-    const myPO=role==='supplier'?Object.entries(x.pos||{}).filter(([s])=>s===me).map(([,p])=>p.no)[0]||(mine.some(k=>k.blankOnly)?'Blank stock PO':''):'';
+    const myPO=role==='supplier'?(x.lpo?(o.lines||[]).map((l,i)=>supOf(l)===me&&x.lpo[i]?x.lpo[i].no:null).filter(Boolean).join(', ')||null:null)||Object.entries(x.pos||{}).filter(([s])=>s===me).map(([,p])=>p.no)[0]||(mine.some(k=>k.blankOnly)?'Blank stock PO':''):'';
     let team={dist:[],cust:[]}; try{ if(window.MSOSOC&&MSOSOC.teamFor&&role!=='supplier') team=MSOSOC.teamFor(o,o.project||'')||team; }catch(e){}
     return {team,o,x,lines,act,mine,stage,cls,open,needs,waitSup,first,last,asap,overdue,soon,total,gross0,credits,profit,sups,myCost,pay,lastAct,cm,fl,nDisp,nDel,myPO,placed:pDate(o.placed),cust:custName(o),cxN:lines.length-act.length}; }
 

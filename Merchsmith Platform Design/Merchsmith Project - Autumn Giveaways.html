@@ -24,7 +24,7 @@ window.__msLayout=window.__msLayout||(function(){ const fns=[]; let q=0, busy=fa
   return {add(f){ fns.push(f); run(); }, run}; })();
 /* kept for older code paths: a debounced, self-quietening watcher */
 window.__msObserve=window.__msObserve||(fn=>{ let t=0; const o=new MutationObserver(()=>{ if(t) return; t=setTimeout(()=>{ t=0; try{ fn(); }catch(e){} o.takeRecords(); },120); }); return o; });</script>
-<script src="theme.js?v=10"></script>
+<script src="theme.js?v=13"></script>
 <script>if(new URLSearchParams(location.search).get('embed')==='1')document.documentElement.classList.add('embed');</script>
 <style>
 html.embed .header,html.embed .crumbband,html.embed .foot,html.embed .tdiv,html.embed .titlerow,html.embed .metabar,
@@ -1448,11 +1448,12 @@ html.ovmodal main>*:not(#pmodal):not(script):not(style){visibility:hidden;}
 <script src="image-slot.js"></script>
 <script src="store-feed.js?v=2"></script>
 <script src="dist-projects-data.js?v=5"></script>
-<script src="two-supplier.js?v=9"></script>
+<script src="two-supplier.js?v=10"></script>
 <script src="product-warnings.js?v=4"></script>
-<script src="product-modal.js?v=147"></script>
+<script src="product-modal.js?v=151"></script>
 <script src="store-listing.js?v=1"></script>
 <script src="order-data.js?v=8"></script>
+<script src="po-lines.js?v=1"></script>
 <script>
 const ACT = ['Design','Price','Sample','Stock'];
 let ROLE = ['cust','dist'].includes(localStorage.getItem('ms-role')) ? localStorage.getItem('ms-role') : 'dist';
@@ -2782,6 +2783,9 @@ function addProductToBasket(p, kind, opt){ opt=opt||{};
   const vimg=(p.design&&p.design.visual&&Array.isArray(p.design.visual.images)&&p.design.visual.images[0])||null; const line = { kind, name:p.name, img:p.img, visual:unbranded?null:vimg, project:'Autumn Giveaways',
     proof: unbranded?'unbranded':'approved', each:p.each||p.unit||8.45, additional:0,
     rows };
+  // Additional charges from the product pop-out's Price section (customer-facing list) travel with the line to basket, pro forma and order
+  if(kind==='product'){ try{ const md=window.MSModal&&MSModal.data?MSModal.data(p):null, AC=((md&&md.price&&md.price.additional)||[]).filter(x=>x&&(+x.unit||0)*(+x.qty||1));
+    if(AC.length){ line.charges=AC.map(x=>({label:x.label||'Additional charge',desc:x.desc||'',qty:+x.qty||1,unit:+x.unit||0,amt:Math.round((+x.qty||1)*(+x.unit||0)*100)/100})); line.additional=line.charges.reduce((a,c)=>a+c.amt,0); } }catch(e){} }
   if(kind==='product'){ Object.assign(line,{ discountPct:p.discountPct||0, deliveryCost:20, region:'UK',
     deliveryDate:(p.delivery&&p.delivery!=='asap')?p.delivery:'ASAP',
     address:(window.MSOrders.ADDR||null) }); }
@@ -3141,8 +3145,8 @@ window.__currentModalProduct = () => (typeof pmIndex!=='undefined' ? ordered[pmI
 </script>
 <script src="logos.js"></script>
 <script src="identity.js"></script>
-<script src="sidebar.js?v=26"></script>
-<script src="chrome.js?v=3"></script>
+<script src="sidebar.js?v=28"></script>
+<script src="chrome.js?v=5"></script>
 <script src="avatars.js"></script>
 <script src="comments.js"></script>
 <script src="project-brief.js?v=4"></script>

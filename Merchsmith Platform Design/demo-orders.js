@@ -5,7 +5,7 @@
    Runs once per browser (flag 'ms-demo-orders'); never overwrites an order, its ops or a payment that exists.
    Load straight after order-data.js. window.MSDEMO: seed() · remove() · list */
 window.MSDEMO=window.MSDEMO||(function(){
-  const FLAG='ms-demo-orders', VER=1;
+  const FLAG='ms-demo-orders', VER=2;
   const J=(k,d)=>{ try{ return JSON.parse(localStorage.getItem(k)||'null')||d; }catch(e){ return d; } };
   const P=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} };
   const D=s=>new Date(s+'T10:00:00').toISOString();
@@ -42,6 +42,7 @@ window.MSDEMO=window.MSDEMO||(function(){
     ['d3035','MS-1035','oakhill','2026-09-15','Sports Day','account',[line('tee',300,{colours:[['Navy',300]]})],'production'],
     ['d3036','MS-1036','lumio','2026-09-21','Hackathon','card',[line('mouse',150)],'proof'],
     ['d3037','MS-1037','citrix','2026-09-18','Autumn Giveaways','account',[line('cup',2,{kind:'sample',branding:'Unbranded'}),line('mug',2,{kind:'sample',branding:'Wrap · Sublimation · Full colour'})],'samples'],
+    ['d3042','MS-1044','citrix','2026-10-20','Autumn Giveaways','bacs',[line('tote',400,{colours:[['Black',250],['Natural',150]]}),line('cable',200)],'received'],
     ['d3038','MS-1038','northwind','2026-09-29','Winter Kit','account',[line('bag',60),line('tote',200)],'received'],
     ['d3039','MS-1039','volt','2026-08-28','Studio Launch','account',[line('mug',80)],'delivered-duesoon'],
     ['d3040','MS-1040','fernlea','2026-09-16','Christmas Hampers','account',[line('book',120),line('cable',120)],'viaus'],

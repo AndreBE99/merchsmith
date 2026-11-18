@@ -24,7 +24,7 @@
   // separate from the distributor's. A page opts into platform scope by setting
   // window.MS_SCOPE='platform' BEFORE loading theme.js. Distributor pages leave it
   // unset. Scoped keys keep the two colourways from overwriting each other.
-  const SCOPE = (typeof window!=='undefined' && window.MS_SCOPE==='platform') ? 'platform' : (function(){ try{ const r=localStorage.getItem('ms-identity'); return r==='supplier'?'platform':r==='customer'?'cust':'dist'; }catch(e){ return 'dist'; } })();
+  const SCOPE = (typeof window!=='undefined' && window.MS_SCOPE==='platform') ? 'platform' : (typeof window!=='undefined' && window.MS_SCOPE==='dist') ? 'dist' : (function(){ try{ const r=localStorage.getItem('ms-identity'); return r==='supplier'?'platform':r==='customer'?'cust':'dist'; }catch(e){ return 'dist'; } })();
   // customers see their distributor's colourway; suppliers see Merchsmith's. Neither can change it.
   const CT_KEY = SCOPE==='platform' ? 'ms-platform-custom-themes' : 'ms-custom-themes';
   function customThemes(){ try{ return JSON.parse(localStorage.getItem(CT_KEY)||'[]'); }catch(e){ return []; } }
@@ -152,7 +152,10 @@
   // restore from project sidecar when this browser's localStorage is empty
   // (fresh device / cleared storage) — keeps branding with the project itself.
   try{ fetch(SIDE).then(r=>r.ok?r.json():null).then(o=>{ if(!o)return; let changed=false; BKEYS.forEach(k=>{ if(localStorage.getItem(k)==null && o[k]!=null){ try{ localStorage.setItem(k,o[k]); }catch(e){} changed=true; } }); if(changed){ apply(current()); if(window.MSID&&MSID.relock) MSID.relock(); } try{ applyCrumb(); }catch(e){} }).catch(()=>{}); }catch(e){}
+  // the distributor's colourway whoever is viewing (documents the distributor sends: quotes, POs, invoices)
+  function distVars(){ try{ const id=localStorage.getItem('ms-theme'), T=THEMES.concat(JSON.parse(localStorage.getItem('ms-custom-themes')||'[]')).find(x=>x.id===id)||THEMES[0]; return Object.assign({},T.vars||{}); }catch(e){ return Object.assign({},THEMES[0].vars); } }
   window.MSTheme = {
+    distVars, applyDist(){ const ds=document.documentElement.style, v=distVars(); for(const k in v) ds.setProperty(k,v[k]); },
     builtins:THEMES, customThemes, allThemes, current, persist:persistSidecar,
     apply, set(id){ try{ localStorage.setItem(KEY,id); }catch(e){} apply(id); persistSidecar(); },
     addCustom(t){ const arr=customThemes(); t.id=t.id||('c-'+Date.now()); arr.push(t); saveCustom(arr); persistSidecar(); return t.id; },
@@ -209,8 +212,6 @@ window.MSFavPick=function(){ try{ const plat=window.MS_SCOPE==='platform'||/Admi
 
 /* ms-dl-deeplink: #…&dl=<key> opens a page and starts its download (used by the PDF documents audit page).
    keys: sheet · detailed · print · pfdl · bkdoc · doc:<order doc key> */
-(function(){ if(window.__msDL) return; window.__msDL=1; const m=location.hash.match(/[#&]dl=([^&]+)/); if(!m) return; const k=decodeURIComponent(m[1]);
+(function(){ if(window.__msDL) return; window.__msDL=1; const m=location.hash.match(/[#&]dl=([^&]+)/); if(!m) return; const k=decodeURIComponent(m[1]); if(k==='pfdl') window.__wantPfdl=true;
   const sel=k==='sheet'?'#ttDownload':k==='detailed'?'#ttDownloadDetail':k==='print'?'[data-dprint]':k==='pfdl'?'[data-pfdl]':k==='bkdoc'?'[data-dl]':k.startsWith('doc:')?'[data-doc="'+k.slice(4).replace(/"/g,'')+'"]':null; if(!sel) return;
-  let n=0; const iv=setInterval(()=>{ const el=document.querySelector(sel); if(el||++n>60){ clearInterval(iv); if(el){ history.replaceState(null,'',location.href.replace(/&?dl=[^&]+/,'').replace(/#$/,'')); window.__dlAuto=1; el.click();
-      // order documents open in a preview first: press its Download PDF too, once the document has rendered
-      if(k.startsWith('doc:')){ let j=0; const iv2=setInterval(()=>{ const b=document.querySelector('.od-dv [data-dvdl]'); if(b||++j>25){ clearInterval(iv2); if(b) setTimeout(()=>b.click(),700); } },200); } } } },300); })();
+  let n=0; const iv=setInterval(()=>{ const el=document.querySelector(sel); if(el||++n>60){ clearInterval(iv); if(el){ history.replaceState(null,'',location.href.replace(/&?dl=[^&]+/,'').replace(/#$/,'')); window.__dlAuto=1; if(k.startsWith('doc:')) window.__docCapture=function(html){ document.open(); document.write(html.replace('</body>','<script>window.addEventListener("load",function(){ (document.fonts&&document.fonts.ready||Promise.resolve()).then(function(){ setTimeout(function(){ window.print(); },window.__pfBuild?1600:500); }); });<\/script></body>')); document.close(); }; el.click(); } } },300); })();

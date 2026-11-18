@@ -130,8 +130,8 @@
       {k:'chat',ic:I.chat,t:'Chats',go:'Merchsmith Chats.html',on:P(/Chats/i),
        links:[['All chats','Merchsmith Chats.html']]},
       calItem(),
-      {k:'fin',ic:I.doc,t:'Finance',go:'Merchsmith Customer Finance.html',on:P(/Customer Finance/i),
-       links:[['Overview','Merchsmith Customer Finance.html#tab=overview'],['Invoices','Merchsmith Customer Finance.html#tab=invoices'],['Terms & invoicing','Merchsmith Customer Finance.html#tab=terms']]},
+      {k:'fin',ic:I.doc,t:'Finance',go:'Merchsmith Customer Finance.html',on:P(/Customer Finance|Merchsmith Pay/i),
+       links:[['Overview','Merchsmith Customer Finance.html#tab=overview'],['Invoices','Merchsmith Customer Finance.html#tab=invoices'],['Pay invoices','Merchsmith Pay.html'],['Terms & invoicing','Merchsmith Customer Finance.html#tab=terms']]},
       {k:'set',ic:I.gear,t:'Settings',go:'Merchsmith Customer Settings.html',on:P(/Customer Settings/i),
        links:[['Organisation profile','Merchsmith Customer Settings.html#tab=profile'],['Platform logos','Merchsmith Customer Settings.html#tab=logos'],['Account','Merchsmith Customer Settings.html#tab=account']]}
     ];
@@ -156,7 +156,7 @@
       callItem(),
       emailItem(),
       {k:'fin',ic:I.doc,t:'Finance',go:'Merchsmith Finance.html#sub=dash',on:onBilling||/finance|invoices|credit/i.test(location.hash),
-       links:[['Dashboard','Merchsmith Finance.html#sub=dash'],['Subscription','Merchsmith Finance.html#sub=plan'],['Customer invoices','Merchsmith Finance.html#sub=cust'],['Supplier invoices','Merchsmith Finance.html#sub=sup'],['Bank details','Merchsmith Finance.html#sub=bank']]},
+       links:[['Dashboard','Merchsmith Finance.html#sub=dash'],['Subscription','Merchsmith Finance.html#sub=plan'],['Customer invoices','Merchsmith Finance.html#sub=cust'],['Take a card payment','Merchsmith Pay.html'],['Supplier invoices','Merchsmith Finance.html#sub=sup'],['Bank details','Merchsmith Finance.html#sub=bank']]},
       {k:'set',ic:I.gear,t:'Settings',go:'Merchsmith Distributor Settings.html',
        on:P(/Distributor Settings/i)&&!onStoreSettings&&!onBilling,
        links:[['Organisation profile','Merchsmith Distributor Settings.html#tab=orgprofile'],['Lead times','Merchsmith Distributor Settings.html#tab=leadtimes'],['Footer','Merchsmith Distributor Settings.html#tab=footer'],['Pages','Merchsmith Distributor Settings.html#tab=pages'],['Branding','Merchsmith Distributor Settings.html#tab=branding'],['Announcement bar','Merchsmith Notifications.html#tab=bar'],['Domain','Merchsmith Distributor Settings.html#tab=domain'],['Warning drafts','Merchsmith Distributor Settings.html#tab=warndrafts'],['Subscription','Merchsmith Distributor Settings.html#tab=subscription']]}
@@ -322,6 +322,6 @@
 
 /* ms-dl-deeplink: #…&dl=<key> opens a page and starts its download (used by the PDF documents audit page).
    keys: sheet · detailed · print · pfdl · bkdoc · doc:<order doc key> */
-(function(){ if(window.__msDL) return; window.__msDL=1; const m=location.hash.match(/[#&]dl=([^&]+)/); if(!m) return; const k=decodeURIComponent(m[1]);
+(function(){ if(window.__msDL) return; window.__msDL=1; const m=location.hash.match(/[#&]dl=([^&]+)/); if(!m) return; const k=decodeURIComponent(m[1]); if(k==='pfdl') window.__wantPfdl=true;
   const sel=k==='sheet'?'#ttDownload':k==='detailed'?'#ttDownloadDetail':k==='print'?'[data-dprint]':k==='pfdl'?'[data-pfdl]':k==='bkdoc'?'[data-dl]':k.startsWith('doc:')?'[data-doc="'+k.slice(4).replace(/"/g,'')+'"]':null; if(!sel) return;
-  let n=0; const iv=setInterval(()=>{ const el=document.querySelector(sel); if(el||++n>60){ clearInterval(iv); if(el){ history.replaceState(null,'',location.href.replace(/&?dl=[^&]+/,'').replace(/#$/,'')); el.click(); } } },300); })();
+  let n=0; const iv=setInterval(()=>{ const el=document.querySelector(sel); if(el||++n>60){ clearInterval(iv); if(el){ history.replaceState(null,'',location.href.replace(/&?dl=[^&]+/,'').replace(/#$/,'')); window.__dlAuto=1; if(k.startsWith('doc:')) window.__docCapture=function(html){ document.open(); document.write(html.replace('</body>','<script>window.addEventListener("load",function(){ (document.fonts&&document.fonts.ready||Promise.resolve()).then(function(){ setTimeout(function(){ window.print(); },window.__pfBuild?1600:500); }); });<\/script></body>')); document.close(); }; el.click(); } } },300); })();

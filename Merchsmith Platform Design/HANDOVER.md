@@ -743,6 +743,84 @@ All seven use the same Merchsmith flow (what's sent, what comes back, account / 
 - **Tracking** per delivery (`dropTrk`); the item becomes Dispatched once every delivery has tracking. PO print + Check & send show a delivery schedule; the OA check has a Yes/No/N/A row per delivery.
 - **Supplier invoices:** when uploading, the supplier/distributor chooses "Everything on this PO" or a single delivery (`pos[s].dropInv`, `invMode`). Customer VAT invoices are still one per product once everything has shipped.
 
+## Card payments, fee invoices, part payments (payments.js / MSPAY, Oct 2026)
+- Full write-up for developers: `Merchsmith Card Payments Developer Guide.dc.html`.
+- Rules: distributor accepts COMMERCIAL cards only, so every card payment carries the Stripe fee % (UK/EU vs non-UK). The fee never goes on an issued VAT invoice: each successful card payment raises its own fee VAT invoice `INV-<order>-F<n>` (tax point = payment date; MSPAY.feeDoc renders it). Failed/abandoned payments raise nothing.
+- Pro forma revisions: `ms-pf-rev` {orderId:[{rev,at,method,by,supersedes}]}; `MSPAY.pfNo(o)` = PF-53001 or PF-53001-R2. Order page buttons `[data-pfmeth=card|bacs]` call `MSPAY.revise` (confirm, activity log, opens pay page). R2 pro forma shows revNote + cardFee {pct,gross} + total to pay by card + pay-by-card box.
+- Ledger `ms-payments` [{id,at,method,region,items:[{doc,kind,orderId,amount,balance}],total,fee:{no,net,vat,gross,pct},status,ref,cust}]. `paidOn(doc)`, `outstanding(cust)` (unpaid pro formas for upfront orders; dispatched VAT invoices for on-account orders, totals recomputed like order-detail), `feeShare(doc)`. Card pay marks x.paid / x.lines[i].invPaid when fully paid; part payments leave a balance (VAT invoice shows Part paid, paid to date, balance due).
+- Distributor/admin (identity from ms-identity) see "Take a card payment": customer picker, payer = customer contact (first/last/email) for the receipt; payment stores email + takenBy. Entry points: Finance → Customer invoices row card icon + bulk "Take card payment" (`?a=&d=doc1,doc2`), Finance menu. Guest view requires first/last/email. Card logos are the white footer PNGs shown with filter:brightness(0).
+- Pay page `Merchsmith Pay.html?a=<cust>&k=<token>&d=<doc>[&guest=1]` uses the platform chrome (header, sidebar, footer via chrome.js/sidebar.js; classes prefixed pyp-). `guest=1` (emailed link, MSINT.payLink) hides .ms-side/.ms-htools and shows Sign in. Customer Finance → Invoices: Pay buttons + "Pay invoices" go to the pay page; sidebar Finance → Pay invoices. (MSPAY.payUrl; token check is a stand-in for a signed expiring link). Demo: card numbers starting 4000 = personal card → declined.
+- Credit notes (cn:) add "Card payment fee refund" = feeShare(invoice) × credit/invoice gross.
+- Demo order d3042 / MS-1044 (Citrix, bank transfer, unpaid) added to demo-orders.js (VER 2) to show the flow.
+- Not yet: Finance → Customer invoices table doesn't show Part paid / fee invoices; checkout doesn't run a card-type check (copy only); Xero sync of fee invoices.
+
+- Document colour: proforma-doc `dist().colour` reads the distributor theme directly (`ms-theme` + `ms-custom-themes`, `--periwinkle-deep`), not the page CSS, because theme.js gives suppliers/admin the platform colourway.
+
+- PO item details: `items[].sections` [{title,rows:[[label,value,img?]],groups:[{title,rows}]}] (Branding details uses groups, one per position); each section / position / deliver-to is its own `data-b="sec"` block after the item table so the paginator can break between them; rendered full width (Product details / Branding details / Instructions); built in order-detail `po:` from STORE (dims, blurb, material), spec positions, and ms-pm-spec (sampleSt, supply.courier, supply.supNotes, notes, warnings) + two-supplier lane for stock.
+
+- PO top: one strip (PO no., date, placed by, quoted by + `.mdl` delivery cell with No fail / agreed with). `steps` [[title,text]] → "Your next steps" (built in order-detail per line: unbranded sample = check stock; two-supplier = book in blank stock first). Conditions render as `.pocond` two columns.
+
+- PO Stock line: `ms-pm-spec[name].stock` {st,until,with,variant} saved by product-modal snapSpec from the Stock step; else STORE product `stock.qty` (live feed) when present. Delivery service / supplier notes (spec.supply.courier / supNotes) go into each Deliver-to card. Branding groups render 3 per row (`.posgr`), section `pill` shown in the heading.
+
+- Paginator: a block with `data-break` always starts a new page (used for the PO purchasing terms page).
+
+- PO colours: variant rows (with `hex` swatch) sit inside the thumbnail rowspan; Product details gets `Product colours` from spec.productColours. Split delivery cards reuse the pro forma `dvHTML` (per-drop split + date + notes) and add `.dvchk` (drops total vs PO qty, red when it doesn't match).
+
+- PO pages: `.pcont` "Continued on page X of Y" pill (appended to the end of .pc, centred, uses the reserved 40px) on all but the last page; `.pc` gets 30px padding-bottom on POs so the paginator never fills under it.
+
+- Purchasing terms: `po-terms.js` / MSPOTERMS, store `ms-po-terms` {on,items,at,by} (reads legacy ms-po-conditions once). Settings tab `poterms`. `get()` returns [] when off → render skips the "See next page" line and the terms page.
+
+- Paginator safety: after build, `recheck()` re-paginates if any `.pc` overflows (late fonts/styles); `window.__pfBuild()` lets preview pages re-paginate after stripping platform stylesheets.
+
+## Quote (D01) fixes, 26 Oct 2026
+- Colourway: theme scope follows ms-identity, so viewing as supplier gave Merchsmith colours. Quote sets `window.MS_SCOPE='dist'` before theme.js and calls `MSTheme.applyDist()` after mount (the DC runtime rewrites the html style attribute). MSPRO.dist() already reads ms-theme / ms-custom-themes directly.
+- Examples: `EXAMPLES` {few, many, long} in the Quote DC, chosen by `?ex=`; items carry their own `quote` object. Cover summary rows include `img`.
+- theme.js was broken (unterminated deeplink IIFE) between the PDF-links change and this fix; now syntax-checked.
+
+- Accreditation links: `ms-footer-cfg.accred[].url` (Settings → Footer). chrome.js renders linked logos (accFill adds default URLs by name); Quote uses `a.url` then `ACC_URLS`. Quote links: projectHref, storeHref (Store #product=id/sku/name), mailto/tel, webHref (distributor website, also on the cover logo).
+
+- Quote product pages: details sit in `[data-det]` (flex, clipped) above a fixed price table. Logic trims blurb (300 chars), swatches (8), sizes (5), certs (2), methods (3), positions (2), notes (1) with “+N more ↗” links to storeHref. `fitDetails()` (componentDidUpdate) hides `[data-drop="1"]` notes then `[data-drop="2"]` rows from the bottom until it fits and shows `[data-detmore]`.
+
+## Statement of account (D21) + supplier remittance (D23), 26 Oct 2026
+- `MSPRO.render({kind:'soa'|'rem'})` (LG mode): ledger rows render as item blocks with a ledger column header (thT). SOA: opening, ledger[{date,type,no,details,due,debit,credit,note,tone}], running balance computed, ageing{current,d30,d60,d90,d90p}, accountNo, terms, creditLimit, payLink. REM: supplier, supLines, payee{name,bank,sort,acc}, ledger[{date,no,po,details,amount,deduct,paid}], method, payRef, note.
+- Live: Customer Finance `[data-cfsoa]` builds from MSFINT.custRows() → `ms-soa-doc`; finance-tables Record supplier payment `[data-rem]` → `ms-rem-doc` (first supplier in the selection). Previews read those when no ?ex.
+- Not yet: statement from distributor Finance → Customer invoices per customer; supplier bank details on the remittance come from the example only.
+
+## Delivery note (D11), 26 Oct 2026
+- `MSPRO.render({kind:'dn',…})`: shipTo {name,lines}, instructions[], dropOf [k,n], courier, tracking, dispatched, contactName; items without prices (unit/amount columns hidden by a DN-only style). Ends with total units and Checking your delivery (signature row removed 26 Oct).
+- order-detail `openDN(ls,dk)` builds it; doc keys `dn:<line>` or `dn:<line>:<drop>` (one note per split-delivery address, drop tracking from dTrk). Old MSVIA.dnHTML kept as fallback.
+- Preview `Merchsmith Delivery Note Preview.html` (?ex=single|split&d=1..3|sample, ?print=1).
+- Note: preview pages use document.write, so automated eval/screenshot tools can't attach to them.
+
+## Proof preview (D03), 26 Oct 2026
+- `proof-doc.js` / MSPROOF.render(D) → {css, body, title}. `Merchsmith Proof Preview.html` (?ex=one|multi, ?print=1; no ex = live product from localStorage `ms-proof-doc`). product-modal `proofA3(p,d)` now builds the data object, saves `ms-proof-doc` and navigates to the preview (adds ?print=1 when opened via #dl=pfdl).
+
+## PDF documents: example downloads (Oct 2026)
+- PDF Documents page links: redesigned docs → preview pages with `?print=1` (auto print after pagination); VAT preview `?state=additional` (D09), PO preview `?ex=blank` (D13) / `?ex=additional` (D14). Legacy order docs → `Merchsmith Orders.html#order=<id>&as=distributor&dl=doc:<key>`.
+- theme.js/sidebar.js deeplink sets `window.__docCapture`; order-detail `printDoc` hands the finished page to it, which replaces the document and calls print(). identity.js: `#…&as=<role>` overrides current() for that page only (not saved).
+- D16 subscription invoice and D19 brand assets have no PDF yet.
+
+## One product per PO (Oct 2026)
+- `x.lpo[lineIndex]` = {no:'PO-<order>-<nn>' (nn = item number, same as INV-<order>-<nn>), sentAt, invoice, dropInv, cx}; created/converted in ops(): sentAt copied from the old supplier `x.pos[s]`; a shared supplier invoice is split evenly as no/1, no/2 with `split` = original no. `x.pos` (per supplier) is kept for older code paths only.
+- Conversion runs eagerly on page load in `po-lines.js` (MSPOL.migrate, loaded after order-data.js on every page that reads POs); order-detail ops() keeps the same fallback.
+- order-detail: `PL(l)` returns the line PO. Doc keys `po:<line>`, `sinv:<line>`, `sinvd:<line>:<drop>` (old supplier-name keys still resolve). `[data-inv]` = line index; supplier sidebar lists one invoice per PO. finance-tables / finance-invoices / orders-table / two-supplier read `x.lpo` first.
+
+## Supplier purchase order (D09), Oct 2026
+- `MSPRO.render({kind:'po',…})`: supplier, supLines, supContact/Email/Tel, placedBy, quotedBy, deliverBy, sentOn, conditions[]; items[].rows (extra spec rows, plain text), items[].warns ([title,text], highlighted), deliver[], subs (cost rows after the first). Amounts are supplier costs ex VAT; no VAT/payment blocks. order-detail `po:` builds it from costRows/specOf/storeProd/supplyOf; old HTML PO kept as fallback. Conditions: `ms-po-conditions` (array) else defaults. Preview: `Merchsmith Purchase Order Preview.html`.
+
+## Order acknowledgement (D06), Oct 2026
+- `MSPRO.render({kind:'ack',…})`: payTitle/payText (Payment box), next[] (What happens next), items[].artwork; check-everything notice repeats in the top block on every page; footer keeps VAT no. order-detail `conf` (customer/distributor) builds it from the same data as `pfi`; supplier view keeps the old layout. Preview: `Merchsmith Order Acknowledgement Preview.html` (?state=bacs|account|card).
+
+## Pro forma + VAT invoice (D05 / D07 / D08 / D08P), Oct 2026
+- Credit note = `MSPRO.render({kind:'credit',…})`: against, againstDate, reason, note, settleTitle/settleText (account / card / bank), refundRef; amounts shown negative; pay box replaced by "How this credit is settled". order-detail `cn:` builds it. VAT invoices no longer list credits. Preview: `Merchsmith Credit Note Preview.html` (?state=card|bank).
+- items[].project → "Project" row above Branding (from line.project, else order.project).
+- VAT invoice = `MSPRO.render({kind:'vat',…})`: dueOn, overdue, credits, dispatch, proforma, payLink, items[].variants. order-detail `vi:` builds it per dispatched line (onAcc = o.onAccount or "N days" payment). Preview: `Merchsmith VAT Invoice Preview.html` (?state=paid|overdue|credit).
+- `proforma-doc.js` → `MSPRO.render(data)` returns a full A4 HTML document (see header comment for the data shape). Distributor identity from the same keys as the Quote; brand colour from `--periwinkle-deep`; bank from MSFIN.bank(); product notes from the STORE record (blurb, material, size). Pagination (Oct 23): blocks in #src (meta, ads, one `table.li[data-b=item]` per product with a shared colgroup, end, pay) are flowed by an inline script into `section.page` (210×297mm, @page margin 0) — each gets the #hdT header with Page n / N, the #topT reference strip + address row, the #thT column headings when it carries items, and the #ftT footer. Products move whole to the next page. `window.__pfReady` gates auto-print.
+- D07: order-detail.js `k==='pfi'` builds data from the order (charges[] → Setup rows, deliveryCost → delivery row, leftover → "Delivery and charges"); printDoc now accepts a full document. D05: finance-view.js `proforma()` builds it from the basket and auto-prints.
+- Oct 23 (2): deliver[] entries take `split:[{c,qty}]` (from drop.alloc). Project page addToBasket copies `MSModal.data(p).price.additional` → line.charges [{label,desc,qty,unit,amt}] + line.additional; order lines keep qty/unit on charges. VAT invoices (vi:): `lnExRows(l)` = the line's charges + deliveryCost, printed as rows on that item's invoice; `extraFor(i)` = own extras gross + (last dispatched only) `restGross` = order extras not attributable to a line.
+- Preview with sample data: `Merchsmith Pro Forma Preview.html` (8 items, split deliveries, 2+ pages).
+- Oct 23: no product notes; status pill + Payment status box (`paid`, `paidOn`); `items[].deliver=[{name,lines,qty,date,notes[]}]` under each product (header Deliver to / instructions removed). `MSPRO.number(key)` sequential PF-53001… in `ms-pf-register` (keys `order:<id>`, `basket:<lineIds>`; `adopt(from,to)` available, not yet called at place-order). `MSPRO.person(name)` → tel/email from ORG_DATA customer teams. Order lines now carry `sku` (store item code) and `deliveryNotes` (ms-basket-addr-notes + address note). Customer VAT no: `ms-cust-account[id].vatNo`, set in Edit terms (terms-approval.js `data-evn`), shown in the drawer.
+
 ## Split delivery: cost + date rules (Oct 2026)
 - `ms-split-defaults` {extra,markup,capAt} (Distributor Settings → Lead times → Split deliveries, `MSSPLIT.defaultsPanel`). `hasRate(sup)` = supplier has its own / seeded rate with extra>0; otherwise extras use the default and `charges()` returns `est:true` (shown "estimated"). More drops than capAt → `por:true`: extra rows show "On request", total "£first + on request". No rush charges.
 - Dates: `toISO(opts.date)` = agreed date, else `earliest(opts)` = today + the product's lead time in working days (store record by name, or opts.lead) — so the basket (no agreed date yet) still has a floor; header shows "Earliest …"; each drop gets a date picker with `min=agreed`; earlier picks are reset with a message. "Need it sooner?" sets `d.earlyReq` (no min, "Earlier date requested · to be confirmed"); `dropText` prefixes "[earlier date requested]". On save, the distributor gets a notification if there are early requests, estimates or price on request.

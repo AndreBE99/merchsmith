@@ -1,0 +1,34 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>VAT invoice preview</title>
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js?v=13"></script>
+<script src="store-feed.js?v=2"></script>
+<script src="proforma-doc.js?v=105"></script>
+</head><body>
+<script>
+/* Design preview for the VAT invoice (D08 unpaid / D08P paid), rendered by proforma-doc.js (kind:'vat').
+   Sample data only; the real invoice is built per product from the order when it's dispatched.
+   ?state=paid | overdue */
+const ST=(location.search.match(/state=(\w+)/)||[])[1]||'unpaid';
+const HQ=['The Coachworks, 1st Floor','21 The Calls','Leeds','LS2 7EH'], MAN=['Citrix Manchester','No. 1 Spinningfields','Manchester','M3 3JE'];
+const D={kind:'vat',no:'INV-1051-01',date:'Thu 12 Nov 2026',dueOn:'Sat 12 Dec 2026',orderRef:'MS-1051',po:'PO-CRT-2304',terms:'30 days from invoice',
+  invoiceTo:{name:'Citrix',lines:HQ,fao:'Nina Holt'},customer:{name:'Sara Kemp',email:'sara.kemp@citrix.com',tel:'0113 496 0021'},custVat:'GB 284 1937 06',
+  dispatch:'DPD 1550 2231 9087 · Wed 11 Nov',proforma:'PF-53001',payLink:'pay.mojopromotions.co.uk/INV-1051-01',
+  items:[{project:'Autumn Giveaways',name:'Recycled Cotton Tote',sku:'BW-TOTE-01',qty:600,unit:2.95,amount:1770,branding:'Front · Screenprint, 2 colours',colours:[{c:'Black',qty:400},{c:'Natural',qty:200}],
+    variants:[{c:'Black',sku:'BW-TOTE-01-BLA',qty:400},{c:'Natural',sku:'BW-TOTE-01-NAT',qty:200}],
+    deliver:[{name:'Leeds HQ',lines:HQ,qty:400,split:[{c:'Black',qty:250},{c:'Natural',qty:150}],date:'Fri 13 Nov',notes:['Goods in at the rear, 8am–4pm']},{name:'Manchester office',lines:MAN,qty:200,split:[{c:'Black',qty:150},{c:'Natural',qty:50}],date:'Fri 13 Nov',notes:['Ask for Priya on reception']}],
+    subs:[{label:'Express fee',qty:1,unit:100,amount:100},{label:'Setup · 2 screens',qty:2,unit:25,amount:50},{label:'Delivery · 2 addresses',qty:1,unit:33.75,amount:33.75}]}]};
+D.net=Math.round((1770+100+50+33.75)*100)/100; D.vat=Math.round(D.net*20)/100; D.gross=Math.round((D.net+D.vat)*100)/100; D.vatRate=.2;
+if(ST==='additional'){ D.no='INV-1051-A1'; D.date='Wed 18 Nov 2026'; D.dueOn='Fri 18 Dec 2026'; D.dispatch=''; D.proforma=''; D.notes='Additional invoice for order MS-1051: charges agreed after the order was placed.'; D.items=[{project:'Autumn Giveaways',name:'Additional charge · Recycled Cotton Tote',sku:'',qty:1,unit:0,amount:0,branding:'Agreed with Sara Kemp on Mon 16 Nov 2026',colours:[],subs:[{label:'Extra print colour (third screen)',qty:600,unit:0.18,amount:108},{label:'Extra setup',qty:1,unit:25,amount:25}]}]; D.net=133; D.vat=26.6; D.gross=159.6; D.payLink='pay.mojopromotions.co.uk/INV-1051-A1'; }
+if(ST==='paid'){ D.paid=true; D.paidOn='Mon 7 Dec 2026'; }
+if(ST==='part'){ D.paidAmt=1000; }
+if(ST==='overdue'){ D.overdue=true; D.dueOn='Sat 12 Dec 2026'; }
+document.open(); document.write(MSPRO.render(D)); document.close();
+(function(){ const bar=document.createElement('div'); bar.setAttribute('data-noprint',''); bar.style.cssText='position:fixed;top:14px;right:14px;z-index:10;display:flex;gap:4px;background:#1e2033;border-radius:999px;padding:4px;font:700 12.5px Mulish,Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25)';
+  [['Unpaid','unpaid'],['Part paid','part'],['Paid','paid'],['Overdue','overdue']].forEach(([l,q])=>{ const x=document.createElement('a'); x.textContent=l; x.href=location.pathname+(q==='unpaid'?'':'?state='+q); const on=q===ST; x.style.cssText='white-space:nowrap;text-decoration:none;border-radius:999px;padding:6px 12px;'+(on?'background:#fff;color:#1e2033':'color:#fff'); bar.appendChild(x); });
+  document.body.appendChild(bar); const st=document.createElement('style'); st.textContent='@media print{[data-noprint]{display:none!important}}'; document.head.appendChild(st); })();
+const strip=()=>document.querySelectorAll('link[rel=stylesheet]:not([href*="fonts.googleapis"]),style#ssCss').forEach(n=>n.remove()); strip(); setTimeout(strip,300); setTimeout(function(){ strip(); if(window.__pfBuild) __pfBuild(); },1200);
+if(/[?&]print=1/.test(location.search)){ (function(){ var go=function(){ setTimeout(function(){ window.print(); },2600); }; if(document.readyState==='complete') go(); else window.addEventListener('load',go); })(); }
+
+</script>
+</body></html>

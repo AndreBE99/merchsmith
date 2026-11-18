@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pay invoices · Mojo Promotions</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="components.css">
+<script>if(/[?&]guest=1/.test(location.search)) document.documentElement.classList.add("pyp-guest");</script>
+<script src="theme.js?v=13"></script>
+<script src="org-data.js?v=11"></script>
+<script src="cust-account.js?v=5"></script>
+<script src="store-feed.js?v=2"></script>
+<script src="finance-integrations.js"></script>
+<script src="proforma-doc.js?v=105"></script>
+<script src="order-data.js?v=11"></script>
+<script src="demo-orders.js?v=2"></script>
+<script src="payments.js?v=4"></script>
+<style>
+*{box-sizing:border-box} body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
+.icn{width:20px;height:20px;display:inline-block;vertical-align:middle;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+.header{min-height:62px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-bottom:1px solid var(--line-soft);position:relative;z-index:25;}
+.headtools{display:flex;align-items:center;gap:14px;} .account .av{width:32px;height:32px;border-radius:50%;background:var(--periwinkle);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;}
+.crumbband{background:var(--periwinkle);color:#fff;padding:13px var(--page-gutter);} .crumb{font-size:14px;font-weight:600;display:flex;gap:9px;align-items:center;flex-wrap:wrap;} .crumb a{color:#fff;text-decoration:none;opacity:.9} .crumb a:hover{opacity:1;text-decoration:underline;color:#fff} .crumb .sep{opacity:.6;}
+.main{width:100%;max-width:none;padding:30px var(--page-gutter) 90px;}
+.ptitle{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1;letter-spacing:-.01em;margin:0;} .psub{font-size:14.5px;color:var(--text-soft);margin:10px 0 22px;max-width:70ch;line-height:1.55;}
+.pyp-tophd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.pyp-sec{white-space:nowrap;display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:#475467;background:#fff;border:1px solid var(--line-soft);border-radius:999px;padding:6px 12px;}
+html.pyp-guest .ms-side,html.pyp-guest .ms-htools,html.pyp-guest .headtools,html.pyp-guest .ms-hsearch,html.pyp-guest .ms-chatfab,html.pyp-guest [class*="chat-fab"]{display:none!important} html.pyp-guest .ms-layout{display:block!important;grid-template-columns:1fr!important} html.pyp-guest .ms-content{margin-left:0!important;padding-left:0!important} .pyp-signin{font:inherit;font-size:13.5px;font-weight:700;color:var(--periwinkle-deep);text-decoration:none;border:1.5px solid var(--line-soft);border-radius:10px;padding:8px 12px;background:#fff}
+a{color:var(--periwinkle-deep,#5860a6)} a:hover{color:var(--periwinkle-ink,#2b2e57)}
+.pyp-top img{height:38px;width:auto;display:block} .pyp-sec{white-space:nowrap;display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:#475467;background:#f2f4f7;border-radius:999px;padding:6px 12px;}
+.pyp-h1{font-family:'EB Garamond',Georgia,serif;font-weight:500;font-size:clamp(30px,4vw,40px);margin:0 0 6px;line-height:1.1} .pyp-lede{margin:0 0 22px;color:#55555f;font-size:15px;line-height:1.55;max-width:70ch}
+.pyp-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:start} @media(max-width:1020px){.pyp-grid{grid-template-columns:1fr} .pyp-sum{position:static}}
+.pyp-card{background:#fff;border:1px solid var(--line-soft);border-radius:16px;padding:22px 24px;box-shadow:0 1px 3px rgba(20,22,45,.04);}
+.pyp-card h2{font-family:'EB Garamond',Georgia,serif;font-weight:500;font-size:22px;margin:0 0 4px} .pyp-card .s{font-size:13px;color:#667085;margin:0 0 12px}
+.pyp-t{width:100%;border-collapse:collapse;font-size:14px} .pyp-t th{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#77767f;text-align:left;padding:8px 8px;border-bottom:1.5px solid #23232a;white-space:nowrap} .pyp-t td{padding:11px 8px;border-bottom:1px solid #eeede9;vertical-align:middle} .pyp-t .r{text-align:right;white-space:nowrap}
+.pyp-t tr.off td{color:#98a2b3} .pyp-doc b{display:block;font-size:14px} .pyp-doc span{font-size:12.5px;color:#667085}
+.pyp-st{font-size:11.5px;font-weight:800;border-radius:999px;padding:3px 9px;white-space:nowrap} .pyp-st.overdue{background:#fee4e2;color:#b42318} .pyp-st.due{background:#f2f4f7;color:#344054} .pyp-st.part{background:#fef0c7;color:#93370d}
+.pyp-amt{width:100px;font:inherit;font-size:14px;text-align:right;border:1.5px solid #e4e7ec;border-radius:9px;padding:7px 9px} .pyp-amt:focus{outline:2px solid var(--periwinkle,#7b85c5);border-color:transparent}
+.pyp-chk{width:20px;height:20px;accent-color:var(--periwinkle-deep,#5860a6)}
+.pyp-sum{position:sticky;top:18px;display:flex;flex-direction:column;gap:14px}
+.pyp-row{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:4px 0} .pyp-row.g{border-top:1.5px solid #23232a;margin-top:6px;padding-top:10px;font-size:17px;font-weight:800}
+.pyp-meth{display:flex;flex-direction:column;gap:8px} .pyp-meth label{display:flex;gap:10px;align-items:flex-start;border:1.5px solid #e4e7ec;border-radius:12px;padding:10px 12px;cursor:pointer;font-size:14px} .pyp-meth label.on{border-color:var(--periwinkle-deep,#5860a6);background:var(--tint-peri,#eef0fa)} .pyp-meth label .pm-t{display:flex;flex-direction:column;gap:1px;min-width:0} .pyp-meth label .pm-t b{font-size:14px;line-height:1.3} .pyp-meth label .pm-t i{font-style:normal;font-size:12px;color:#667085;line-height:1.3;position:static}
+.pyp-f{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:700;color:#344054} .pyp-f input{font:inherit;font-size:14px;font-weight:500;border:1.5px solid #e4e7ec;border-radius:9px;padding:9px 11px} .pyp-g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px} .pyp-f{min-width:0} .pyp-f input,.pyp-f select{width:100%;min-width:0;box-sizing:border-box}
+.pyp-note{font-size:12.5px;line-height:1.5;color:#475467;background:#f7f6f3;border-radius:10px;padding:9px 12px;margin:0} .pyp-err{font-size:13px;color:#b42318;background:#fef3f2;border-radius:10px;padding:9px 12px;margin:0}
+.pyp-btn{font:inherit;font-size:15px;font-weight:800;border:0;border-radius:12px;padding:13px 16px;background:var(--periwinkle-deep,#5860a6);color:#fff;cursor:pointer;width:100%} .pyp-btn:disabled{opacity:.45;cursor:not-allowed} .pyp-ghost{font:inherit;font-size:13.5px;font-weight:700;border:1.5px solid #e4e7ec;background:#fff;border-radius:10px;padding:9px 12px;cursor:pointer;color:#23232a;text-decoration:none;display:inline-flex}
+.pyp-cust{max-width:340px;margin:-8px 0 18px} .pyp-cust select{font:inherit;font-size:14px;font-weight:600;border:1.5px solid var(--line-soft);border-radius:10px;padding:9px 11px;background:#fff}
+.pyp-payer{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line-soft);padding-top:12px;margin-top:2px} .pyp-payer>b{font-size:13.5px} .pyp-payer>span{font-size:12px;color:#667085;margin-top:-4px}
+.pyp-stripe{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line-soft);padding-top:12px;margin-top:2px} .pyp-pw{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:#667085;white-space:nowrap} .pyp-pw b{font-size:15px;letter-spacing:-.02em;color:#635bff;font-weight:800} .pyp-cards{display:flex;align-items:center;gap:8px} .pyp-cards img{display:block;width:auto;filter:brightness(0);opacity:.7}
+.pyp-bank{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13.5px} .pyp-bank span{color:#667085}
+.pyp-done{max-width:640px} .pyp-done .ok{width:46px;height:46px;border-radius:50%;background:#d1fadf;color:#067647;display:grid;place-items:center;font-size:24px;font-weight:800;margin-bottom:10px}
+.pyp-empty{padding:30px 10px;text-align:center;color:#475467;font-size:15px}
+@media(max-width:760px){.pyp-t .hide-s{display:none}} .pyp-doc b{white-space:nowrap}
+</style></head><body>
+<header class="header">
+  <div class="brand" data-identity-lockup></div>
+  <div class="headtools"><button class="account it" title="Account"><span class="av">SK</span></button></div>
+  <a class="pyp-signin" id="ppSignin" href="Merchsmith Customer Finance.html#tab=invoices" hidden>Sign in to your account</a>
+</header>
+<div class="crumbband"><div class="crumb" id="ppCrumb"><span>Citrix</span><span class="sep">›</span><a href="Merchsmith Customer Finance.html#tab=invoices">Finance</a><span class="sep">›</span><span class="here">Pay invoices</span></div></div>
+<main class="main">
+  <div class="pyp-tophd"><div><h1 class="ptitle">Pay invoices</h1><p class="psub">Outstanding pro formas and invoices. Tick what you’d like to pay. You can pay part of an invoice by changing the amount.</p></div><span class="pyp-sec"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span id="ppSecTxt">Secure payment</span></span></div>
+  <div id="root"></div>
+</main>
+<script>
+(function(){
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const gbp=n=>'£'+(+n||0).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const fD=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+  const q=new URLSearchParams(location.search), CUST=q.get('a')||'citrix', TOK=q.get('k')||'', PRE=q.get('d')||'';
+  const dist=MSPRO.dist(), root=document.getElementById('root');
+  const cust=((window.ORG_DATA&&ORG_DATA.customers)||[]).find(c=>c.id===CUST)||{name:'Citrix'};
+  const WHO=(window.MSID&&MSID.current&&MSID.current())||(()=>{ try{ return localStorage.getItem('ms-identity')||'customer'; }catch(e){ return 'customer'; } })(), STAFF=!document.documentElement.classList.contains('pyp-guest')&&(WHO==='distributor'||WHO==='admin');
+  const ME=(window.MSID&&MSID.get&&MSID.get().who)||({distributor:'Jess Doyle',admin:'Morgan Slade',customer:'Sara Kemp'})[WHO]||'';
+  const GUEST=document.documentElement.classList.contains('pyp-guest'), exp=new Date(Date.now()+30*864e5);
+  document.getElementById('ppSecTxt').textContent=GUEST?'Secure link for '+cust.name+' · expires '+fD(exp):'Secure payment · '+cust.name;
+  const cr=document.getElementById('ppCrumb'); cr.querySelector('span').textContent=cust.name;
+  if(STAFF){ document.title='Take a card payment · '+dist.name; document.querySelector('.ptitle').textContent='Take a card payment';
+    document.querySelector('.psub').textContent='Pay a customer’s pro formas and invoices with the business card details they give you, or send them their secure pay link.';
+    cr.innerHTML='<span>'+esc(dist.name)+'</span><span class="sep">›</span><a href="Merchsmith Finance.html#tab=billing&sub=cust">Finance</a><span class="sep">›</span><a href="Merchsmith Finance.html#tab=billing&sub=cust">Customer invoices</a><span class="sep">›</span><span class="here">Take a card payment</span>';
+    document.getElementById('ppSecTxt').textContent='Secure payment · taken by '+(ME||'you');
+    const tops=document.querySelector('.pyp-tophd>div'), CS=((window.ORG_DATA&&ORG_DATA.customers)||[]).filter(c=>c.status!=='draft').map(c=>({c,n:MSPAY.outstanding(c.id).length})).filter(x=>x.n||x.c.id===CUST);
+    const sel=document.createElement('label'); sel.className='pyp-f pyp-cust'; sel.innerHTML='Customer<select>'+CS.map(x=>'<option value="'+esc(x.c.id)+'"'+(x.c.id===CUST?' selected':'')+'>'+esc(x.c.name)+' · '+x.n+' to pay</option>').join('')+'</select>'; tops.appendChild(sel);
+    sel.querySelector('select').onchange=e=>{ location.href=location.pathname+'?a='+encodeURIComponent(e.target.value); }; }
+  if(GUEST){ const si=document.getElementById('ppSignin'); si.hidden=false; setTimeout(()=>{ const h=document.querySelector('.header'); if(h&&!h.contains(si)) h.appendChild(si); h&&h.appendChild(si); },300); cr.innerHTML='<span>'+esc(cust.name)+'</span><span class="sep">›</span><span class="here">Pay '+esc(dist.name)+'</span>'; }
+  // prototype: a link without its token still opens (so the page can be reviewed), with a banner
+  const tokenBad=TOK&&!MSPAY.tokenOk(CUST,TOK);
+  const B=(window.MSFIN&&MSFIN.bank&&MSFIN.bank())||{name:'Mojo Promotions Ltd',bank:'Barclays Bank UK PLC',sort:'20-45-77',acc:'43218765',iban:'GB29 BARC 2045 7743 2187 65'};
+  let S={sel:{},amt:{},method:'card',region:'uk',err:'',done:null};
+  function list(){ return MSPAY.outstanding(CUST); }
+  function init(){ const L=list(); L.forEach(d=>{ S.amt[d.doc]=d.balance; S.sel[d.doc]=PRE?PRE.split(',').includes(d.doc):d.status==='overdue'; }); if(!PRE&&!L.some(d=>S.sel[d.doc])&&L[0]) S.sel[L[0].doc]=true; }
+  function totals(L){ const T=L.filter(d=>S.sel[d.doc]).reduce((a,d)=>a+Math.min(+S.amt[d.doc]||0,d.balance),0), fee=S.method==='card'?MSPAY.feeFor(T,S.region):0; return {T:Math.round(T*100)/100,fee,G:Math.round((T+fee)*100)/100}; }
+  function draw(){ if(S.done) return drawDone(); const L=list(), t=totals(L);
+    root.innerHTML=`${tokenBad?'<p class="pyp-err" style="margin-bottom:14px">This payment link has expired or isn’t valid. Ask '+esc(dist.name)+' for a new one.</p>':''}
+      ${!L.length?'<div class="pyp-card pyp-empty">Nothing to pay. Every pro forma and invoice is paid.</div>':`<div class="pyp-grid"><div class="pyp-card"><h2>Outstanding</h2><p class="s">${L.length} document${L.length>1?'s':''} · ${gbp(L.reduce((a,d)=>a+d.balance,0))} in total</p>
+        <table class="pyp-t"><thead><tr><th></th><th>Document</th><th class="hide-s">Due</th><th>Status</th><th class="r">Balance</th><th class="r">Pay now</th></tr></thead><tbody>
+        ${L.map(d=>`<tr class="${S.sel[d.doc]?'':'off'}"><td><input class="pyp-chk" type="checkbox" data-sel="${esc(d.doc)}"${S.sel[d.doc]?' checked':''} aria-label="Pay ${esc(d.doc)}"></td>
+          <td class="pyp-doc"><b>${esc(d.label)} ${esc(d.doc)}</b><span>Order ${esc(d.ref)}${d.name?' · '+esc(d.name):''}${d.project?' · '+esc(d.project):''}</span></td>
+          <td class="hide-s">${d.due?fD(d.due):'Before production'}</td>
+          <td><span class="pyp-st ${d.status}">${d.status==='overdue'?'Overdue':d.status==='part'?'Part paid · '+gbp(d.paid):'Due'}</span></td>
+          <td class="r">${gbp(d.balance)}</td><td class="r"><input class="pyp-amt" data-amt="${esc(d.doc)}" inputmode="decimal" value="${(+S.amt[d.doc]).toFixed(2)}"${S.sel[d.doc]?'':' disabled'} aria-label="Amount to pay for ${esc(d.doc)}"></td></tr>`).join('')}
+        </tbody></table></div>
+        <aside class="pyp-sum"><div class="pyp-card"><h2>Payment</h2>
+          <div class="pyp-meth">${[['card','uk','Business card · UK / EU',MSPAY.feePct('uk')+'% card fee'],['card','noneu','Business card · outside Europe',MSPAY.feePct('noneu')+'% card fee'],['bacs','','Bank transfer','No fee']].map(([m,r,l,s])=>`<label class="${S.method===m&&(m!=='card'||S.region===r)?'on':''}"><input type="radio" name="pm" data-pm="${m}" data-rg="${r}"${S.method===m&&(m!=='card'||S.region===r)?' checked':''}><div class="pm-t"><b>${l}</b><i>${s}</i></div></label>`).join('')}</div>
+          <div style="margin-top:14px"><div class="pyp-row"><span>Selected</span><b>${gbp(t.T)}</b></div>${S.method==='card'?`<div class="pyp-row"><span>Card payment fee (${MSPAY.feePct(S.region)}%, inc. VAT)</span><b>${gbp(t.fee)}</b></div>`:''}<div class="pyp-row g"><span>${S.method==='card'?'Total to pay':'Total to transfer'}</span><span>${gbp(t.G)}</span></div></div></div>
+          ${S.method==='card'?`<div class="pyp-card" style="display:flex;flex-direction:column;gap:10px"><p class="pyp-note">${esc(dist.name)} accepts <b>business (commercial) cards only</b>. Personal debit and credit cards are declined. The card fee is invoiced on its own VAT invoice when you pay.</p>
+            <label class="pyp-f">Card number<input data-cn inputmode="numeric" placeholder="1234 5678 9012 3456" autocomplete="cc-number"></label>
+            <div class="pyp-g2"><label class="pyp-f">Expiry<input placeholder="MM / YY" autocomplete="cc-exp"></label><label class="pyp-f">Security code<input placeholder="123" inputmode="numeric" autocomplete="cc-csc"></label></div>
+            <label class="pyp-f">Name on card<input data-nm placeholder="As shown on the card" autocomplete="cc-name"></label>
+            ${payer()}
+            ${S.err?`<p class="pyp-err">${esc(S.err)}</p>`:''}
+            <button class="pyp-btn" data-go${t.T>0&&!tokenBad?'':' disabled'}>Pay ${gbp(t.G)}</button>
+            <p class="pyp-note" style="background:none;padding:0">Prototype: a card number starting 4000 behaves as a personal card and is declined.</p>
+            <div class="pyp-stripe"><span class="pyp-pw"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Powered by <b>stripe</b></span><span class="pyp-cards"><img src="assets/pay-visa.png" alt="Visa" style="height:12px"><img src="assets/pay-mastercard.png" alt="Mastercard" style="height:18px"><img src="assets/pay-amex.png" alt="American Express" style="height:18px"></span></div></div>`
+          :`<div class="pyp-card"><h2>Bank transfer</h2><p class="s">Transfer ${gbp(t.G)} using this reference so we can match it to the documents you ticked.</p>
+            <div class="pyp-bank"><span>Account name</span><b>${esc(B.name)}</b><span>Bank</span><b>${esc(B.bank)}</b><span>Sort code</span><b>${esc(B.sort)}</b><span>Account no.</span><b>${esc(B.acc)}</b><span>IBAN</span><b>${esc(B.iban||'—')}</b><span>Reference</span><b>${esc(ref())}</b></div>
+            ${payer()}
+            ${S.err?`<p class="pyp-err" style="margin-top:10px">${esc(S.err)}</p>`:''}
+            <button class="pyp-btn" style="margin-top:14px" data-bacs${t.T>0&&!tokenBad?'':' disabled'}>I’ve sent the transfer</button></div>`}
+        </aside></div>`}`;
+    wire(); }
+  const GUESTP=document.documentElement.classList.contains('pyp-guest');
+  function payer(){ if(!GUESTP&&!STAFF) return ''; return `<div class="pyp-payer"><b>${STAFF?'Customer contact':'Your details'}</b><span>${STAFF?'For the receipt. We’ll email it to them.':'So we can send your receipt.'}</span><div class="pyp-g2"><label class="pyp-f">First name<input data-pn value="${esc(S.pn||'')}" autocomplete="given-name"></label><label class="pyp-f">Last name<input data-pl value="${esc(S.pl||'')}" autocomplete="family-name"></label></div><label class="pyp-f">Email<input data-pe type="email" value="${esc(S.pe||'')}" placeholder="name@company.com" autocomplete="email"></label></div>`; }
+  function payerOk(){ if(!GUESTP&&!STAFF) return true; const n=root.querySelector('[data-pn]'), e=root.querySelector('[data-pe]'); const l=root.querySelector('[data-pl]'); S.pn=(n&&n.value||'').trim(); S.pl=(l&&l.value||'').trim(); S.pe=(e&&e.value||'').trim(); if(!S.pn||!S.pl){ S.err='Add the first and last name of the person paying.'; return false; } if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(S.pe)){ S.err='Add a valid email address for the receipt.'; return false; } return true; }
+  let REF=null; const ref=()=>REF||(REF='PAY-'+String(Date.now()).slice(-6));
+  function wire(){ const Q=s=>root.querySelectorAll(s), L=list();
+    Q('[data-sel]').forEach(c=>c.onchange=()=>{ S.sel[c.dataset.sel]=c.checked; draw(); });
+    Q('[data-amt]').forEach(i=>i.onchange=()=>{ const d=L.find(z=>z.doc===i.dataset.amt); let v=parseFloat(String(i.value).replace(/[^0-9.]/g,''))||0; v=Math.max(0,Math.min(v,d.balance)); S.amt[d.doc]=Math.round(v*100)/100; draw(); });
+    Q('[data-pm]').forEach(r=>r.onchange=()=>{ S.method=r.dataset.pm; if(r.dataset.rg) S.region=r.dataset.rg; S.err=''; draw(); });
+    const go=root.querySelector('[data-go]'); if(go) go.onclick=()=>{ const cn=(root.querySelector('[data-cn]').value||'').replace(/\D/g,'');
+      if(!payerOk()) return draw();
+      if(cn.length<12){ S.err='Enter the card number.'; return draw(); }
+      if(/^4000/.test(cn)){ S.err='This looks like a personal card. '+dist.name+' can only accept business (commercial) cards. Please use a company card or pay by bank transfer.'; return draw(); }
+      const items=L.filter(d=>S.sel[d.doc]&&+S.amt[d.doc]>0).map(d=>({doc:d.doc,kind:d.kind,orderId:d.orderId,amount:Math.min(+S.amt[d.doc],d.balance),balance:d.balance}));
+      S.done=MSPAY.pay({items,method:'card',region:S.region,cust:CUST,by:(S.pn?(S.pn+' '+(S.pl||'')).trim():ME)||(root.querySelector('[data-nm]').value||'').trim(),email:S.pe||'',takenBy:STAFF?ME:''}); draw(); };
+    const bt=root.querySelector('[data-bacs]'); if(bt) bt.onclick=()=>{ if(!payerOk()) return draw(); const items=L.filter(d=>S.sel[d.doc]&&+S.amt[d.doc]>0).map(d=>({doc:d.doc,kind:d.kind,orderId:d.orderId,amount:Math.min(+S.amt[d.doc],d.balance),balance:d.balance})); S.done=MSPAY.pay({items,method:'bacs',cust:CUST,ref:ref(),by:(S.pn?(S.pn+' '+(S.pl||'')).trim():ME),email:S.pe||''}); draw(); }; }
+  function drawDone(){ const p=S.done, card=p.method==='card';
+    root.innerHTML=`<div class="pyp-card pyp-done"><div class="ok">✓</div><h1 class="pyp-h1" style="font-size:32px">${card?'Payment received':'Thanks, we’ll look out for it'}</h1>
+      <p class="pyp-lede">${card?`${gbp(p.total+(p.fee?p.fee.gross:0))} paid by card on ${fD(p.at)}.${p.email?' A receipt has been sent to '+esc(p.email)+'.':''}`:`We’ll mark these paid when ${gbp(p.total)} arrives with reference <b>${esc(p.ref)}</b>.`}</p>
+      <table class="pyp-t"><thead><tr><th>Document</th><th class="r">Paid</th></tr></thead><tbody>${p.items.map(i=>`<tr><td>${esc(i.doc)}${+i.amount<+i.balance-0.004?' <span class="pyp-st part">Part paid</span>':''}</td><td class="r">${gbp(i.amount)}</td></tr>`).join('')}
+        ${p.fee?`<tr><td>Card payment fee · VAT invoice <b>${esc(p.fee.no)}</b></td><td class="r">${gbp(p.fee.gross)}</td></tr>`:''}</tbody></table>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">${p.fee?'<button class="pyp-ghost" data-fee>Download fee invoice '+esc(p.fee.no)+'</button>':''}<button class="pyp-ghost" data-again>Back to outstanding</button></div></div>`;
+    const f=root.querySelector('[data-fee]'); if(f) f.onclick=()=>{ const w=window.open('','_blank'); if(!w) return; w.document.write(MSPAY.feeDoc(p)); w.document.close(); };
+    root.querySelector('[data-again]').onclick=()=>{ S.done=null; init(); draw(); }; }
+  init(); draw();
+})();
+</script>
+<script src="logos.js"></script>
+<script src="identity.js"></script>
+<script src="avatars.js"></script>
+<script src="names.js?v=2"></script>
+<script src="people.js?v=19"></script>
+<script src="sidebar.js?v=28"></script>
+<script src="chrome.js?v=5"></script>
+</body></html>

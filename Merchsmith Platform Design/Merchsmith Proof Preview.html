@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proof preview</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>window.MS_SCOPE='dist';</script>
+<script src="theme.js?v=13"></script>
+<script src="logos.js"></script>
+<script src="proof-doc.js?v=3"></script>
+<style>
+body{margin:0;background:#4a4b57;font-family:Mulish,Arial,sans-serif}
+a{color:inherit}
+.pv-bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#2c2d3a;color:#fff;padding:12px 22px;font-size:13.5px}
+.pv-sw{display:flex;gap:4px;background:rgba(255,255,255,.1);border-radius:999px;padding:4px}
+.pv-sw a{white-space:nowrap;text-decoration:none;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700;color:#fff}
+.pv-sw a.on{background:#fff;color:#2c2d3a}
+.pv-btn{font:inherit;font-size:13px;font-weight:700;border-radius:9px;padding:9px 16px;cursor:pointer;white-space:nowrap}
+.pv-wrap{padding:28px 24px 60px;display:flex;flex-direction:column;align-items:center;gap:24px}
+.pv-wrap .page{box-shadow:0 24px 70px rgba(0,0,0,.4)}
+@media print{body{background:#fff}.pv-bar{display:none!important}.pv-wrap{padding:0;gap:0;display:block;zoom:1!important}.pv-wrap .page{box-shadow:none}}
+</style>
+<style id="proofCss"></style>
+</head><body>
+<div class="pv-bar"><span id="pvTitle" style="min-width:0;flex:1 1 260px;"><b>Product proof</b> · A3 landscape</span><span class="pv-sw" id="pvSw"></span>
+  <span style="display:flex;gap:10px"><button class="pv-btn" id="pvBack" style="background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.3)">← Back</button><button class="pv-btn" id="pvPrint" style="border:0;background:var(--periwinkle-deep,#5860a6);color:#fff">Save as PDF / Print</button></span></div>
+<div class="pv-wrap" id="pvWrap"></div>
+<script>
+/* Proof preview (D03). ?ex=one | multi = examples; no ex = the product last opened from the product pop-out (localStorage ms-proof-doc). ?print=1 opens the print dialog. */
+(function(){
+  const S=k=>{ try{ return localStorage.getItem(k)||''; }catch(e){ return ''; } };
+  try{ if(window.MSTheme&&MSTheme.applyDist) MSTheme.applyDist(); }catch(e){}
+  const accent=(()=>{ try{ return (MSTheme.distVars()['--periwinkle-deep'])||'#5860a6'; }catch(e){ return '#5860a6'; } })();
+  const base={accent,distLogo:S('ms-brand-logo'),custLogo:S('ms-cust-logo'),cust:'Citrix',issued:'Mon 26 Oct 2026'};
+  const EX={
+    one:{project:'Autumn Giveaways',product:'Tech Travel Bag',ref:'MS-TTB-4821',ver:2,status:{cls:'ok',lbl:'Approved',sub:'Approved by Sara Kemp on 26 October 2026 at 14:12'},
+      productColour:{name:'Black',hex:'#1b1b1f',pms:'Black C'},dims:{w:'300mm',h:'400mm',d:'120mm'},notes:'Logo centred on the front pocket.',
+      positions:[{name:'Front',method:'Screen print',deco:'2 colours',colours:[{name:'Citrix Blue',hex:'#006cfb',pms:'PMS 2172 C'},{name:'White',hex:'#ffffff',pms:'White'}],size:'120 × 60 mm',area:'180 × 180 mm'}],pages:['assets/products/bag.png']},
+    multi:{project:'Staff Kit Refresh',product:'Recycled Commuter Backpack',ref:'MS-RCB-2210',ver:3,status:{cls:'no',lbl:'Not approved',sub:'Changes requested by Nina Holt on 24 October 2026 at 09:40'},
+      productColour:{name:'Charcoal',hex:'#3b3d45',pms:'PMS 432 C'},dims:{w:'300mm',h:'450mm',d:'160mm'},notes:'Embroidery stitch count up to 10,000 included. Strap transfer to sit 40mm below the shoulder seam.',warnings:'Customer has asked for colours to match the 2026 brand refresh; check against the brand assets before production.',
+      positions:[{name:'Front pocket',method:'Embroidery',deco:'4 thread colours',colours:[{name:'Citrix Blue',hex:'#006cfb',pms:'PMS 2172 C'},{name:'White',hex:'#ffffff',pms:'White'},{name:'Cool Grey',hex:'#8a8d91',pms:'Cool Grey 8 C'},{name:'Navy',hex:'#1f2a4d',pms:'PMS 2767 C'}],size:'110 × 70 mm',area:'120 × 80 mm'},
+        {name:'Shoulder strap',method:'Transfer',deco:'1 colour',colours:[{name:'White',hex:'#ffffff',pms:'White'}],size:'55 × 18 mm',area:'60 × 20 mm'},
+        {name:'Back panel',method:'Woven patch',deco:'Full colour',colours:[{name:'Citrix Blue',hex:'#006cfb',pms:'PMS 2172 C'},{name:'Black',hex:'#1b1b1f',pms:'Black C'}],size:'80 × 50 mm',area:'200 × 200 mm'}],
+      pages:['assets/products/bag.png','assets/products/bags.png']}};
+  const q=new URLSearchParams(location.search), ex=q.get('ex')||'';
+  let live=null; try{ live=JSON.parse(S('ms-proof-doc')||'null'); }catch(e){}
+  const cur=EX[ex]?ex:(live?'':'one'), D=Object.assign({},base,cur?EX[cur]:live);
+  const R=MSPROOF.render(D); document.getElementById('proofCss').textContent=R.css; document.title=R.title;
+  const wrap=document.getElementById('pvWrap'); wrap.innerHTML=R.body;
+  document.getElementById('pvTitle').innerHTML='<b>Proof · '+(D.product||'')+'</b> · A3 landscape · '+document.querySelectorAll('.page').length+' page'+(document.querySelectorAll('.page').length>1?'s':'');
+  const sw=document.getElementById('pvSw'); [['','Live product',!!live],['one','One position',true],['multi','Several positions',true]].filter(x=>x[2]).forEach(([k,l])=>{ const a=document.createElement('a'); a.textContent=l; a.href=location.pathname+(k?'?ex='+k:''); if(k===cur) a.className='on'; sw.appendChild(a); });
+  const fit=()=>{ const z=Math.min(1,(innerWidth-48)/1587); wrap.style.zoom=z; }; fit(); addEventListener('resize',fit);
+  document.getElementById('pvPrint').onclick=()=>print();
+  document.getElementById('pvBack').onclick=()=>{ if(history.length>1) history.back(); else location.href='Merchsmith Project - Autumn Giveaways.html'; };
+  if(q.get('print')==='1'){ const go=()=>Promise.all([...document.images].map(i=>i.complete?0:new Promise(r=>{ i.onload=i.onerror=r; }))).then(()=>setTimeout(()=>print(),400)); if(document.readyState==='complete') go(); else addEventListener('load',go); }
+})();
+</script>
+</body></html>

@@ -524,7 +524,7 @@
       if(stage==='visual'&&role!=='cust'&&!brandingSet(d)&&act&&act!=='View') return `<span class="ds-wait"><svg class="icn"><use href="#ic-lock"/></svg>Set branding first</span>`;
       const extra=role==='cust'?'':`<button type="button" class="pm-cta-sec sm dsg-save" data-dsave="${stage}" title="Save" aria-label="Save"><svg class="icn"><use href="#ic-check"/></svg><span>Save</span></button>${stage==='proof'?`<button type="button" class="pm-cta-sec sm pf-dl" data-pfdl title="Download the A3 proof PDF" aria-label="Download proof PDF"><svg class="icn"><use href="#ic-download"/></svg><span>Download PDF</span></button>`:`<button type="button" class="pm-cta-sec sm dsg-dl" data-ddl="${stage}" title="Download" aria-label="Download"><svg class="icn"><use href="#ic-download"/></svg><span>Download</span></button>`}`;
       if(stage==='proof'&&role==='cust'&&p.design.proof&&p.design.proof.st==='awaiting') return `<button type="button" class="pm-cta sm" data-pfappr><svg class="icn"><use href="#ic-check"/></svg><span>Approve Proof</span></button><button type="button" class="pm-cta-sec sm pf-reject" data-pfreject><span>Do Not Approve</span></button><button type="button" class="pm-cta-sec sm pf-dl" data-pfdl><svg class="icn"><use href="#ic-download"/></svg><span>Download</span></button>`;
-      if(stage==='proof'&&role==='cust'&&p.design.proof&&['approved','changes'].includes(p.design.proof.st)&&act) return `<button type="button" class="pm-cta-sec sm pf-dl" data-pfdl><svg class="icn"><use href="#ic-download"/></svg><span>Download</span></button>`;
+      if(stage==='proof'&&((role==='cust'&&p.design.proof&&['approved','changes'].includes(p.design.proof.st)&&act)||window.__wantPfdl)) return `<button type="button" class="pm-cta-sec sm pf-dl" data-pfdl><svg class="icn"><use href="#ic-download"/></svg><span>Download</span></button>`;
       if(act==='View') return extra; if(act) return extra+`<button class="pm-cta sm ds-open" data-stage="${stage}"><span>${act}</span><svg class="icn"><use href="#ic-arrow"/></svg></button>`;
       return wait?`<span class="ds-wait"><svg class="icn"><use href="#ic-clock"/></svg>${esc(wait)}</span>`:''; };
     // customer Visual: short status/button in the tab row; the approval / info forms stay under the image
@@ -614,41 +614,15 @@
     const left='<div class="card"><span class="k">Product colour</span><div class="pc"><i style="background:'+hex(pc.name)+'"></i><div><b>'+e(pc.name)+'</b><span>'+e(pmsOf(pc))+'</span></div></div></div>'
       +(d.dims?'<div class="card"><span class="k">Dimensions</span><div class="tags"><span><em>W</em>'+e(d.dims.w)+'</span><span><em>H</em>'+e(d.dims.h)+'</span><span><em>D</em>'+e(d.dims.d)+'</span></div></div>':'')
       +(nv?'<div class="card"><span class="k">Notes</span><p>'+e(nv)+'</p></div>':'')+(wv?'<div class="card warn"><span class="k">Warnings</span><p>'+e(wv)+'</p></div>':'');
-    const bodyFont=getComputedStyle(document.body).fontFamily, serif=getComputedStyle(document.documentElement).getPropertyValue('--serif')||'Georgia,serif';
-    const accent=getComputedStyle(document.documentElement).getPropertyValue('--periwinkle-deep').trim()||'#4e5ba6';
-    const html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+e(project+' – '+p.name+' – Proof v'+ver)+'</title>'
-      +[...document.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis"]')].map(l=>l.outerHTML).join('')
-      +'<style>@page{size:420mm 297mm;margin:0}*{box-sizing:border-box}html,body{margin:0;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
-      +'body{font-family:'+bodyFont+';color:#1d2939}.sheet{width:420mm;height:297mm;padding:13mm 15mm 11mm;display:grid;grid-template-rows:auto auto 1fr auto;gap:6mm;overflow:hidden}.page{display:block;width:420mm;height:296.5mm;overflow:hidden;break-after:page;page-break-after:always;break-inside:avoid;page-break-inside:avoid}.page:last-child{break-after:auto;page-break-after:auto}.page>.sheet{height:296.5mm}.pg{display:inline-block;margin-top:2mm;font-size:3.4mm;font-weight:700;color:#fff;background:'+accent+';border-radius:1.5mm;padding:.8mm 2.6mm}'
-      +'.top{display:flex;align-items:center;justify-content:space-between;gap:10mm;padding-bottom:5mm;border-bottom:.5mm solid '+accent+'}'
-      +'.logos{display:flex;align-items:center;gap:5mm}.logos img,.logos svg{height:13mm;width:auto;max-width:60mm;object-fit:contain;display:block}.logos .x{font-size:7mm;color:#98a2b3;font-weight:300}'
-      +'.ttl{text-align:right}.ttl h1{margin:0;font-family:'+serif+';font-weight:500;font-size:10mm;line-height:1;letter-spacing:-.02em;color:#101828}.ttl span{display:block;margin-top:1.5mm;font-size:3.4mm;color:#667085}'
-      +'.info{display:grid;grid-template-columns:1.2fr 1.6fr 1fr 2.4fr;gap:4mm;align-items:stretch}.info>div{background:#f9fafb;border:.3mm solid #e4e7ec;border-radius:2.5mm;padding:3mm 4mm;min-width:0}'
-      +'.info .k,.card .k,.sub{display:block;font-size:2.5mm;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#667085}.info b{display:block;margin-top:1mm;font-size:4.2mm;font-weight:600;color:#101828;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
-      +'.st{display:flex;align-items:center;gap:3mm}.st .dot{width:7mm;height:7mm;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:800;font-size:4mm}.st.ok{background:#ecfdf3!important;border-color:#abefc6!important}.st.ok .dot{background:#079455}.st.ok b{color:#067647}.st.no{background:#fef3f2!important;border-color:#fecdca!important}.st.no .dot{background:#d92d20}.st.no b{color:#b42318}.st small{display:block;font-size:2.9mm;color:#475467;margin-top:.6mm;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st>div{min-width:0}'
-      +'.main{display:grid;grid-template-columns:72mm 1fr 80mm;gap:5mm;min-height:0}.side{display:flex;flex-direction:column;gap:3mm;min-height:0;overflow:hidden}'
-      +'.card{border:.3mm solid #e4e7ec;border-radius:2.5mm;padding:3mm 3.5mm;display:flex;flex-direction:column;gap:1mm;break-inside:avoid}.card>b{font-size:4mm;font-weight:600;color:#101828}.card .v{font-size:3.2mm;color:#475467}.card p{margin:0;font-size:3.2mm;line-height:1.45;color:#344054}'
-      +'.card.warn{background:#fffaeb;border-color:#fedf89}.card.warn .k{color:#b54708}.card.warn p{color:#93370d}.sub{margin-top:1.5mm;color:#98a2b3}'
-      +'.pc{display:flex;align-items:center;gap:3mm}.pc i{width:9mm;height:9mm;border-radius:2mm;border:.3mm solid rgba(0,0,0,.12)}.pc b{font-size:4mm;font-weight:600}.pc span{display:block;font-size:3mm;color:#667085}'
-      +'.tags{display:flex;gap:1.5mm;flex-wrap:wrap}.tags span{font-size:3.1mm;font-weight:600;background:#f2f4f7;border-radius:1.5mm;padding:.8mm 2mm}.tags em{font-style:normal;color:#667085;margin-right:1.2mm}'
-      +'.col{display:flex;align-items:center;gap:2mm;background:#f2f4f7;border-radius:1.8mm;padding:1mm 2mm 1mm 1mm}.col i{width:5mm;height:5mm;border-radius:1.2mm;border:.3mm solid rgba(0,0,0,.12)}.col b{font-size:3.1mm;font-weight:600}.col em{margin-left:auto;font-style:normal;font-size:2.8mm;color:#667085;white-space:nowrap;padding-left:2mm}'
-      +'.img{position:relative;border:.3mm solid #e4e7ec;border-radius:3mm;background:#fff;min-height:0;overflow:hidden}.img img{position:absolute;inset:12mm 8mm 8mm;width:calc(100% - 16mm);height:calc(100% - 20mm);object-fit:contain;display:block}.main{grid-template-rows:minmax(0,1fr)}.img .ver{position:absolute;left:3mm;top:3mm;font-size:3mm;font-weight:700;border:.3mm solid #e4e7ec;border-radius:1.5mm;padding:.6mm 2mm;background:#fff}'
-      +'.foot{display:grid;grid-template-columns:1fr 64mm;gap:6mm;align-items:end;border-top:.3mm solid #e4e7ec;padding-top:4mm}.read{font-size:2.9mm;line-height:1.45;color:#475467}.read b{color:#101828;font-size:3mm;letter-spacing:.02em}.read ul{margin:1mm 0 1.2mm;padding-left:4mm;columns:2;column-gap:8mm}.read li{margin-bottom:.6mm;break-inside:avoid}.read .strong{font-weight:700;color:#344054;margin:0}'
-      +'.gen{text-align:right;font-size:2.7mm;color:#98a2b3;line-height:1.5}</style></head><body>'
-      +(()=>{ const N=pages.length; return pages.map((src,k)=>''
-      +'<div class="page"><div class="sheet"><div class="top"><div class="logos">'+lg('ms-brand-logo','mojo')+'<span class="x">×</span>'+lg('ms-cust-logo',cust)+'</div><div class="ttl"><h1>Product proof</h1><span>Version '+ver+(d.proofDate?' · issued '+e(d.proofDate):'')+'</span>'+(N>1?'<span class="pg">Page '+(k+1)+' of '+N+'</span>':'')+'</div></div>'
-      +'<div class="info"><div><span class="k">Project</span><b>'+e(project)+'</b></div><div><span class="k">Product</span><b>'+e(p.name)+'</b></div><div><span class="k">Product ref</span><b>'+e(ref)+'</b></div>'
-      +'<div class="st '+status.cls+'"><span class="dot">'+(status.cls==='ok'?'✓':'!')+'</span><div><b>'+status.lbl+'</b><small>'+status.sub+'</small></div></div></div>'
-      +'<div class="main"><div class="side">'+left+'</div><div class="img"><span class="ver">v'+ver+'</span><img src="'+e(abs(src))+'" alt="Proof visual '+(k+1)+'"></div><div class="side">'+(pos||'<div class="card"><span class="k">Branding</span><p>No positions set</p></div>')+'</div></div>'
-      +'<div class="foot"><div class="read"><b>PLEASE READ, TO ENSURE YOU ARE 100% HAPPY WITH YOUR ORDER:</b><ul><li>This proof should only be used to check positioning and content; it cannot be used as an accurate match for colour.</li><li>Have you seen a sample? Please ensure what you are ordering is what you are expecting.</li><li>If a Pantone reference has been chosen by our studio on your behalf, we cannot accept responsibility if you are unhappy with the final print colour.</li><li>When printing in full colour, Pantone references cannot be guaranteed.</li></ul><p class="strong">The visual is a representation of the approximate size, ratio and position of the artwork &amp; product. Once approved we can take no responsibility for an inaccurately branded order.</p></div>'
-      +'<div class="gen">Generated '+e(fmt(new Date().toISOString()))+'</div></div></div></div>'
-      ).join(''); })()
-      +'</div></body></html>';
-    let f=document.getElementById('pfPrintFrame'); if(f) f.remove(); f=document.createElement('iframe'); f.id='pfPrintFrame'; f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
-    document.body.appendChild(f); const doc=f.contentDocument; doc.open(); doc.write(html); doc.close();
-    const go=()=>{ try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(x){ const w2=window.open('','_blank'); if(w2){ w2.document.write(html); w2.document.close(); } } };
-    const im=doc.querySelector('.img img'); let fired=false; const once=()=>{ if(fired) return; fired=true; setTimeout(go,250); };
-    if(im&&!im.complete){ im.onload=once; im.onerror=once; setTimeout(once,2500); } else once();
+    // data for the Proof preview page (proof-doc.js renders the A3 sheet); positions/colours resolved here
+    const pdata={project,cust,product:p.name,ref,ver,issued:d.proofDate||'',status:{cls:status.cls,lbl:status.lbl,sub:String(status.sub).replace(/<[^>]+>/g,'').replace(/&amp;/g,'&')},
+      productColour:{name:pc.name,hex:hex(pc.name),pms:pmsOf(pc)},dims:d.dims||null,notes:nv||'',warnings:wv||'',pages:pages.map(abs),
+      positions:(ch.positions||[]).map(po=>{ const meta=(d.branding.positions||[]).find(x=>x.code===po.code)||{name:po.code}; const m=METHODS[po.method]||{}; const pal=(typeof paletteFor==='function'?paletteFor(po):[])||[]; const pp=proofPos(p,po.code);
+        return {name:meta.name,method:m.name||po.method||'',deco:decoLabel(m,po.numColours||pal.length),colours:pal.map(c=>({name:c.name,hex:hex(c.name),pms:c.pms||pmsOf(c)||''})),size:(pp.size&&pp.size.w&&pp.size.h)?pp.size.w+' × '+pp.size.h+' mm':'',area:(meta.w&&meta.h&&meta.w!=='—')?meta.w+' × '+meta.h+' mm':''}; }),
+      generated:fmt(new Date().toISOString())};
+    try{ localStorage.setItem('ms-proof-doc',JSON.stringify(pdata)); }catch(x){}
+    const auto=!!window.__wantPfdl; window.__wantPfdl=false;
+    location.href='Merchsmith Proof Preview.html'+(auto?'?print=1':'');
     if(window.MStoast) MStoast('Choose “Save as PDF” to download the A3 proof');
     if(window.MSlog) MSlog(p,{type:'status',icon:'ic-download',label:'Downloaded proof v'+ver+' (A3)',who:0});
   }
@@ -673,6 +647,8 @@
         notes:(typeof pNotes==='function'?pNotes(p,d):'')||'', warnings:(typeof pWarn==='function'?pWarn(p,d):'')||'',
         // approved visual + approved proof images, for the order page's Check proof toggle
         visual:(()=>{ try{ const v=visualImgs(p); return v&&v[0]||''; }catch(e){ return ''; } })(),
+        // stock check from the Stock step (who confirmed it at the supplier, reserved until), for the supplier PO
+        stock:(()=>{ const st=p.actions&&p.actions[3]&&p.actions[3].st; if(!st) return null; return {st,until:p.stockReservedUntilDisplay||'',with:(p.stockReq&&(p.stockReq.contact||p.stockReq.with))||'',variant:[(p.stockReq&&p.stockReq.colour),(p.stockReq&&p.stockReq.size)].filter(Boolean).join(' / ')}; })(),
         visuals:(()=>{ try{ return (visualImgs(p)||[]).filter(v=>v&&!(/^data:/.test(v)&&v.length>400000)).slice(0,12); }catch(e){ return []; } })(),
         proof:(()=>{ try{ const bp=(p.design&&p.design.proof&&p.design.proof.byPos)||{}; const f=Object.values(bp).map(x=>(x.visuals||[])[0]).find(Boolean); const L=(p.design&&p.design.proof&&p.design.proof.images)||[]; const v=f||L[0]||''; return /^data:/.test(v)&&v.length>400000?'':v; }catch(e){ return ''; } })()};
       localStorage.setItem('ms-pm-spec',JSON.stringify(all)); }catch(e){} }

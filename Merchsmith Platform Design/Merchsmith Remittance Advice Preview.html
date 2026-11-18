@@ -1,0 +1,27 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Remittance advice preview</title>
+<link rel="stylesheet" href="tokens.css">
+<script src="theme.js?v=13"></script>
+<script src="store-feed.js?v=2"></script>
+<script src="proforma-doc.js?v=105"></script>
+</head><body>
+<script>
+/* Supplier remittance advice (D23), rendered by proforma-doc.js (kind:'rem'). ?ex=single | credit | many, or no ex = live remittance saved from Finance → Supplier invoices → Record payment (localStorage ms-rem-doc). */
+const q=new URLSearchParams(location.search); let live=null; try{ live=JSON.parse(localStorage.getItem('ms-rem-doc')||'null'); }catch(e){}
+const EX=q.get('ex')||(live?'':'credit');
+const base={kind:'rem',date:'Mon 26 Oct 2026',method:'Bank transfer (BACS)',supplier:'Pencom',supLines:['Unit 4, Brunel Park','Leicester','LE3 2PQ'],payee:{name:'Pencom Ltd',bank:'HSBC UK',sort:'40-••-••',acc:'••••6612'},contactName:'Jess Doyle',contactEmail:'accounts@mojopromotions.co.uk'};
+const R=(date,no,details,po,amount,deduct)=>({date,type:'Invoice',no,details,po,amount,deduct:deduct||0,paid:Math.round((amount-(deduct||0))*100)/100});
+const EXS={
+  single:{no:'REM-PEN-261026',payRef:'MOJO REM-PEN-261026',ledger:[R('16 Oct 2026','PEN-41190','Lowton 3 in 1 Ball Pen × 1,000 · order MS-1051','PO-1051-02',1445.05)]},
+  credit:{no:'REM-PEN-261026',payRef:'MOJO REM-PEN-261026',note:'Credit PEN-CN-0218 (20 pens short) taken off invoice PEN-41190.',ledger:[R('16 Oct 2026','PEN-41190','Lowton 3 in 1 Ball Pen × 1,000 · order MS-1051','PO-1051-02',1445.05,27.60),R('9 Oct 2026','PEN-41122','Bamboo Pen × 500 · order MS-1046','PO-1046-01',612.40),R('2 Oct 2026','PEN-41087','Opticians Eye Occluder × 250 · order MS-1044','PO-1044-03',333.70)]},
+  many:{no:'REM-PEN-BACS-1410',payRef:'MOJO BACS RUN 14 OCT',ledger:[]}};
+(function(){ const L=EXS.many.ledger; for(let i=0;i<18;i++){ const amt=Math.round((140+((i*173)%1200))*100)/100; L.push(R((1+i)+' Sep 2026','PEN-'+(40900+i*7),['Lowton Pen','Bamboo Pen','Eye Occluder','Stylus Pen','Metal Keyring'][i%5]+' × '+(100*(1+i%6))+' · order MS-'+(1010+i),'PO-'+(1010+i)+'-0'+(1+i%3),amt,i===4?42.00:0)); } })();
+const D=Object.assign({},base,EX?EXS[EX]:live);
+document.open(); document.write(MSPRO.render(D)); document.close();
+(function(){ const bar=document.createElement('div'); bar.setAttribute('data-noprint',''); bar.style.cssText='position:fixed;top:14px;right:14px;left:auto;max-width:calc(100vw - 28px);z-index:10;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;background:#1e2033;border-radius:18px;padding:4px;font:700 12.5px Mulish,Arial,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25)';
+  [['Live payment','',!!live],['One invoice','single'],['With a credit','credit'],['Payment run (18 invoices)','many']].filter(o=>o[2]!==false).forEach(([l,e])=>{ const x=document.createElement('a'); x.textContent=l; x.href=location.pathname+(e?'?ex='+e:''); const on=EX===e; x.style.cssText='white-space:nowrap;text-decoration:none;border-radius:999px;padding:6px 12px;'+(on?'background:#fff;color:#1e2033':'color:#fff'); bar.appendChild(x); });
+  document.body.appendChild(bar); const st=document.createElement('style'); st.textContent='@media print{[data-noprint]{display:none!important}}'; document.head.appendChild(st); })();
+const strip=()=>document.querySelectorAll('link[rel=stylesheet]:not([href*="fonts.googleapis"]),style#ssCss').forEach(n=>n.remove()); strip(); setTimeout(strip,300); setTimeout(function(){ strip(); if(window.__pfBuild) __pfBuild(); },1200);
+if(q.get('print')==='1'){ (function(){ var go=function(){ setTimeout(function(){ window.print(); },2600); }; if(document.readyState==='complete') go(); else window.addEventListener('load',go); })(); }
+</script>
+</body></html>

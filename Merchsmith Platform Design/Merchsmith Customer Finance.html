@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600&family=Fredoka:wght@500;600&family=Mulish:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="components.css">
-<script src="theme.js?v=10"></script>
+<script src="theme.js?v=13"></script>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
@@ -144,11 +144,13 @@ body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-
 <script>(function(){ const go=()=>{ const el=document.getElementById('amMount'); if(!el||!window.MSAM) return; el.innerHTML=MSAM.cardHTML('citrix'); MSAM.wireCard(el,'citrix'); }; document.readyState==='loading'?document.addEventListener('DOMContentLoaded',go):go(); window.addEventListener('ms-am-change',go); window.addEventListener('storage',e=>{ if(e.key==='ms-acct-mgr') go(); }); })();</script>
 <script src="org-profile.js?v=14"></script>
 <script src="order-data.js"></script>
+<script src="po-lines.js?v=1"></script>
 <script src="finance-integrations.js?v=2"></script>
-<script src="finance-tables.js?v=4"></script>
+<script src="payments.js?v=3"></script>
+<script src="finance-tables.js?v=8"></script>
 <script src="dashboards.js?v=5"></script>
-<script src="sidebar.js?v=25"></script>
-<script src="chrome.js?v=3"></script>
+<script src="sidebar.js?v=28"></script>
+<script src="chrome.js?v=5"></script>
 <script>
 const toast=(()=>{ const el=document.getElementById('toast'); let t; return ()=>{ el.classList.add('show'); clearTimeout(t); t=setTimeout(()=>el.classList.remove('show'),1400); }; })();
 function relock(){ try{ if(window.MSID&&MSID.relock) MSID.relock(); }catch(e){} try{ if(window.MSTheme&&MSTheme.persist) MSTheme.persist(); }catch(e){} }
@@ -262,18 +264,29 @@ function closeCrop(){ if(!cropRoot) return; const s=cropRoot.querySelector('imag
 .cfi small{display:block;font-size:11.5px;color:var(--muted);} .cfi-pill{display:inline-block;font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 9px;} .cfi-pill.g{background:#ecfdf3;color:#067647;} .cfi-pill.r{background:#fef3f2;color:#b42318;} .cfi-pill.a{background:#fffaeb;color:#b54708;} .cfi-pill.p{background:var(--g100,#f2f4f7);color:var(--g700,#344054);} .cfi-pill.v{background:#f4f3ff;color:#5925dc;}
 .cfi-pay{display:inline-flex;align-items:center;font:inherit;font-size:12.5px;font-weight:700;border-radius:9px;padding:7px 12px;background:var(--periwinkle-deep);color:#fff;text-decoration:none;white-space:nowrap;} .cfi-pay:hover{filter:brightness(1.06);color:#fff;}
 .cfi-f{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px;} .cfi-f button{font:inherit;font-size:12.5px;font-weight:700;border:1px solid var(--line-soft);background:#fff;border-radius:999px;padding:6px 12px;cursor:pointer;color:var(--ink-3);} .cfi-f button.on{background:var(--ink);border-color:var(--ink);color:#fff;}
-.cfi-empty{padding:28px;text-align:center;color:var(--muted);}
+.cfi-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 12px} .cfi-top .cfi-f{margin:0} .cfi-empty{padding:28px;text-align:center;color:var(--muted);}
 </style>
 <script>/* Customer Finance: Overview (dashboard) · Invoices · Terms & invoicing (moved from Settings) */
 (function(){ const CUST='citrix', esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const gbp=n=>(n<0?'−':'')+'£'+Math.abs(+n||0).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}), fD=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
   let inited={}, invF='all';
+  // statement of account (D21): build from the same invoice rows, open the preview page
+  document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-cfsoa]'); if(!b||!window.MSFINT) return; const R=MSFINT.custRows().filter(r=>(r.o.customer||'citrix')===CUST).sort((x,y)=>(x.issued||0)-(y.issued||0)), t0=new Date(), D2=864e5, d=x=>x?new Date(x).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+    const L=[], ag={current:0,d30:0,d60:0,d90:0,d90p:0}; R.forEach(r=>{ const cr=r.kind==='Credit note', g=Math.abs(+r.gross||0), open=cr?0:r.paid?0:(r.bal!=null?+r.bal:g);
+      L.push({date:d(r.issued),type:r.kind==='Invoice'?'VAT invoice':r.kind,no:r.no,details:[r.what,r.proj].filter(Boolean).join(' · '),due:cr?'':r.paid?'Paid':d(r.due),debit:cr?0:g,credit:cr?g:0,note:r.st==='overdue'?'Overdue '+r.odays+' day'+(r.odays===1?'':'s'):r.st==='part'?'Part paid':'',tone:r.st==='overdue'?'r':r.st==='part'?'a':''});
+      const paidAmt=r.paid?g:(+r.paidAmt||0); if(!cr&&paidAmt>0.004) L.push({date:d(r.paid&&r.paid.at||r.issued),type:'Payment',no:(r.paid&&r.paid.ref)||'Payment',details:(r.paid&&r.paid.method)||'Payment received',credit:paidAmt});
+      if(open>0.004){ const od=r.due?Math.floor((t0-r.due)/D2):0; ag[od<=0?'current':od<=30?'d30':od<=60?'d60':od<=90?'d90':'d90p']+=open; } });
+    Object.keys(ag).forEach(k=>ag[k]=Math.round(ag[k]*100)/100);
+    let acct={}; try{ acct=(JSON.parse(localStorage.getItem('ms-cust-account')||'{}')[CUST])||{}; }catch(x){}
+    const ymd=t0.toISOString().slice(2,10).replace(/-/g,'');
+    const D={no:'SOA-'+CUST.toUpperCase()+'-'+ymd,date:d(t0),period:'All transactions',accountNo:acct.accountNo||CUST.toUpperCase()+'-0042',terms:acct.terms||'30 days from invoice',creditLimit:+acct.creditLimit||0,customer:{name:(R[0]&&R[0].cust)||'Citrix',lines:String((R[0]&&R[0].o.billing)||(R[0]&&R[0].o.address)||'').split(/,\s*/).filter(Boolean).slice(1),fao:acct.invoiceTo||''},contactName:(R[0]&&R[0].am)||'',payLink:window.MSPAY?'pay.mojopromotions.co.uk':'',ageing:ag,ledger:L};
+    try{ localStorage.setItem('ms-soa-doc',JSON.stringify(D)); }catch(x){} location.href='Merchsmith Statement of Account Preview.html'; });
   function invoices(){ const el=document.getElementById('cfInv'); if(!window.MSFINT){ el.innerHTML='<div class="cfi-empty">Invoices aren’t available.</div>'; return; }
     const R=MSFINT.custRows().filter(r=>(r.o.customer||'citrix')===CUST).sort((a,b)=>(b.issued||0)-(a.issued||0)), un=r=>r.kind!=='Credit note'&&!r.paid;
     const F=[['all','All',()=>true],['unpaid','To pay',un],['overdue','Overdue',r=>r.st==='overdue'],['paid','Paid',r=>!!r.paid],['credit','Credit notes',r=>r.kind==='Credit note']];
-    const L=R.filter(F.find(x=>x[0]===invF)[2]), ST={paid:['Paid','g'],overdue:['Overdue','r'],soon:['Due soon','a'],notdue:['Not yet due','p'],credit:['Credit note','v']}, card=window.MSINT&&MSINT.stripe().connected;
-    el.innerHTML='<div class="cfi-f">'+F.map(([k,l,fn])=>'<button type="button" class="'+(invF===k?'on':'')+'" data-cff="'+k+'">'+l+' '+R.filter(fn).length+'</button>').join('')+'</div>'
-      +'<div class="cfi">'+(L.length?'<table><thead><tr><th>Invoice</th><th>For</th><th>Order</th><th class="r">Total</th><th>Issued</th><th>Due</th><th>Status</th><th></th></tr></thead><tbody>'+L.map(r=>'<tr><td><b>'+esc(r.no)+'</b><small>'+esc(r.kind)+'</small></td><td>'+esc(r.what)+(r.proj?'<small>'+esc(r.proj)+'</small>':'')+'</td><td><a class="fx-lk" href="Merchsmith Orders.html#order='+esc(r.o.id)+'">'+esc(r.o.ref)+'</a>'+(r.o.po?'<small>PO '+esc(r.o.po)+'</small>':'')+'</td><td class="r"><b>'+gbp(r.gross)+'</b><small>VAT '+gbp(r.vat)+'</small></td><td>'+fD(r.issued)+'</td><td>'+(r.due?fD(r.due)+(r.st==='overdue'?'<small style="color:#b42318">'+r.odays+' days overdue</small>':''):'—')+'</td><td><span class="cfi-pill '+ST[r.st][1]+'">'+ST[r.st][0]+'</span>'+(r.paid&&r.paid.at?'<small>'+fD(r.paid.at)+'</small>':'')+'</td><td class="r">'+(un(r)&&card?'<a class="cfi-pay" href="'+esc(MSINT.payLink(r.no))+'" target="_blank" rel="noopener">Pay by card</a>':'')+'</td></tr>').join('')+'</tbody></table>':'<div class="cfi-empty">Nothing here.</div>')+'</div>';
+    const L=R.filter(F.find(x=>x[0]===invF)[2]), ST={part:['Part paid','a'],paid:['Paid','g'],overdue:['Overdue','r'],soon:['Due soon','a'],notdue:['Not yet due','p'],credit:['Credit note','v']}, card=window.MSINT&&MSINT.stripe().connected;
+    el.innerHTML='<div class="cfi-top"><div class="cfi-f">'+F.map(([k,l,fn])=>'<button type="button" class="'+(invF===k?'on':'')+'" data-cff="'+k+'">'+l+' '+R.filter(fn).length+'</button>').join('')+'</div>'+'<span style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="cfi-pay" data-cfsoa style="background:#fff;color:var(--ink);border:1.5px solid var(--line-soft);cursor:pointer">Download statement</button>'+(R.some(un)&&window.MSPAY?'<a class="cfi-pay" href="Merchsmith Pay.html">Pay invoices</a>':'')+'</span></div>'
+      +'<div class="cfi">'+(L.length?'<table><thead><tr><th>Invoice</th><th>For</th><th>Order</th><th class="r">Total</th><th>Issued</th><th>Due</th><th>Status</th><th></th></tr></thead><tbody>'+L.map(r=>'<tr><td><b>'+esc(r.no)+'</b><small>'+esc(r.kind)+'</small></td><td>'+esc(r.what)+(r.proj?'<small>'+esc(r.proj)+'</small>':'')+'</td><td><a class="fx-lk" href="Merchsmith Orders.html#order='+esc(r.o.id)+'">'+esc(r.o.ref)+'</a>'+(r.o.po?'<small>PO '+esc(r.o.po)+'</small>':'')+'</td><td class="r"><b>'+gbp(r.gross)+'</b><small>VAT '+gbp(r.vat)+'</small></td><td>'+fD(r.issued)+'</td><td>'+(r.due?fD(r.due)+(r.st==='overdue'?'<small style="color:#b42318">'+r.odays+' days overdue</small>':''):'—')+'</td><td><span class="cfi-pill '+ST[r.st][1]+'">'+ST[r.st][0]+'</span>'+(r.paidAmt?'<small>'+gbp(r.paidAmt)+' paid · '+gbp(r.bal)+' left</small>':'')+(r.paid&&r.paid.at?'<small>'+fD(r.paid.at)+'</small>':'')+'</td><td class="r">'+(un(r)&&r.kind!=='Card fee invoice'&&(card||window.MSPAY)?'<a class="cfi-pay" href="Merchsmith Pay.html?d='+encodeURIComponent(r.no)+'">Pay</a>':'')+'</td></tr>').join('')+'</tbody></table>':'<div class="cfi-empty">Nothing here.</div>')+'</div>';
     el.querySelectorAll('[data-cff]').forEach(b=>b.onclick=()=>{ invF=b.dataset.cff; invoices(); }); }
   function show(t){ document.querySelectorAll('#cfTabs .settab').forEach(b=>b.classList.toggle('active',b.dataset.cf===t)); document.querySelectorAll('[data-cfp]').forEach(p=>p.hidden=p.dataset.cfp!==t); history.replaceState(null,'','#tab='+t);
     if(t==='overview'&&window.MSDASH) MSDASH.mount(document.getElementById('cfDash'),{page:'finance',role:'customer'});

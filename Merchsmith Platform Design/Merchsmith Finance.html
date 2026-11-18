@@ -12,7 +12,7 @@
 <script>/* Finance page: the Billing & payments panel on its own page. #sub=cust|sup|bank|plan selects the tab. */
 window.MS_FINANCE_PAGE=true; (function(){ const m=location.hash.match(/sub=(\w+)/); const want='#tab=billing'+(m?'&sub='+m[1]:''); if(!/tab=billing/.test(location.hash)) history.replaceState(null,'',location.pathname+location.search+want); })();
 addEventListener('hashchange',()=>{ if(!/tab=billing/.test(location.hash)){ const m=location.hash.match(/sub=(\w+)/); history.replaceState(null,'',location.pathname+location.search+'#tab=billing'+(m?'&sub='+m[1]:'')); dispatchEvent(new HashChangeEvent('hashchange')); } });</script>
-<script src="theme.js?v=10"></script>
+<script src="theme.js?v=13"></script>
 <style>
 *{box-sizing:border-box;}
 body{margin:0;background:var(--paper);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;}
@@ -433,13 +433,15 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
 <script src="bacs-deadline.js?v=2"></script>
 <script src="two-supplier.js"></script>
 <script src="order-data.js"></script>
-<script src="demo-orders.js?v=1"></script>
+<script src="demo-orders.js?v=2"></script>
+<script src="po-lines.js?v=1"></script>
 <script src="order-social.js?v=20"></script>
 <script src="finance-integrations.js?v=2"></script>
 <script src="acct-manager.js?v=2"></script>
-<script src="finance-tables.js?v=9"></script>
+<script src="payments.js?v=3"></script>
+<script src="finance-tables.js?v=13"></script>
 <script src="dashboards.js?v=9"></script>
-<script src="finance-invoices.js?v=6"></script>
+<script src="finance-invoices.js?v=7"></script>
 <script src="store-appearance.js?v=4"></script>
 <script src="billing.js?v=3"></script>
 <script src="markup.js?v=1"></script>
@@ -465,9 +467,9 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;back
 <script src="avatars.js"></script>
 <script src="people.js?v=19"></script>
 <script src="org-profile.js?v=14"></script>
-<script src="sidebar.js?v=26"></script>
+<script src="sidebar.js?v=28"></script>
 <script src="site-content.js"></script>
-<script src="chrome.js?v=3"></script>
+<script src="chrome.js?v=5"></script>
 <script>
 const ML=window.MSLead;
 const toast=(()=>{ const el=document.getElementById('toast'); let t; return ()=>{ el.classList.add('show'); clearTimeout(t); t=setTimeout(()=>el.classList.remove('show'),1400); }; })();
